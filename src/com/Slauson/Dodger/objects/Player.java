@@ -85,6 +85,10 @@ public class Player extends Sprite {
 		}
 		// draw normal bitmap
 		else {
+			
+			if (isSlowActive()) {
+				canvas.drawBitmap(bitmaps[shipType], x-width/2 - 10*speed*dirX, y-height/2 - 10*speed*dirY, null);
+			}
 			canvas.drawBitmap(bitmaps[shipType], x-width/2, y-height/2, null);
 		}
 	}
