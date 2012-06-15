@@ -3,11 +3,8 @@ package com.slauson.dodger.main;
 import com.slauson.dodger.main.R;
 
 import android.app.Activity;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.TextView;
+import android.view.KeyEvent;
 
 public class MyGameActivity extends Activity {
 	
@@ -58,6 +55,21 @@ public class MyGameActivity extends Activity {
     		myAccelerometer.unregisterListener();
     	}
     }
+    
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		
+		myGameView.keyDown(keyCode, event);
+		return true;
+	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		
+		myGameView.keyUp(keyCode, event);
+		return true;
+	}
     
     void updateAccelerometer(float tx, float ty) {
     	myGameView.updateAccelerometer(tx, ty);

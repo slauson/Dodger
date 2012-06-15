@@ -14,9 +14,10 @@ public abstract class PowerupStationary extends Powerup {
 	
 	protected Bitmap bitmap;
 	
-	protected int x, y, width, height;
+	protected float x, y;
+	protected int width, height;
 	
-	public PowerupStationary(Bitmap bitmap, int x, int y) {
+	public PowerupStationary(Bitmap bitmap, float x, float y) {
 		this.bitmap = bitmap;
 		this.x = x;
 		this.y = y;
@@ -25,11 +26,11 @@ public abstract class PowerupStationary extends Powerup {
 		this.height = bitmap.getHeight();
 	}
 	
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 

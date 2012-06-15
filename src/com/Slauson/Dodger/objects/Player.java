@@ -12,11 +12,11 @@ import android.graphics.Paint;
 
 public class Player extends Sprite {
 	
-	private int startX, startY;
+	private float startX, startY;
 	
 	private long startTime;
 	
-	private int goX, goY;
+	private float goX, goY;
 	
 	private int shipType = SHIP_NORMAL;
 
@@ -29,24 +29,35 @@ public class Player extends Sprite {
 	private PowerupSlow powerupSlow = new PowerupSlow();
 	private PowerupSmall powerupSmall = new PowerupSmall();
 	
+	private int move = MOVE_NONE;
+
 	/**
 	 * Constants
 	 */
-	private static final int MAX_SPEED = 25;
-	private static final int POWERUP_TIME = 15000;
+	public static final int MAX_SPEED = 25;
+	public static final int POWERUP_TIME = 15000;
 	
-	private static final int NUM_SHIP_TYPES = 2;
+	public static final int NUM_SHIP_TYPES = 2;
 	
-	private static final int SHIP_NORMAL = 0;
-	private static final int SHIP_DRILL = 1;
+	public static final int SHIP_NORMAL = 0;
+	public static final int SHIP_DRILL = 1;
 	
-	private static final int POWERUP_Y_OFFSET = -8;
+	public static final int POWERUP_Y_OFFSET = -8;
 	
-	private static final int DRILL_Y_OFFSET = -16;
-	private static final int DRILL_WIDTH = 22;
-	private static final int DRILL_HEIGHT = 18;	
+	public static final int DRILL_Y_OFFSET = -16;
+	public static final int DRILL_WIDTH = 22;
+	public static final int DRILL_HEIGHT = 18;	
 	
-	public Player(Bitmap bitmap, int x, int y) {
+	private static final int MOVE_NONE = 0;
+	private static final int MOVE_LEFT = 1;
+	private static final int MOVE_RIGHT = 2;
+	
+	private static final float BUTTON_MOVE_FACTOR = 4f;
+	private static final float BUTTON_MIN_SPEED = 2f;
+	
+	private static final float SLOW_BLUR_FACTOR = 3f;
+	
+	public Player(Bitmap bitmap, float x, float y) {
 		super(x, y, bitmap.getWidth(), bitmap.getHeight());
 		
 		this.startX = x;
@@ -81,13 +92,19 @@ public class Player extends Sprite {
 		
 		// if small powerup is active, draw resized bitmap
 		if (isSmallActive()) {
+			// poor man's blur effect
+			if (speed != 0 && isSlowActive()) {
+				canvas.drawBitmap(smallBitmaps[shipType], x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
+			}
+
 			canvas.drawBitmap(smallBitmaps[shipType], x-width/4, y-height/4, null);
 		}
 		// draw normal bitmap
 		else {
 			
-			if (isSlowActive()) {
-				canvas.drawBitmap(bitmaps[shipType], x-width/2 - 10*speed*dirX, y-height/2 - 10*speed*dirY, null);
+			// poor man's blur effect
+			if (speed != 0 && isSlowActive()) {
+				canvas.drawBitmap(bitmaps[shipType], x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
 			}
 			canvas.drawBitmap(bitmaps[shipType], x-width/2, y-height/2, null);
 		}
@@ -95,39 +112,50 @@ public class Player extends Sprite {
 
 	@Override
 	public void update() {
-		if (goX != x) {
-			if (goX > x) {
-				x += MAX_SPEED;
-				
-				if (x > goX) {
-					x = goX;
+		
+		System.out.println(x + "," + y + " -> " + goX + "," + goY);
+		
+		// touch based controls
+		if (MyGameView.controlMode == MyGameView.CONTROL_TOUCH) {
+			// damn floating point arithmetic
+			if (Math.abs(goX - x) > 1) {
+				speed = MAX_SPEED;
+
+				// need to move right
+				if (goX > x) {
+					dirX = 1;
+					
+					if (goX - x < MAX_SPEED) {
+						speed = goX - x;
+					}
+				}
+				// need to move left
+				else {
+					dirX = -1;
+					
+					if (x - goX < MAX_SPEED) {
+						speed = x - goX;
+					}
 				}
 			} else {
-				x -= MAX_SPEED;
-				
-				if (x < goX) {
-					x = goX;
+				speed = 0;
+			}
+		}
+		// key based controls
+		else if (MyGameView.controlMode == MyGameView.CONTROL_BUTTONS) {
+			if (move != MOVE_NONE) {
+				if (speed < MAX_SPEED) {
+					speed += BUTTON_MOVE_FACTOR;
+					
+					if (speed > MAX_SPEED) {
+						speed = MAX_SPEED;
+					}
 				}
 			}
 		}
 		
-		if (goY != y) {
-			if (goY > y) {
-				y += MAX_SPEED;
-				
-				if (y > goY) {
-					y = goY;
-				}
-			} else {
-				y-= MAX_SPEED;
-				
-				if (y < goY) {
-					y = goY;
-				}
-			}
-		}
-		x = x + (int)(dirX*speed);
-		y = y + (int)(dirY*speed);
+		x = x + (dirX*speed);
+		//y = y + (dirY*speed);
 		
 		// update ship type
 		shipType = SHIP_NORMAL;
@@ -136,9 +164,9 @@ public class Player extends Sprite {
 			shipType = SHIP_DRILL;
 		}
 		
-		// update ship's height
+		// update ship's y position if powerup is active
 		if (shipType != SHIP_NORMAL) {
-			y += POWERUP_Y_OFFSET;
+			y = startY + POWERUP_Y_OFFSET;
 		}
 	}
 
@@ -146,11 +174,11 @@ public class Player extends Sprite {
 		return startTime;
 	}
 
-	public int getStartX() {
+	public float getStartX() {
 		return startX;
 	}
 
-	public int getStartY() {
+	public float getStartY() {
 		return startY;
 	}
 	
@@ -163,8 +191,6 @@ public class Player extends Sprite {
 	}
 	
 	public void activatePowerup(int type) {
-		
-		System.out.println("Activate powerup " + type);
 		
 		switch(type) {
 		case MyGameView.POWERUP_DISCO:
@@ -215,7 +241,33 @@ public class Player extends Sprite {
 		}
 	}
 	
-	public void setX(int x) {
+	public void setX(float x) {
 		this.x = x;
+	}
+	
+	public void moveLeft() {
+		
+		if (speed == 0 || move != MOVE_LEFT) {
+			speed = BUTTON_MIN_SPEED;
+		}
+		
+		dirX = -1;
+		
+		move = MOVE_LEFT;
+	}
+	
+	public void moveRight() {
+		if (speed == 0 || move != MOVE_RIGHT) {
+			speed = BUTTON_MIN_SPEED;
+		}
+		
+		dirX = 1;
+		
+		move = MOVE_RIGHT;
+	}
+	
+	public void moveStop() {
+		dirX = 0;
+		move = MOVE_NONE;
 	}
 }

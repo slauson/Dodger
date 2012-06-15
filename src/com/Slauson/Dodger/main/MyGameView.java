@@ -14,21 +14,16 @@ import com.slauson.dodger.powerups.PowerupMagnet;
 import com.slauson.dodger.powerups.PowerupStationary;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
-import android.graphics.PorterDuff.Mode;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.TextView;
-
 
 public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
@@ -39,9 +34,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// Canvas stuff
 	private int canvasWidth, canvasHeight;
-	//private Bitmap myCanvasBitmap = null;
-	//private Canvas myCanvas = null;
-	private Matrix identityMatrix;
 	private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	
 	private Random random;
@@ -59,14 +51,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	//private Controller controller = null;
 
-	// current mode
-	private int mode = 0;
-	
 	/**
 	 * Debugging stuff
 	 */
 	
-	private int debugConstantPowerup = POWERUP_NONE;
+	private int debugConstantPowerup = POWERUP_SLOW;
 	private int debugPowerupType = POWERUP_NONE;
 	private String debugText = "";
 	
@@ -94,21 +83,29 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_WHITE_HOLE = 4;
 	
 	// powerup sprites
-	private static final int R_POWERUP_DISCO = R.drawable.powerup_disco;
-	private static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
-	private static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
-	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
-	private static final int R_POWERUP_SMALL = R.drawable.powerup_small;
+	public static final int R_POWERUP_DISCO = R.drawable.powerup_disco;
+	public static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
+	public static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
+	public static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
+	public static final int R_POWERUP_SMALL = R.drawable.powerup_small;
 
-	private static final int NUM_POWERUPS = 4;
-	private static final float POWERUP_DROP_CHANCE = 0.5f;
-	private static final int POWERUP_SPEED = 5;
-	private static final float POWERUP_SECRET_CHANCE = 0.05f;
-	private static final int POWERUP_SIZE = 32;
+	public static final int NUM_POWERUPS = 4;
+	public static final float POWERUP_DROP_CHANCE = 0.5f;
+	public static final int POWERUP_SPEED = 5;
+	public static final float POWERUP_SECRET_CHANCE = 0.05f;
+	public static final int POWERUP_SIZE = 32;
+	
+	public static final int CONTROL_TOUCH = 0;
+	public static final int CONTROL_ACCELEROMETER = 1;
+	public static final int CONTROL_BUTTONS = 2;
 	
 	// stationary powerups to draw
-	private static final int R_MAGNET = R.drawable.magnet;
-	//private static final int R_WHITE_HOLE = R.drawable.magnet;
+	public static final int R_MAGNET = R.drawable.magnet;
+	//public static final int R_WHITE_HOLE = R.drawable.magnet;
+	
+	// current mode
+	public static int gameMode = MODE_RUNNING;
+	public static int controlMode = CONTROL_TOUCH;
 		
 	public MyGameView(Context context) {
 		super(context);
@@ -144,8 +141,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		//myCanvasBitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888);
 		//myCanvas = new Canvas();
 		//myCanvas.setBitmap(myCanvasBitmap);
-		
-		identityMatrix = new Matrix();
 		
 		//controller = new Controller(PLAYER_MOVEMENT_MAX_SPEED, PLAYER_MOVEMENT_SCALE_INCREASE, PLAYER_MOVEMENT_SCALE_DECREASE);
 		
@@ -203,21 +198,26 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		//canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
 		
 		// draw active powerups
-		Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
+		synchronized (activePowerups) {
+			Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
 		
-		while (powerupIterator.hasNext()) {
-			powerupIterator.next().draw(canvas, paint);
+			while (powerupIterator.hasNext()) {
+				powerupIterator.next().draw(canvas, paint);
+			}
 		}
 		
 		// draw asteroids
-		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
+		synchronized (asteroids) {
 		
-		paint.setStrokeWidth(2);
-		paint.setColor(Color.WHITE);
-		paint.setStyle(Style.STROKE);
-
-		while (asteroidIterator.hasNext()) {
-			asteroidIterator.next().draw(canvas, paint);
+			Iterator<Asteroid> asteroidIterator = asteroids.iterator();
+			
+			paint.setStrokeWidth(2);
+			paint.setColor(Color.WHITE);
+			paint.setStyle(Style.STROKE);
+	
+			while (asteroidIterator.hasNext()) {
+				asteroidIterator.next().draw(canvas, paint);
+			}
 		}
 		
 		// draw player
@@ -225,13 +225,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// draw powerups
 		// TODO: not sure if this is needed
-		//synchronized (this) {
-		Iterator<SpritePowerup> powerupSpriteIterator = fallingPowerups.iterator();
+		synchronized (fallingPowerups) {
+			Iterator<SpritePowerup> powerupSpriteIterator = fallingPowerups.iterator();
 		
-		while (powerupSpriteIterator.hasNext()) {
-			powerupSpriteIterator.next().draw(canvas, paint);
+			while (powerupSpriteIterator.hasNext()) {
+				powerupSpriteIterator.next().draw(canvas, paint);
+			}
 		}
-		//}
 		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
@@ -284,164 +284,175 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	public void updateAsteroids() {
 		
-		Asteroid temp;
+		synchronized (asteroids) {
 		
-		// update asteroids
-		for(int i = 0; i < asteroids.size(); i++) {
-			temp = asteroids.get(i);
+			Asteroid temp;
 			
-			// move asteroids
-			if (player.isSlowActive()) {
-				temp.update(0.5f);
-			} else {
-				temp.update();
-			}
-			
-			// reset asteroid off screen
-			if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
-				temp.init();
-			}
-			
-			// check if asteroid is visible
-			if (temp.isVisible() && temp.isIntact()) {
+			// update asteroids
+			for(int i = 0; i < asteroids.size(); i++) {
+				temp = asteroids.get(i);
 				
-				// alter asteroid for each active magnet
-				Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
-				PowerupStationary activePowerup;
+				// move asteroids
+				if (player.isSlowActive()) {
+					temp.update(0.5f);
+				} else {
+					temp.update();
+				}
 				
-				while (powerupIterator.hasNext()) {
-					activePowerup = powerupIterator.next();
+				// reset asteroid off screen
+				if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
+					temp.init();
+				}
+				
+				// check if asteroid is visible
+				if (temp.isVisible() && temp.isIntact()) {
 					
-					// check for magnet powerups
-					if (activePowerup instanceof PowerupMagnet) {
-						((PowerupMagnet)activePowerup).alterAsteroid(temp);
+					// alter asteroid for each active magnet
+					synchronized (activePowerups) {
+						Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
+						PowerupStationary activePowerup;
+					
+						while (powerupIterator.hasNext()) {
+							activePowerup = powerupIterator.next();
+						
+							// check for magnet powerups
+							if (activePowerup instanceof PowerupMagnet) {
+								((PowerupMagnet)activePowerup).alterAsteroid(temp);
+							}
+						}
+					}
+					
+					// check collision with player drill
+					if (player.isDrillActive() && player.checkDrillCollision(temp)) {
+						
+						// TODO: break up asteroid into two halves
+						temp.breakup();
+					}
+					
+					// check collision with player
+					if (player.checkBoxCollision(temp)) {
+						player.reset();
+						temp.setVisible(false);
 					}
 				}
 				
-				// check collision with player drill
-				if (player.isDrillActive() && player.checkDrillCollision(temp)) {
+				// check collisions with other asteroids
+				for(int j = 0; j < asteroids.size(); j++) {
 					
-					// TODO: break up asteroid into two halves
-					temp.breakup();
-				}
-				
-				// check collision with player
-				if (player.checkBoxCollision(temp)) {
-					player.reset();
-					temp.setVisible(false);
-				}
-			}
-			
-			// check collisions with other asteroids
-			for(int j = 0; j < asteroids.size(); j++) {
-				
-				// don't check collision with self
-				if (i == j) {
-					continue;
-				}
-				
-				// check if there's a collision 
-				if (temp.checkCollision(asteroids.get(j))) {
+					// don't check collision with self
+					if (i == j) {
+						continue;
+					}
 					
-					// breakup asteroids
-					temp.breakup();
-					asteroids.get(j).breakup();
-					
-					// drop powerup					
-					if (random.nextFloat() < POWERUP_DROP_CHANCE) {
-					
-						// create powerup
-						int powerup = random.nextInt(NUM_POWERUPS);
+					// check if there's a collision 
+					if (temp.checkCollision(asteroids.get(j))) {
 						
-						// debug mode
-						if (debugPowerupType != POWERUP_NONE) {
-							powerup = debugPowerupType;
+						// breakup asteroids
+						temp.breakup();
+						asteroids.get(j).breakup();
+						
+						// drop powerup					
+						if (random.nextFloat() < POWERUP_DROP_CHANCE) {
+						
+							// create powerup
+							int powerup = random.nextInt(NUM_POWERUPS);
+							
+							// debug mode
+							if (debugPowerupType != POWERUP_NONE) {
+								powerup = debugPowerupType;
+							}
+							
+							int r_powerup = 0;
+							
+							switch(powerup) {
+							case POWERUP_DRILL:
+								r_powerup = R_POWERUP_DRILL;
+								break;
+							case POWERUP_SLOW:
+								r_powerup = R_POWERUP_SLOW;
+								break;
+							case POWERUP_SMALL:
+								r_powerup = R_POWERUP_SMALL;
+								break;
+							case POWERUP_MAGNET:
+								r_powerup = R_POWERUP_MAGNET;
+								break;
+							}
+							
+							// secret powerup
+							if (random.nextFloat() < POWERUP_SECRET_CHANCE) {
+								r_powerup = R_POWERUP_DISCO;
+							}
+							
+							SpritePowerup powerupSprite = new SpritePowerup(BitmapFactory.decodeResource(getResources(), r_powerup), temp.getX(), temp.getY(), powerup);
+							powerupSprite.setSpeed(POWERUP_SPEED);
+							
+							fallingPowerups.add(powerupSprite);		
 						}
-						
-						int r_powerup = 0;
-						
-						switch(powerup) {
-						case POWERUP_DRILL:
-							r_powerup = R_POWERUP_DRILL;
-							break;
-						case POWERUP_SLOW:
-							r_powerup = R_POWERUP_SLOW;
-							break;
-						case POWERUP_SMALL:
-							r_powerup = R_POWERUP_SMALL;
-							break;
-						case POWERUP_MAGNET:
-							r_powerup = R_POWERUP_MAGNET;
-							break;
-						}
-						
-						// secret powerup
-						if (random.nextFloat() < POWERUP_SECRET_CHANCE) {
-							r_powerup = R_POWERUP_DISCO;
-						}
-						
-						SpritePowerup powerupSprite = new SpritePowerup(BitmapFactory.decodeResource(getResources(), r_powerup), temp.getX(), temp.getY(), powerup);
-						powerupSprite.setSpeed(POWERUP_SPEED);
-						
-						fallingPowerups.add(powerupSprite);		
 					}
 				}
 			}
-		}
-		
-		// constant powerup
-		if (debugConstantPowerup != POWERUP_NONE) {
-			player.activatePowerup(debugConstantPowerup);
+			
+			// constant powerup
+			if (debugConstantPowerup != POWERUP_NONE) {
+				player.activatePowerup(debugConstantPowerup);
+			}
 		}
 	}
 	
 	public void updatePowerups() {
 		
-		SpritePowerup temp;
+		synchronized (fallingPowerups) {
 		
-		// update falling powerups
-		for (int i = 0; i < fallingPowerups.size(); i++) {
+			SpritePowerup temp;
 			
-			temp = fallingPowerups.get(i);
-			
-			temp.update();
-			
-			// reset powerup off screen
-			if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
-				fallingPowerups.remove(temp);
-				i--;
-			}
-			
-			// check collision with player
-			if (temp.checkBoxCollision(player)) {
+			// update falling powerups
+			for (int i = 0; i < fallingPowerups.size(); i++) {
 				
-				switch(temp.getType()) {
-				case POWERUP_MAGNET:
-					activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY()));
-					break;
-				//case POWERUP_WHITE_HOLE:
-				//	activePowerups.add(new StationaryPowerup(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY()));
-				//	break;
-				// otherwise activate powerup for player
-				default:
-					player.activatePowerup(temp.getType());
-					break;
+				temp = fallingPowerups.get(i);
+				
+				temp.update();
+				
+				// reset powerup off screen
+				if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
+					fallingPowerups.remove(temp);
+					i--;
 				}
 				
-				fallingPowerups.remove(temp);
-				i--;
-				
-				temp.setSpeed(0);
+				// check collision with player
+				if (temp.checkBoxCollision(player)) {
+					
+					switch(temp.getType()) {
+					case POWERUP_MAGNET:
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY()));
+						break;
+					//case POWERUP_WHITE_HOLE:
+					//	activePowerups.add(new StationaryPowerup(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY()));
+					//	break;
+					// otherwise activate powerup for player
+					default:
+						player.activatePowerup(temp.getType());
+						break;
+					}
+					
+					fallingPowerups.remove(temp);
+					i--;
+					
+					temp.setSpeed(0);
+				}
 			}
 		}
 		
-		// update any active global powerups
-		for (int i = 0; i < activePowerups.size(); i++) {
-			
-			// check if any active powerups should be removed
-			if (!activePowerups.get(i).isActive()) {
-				activePowerups.remove(i);
-				i--;
+		synchronized (activePowerups) {
+		
+			// update any active global powerups
+			for (int i = 0; i < activePowerups.size(); i++) {
+				
+				// check if any active powerups should be removed
+				if (!activePowerups.get(i).isActive()) {
+					activePowerups.remove(i);
+					i--;
+				}
 			}
 		}
 	}
@@ -453,11 +464,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// check player bounds
 		if (player.getX() - player.getWidth()/2 < 0) {
-			player.setX((int)player.getWidth()/2);
+			player.setX(player.getWidth()/2);
 		}
 		
 		if (player.getX() + player.getWidth()/2 > canvasWidth) {
-			player.setX((int)(canvasWidth - player.getWidth()/2));
+			player.setX((canvasWidth - player.getWidth()/2));
 		}
 	}
 	
@@ -500,30 +511,110 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		return true;
 	}
+
+	/**
+	 * Handle key down events, this is called from game activity
+	 * @param keyCode
+	 * @param event
+	 */
+	void keyDown(int keyCode, KeyEvent event) {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+
+
+		switch(keyCode) {
+		// left
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+			if (controlMode == CONTROL_BUTTONS) {
+				player.moveLeft();
+				System.out.println("PLAYER MOVE LEFT");
+			}
+			break;			
+		// right
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			if (controlMode == CONTROL_BUTTONS) {
+				player.moveRight();
+				System.out.println("PLAYER MOVE RIGHT");
+			}
+			break;
+		}
+	}
 	
+	/**
+	 * Handle key down events, this is called from game activity
+	 * @param keyCode
+	 * @param event
+	 */
+	void keyUp(int keyCode, KeyEvent event) {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+
+
+		switch(keyCode) {
+		// left
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+			if (controlMode == CONTROL_BUTTONS) {
+				player.moveStop();
+				System.out.println("PLAYER NO MOVE");
+			}
+			break;			
+		// pause game when menu/back/search is pressed
+		case KeyEvent.KEYCODE_MENU:
+		case KeyEvent.KEYCODE_BACK:
+		case KeyEvent.KEYCODE_SEARCH:
+			if (gameMode == MODE_PAUSED) {
+				gameMode = MODE_RUNNING;
+			} else {
+				gameMode = MODE_PAUSED;
+			}
+			break;
+		}
+	}
+	
+	/**
+	 * Handle accelerometer, this is called from game activity
+	 * @param tx
+	 * @param ty
+	 */
 	void updateAccelerometer(float tx, float ty) {
 		
 		if (!initialized) {
 			init();
 			return;
 		}
-		
-		//int move = (int)(50*tx);
-		float normalizedX = 10*Math.abs(tx);
-		
-		int move = (int)Math.pow(Math.E, normalizedX);
 
+		float ACCELEROMETER_DEADZONE = 0.05f;
+		float ACCELEROMETER_MAX = 0.3f;
 		
-		if (move < 2) {
-			move = 0;
-		}
+		float moveX = 0f;
 		
 		if (tx > 0) {
-			move *= -1;
+			player.setDirX(-1);
+		} else {
+			tx = Math.abs(tx);
+			player.setDirX(1);
 		}
 		
-		player.setSpeed(move);
-    	setDebugText("" + move);
+		if (tx < ACCELEROMETER_DEADZONE) {
+			player.setDirX(0);
+			return;
+		}
+
+		if (tx > ACCELEROMETER_MAX) {
+			tx = ACCELEROMETER_MAX;
+		}
+		
+		moveX = ((tx - ACCELEROMETER_DEADZONE)/ACCELEROMETER_MAX)*Player.MAX_SPEED;
+		player.setSpeed(moveX);
+		//player.setSpeed(move);
+    	setDebugText("" + tx);
 	}
 
 

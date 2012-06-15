@@ -6,11 +6,11 @@ import android.graphics.Paint;
 public abstract class Sprite {
 	
 	protected float width, height;
-	protected int x, y;
+	protected float x, y;
 	protected float dirX, dirY;
-	protected int speed;
+	protected float speed;
 	
-	public Sprite(int x, int y, int width, int height) {
+	public Sprite(float x, float y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		
@@ -101,15 +101,15 @@ public abstract class Sprite {
 	 * Updates position based on direction, speed
 	 */
 	public void update() {
-		x = x + (int)(dirX*speed);
-		y = y + (int)(dirY*speed);
+		x = x + (dirX*speed);
+		y = y + (dirY*speed);
 	}
 	
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 	
-	public int getY() {
+	public float getY() {
 		return y;
 	}
 	
@@ -137,11 +137,11 @@ public abstract class Sprite {
 		this.dirY = dirY;
 	}
 	
-	public int getSpeed() {
+	public float getSpeed() {
 		return speed;
 	}
 	
-	public void setSpeed(int speed) {
+	public void setSpeed(float speed) {
 		this.speed = speed;
 	}
 

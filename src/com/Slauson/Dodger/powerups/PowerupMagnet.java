@@ -13,7 +13,7 @@ public class PowerupMagnet extends PowerupStationary {
 	
 	private int numHits;
 	
-	public PowerupMagnet(Bitmap bitmap, int x, int y) {
+	public PowerupMagnet(Bitmap bitmap, float x, float y) {
 		super(bitmap, x, y);
 		
 		activate(Integer.MAX_VALUE);
@@ -34,11 +34,11 @@ public class PowerupMagnet extends PowerupStationary {
 		}
 		
 		// get distance from asteroid
-		int distanceX = x - asteroid.getX();
-		int distanceY = y - asteroid.getY();
+		float distanceX = x - asteroid.getX();
+		float distanceY = y - asteroid.getY();
 		
-		int absDistanceX = Math.abs(distanceX);
-		int absDistanceY = Math.abs(distanceY);
+		float absDistanceX = Math.abs(distanceX);
+		float absDistanceY = Math.abs(distanceY);
 		
 		int distance = (int)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 		

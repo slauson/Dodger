@@ -9,7 +9,7 @@ public class SpritePowerup extends Sprite {
 	private Bitmap bitmap;
 	private int type;
 	
-	public SpritePowerup(Bitmap bitmap, int x, int y, int type) {
+	public SpritePowerup(Bitmap bitmap, float x, float y, int type) {
 		super(x, y, bitmap.getWidth(), bitmap.getHeight());
 		
 		this.bitmap = bitmap;
