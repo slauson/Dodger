@@ -32,13 +32,8 @@ public class LineSegment {
 		x1 = x1 + (dirX*move*speedModifier);
 		x2 = x2 + (dirX*move*speedModifier);
 		
-		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
-			y1 = y1 + (dirY*move*speedModifier);
-			y2 = y2 + (dirY*move*speedModifier);
-		} else {
-			y1 = y1 - (dirY*move*speedModifier);
-			y2 = y2 - (dirY*move*speedModifier);
-		}
+		y1 = y1 + (MyGameView.gravity*dirY*move*speedModifier);
+		y2 = y2 + (MyGameView.gravity*dirY*move*speedModifier);
 	}
 
 }

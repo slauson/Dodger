@@ -2,6 +2,7 @@ package com.slauson.dodger.powerups;
 
 
 import com.slauson.dodger.objects.Asteroid;
+import com.slauson.dodger.objects.Sprite;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -62,6 +63,18 @@ public abstract class PowerupStationary extends Powerup {
 	
 	public void update() {
 		// do nothing by default
+	}
+	
+	public boolean checkCollision(Asteroid asteroid) {
+		return asteroid.getStatus() == Asteroid.STATUS_NORMAL && checkCollision((Sprite)asteroid);
+	}
+	
+	public boolean checkCollision(Sprite sprite) {
+		if (Math.abs(x - sprite.getX()) > width/2 + sprite.getWidth()/2 || Math.abs(y - sprite.getY()) > height/2 + sprite.getHeight()/2) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	public abstract void alterAsteroid(Asteroid asteroid);

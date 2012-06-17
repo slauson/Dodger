@@ -476,5 +476,9 @@ public class Asteroid extends Sprite {
 	public void setFactor(float factor) {
 		this.factor = factor;
 	}
+	
+	public boolean onScreen() {
+		return y > 0 && y < MyGameView.canvasHeight;
+	}
 
 }

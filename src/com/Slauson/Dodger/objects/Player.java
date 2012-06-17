@@ -20,16 +20,7 @@ public class Player extends Sprite {
 	
 	private float speedX, speedY;
 	
-	private int shipType = SHIP_NORMAL;
-
-	private Bitmap[] bitmaps;
-	private Bitmap[] smallBitmaps;
-	
-	// powerups
-	private PowerupDisco powerupDisco;
-	private PowerupDrill powerupDrill;
-	private PowerupSlow powerupSlow;
-	private PowerupSmall powerupSmall;
+	private Bitmap bitmap;
 	
 	private int move;
 	private boolean inPosition;
@@ -39,18 +30,6 @@ public class Player extends Sprite {
 	 * Constants
 	 */
 	public static final int MAX_SPEED = 25;
-	public static final int POWERUP_TIME = 15000;
-	
-	public static final int NUM_SHIP_TYPES = 2;
-	
-	public static final int SHIP_NORMAL = 0;
-	public static final int SHIP_DRILL = 1;
-	
-	public static final int POWERUP_Y_OFFSET = -8;
-	
-	public static final int DRILL_Y_OFFSET = -16;
-	public static final int DRILL_WIDTH = 22;
-	public static final int DRILL_HEIGHT = 18;	
 	
 	private static final int MOVE_NONE = 0;
 	private static final int MOVE_LEFT = 1;
@@ -62,13 +41,15 @@ public class Player extends Sprite {
 	private static final float SLOW_BLUR_FACTOR = 3f;
 	
 	private static final float Y_BOTTOM = MyGameView.canvasHeight - 100;
-	private static final float Y_TOP = 100;
+	private static final float Y_TOP = 32;
 	
 	private static final float ROTATION_DEGREES = 900f;
 	
 	public Player(Bitmap bitmap, float x) {
 		super(x, Y_BOTTOM, bitmap.getWidth(), bitmap.getHeight());
-		
+
+		this.bitmap = bitmap;
+
 		startX = x;
 		startY = y;
 		
@@ -82,27 +63,6 @@ public class Player extends Sprite {
 		direction = MyGameView.DIRECTION_NORMAL;
 		
 		startTime = System.currentTimeMillis();
-		
-		bitmaps = new Bitmap[NUM_SHIP_TYPES];
-		smallBitmaps = new Bitmap[NUM_SHIP_TYPES];
-		
-		// powerups
-		powerupDisco = new PowerupDisco();
-		powerupDrill = new PowerupDrill();
-		powerupSlow = new PowerupSlow();
-		powerupSmall = new PowerupSmall();
-
-		
-		bitmaps[SHIP_NORMAL] = bitmap;
-		smallBitmaps[SHIP_NORMAL] = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2, false);
-		
-		//this.bitmap.eraseColor(Color.BLUE);
-	}
-	
-	public void setupBitmaps(Bitmap bitmapDrill) {
-		bitmaps[SHIP_DRILL] = bitmapDrill;
-		
-		smallBitmaps[SHIP_DRILL] = Bitmap.createScaledBitmap(bitmapDrill, bitmapDrill.getWidth()/2, bitmapDrill.getHeight()/2, false);
 	}
 	
 	public void reset() {
@@ -129,23 +89,11 @@ public class Player extends Sprite {
 		}
 		
 		// if small powerup is active, draw resized bitmap
-		if (isSmallActive()) {
-			// poor man's blur effect
-			if (speedX + speedY != 0 && isSlowActive()) {
-				canvas.drawBitmap(smallBitmaps[shipType], x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
-			}
-
-			canvas.drawBitmap(smallBitmaps[shipType], x-width/4, y-height/4, null);
+		// poor man's blur effect
+		if (speedX + speedY != 0 && MyGameView.powerupSlow.isActive()) {
+			canvas.drawBitmap(bitmap, x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
 		}
-		// draw normal bitmap
-		else {
-			
-			// poor man's blur effect
-			if (speedX + speedY != 0 && isSlowActive()) {
-				canvas.drawBitmap(bitmaps[shipType], x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
-			}
-			canvas.drawBitmap(bitmaps[shipType], x-width/2, y-height/2, null);
-		}
+		canvas.drawBitmap(bitmap, x-width/2, y-height/2, null);
 		
 		// restore canvas if rotated
 		if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
@@ -207,7 +155,7 @@ public class Player extends Sprite {
 				
 				speedY = MAX_SPEED;
 				
-				if (y - Y_TOP < MAX_SPEED) {
+				if (y - Y_TOP <= MAX_SPEED) {
 					speedY = y - Y_TOP;
 					inPosition = true;
 				}
@@ -218,7 +166,7 @@ public class Player extends Sprite {
 				
 				speedY = MAX_SPEED;
 				
-				if (Y_BOTTOM - y < MAX_SPEED) {
+				if (Y_BOTTOM - y <= MAX_SPEED) {
 					speedY = Y_BOTTOM - y;
 					inPosition = true;
 				}
@@ -226,18 +174,6 @@ public class Player extends Sprite {
 		}
 		
 		y = y + (dirY*speedY);
-		
-		// update ship type
-		shipType = SHIP_NORMAL;
-		
-		if (isDrillActive()) {
-			shipType = SHIP_DRILL;
-		}
-		
-		// update ship's y position if powerup is active
-		/*if (shipType != SHIP_NORMAL) {
-			y = startY + POWERUP_Y_OFFSET;
-		}*/
 	}
 
 	public long getStartTime() {
@@ -256,59 +192,9 @@ public class Player extends Sprite {
 		this.goX = goX;
 	}
 	
-	public void activatePowerup(int type) {
-		
-		switch(type) {
-		case MyGameView.POWERUP_DISCO:
-			powerupDisco.activate(POWERUP_TIME);
-			break;
-		case MyGameView.POWERUP_DRILL:
-			powerupDrill.activate(POWERUP_TIME);
-			break;
-		case MyGameView.POWERUP_SLOW:
-			powerupSlow.activate(POWERUP_TIME);
-			break;
-		case MyGameView.POWERUP_SMALL:
-			powerupSmall.activate(POWERUP_TIME);
-			break;
-		}
-	}
-	
-	public boolean isDiscoActive() {
-		return powerupDisco.isActive();
-	}
-
-	public boolean isDrillActive() {
-		return powerupDrill.isActive();
-	}
-	
-	public boolean isSlowActive() {
-		return powerupSlow.isActive();
-	}
-	
-	public boolean isSmallActive() {
-		return powerupSmall.isActive();
-	}
-	
-	public boolean checkDrillCollision(Sprite other) {
-		if (speedY < 1) {
-			if (isSmallActive()) {
-				return Math.abs(x - other.x) <= DRILL_WIDTH/4 + other.width/2 && Math.abs(y + DRILL_Y_OFFSET/2 - other.y) <= DRILL_HEIGHT/4 + other.height/2;
-			} else {
-				return Math.abs(x - other.x) <= DRILL_WIDTH/2 + other.width/2 && Math.abs(y + DRILL_Y_OFFSET - other.y) <= DRILL_HEIGHT/2 + other.height/2;
-			}
-		}
-		
-		return false;
-	}
-	
 	@Override
 	public boolean checkBoxCollision(Sprite other) {
-		if (isSmallActive()) {
-			return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
-		} else {
-			return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
-		}
+		return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
 	}
 	
 	public void setX(float x) {
