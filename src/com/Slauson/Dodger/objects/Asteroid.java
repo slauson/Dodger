@@ -4,28 +4,40 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import com.slauson.dodger.main.MyGameView;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Asteroid extends Sprite {
 
-	private final int MIN_SPEED = 5;
-	private final int MAX_SPEED = 10;
-	
-	private int maxWidth, maxHeight;
-	
+	/**
+	 * Public constants
+	 */
+	public static final int STATUS_NORMAL = 0;
+	public static final int STATUS_INVISIBLE = 1;
+	public static final int STATUS_BROKEN_UP = 2;
+	public static final int STATUS_DISAPPEARING = 3;
+
+	/**
+	 * Private fields
+	 */
+
 	private Random random;
-	
-	private boolean visible;
-	private boolean intact;
-	private int intactCounter;
+
+	private int status = STATUS_NORMAL;
+	private int counter;
+	private float factor;
 	
 	private float[] points;
+	private float[] tempPoints;
 	private double[] angles;
 	
+	private ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
+	
 	/**
-	 * Constants
+	 * Private constants
 	 */
 	private static final int NUM_POINTS_MIN = 6;
 	private static final int NUM_POINTS_MAX = 12;
@@ -37,21 +49,27 @@ public class Asteroid extends Sprite {
 	private static final float LINE_SEGMENT_MOVE = 1f;
 	private static final float LINE_SEGMENT_MOVE_RANDOM_FACTOR = 0.5f;
 	
-	private ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
-		
-	public Asteroid(int maxWidth, int maxHeight) {
+	private static final float DISAPPEAR_FACTOR = 0.25f;
+
+	private static final int MIN_SPEED = 5;
+	private static final int MAX_SPEED = 10;
+
+	public Asteroid() {
 		super(0, 0, RADIUS_AVG*2, RADIUS_AVG*2);
 		
-		this.maxWidth = maxWidth;
-		this.maxHeight = maxHeight;
 		this.random = new Random();
 
 		init();
 	}
 	
 	public void init() {
-		x = random.nextInt(maxWidth);
-		y = -random.nextInt(maxHeight);
+		x = random.nextInt(MyGameView.canvasWidth);
+		
+		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+			y = -random.nextInt(MyGameView.canvasHeight);
+		} else {
+			y = MyGameView.canvasHeight + random.nextInt(MyGameView.canvasHeight);
+		}
 		
 		createRandomPoints();
 		
@@ -59,9 +77,10 @@ public class Asteroid extends Sprite {
 		
 		dirY = 1 - dirX;
 		speed = MIN_SPEED + random.nextInt(MAX_SPEED-MIN_SPEED);
-		visible = true;
-		intact = true;
-		intactCounter = -1;
+		counter = 0;
+		factor = 1;
+		
+		status = STATUS_NORMAL;
 		
 		lineSegments = new ArrayList<LineSegment>();
 	}
@@ -109,32 +128,47 @@ public class Asteroid extends Sprite {
 	
 	// item breaks into line segments that move outward
 	public void breakup() {
-		for (int i = 0; i < points.length; i+=4) {
-		
-			LineSegment temp = new LineSegment(x + points[i], y + points[i+1], x + points[i+2], y + points[i+3]);
+		if (status == STATUS_NORMAL) {
+			for (int i = 0; i < points.length; i+=4) {
 			
-			// need to get perpendicular
-			float yDiff = Math.abs(points[i] - points[i+2]);
-			float xDiff = Math.abs(points[i+1] - points[i+3]);
-			
-			yDiff += Math.abs(dirY)*speed;
-			xDiff += Math.abs(dirX)*speed;
-			
-			lineSegments.add(temp);
-			
-			temp.move = LINE_SEGMENT_MOVE;
-			
-			if (points[i] < 0) {
-				temp.dirX = (-xDiff/(xDiff + yDiff));
-			} else {
-				temp.dirX = (xDiff/(xDiff + yDiff));
+				LineSegment temp = new LineSegment(x + points[i], y + points[i+1], x + points[i+2], y + points[i+3]);
+				
+				// need to get perpendicular
+				float yDiff = Math.abs(points[i] - points[i+2]);
+				float xDiff = Math.abs(points[i+1] - points[i+3]);
+				
+				yDiff += Math.abs(dirY)*speed;
+				xDiff += Math.abs(dirX)*speed;
+				
+				lineSegments.add(temp);
+				
+				temp.move = LINE_SEGMENT_MOVE;
+				
+				// x direction is sometimes positive
+				if (points[i] < 0) {
+					temp.dirX = (-xDiff/(xDiff + yDiff));
+				} else {
+					temp.dirX = (xDiff/(xDiff + yDiff));
+				}
+				
+				// y direction is always positive
+				temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			}
 			
-			temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
+			status = STATUS_BROKEN_UP;
+			counter = LINE_SEGMENT_DURATION;
 		}
-		
-		intact = false;
-		intactCounter = LINE_SEGMENT_DURATION;
+	}
+	
+	public void disappear() {
+		if (status == STATUS_NORMAL) {
+			status = STATUS_DISAPPEARING;
+			
+			// create temporary array of points so we can shrink the asteroid
+			tempPoints = new float[points.length];
+			
+			System.arraycopy(points, 0, tempPoints, 0, points.length);
+		}
 	}
 	
 	/*
@@ -169,7 +203,7 @@ public class Asteroid extends Sprite {
 	
 	public boolean checkCollision(Asteroid other) {
 		
-		if (visible && intact && other.visible && other.intact && checkBoxCollision(other)) {
+		if (status == STATUS_NORMAL && other.status == STATUS_NORMAL && checkBoxCollision(other)) {
 		
 			// TODO: finer collision detection
 			
@@ -358,10 +392,10 @@ public class Asteroid extends Sprite {
 	}
 	
 	public void draw(Canvas canvas, Paint paint) {
-		if (visible) {
+		if (status != STATUS_INVISIBLE) {
 			
-			// intact item
-			if (intact) {
+			// intact asteroid
+			if (status == STATUS_NORMAL) {
 				//canvas.drawBitmap(bitmap, x-width/2, y-height/2, null);
 				canvas.save();
 				canvas.translate(x, y);
@@ -370,17 +404,25 @@ public class Asteroid extends Sprite {
 				canvas.drawLines(points, paint);
 				canvas.restore();
 			}
-			// broken up item
-			else {
+			// broken up asteroid
+			else if (status == STATUS_BROKEN_UP){
 				int savedAlpha = paint.getAlpha();
-				paint.setAlpha((int)(255 * (1.0*intactCounter/LINE_SEGMENT_DURATION)));
+				paint.setAlpha((int)(255 * (1.0*counter/LINE_SEGMENT_DURATION)));
 				Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
 				
 				while(lineSegmentIterator.hasNext()) {
 					lineSegmentIterator.next().draw(canvas, paint);
 				}
 				
-				paint.setAlpha(savedAlpha);
+				paint.setAlpha(savedAlpha);	
+			}
+			// disappearing asteroid
+			else if (status == STATUS_DISAPPEARING) {
+				canvas.save();
+				canvas.translate(x, y);
+				
+				canvas.drawLines(tempPoints, paint);
+				canvas.restore();
 			}
 		}
 	}
@@ -392,38 +434,47 @@ public class Asteroid extends Sprite {
 	
 	public void update(float speedModifier) {
 		
-		x = x + (int)(dirX*speed*speedModifier);
-		y = y + (int)(dirY*speed*speedModifier);
+		x = x + (dirX*speed*speedModifier);
+		y = y + (MyGameView.gravity*dirY*speed*speedModifier);
 		
 		// broken up item
-		if (!intact) {
+		if (status == STATUS_BROKEN_UP) {
 			Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
 			
 			while(lineSegmentIterator.hasNext()) {
 				lineSegmentIterator.next().update(speedModifier);
 			}
-
-			intactCounter--;
 			
-			if (intactCounter < 0) {
-				visible = false;
+			counter--;
+
+			if (counter < 0) {
+				status = STATUS_INVISIBLE;
+			}
+		}
+		// disappearing asteroid
+		else if (status == STATUS_DISAPPEARING) {
+			
+			// update all points
+			for (int i =  0; i < points.length; i++) {
+				tempPoints[i] = factor*points[i];
+			}
+			
+			if (factor < DISAPPEAR_FACTOR) {
+				status = STATUS_INVISIBLE;
 			}
 		}
 	}
 	
-	public boolean isVisible() {
-		return visible;
+	public int getStatus() {
+		return status;
 	}
 	
-	public boolean isIntact() {
-		return intact;
+	public void setInvisible() {
+		status = STATUS_INVISIBLE;
 	}
 	
-	public void setVisible(boolean visible) {
-		this.visible = visible;
+	public void setFactor(float factor) {
+		this.factor = factor;
 	}
-	
-	public void setIntact(boolean intact) {
-		this.intact = intact;
-	}
+
 }

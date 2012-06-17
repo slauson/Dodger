@@ -12,6 +12,7 @@ import com.slauson.dodger.objects.Player;
 import com.slauson.dodger.objects.SpritePowerup;
 import com.slauson.dodger.powerups.PowerupMagnet;
 import com.slauson.dodger.powerups.PowerupStationary;
+import com.slauson.dodger.powerups.PowerupWhiteHole;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -27,13 +28,21 @@ import android.view.SurfaceView;
 
 public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
+	/**
+	 * Debugging stuff
+	 */
+	
+	private int debugConstantPowerup = POWERUP_NONE;
+	private int debugPowerupType = POWERUP_NONE;
+	private String debugText = "";
+
+	
 	private SurfaceHolder surfaceHolder;
 	
 	// main thread
 	private MyGameThread myGameThread = null;
 	
 	// Canvas stuff
-	private int canvasWidth, canvasHeight;
 	private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 	
 	private Random random;
@@ -52,12 +61,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	//private Controller controller = null;
 
 	/**
-	 * Debugging stuff
+	 * Shared stuff
 	 */
-	
-	private int debugConstantPowerup = POWERUP_SLOW;
-	private int debugPowerupType = POWERUP_NONE;
-	private String debugText = "";
+	public static int canvasWidth, canvasHeight;
 	
 	/**
 	 * Constants
@@ -88,8 +94,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
 	public static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
 	public static final int R_POWERUP_SMALL = R.drawable.powerup_small;
+	public static final int R_POWERUP_WHITE_HOLE = R.drawable.powerup_white_hole;
 
-	public static final int NUM_POWERUPS = 4;
+	public static final int NUM_POWERUPS = 5;
 	public static final float POWERUP_DROP_CHANCE = 0.5f;
 	public static final int POWERUP_SPEED = 5;
 	public static final float POWERUP_SECRET_CHANCE = 0.05f;
@@ -99,13 +106,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int CONTROL_ACCELEROMETER = 1;
 	public static final int CONTROL_BUTTONS = 2;
 	
+	public static final int DIRECTION_NORMAL = 0;
+	public static final int DIRECTION_REVERSE = 1;
+	
 	// stationary powerups to draw
 	public static final int R_MAGNET = R.drawable.magnet;
-	//public static final int R_WHITE_HOLE = R.drawable.magnet;
+	public static final int R_WHITE_HOLE = R.drawable.white_hole;
 	
-	// current mode
+	// current state
 	public static int gameMode = MODE_RUNNING;
 	public static int controlMode = CONTROL_TOUCH;
+	public static int direction = DIRECTION_NORMAL;
+	public static float gravity = 1f;
 		
 	public MyGameView(Context context) {
 		super(context);
@@ -271,11 +283,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
-			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ship), canvasWidth/2, canvasHeight - 100);
+			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ship), canvasWidth/2);
 			player.setupBitmaps(BitmapFactory.decodeResource(getResources(), R.drawable.ship_drill));
 			
 			for (int i = 0; i < ASTEROID_COUNT; i++) {
-				asteroids.add(new Asteroid(canvasWidth, canvasHeight));
+				asteroids.add(new Asteroid());
 			}
 			
 			initialized = true;
@@ -299,28 +311,28 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					temp.update();
 				}
 				
-				// reset asteroid off screen
-				if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
+				// reset asteroid off screen (include non-visible, non-intact asteroids here)
+				if (direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
+					temp.init();
+				} else if (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0) {
 					temp.init();
 				}
 				
-				// check if asteroid is visible
-				if (temp.isVisible() && temp.isIntact()) {
+				// alter asteroid for each active powerup
+				synchronized (activePowerups) {
+					Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
+					PowerupStationary activePowerup;
+				
+					while (powerupIterator.hasNext()) {
+						activePowerup = powerupIterator.next();
 					
-					// alter asteroid for each active magnet
-					synchronized (activePowerups) {
-						Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
-						PowerupStationary activePowerup;
-					
-						while (powerupIterator.hasNext()) {
-							activePowerup = powerupIterator.next();
-						
-							// check for magnet powerups
-							if (activePowerup instanceof PowerupMagnet) {
-								((PowerupMagnet)activePowerup).alterAsteroid(temp);
-							}
-						}
+						// check for magnet powerups
+						activePowerup.alterAsteroid(temp);
 					}
+				}
+				
+				// only check collision with player is asteroid is in normal status
+				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player drill
 					if (player.isDrillActive() && player.checkDrillCollision(temp)) {
@@ -331,8 +343,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					// check collision with player
 					if (player.checkBoxCollision(temp)) {
-						player.reset();
-						temp.setVisible(false);
+						
+						if (player.inPosition()) {
+							player.reset();
+							temp.setInvisible();
+						} else {
+							temp.breakup();
+						}
 					}
 				}
 				
@@ -376,6 +393,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 								break;
 							case POWERUP_MAGNET:
 								r_powerup = R_POWERUP_MAGNET;
+								break;
+							case POWERUP_WHITE_HOLE:
+								r_powerup = R_POWERUP_WHITE_HOLE;
 								break;
 							}
 							
@@ -424,11 +444,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection()));
 						break;
-					//case POWERUP_WHITE_HOLE:
-					//	activePowerups.add(new StationaryPowerup(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY()));
-					//	break;
+					case POWERUP_WHITE_HOLE:
+						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY()));
+						break;
 					// otherwise activate powerup for player
 					default:
 						player.activatePowerup(temp.getType());
@@ -447,6 +467,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 			// update any active global powerups
 			for (int i = 0; i < activePowerups.size(); i++) {
+				
+				activePowerups.get(i).update();
 				
 				// check if any active powerups should be removed
 				if (!activePowerups.get(i).isActive()) {
@@ -469,6 +491,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		if (player.getX() + player.getWidth()/2 > canvasWidth) {
 			player.setX((canvasWidth - player.getWidth()/2));
+		}
+		
+		// check if player is in transition
+		if (direction != player.getDirection()) {
+			
+			// update gravity
+			gravity = player.getGravity();
+			
+			if (player.inPosition()) {
+				direction = player.getDirection();
+			}
 		}
 	}
 	
@@ -495,15 +528,27 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// get event position
-		int x = (int) event.getX();
-		int y = (int) event.getY();
+		float x = event.getX();
+		float y = event.getY();
 		
 		int action = event.getAction();
 		
 		switch(action) {
 		case MotionEvent.ACTION_DOWN:
+			
+			// check if pressed on player's position, then switch gravity
+			if (x < player.getX() + player.getWidth()/2 && x > player.getX() - player.getWidth()/2 &&
+					y < player.getY() + player.getHeight()/2 && y > player.getY() - player.getHeight()/2)
+			{
+				player.switchDirection();
+				break;
+			}
 		case MotionEvent.ACTION_MOVE:
-			player.setGoX(x);
+			
+			// only move horizontally when player is in position
+			if (player.inPosition()) {
+				player.setGoX(x);
+			}
 			break;
 		default:
 			break;

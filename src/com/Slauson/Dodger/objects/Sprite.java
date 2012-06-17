@@ -1,5 +1,7 @@
 package com.slauson.dodger.objects;
 
+import com.slauson.dodger.main.MyGameView;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -102,7 +104,7 @@ public abstract class Sprite {
 	 */
 	public void update() {
 		x = x + (dirX*speed);
-		y = y + (dirY*speed);
+		y = y + (MyGameView.gravity*dirY*speed);
 	}
 	
 	public float getX() {

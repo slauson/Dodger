@@ -1,5 +1,7 @@
 package com.slauson.dodger.objects;
 
+import com.slauson.dodger.main.MyGameView;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -30,8 +32,13 @@ public class LineSegment {
 		x1 = x1 + (dirX*move*speedModifier);
 		x2 = x2 + (dirX*move*speedModifier);
 		
-		y1 = y1 + (dirY*move*speedModifier);
-		y2 = y2 + (dirY*move*speedModifier);
+		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+			y1 = y1 + (dirY*move*speedModifier);
+			y2 = y2 + (dirY*move*speedModifier);
+		} else {
+			y1 = y1 - (dirY*move*speedModifier);
+			y2 = y2 - (dirY*move*speedModifier);
+		}
 	}
 
 }

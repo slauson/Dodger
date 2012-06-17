@@ -21,9 +21,7 @@ public class SpritePowerup extends Sprite {
 
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
-		// TODO Auto-generated method stub
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
-		
 	}
 
 	public int getType() {
