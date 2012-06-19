@@ -20,7 +20,7 @@ public class PowerupDrill extends PowerupStationary {
 	private Asteroid nextAsteroid;
 	private float nextDistance;
 		
-	public PowerupDrill(Bitmap bitmap, float x, float y, int direction) {
+	public PowerupDrill(Bitmap bitmap, float x, float y, int duration, int direction) {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
@@ -31,7 +31,7 @@ public class PowerupDrill extends PowerupStationary {
 		dirY = 1;
 		dirX = 0;
 		
-		activate(Integer.MAX_VALUE);
+		activate(duration);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public class PowerupDrill extends PowerupStationary {
 	}
 	
 	@Override
-	public void update() {
+	public void update(float speedModifier) {
 		
 		// update direction based on next asteroid
 		if (nextAsteroid != null) {
@@ -113,12 +113,12 @@ public class PowerupDrill extends PowerupStationary {
 		}
 		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			y -= dirY*SPEED;
+			y -= dirY*SPEED*speedModifier;
 		} else {
-			y += dirY*SPEED;
+			y += dirY*SPEED*speedModifier;
 		}
 		
-		x += dirX*SPEED;
+		x += dirX*SPEED*speedModifier;
 	}
 	
 	@Override
@@ -148,6 +148,15 @@ public class PowerupDrill extends PowerupStationary {
 			direction = MyGameView.DIRECTION_REVERSE;
 		} else {
 			direction = MyGameView.DIRECTION_NORMAL;
+		}
+	}
+	
+	@Override
+	public boolean isActive() {
+		if (direction == MyGameView.DIRECTION_NORMAL) {
+			return System.currentTimeMillis() < endingTime && y + height/2 > 0;
+		} else {
+			return System.currentTimeMillis() < endingTime && y - height/2 < MyGameView.canvasHeight;
 		}
 	}
 }

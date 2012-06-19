@@ -99,12 +99,16 @@ public abstract class Sprite {
 		*/
 	}
 	
+	public void update() {
+		update(1.0f);
+	}
+	
 	/**
 	 * Updates position based on direction, speed
 	 */
-	public void update() {
-		x = x + (dirX*speed);
-		y = y + (MyGameView.gravity*dirY*speed);
+	public void update(float speedModifier) {
+		x = x + (dirX*speed*speedModifier);
+		y = y + (MyGameView.gravity*dirY*speed*speedModifier);
 	}
 	
 	public float getX() {

@@ -14,12 +14,12 @@ public class PowerupMagnet extends PowerupStationary {
 	
 	private int direction;
 	
-	public PowerupMagnet(Bitmap bitmap, float x, float y, int direction) {
+	public PowerupMagnet(Bitmap bitmap, float x, float y, int duration, int direction) {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
 		
-		activate(Integer.MAX_VALUE);
+		activate(duration);
 	}
 	
 	/**
@@ -35,33 +35,40 @@ public class PowerupMagnet extends PowerupStationary {
 	
 		// get distance from asteroid
 		float distanceX = x - asteroid.getX();
-		float distanceY = y - asteroid.getY(); // negative
+		float distanceY;
 		
-		float absDistanceX = Math.abs(distanceX);
-		float absDistanceY = Math.abs(distanceY); // positive
-
-		// check if asteroid hit magnet
-		if (absDistanceX < width/2 + asteroid.getWidth()/2 && absDistanceY < height/2 + asteroid.getHeight()/2) {
-			asteroid.breakup();
-			
-			numHits++;
+		if (direction == MyGameView.DIRECTION_NORMAL) {
+			distanceY = (y - height/2) - (asteroid.getY() + asteroid.getHeight()/2);
+		} else {
+			distanceY = (y + height/2) - (asteroid.getY() - asteroid.getHeight()/2);
 		}
 		
+		float absDistanceX = Math.abs(distanceX);
+		float absDistanceY = Math.abs(distanceY);
+
 		// don't pull asteroids past magnet
 		if (direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 > y - height/2 ||
 				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 < y + height/2) {
 			return;
 		}
 				
-		int distance = (int)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+		float distance = (float)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 		
 		if (distance < MAX_RANGE) {
 			
-			// direction directly to asteroid
-			float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
-			float dirY = Math.abs(1.0f*distanceY/(absDistanceX + absDistanceY));
+			float holdRange = height/2 + asteroid.getHeight()/2;
 			
-			float pullFactor = 1.0f*distance/MAX_RANGE;
+			// direction directly to asteroid
+			float dirX = distanceX/(absDistanceX + absDistanceY);
+			float dirY = Math.abs(distanceY/(absDistanceX + absDistanceY));
+			
+			if (distance < holdRange) {
+				distance = 0;
+				dirX = 0;
+				dirY = 0;
+			}
+			
+			float pullFactor = 1f - (1.0f*distance/MAX_RANGE);
 			
 			float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 			float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;

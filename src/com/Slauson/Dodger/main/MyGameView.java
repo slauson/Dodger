@@ -13,6 +13,8 @@ import com.slauson.dodger.objects.SpritePowerup;
 import com.slauson.dodger.powerups.PowerupDrill;
 import com.slauson.dodger.powerups.PowerupMagnet;
 import com.slauson.dodger.powerups.PowerupSlow;
+import com.slauson.dodger.powerups.PowerupSmall;
+import com.slauson.dodger.powerups.PowerupStop;
 import com.slauson.dodger.powerups.PowerupStationary;
 import com.slauson.dodger.powerups.PowerupWhiteHole;
 import com.slauson.dodger.powerups.PowerupBumper;
@@ -35,9 +37,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Debugging stuff
 	 */
 	
-	private int debugPowerupType = POWERUP_BOMB;
+	private int debugPowerupType = POWERUP_NONE;
 	private String debugText = "";
 
+	/**
+	 * Private stuff
+	 */
 	
 	private SurfaceHolder surfaceHolder;
 	
@@ -68,24 +73,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Constants - private
 	 */
 	
-	// powerups
-	private static final int POWERUP_NONE = -100;
-	private static final int POWERUP_DISCO = -1;
-	private static final int POWERUP_DRILL = 0;
-	private static final int POWERUP_SLOW = 1;
-	private static final int POWERUP_MAGNET = 2;
-	private static final int POWERUP_WHITE_HOLE = 3;
-	private static final int POWERUP_BUMPER = 4;
-	private static final int POWERUP_BOMB = 5;
-	
 	// powerup sprites
-	private static final int R_POWERUP_DISCO = R.drawable.powerup_disco;
 	private static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
 	private static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
-	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
+	private static final int R_POWERUP_STOP = R.drawable.powerup_stop;
 	private static final int R_POWERUP_WHITE_HOLE = R.drawable.powerup_white_hole;
 	private static final int R_POWERUP_BUMPER = R.drawable.powerup_bumper;
 	private static final int R_POWERUP_BOMB = R.drawable.powerup_bomb;
+	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
+	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
 	
 	// asteroid
 	private static final int ASTEROID_COUNT = 25;
@@ -95,15 +91,33 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int MODE_PAUSED = 0;
 	private static final int MODE_RUNNING = 1;
 	
+	// powerup durations
 	private static final int SLOW_DURATION = 10000;
+	private static final int STOP_DURATION = 10000;
+	private static final int SMALL_DURATION = 10000;
+	private static final int MAGNET_DURATION = 10000;
+	private static final int WHITE_HOLE_DURATION = 10000;
+	private static final int BUMPER_DURATION = 10000;
+	private static final int DRILL_DURATION = 10000;
 	private static final int BOMB_COUNTER_MAX = 10;
 	
 	/**
 	 * Constants - public
 	 */
 	
+	// powerups
+	public static final int POWERUP_NONE = -100;
+	public static final int POWERUP_DRILL = 0;
+	public static final int POWERUP_SLOW = 1;
+	public static final int POWERUP_MAGNET = 2;
+	public static final int POWERUP_WHITE_HOLE = 3;
+	public static final int POWERUP_BUMPER = 4;
+	public static final int POWERUP_BOMB = 5;
+	public static final int POWERUP_SMALL = 6;
+	public static final int POWERUP_STOP = 7;
+	
 	// powerup stuff
-	public static final int NUM_POWERUPS = 4;
+	public static final int NUM_POWERUPS = 8;
 	public static final float POWERUP_DROP_CHANCE = 0.5f;
 	public static final int POWERUP_SPEED = 5;
 	public static final float POWERUP_SECRET_CHANCE = 0.05f;
@@ -132,6 +146,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static int canvasWidth, canvasHeight;
 	
 	public static PowerupSlow powerupSlow = new PowerupSlow();
+	public static PowerupStop powerupStop = new PowerupStop();
+	public static PowerupSmall powerupSmall = new PowerupSmall();
 	
 	// current state
 	public static int gameMode = MODE_RUNNING;
@@ -338,10 +354,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				temp = asteroids.get(i);
 				
 				// move asteroids
-				if (powerupSlow.isActive()) {
-					temp.update(0.5f);
-				} else {
-					temp.update();
+				if (!powerupStop.isActive()) {
+					// move asteroids
+					if (powerupSlow.isActive()) {
+						temp.update(0.5f);
+					} else {
+						temp.update();
+					}
 				}
 				
 				// reset asteroid off screen (include non-visible, non-intact asteroids here)
@@ -412,10 +431,19 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				temp = fallingPowerups.get(i);
 				
-				temp.update();
+				if (!powerupStop.isActive()) {
+					if (powerupSlow.isActive()) {
+						temp.update(0.5f);
+					} else {
+						temp.update();
+					}
+				}
 				
 				// reset powerup off screen
-				if (temp.getY() - temp.getHeight()/2 > canvasHeight) {
+				if (direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
+					fallingPowerups.remove(temp);
+					i--;
+				} else if (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0) {
 					fallingPowerups.remove(temp);
 					i--;
 				}
@@ -425,23 +453,30 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), MAGNET_DURATION, player.getDirection()));
 						break;
 					case POWERUP_WHITE_HOLE:
-						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY()));
+						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), WHITE_HOLE_DURATION));
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), DRILL_DURATION, player.getDirection()));
 						break;
 					case POWERUP_BUMPER:
-						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY()));
+						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), BUMPER_DURATION));
 						break;
-					// otherwise activate powerup
-					case POWERUP_SLOW:
-						powerupSlow.activate(SLOW_DURATION);
+					// activate one and done powerup
+					case POWERUP_STOP:
+						powerupStop.activate(STOP_DURATION);
 						break;
 					case POWERUP_BOMB:
 						bombCounter = BOMB_COUNTER_MAX;
+						break;
+					// activate player powerup
+					case POWERUP_SMALL:
+						powerupSmall.activate(SMALL_DURATION);
+						break;
+					case POWERUP_SLOW:
+						powerupSlow.activate(SLOW_DURATION);
 						break;
 					}
 					
@@ -474,7 +509,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// update any active global powerups
 			for (int i = 0; i < activePowerups.size(); i++) {
 				
-				activePowerups.get(i).update();
+				if (!powerupStop.isActive()) {
+					if (powerupSlow.isActive()) {
+						activePowerups.get(i).update(0.5f);
+					} else {
+						activePowerups.get(i).update(1f);
+					}
+				}
 				
 				// check if any active powerups should be removed
 				if (!activePowerups.get(i).isActive()) {
@@ -504,7 +545,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void updatePlayer() {
 		player.update();
 		
-		System.out.println("updatePlayer(): " + direction + " - " + player.getDirection() + ", " + gravity + " - " + player.getGravity());
+		//System.out.println("updatePlayer(): " + direction + " - " + player.getDirection() + ", " + gravity + " - " + player.getGravity());
 		
 		debugText = "" + player.getSpeed();
 		
@@ -742,11 +783,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			case POWERUP_BOMB:
 				r_powerup = R_POWERUP_BOMB;
 				break;
-			}
-			
-			// secret powerup
-			if (random.nextFloat() < POWERUP_SECRET_CHANCE) {
-				r_powerup = R_POWERUP_DISCO;
+			case POWERUP_SMALL:
+				r_powerup = R_POWERUP_SMALL;
+				break;
+			case POWERUP_STOP:
+				r_powerup = R_POWERUP_STOP;
+				break;
 			}
 			
 			SpritePowerup powerupSprite = new SpritePowerup(BitmapFactory.decodeResource(getResources(), r_powerup), x, y, powerup);

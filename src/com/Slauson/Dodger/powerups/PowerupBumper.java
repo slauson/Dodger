@@ -15,7 +15,7 @@ import android.graphics.Rect;
 
 public class PowerupBumper extends PowerupStationary {
 	
-	private static final int COUNTER_MAX = 10;
+	private static final int COUNTER_MAX = 20;
 	private static final int COOLDOWN_MAX = 10;
 	private static final float RESIZE_FACTOR = 2;
 	
@@ -26,7 +26,7 @@ public class PowerupBumper extends PowerupStationary {
 	private Bitmap bitmapAlt;
 	private Rect rectDest;
 
-	public PowerupBumper(Bitmap bitmap, Bitmap bitmapAlt, float x, float y) {
+	public PowerupBumper(Bitmap bitmap, Bitmap bitmapAlt, float x, float y, int duration) {
 		super(bitmap, x, y);
 		
 		this.bitmapAlt = bitmapAlt;
@@ -35,7 +35,7 @@ public class PowerupBumper extends PowerupStationary {
 		cooldown = COOLDOWN_MAX;
 		rectDest = new Rect((int)(x - width/2), (int)(y - height/2), (int)(x + width/2), (int)(y + height/2));
 		
-		activate(Integer.MAX_VALUE);
+		activate(duration);
 	}
 
 	@Override
@@ -67,11 +67,12 @@ public class PowerupBumper extends PowerupStationary {
 	}
 	
 	@Override
-	public void update() {
+	public void update(float speedModifier) {
 		
 		// update rectDest
 		if (counter > 0) {
-			counter--;
+			
+			counter-=2;
 			
 			float factor = 2 - Math.abs(1f*COUNTER_MAX/2 - counter)/COUNTER_MAX*2;
 			
@@ -101,6 +102,5 @@ public class PowerupBumper extends PowerupStationary {
 		} else {
 			counter = COUNTER_MAX + 1;
 		}
-		numHits++;
 	}
 }

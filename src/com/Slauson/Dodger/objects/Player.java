@@ -1,10 +1,9 @@
 package com.slauson.dodger.objects;
 
 import com.slauson.dodger.main.MyGameView;
-import com.slauson.dodger.powerups.PowerupDisco;
-import com.slauson.dodger.powerups.PowerupDrill;
-import com.slauson.dodger.powerups.PowerupSlow;
+import com.slauson.dodger.powerups.Powerup;
 import com.slauson.dodger.powerups.PowerupSmall;
+import com.slauson.dodger.powerups.PowerupSpin;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,7 +19,7 @@ public class Player extends Sprite {
 	
 	private float speedX, speedY;
 	
-	private Bitmap bitmap;
+	private Bitmap bitmap, smallBitmap;
 	
 	private int move;
 	private boolean inPosition;
@@ -45,10 +44,13 @@ public class Player extends Sprite {
 	
 	private static final float ROTATION_DEGREES = 900f;
 	
+	private static final int SMALL_DURATION = 10000;
+	
 	public Player(Bitmap bitmap, float x) {
 		super(x, Y_BOTTOM, bitmap.getWidth(), bitmap.getHeight());
 
 		this.bitmap = bitmap;
+		smallBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2, false);
 
 		startX = x;
 		startY = y;
@@ -79,21 +81,27 @@ public class Player extends Sprite {
 		if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
 			canvas.save();
 			
-			float degrees = ROTATION_DEGREES * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);
-			
-			//System.out.println(Y_BOTTOM + ", " + y + ", " + Y_TOP);
-			
-			//System.out.println("Rotate: " + degrees);
-			
+			float degrees = ROTATION_DEGREES * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);			
 			canvas.rotate(degrees, x, y);
 		}
 		
 		// if small powerup is active, draw resized bitmap
-		// poor man's blur effect
-		if (speedX + speedY != 0 && MyGameView.powerupSlow.isActive()) {
-			canvas.drawBitmap(bitmap, x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
+		if (MyGameView.powerupSmall.isActive()) {
+			System.out.println("DRAW SMALL SHIP");
+			// poor man's blur effect
+			if (speedX + speedY != 0 && (MyGameView.powerupStop.isActive() || MyGameView.powerupSlow.isActive())) {
+				canvas.drawBitmap(smallBitmap, x-width/4 - SLOW_BLUR_FACTOR*dirX, y-height/4 - SLOW_BLUR_FACTOR*dirY, null);
+			}
+			canvas.drawBitmap(smallBitmap, x-width/4, y-height/4, null);
 		}
-		canvas.drawBitmap(bitmap, x-width/2, y-height/2, null);
+		// draw normal bitmap
+		else {
+			// poor man's blur effect
+			if (speedX + speedY != 0 && (MyGameView.powerupStop.isActive() || MyGameView.powerupSlow.isActive())) {
+				canvas.drawBitmap(bitmap, x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
+			}
+			canvas.drawBitmap(bitmap, x-width/2, y-height/2, null);
+		}
 		
 		// restore canvas if rotated
 		if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
@@ -194,7 +202,11 @@ public class Player extends Sprite {
 	
 	@Override
 	public boolean checkBoxCollision(Sprite other) {
-		return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
+		if (MyGameView.powerupSmall.isActive()) {
+			return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
+		} else {
+			return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
+		}
 	}
 	
 	public void setX(float x) {

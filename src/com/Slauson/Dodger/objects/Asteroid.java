@@ -392,7 +392,7 @@ public class Asteroid extends Sprite {
 	}
 	
 	public void draw(Canvas canvas, Paint paint) {
-		if (status != STATUS_INVISIBLE) {
+		if (status != STATUS_INVISIBLE && onScreen()) {
 			
 			// intact asteroid
 			if (status == STATUS_NORMAL) {

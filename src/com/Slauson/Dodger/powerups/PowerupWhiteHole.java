@@ -16,12 +16,12 @@ public class PowerupWhiteHole extends PowerupStationary {
 
 	private int rotation;
 	
-	public PowerupWhiteHole(Bitmap bitmap, float x, float y) {
+	public PowerupWhiteHole(Bitmap bitmap, float x, float y, int duration) {
 		super(bitmap, x, y);
 		
 		rotation = 0;
 		
-		activate(Integer.MAX_VALUE);
+		activate(duration);
 	}
 	
 	/**
@@ -55,7 +55,6 @@ public class PowerupWhiteHole extends PowerupStationary {
 				
 				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
 					asteroid.disappear();
-					numHits++;
 				}
 				
 				// update factor
@@ -99,8 +98,8 @@ public class PowerupWhiteHole extends PowerupStationary {
 	}
 	
 	@Override
-	public void update() {
-		rotation += ROTATION_SPEED;
+	public void update(float speedModifier) {
+		rotation += ROTATION_SPEED*speedModifier;
 	}
 	
 	@Override

@@ -20,10 +20,6 @@ public abstract class PowerupStationary extends Powerup {
 	protected float x, y;
 	protected int width, height;
 	
-	protected int numHits;
-	
-	protected int maxHits;
-	
 	public PowerupStationary(Bitmap bitmap, float x, float y) {
 		this.bitmap = bitmap;
 		this.x = x;
@@ -31,9 +27,6 @@ public abstract class PowerupStationary extends Powerup {
 		
 		this.width = bitmap.getWidth();
 		this.height = bitmap.getHeight();
-		
-		this.numHits = 0;
-		this.maxHits = 5;
 	}
 	
 	public float getX() {
@@ -56,12 +49,7 @@ public abstract class PowerupStationary extends Powerup {
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 	}
 	
-	@Override
-	public boolean isActive() {
-		return super.isActive() && numHits < maxHits;
-	}
-	
-	public void update() {
+	public void update(float speedModifer) {
 		// do nothing by default
 	}
 	

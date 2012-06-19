@@ -2,7 +2,7 @@ package com.slauson.dodger.powerups;
 
 public abstract class Powerup {
 
-	private long endingTime;
+	protected long endingTime;
 	
 	public Powerup() {
 		this.endingTime = 0;
