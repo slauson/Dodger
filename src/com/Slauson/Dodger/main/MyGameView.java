@@ -37,7 +37,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Debugging stuff
 	 */
 	
-	private int debugPowerupType = POWERUP_NONE;
+	private int debugPowerupType = POWERUP_DRILL;
 	private String debugText = "";
 
 	/**
@@ -803,7 +803,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
 		
 		while (asteroidIterator.hasNext()) {
-			asteroidIterator.next().breakup();
+			asteroidIterator.next().fadeOut();
 		}
 		
 		// destroy all falling powerups

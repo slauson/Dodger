@@ -52,7 +52,7 @@ public class PowerupDrill extends PowerupStationary {
 		}
 		
 		if (checkCollision(asteroid)) {
-			asteroid.breakup();
+			asteroid.splitUp();
 			nextAsteroid = null;
 		}
 		

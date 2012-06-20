@@ -6,7 +6,6 @@ import java.util.Random;
 
 import com.slauson.dodger.main.MyGameView;
 
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -17,8 +16,10 @@ public class Asteroid extends Sprite {
 	 */
 	public static final int STATUS_NORMAL = 0;
 	public static final int STATUS_INVISIBLE = 1;
-	public static final int STATUS_BROKEN_UP = 2;
+	public static final int STATUS_BREAKING_UP = 2;
 	public static final int STATUS_DISAPPEARING = 3;
+	public static final int STATUS_FADING_OUT = 4;
+	public static final int STATUS_SPLITTING_UP = 5;
 
 	/**
 	 * Private fields
@@ -34,6 +35,8 @@ public class Asteroid extends Sprite {
 	private float[] tempPoints;
 	private double[] angles;
 	
+	private int leftPoints, rightPoints;
+	
 	private ArrayList<LineSegment> lineSegments = new ArrayList<LineSegment>();
 	
 	/**
@@ -45,11 +48,12 @@ public class Asteroid extends Sprite {
 	private static final int RADIUS_AVG = 12;
 	private static final int RADIUS_MAX = 16;
 	
-	private static final int LINE_SEGMENT_DURATION = 50;
-	private static final float LINE_SEGMENT_MOVE = 1f;
-	private static final float LINE_SEGMENT_MOVE_RANDOM_FACTOR = 0.5f;
-	
-	private static final float DISAPPEAR_FACTOR = 0.25f;
+	private static final int BREAKING_UP_DURATION = 50;
+	private static final float BREAKING_UP_MOVE = 1f;
+	private static final float DISAPPEARING_FACTOR = 0.25f;
+	private static final int FADING_OUT_DURATION = 10;
+	private static final int SPLITTING_UP_DURATION = 50;
+	private static final float SPLITTING_UP_FACTOR = 0.5f;
 
 	private static final int MIN_SPEED = 5;
 	private static final int MAX_SPEED = 10;
@@ -70,6 +74,9 @@ public class Asteroid extends Sprite {
 		} else {
 			y = MyGameView.canvasHeight + random.nextInt(MyGameView.canvasHeight);
 		}
+		
+		leftPoints = 0;
+		rightPoints = 0;
 		
 		createRandomPoints();
 		
@@ -100,6 +107,12 @@ public class Asteroid extends Sprite {
 			
 			// calculate angle based on point number and random offset
 			double angle = 2*Math.PI*i/numPoints - pointAngle/2 + random.nextFloat()*pointAngle;
+			
+			if (angle < Math.PI/2 || angle > 3*Math.PI/2) {
+				rightPoints++;
+			} else {
+				leftPoints++;
+			}
 			
 			// calculate radius
 			float radius = RADIUS_MIN + (RADIUS_MAX - RADIUS_MIN)*random.nextFloat(); 
@@ -142,7 +155,7 @@ public class Asteroid extends Sprite {
 				
 				lineSegments.add(temp);
 				
-				temp.move = LINE_SEGMENT_MOVE;
+				temp.move = BREAKING_UP_MOVE;
 				
 				// x direction is sometimes positive
 				if (points[i] < 0) {
@@ -155,8 +168,8 @@ public class Asteroid extends Sprite {
 				temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			}
 			
-			status = STATUS_BROKEN_UP;
-			counter = LINE_SEGMENT_DURATION;
+			status = STATUS_BREAKING_UP;
+			counter = BREAKING_UP_DURATION;
 		}
 	}
 	
@@ -168,6 +181,92 @@ public class Asteroid extends Sprite {
 			tempPoints = new float[points.length];
 			
 			System.arraycopy(points, 0, tempPoints, 0, points.length);
+		}
+	}
+	
+	public void fadeOut() {
+		if (status == STATUS_NORMAL) {
+			status = STATUS_FADING_OUT;
+			counter = FADING_OUT_DURATION;
+		}
+	}
+	
+	public void splitUp() {
+		if (status == STATUS_NORMAL) {
+			status = STATUS_SPLITTING_UP;
+			counter = SPLITTING_UP_DURATION;
+			
+			System.out.println("points:");
+			for (int i = 0; i < points.length; i+=2) {
+				System.out.println("\t" + points[i] + ", " + points[i+1]);
+			}
+			
+			System.out.println("leftPoints: " + leftPoints);
+			System.out.println("rightPoints: " + rightPoints);
+			
+			// left half points
+			tempPoints = new float[leftPoints*4 + 2];
+			
+			int indexRight = 2, indexLeft = 0;
+			
+			// iterate over existing points, moving points around
+			for (int i = 4; i < points.length-2; i+=4) {
+				System.out.println("i: " + i + " (" + points[i-2] + ", " + points[i-1] + ", " + angles[i/4] + ")");
+				
+				// right points
+				if (angles[i/4] < Math.PI/2 || angles[i/4] > 3*Math.PI/2) {
+					System.out.println("right: " + indexRight);
+					indexRight += 4;
+					
+					// move points if index is different from i
+					if (indexRight != i) {
+						points[indexRight-4] = points[i-2];
+						points[indexRight-3] = points[i-1];
+						points[indexRight-2] = points[i];
+						points[indexRight-1] = points[i+1];
+					}
+				}
+				// left points
+				else {
+					// set next rightIndex
+					if (indexRight == -1) {
+						indexRight = i;
+					}
+					System.out.println("left: " + indexLeft);
+					
+					tempPoints[indexLeft] = points[i-2];
+					tempPoints[indexLeft+1] = points[i-1];
+					
+					if (indexLeft == 0) {
+						indexLeft += 2;
+					} else { 
+						tempPoints[indexLeft+2] = points[i];
+						tempPoints[indexLeft+3] = points[i+1];
+						indexLeft += 4;
+					}
+				}
+			}
+			
+			// TODO: assuming first/last points are on right
+			
+			// close right points
+			points[indexRight] = points[points.length-2];
+			points[indexRight+1] = points[points.length-1];
+			
+			// close left points
+			tempPoints[indexLeft] = tempPoints[0];
+			tempPoints[indexLeft+1] = tempPoints[1];
+			
+			System.out.println("new points: ");
+			for (int i = 0; i < points.length; i+=2) {
+				System.out.println("\t" + points[i] + ", " + points[i+1]);
+			}
+
+			System.out.println("new tempPoints:");
+			for (int i = 0; i < tempPoints.length; i+=2) {
+				System.out.println("\t" + tempPoints[i] + ", " + tempPoints[i+1]);
+			}
+
 		}
 	}
 	
@@ -405,9 +504,9 @@ public class Asteroid extends Sprite {
 				canvas.restore();
 			}
 			// broken up asteroid
-			else if (status == STATUS_BROKEN_UP){
+			else if (status == STATUS_BREAKING_UP){
 				int savedAlpha = paint.getAlpha();
-				paint.setAlpha((int)(255 * (1.0*counter/LINE_SEGMENT_DURATION)));
+				paint.setAlpha((int)(255 * (1.0*counter/BREAKING_UP_DURATION)));
 				Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
 				
 				while(lineSegmentIterator.hasNext()) {
@@ -424,6 +523,38 @@ public class Asteroid extends Sprite {
 				canvas.drawLines(tempPoints, paint);
 				canvas.restore();
 			}
+			// fading out asteroid
+			else if (status == STATUS_FADING_OUT) {
+				int savedAlpha = paint.getAlpha();
+				paint.setAlpha((int)(255 * (1.0*counter/FADING_OUT_DURATION)));
+				canvas.save();
+				canvas.translate(x,  y);
+
+				canvas.drawLines(points, paint);
+				
+				canvas.restore();
+				paint.setAlpha(savedAlpha);	
+			}
+			// splitting up
+			else if (status == STATUS_SPLITTING_UP) {
+				int savedAlpha = paint.getAlpha();
+				paint.setAlpha((int)(255 * (1.0*counter/SPLITTING_UP_DURATION)));
+				
+				canvas.save();
+				canvas.translate(x + (SPLITTING_UP_DURATION-counter)*SPLITTING_UP_FACTOR,  y);
+
+				canvas.drawLines(points, 0, rightPoints*4, paint);
+				
+				canvas.restore();
+				
+				canvas.save();
+				canvas.translate(x - (SPLITTING_UP_DURATION-counter)*SPLITTING_UP_FACTOR,  y);
+
+				canvas.drawLines(tempPoints, paint);
+				
+				canvas.restore();
+				paint.setAlpha(savedAlpha);
+			}
 		}
 	}
 	
@@ -438,7 +569,7 @@ public class Asteroid extends Sprite {
 		y = y + (MyGameView.gravity*dirY*speed*speedModifier);
 		
 		// broken up item
-		if (status == STATUS_BROKEN_UP) {
+		if (status == STATUS_BREAKING_UP) {
 			Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
 			
 			while(lineSegmentIterator.hasNext()) {
@@ -459,7 +590,23 @@ public class Asteroid extends Sprite {
 				tempPoints[i] = factor*points[i];
 			}
 			
-			if (factor < DISAPPEAR_FACTOR) {
+			if (factor < DISAPPEARING_FACTOR) {
+				status = STATUS_INVISIBLE;
+			}
+		}
+		// fading out asteroid
+		else if (status == STATUS_FADING_OUT) {
+			counter--;
+
+			if (counter < 0) {
+				status = STATUS_INVISIBLE;
+			}
+		}
+		// splitting up asteroid
+		else if (status == STATUS_SPLITTING_UP) {
+			counter--;
+			
+			if (counter < 0) {
 				status = STATUS_INVISIBLE;
 			}
 		}

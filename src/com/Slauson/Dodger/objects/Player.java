@@ -3,7 +3,6 @@ package com.slauson.dodger.objects;
 import com.slauson.dodger.main.MyGameView;
 import com.slauson.dodger.powerups.Powerup;
 import com.slauson.dodger.powerups.PowerupSmall;
-import com.slauson.dodger.powerups.PowerupSpin;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
