@@ -40,6 +40,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private int debugPowerupType = POWERUP_DRILL;
 	private String debugText = "";
 
+	
 	/**
 	 * Private stuff
 	 */
@@ -47,28 +48,27 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder surfaceHolder;
 	
 	// main thread
-	private MyGameThread myGameThread = null;
+	private MyGameThread myGameThread;
 	
 	// Canvas stuff
-	private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+	private Paint paint;
 	
 	private Random random;
 	
 	// Stuff on screen
 	private Player player;
-	private ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
-	private LinkedList<SpritePowerup> fallingPowerups = new LinkedList<SpritePowerup>();
+	private ArrayList<Asteroid> asteroids;
+	private LinkedList<SpritePowerup> fallingPowerups;
 
 	// powerups
-	private LinkedList<PowerupStationary> activePowerups = new LinkedList<PowerupStationary>();	
-	private int bombCounter = 0;
+	private LinkedList<PowerupStationary> activePowerups;	
+	private int bombCounter;
 	
 	// Initialization flags
 	private boolean surfaceCreated = false;
 	private boolean initialized = false;
-	
-	//private Controller controller = null;
 
+	
 	/**
 	 * Constants - private
 	 */
@@ -100,6 +100,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int BUMPER_DURATION = 10000;
 	private static final int DRILL_DURATION = 10000;
 	private static final int BOMB_COUNTER_MAX = 10;
+
 	
 	/**
 	 * Constants - public
@@ -139,6 +140,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int R_BUMPER = R.drawable.bumper4;
 	public static final int R_BUMPER_ALT = R.drawable.bumper4_1;
 
+	
 	/**
 	 * Shared stuff
 	 */
@@ -182,16 +184,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		System.out.println("surfaceCreated()");
-		// TODO Auto-generated method stub
-		
 		canvasWidth = getWidth();
 		canvasHeight = getHeight();
-		//myCanvasBitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888);
-		//myCanvas = new Canvas();
-		//myCanvas.setBitmap(myCanvasBitmap);
-		
-		//controller = new Controller(PLAYER_MOVEMENT_MAX_SPEED, PLAYER_MOVEMENT_SCALE_INCREASE, PLAYER_MOVEMENT_SCALE_DECREASE);
 		
 		surfaceCreated = true;
 	}
@@ -240,12 +234,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// clear screen
 		canvas.drawColor(Color.BLACK);
 		
-		// draw background
-		//canvas.drawBitmap(myCanvasBitmap, identityMatrix, null);
-		
-		// clear canvas with transparent background
-		//canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
-		
 		// draw active powerups
 		synchronized (activePowerups) {
 			Iterator<PowerupStationary> powerupIterator = activePowerups.iterator();
@@ -273,7 +261,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.draw(canvas, paint);
 		
 		// draw powerups
-		// TODO: not sure if this is needed
 		synchronized (fallingPowerups) {
 			Iterator<SpritePowerup> powerupSpriteIterator = fallingPowerups.iterator();
 		
@@ -293,8 +280,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
-
-		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
 		
@@ -305,8 +290,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	public boolean updateSurfaceView() {
-		// the function run in background thread, not ui thread
 		
+		// the function run in background thread, not ui thread
 		if (!surfaceCreated) {
 			return false;
 		}
@@ -333,6 +318,19 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
+			
+			myGameThread = null;
+			
+			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			random = new Random();		
+			
+			asteroids = new ArrayList<Asteroid>();
+			fallingPowerups = new LinkedList<SpritePowerup>();
+
+			// powerups
+			activePowerups = new LinkedList<PowerupStationary>();	
+			bombCounter = 0;
+						
 			player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.ship), canvasWidth/2);
 			
 			for (int i = 0; i < ASTEROID_COUNT; i++) {

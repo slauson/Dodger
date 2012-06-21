@@ -204,48 +204,125 @@ public class Asteroid extends Sprite {
 			System.out.println("leftPoints: " + leftPoints);
 			System.out.println("rightPoints: " + rightPoints);
 			
-			// left half points
-			tempPoints = new float[leftPoints*4 + 2];
+			// left half points (4 extra for perfect split)
+			tempPoints = new float[leftPoints*4 + 4];
 			
 			int indexRight = 2, indexLeft = 0;
+			boolean leftSwitch = false, rightSwitch = false;
 			
 			// iterate over existing points, moving points around
-			for (int i = 4; i < points.length-2; i+=4) {
-				System.out.println("i: " + i + " (" + points[i-2] + ", " + points[i-1] + ", " + angles[i/4] + ")");
+			// TODO: fix indexLeft
+			
+			// start at 2 so we get each pair of points (same values) for each corresponding angle
+			for (int i = 2; i < points.length-2; i+=4) {
+				System.out.println("i: " + i + " (" + points[i] + ", " + points[i+1] + ", " + angles[(i+2)/4] + ")");
 				
 				// right points
-				if (angles[i/4] < Math.PI/2 || angles[i/4] > 3*Math.PI/2) {
+				if (angles[(i+2)/4] < Math.PI/2.0 || angles[(i+2)/4] > 3.0*Math.PI/2.0) {
 					System.out.println("right: " + indexRight);
-					indexRight += 4;
-					
-					// move points if index is different from i
-					if (indexRight != i) {
-						points[indexRight-4] = points[i-2];
-						points[indexRight-3] = points[i-1];
-						points[indexRight-2] = points[i];
-						points[indexRight-1] = points[i+1];
+
+					// add one right point to left side
+					if (leftSwitch && !rightSwitch) {
+						tempPoints[indexLeft] = points[i];
+						tempPoints[indexLeft+1] = points[i+1];
+						tempPoints[indexLeft+2] = points[i+2];
+						tempPoints[indexLeft+3] = points[i+3];
+
+						indexLeft += 4;
+						rightSwitch = true;
 					}
+					
+					points[indexRight] = points[i];
+					points[indexRight+1] = points[i+1];
+					points[indexRight+2] = points[i+2];
+					points[indexRight+3] = points[i+3];
+					
+					indexRight += 4;
 				}
 				// left points
 				else {
-					// set next rightIndex
-					if (indexRight == -1) {
-						indexRight = i;
-					}
 					System.out.println("left: " + indexLeft);
 					
-					tempPoints[indexLeft] = points[i-2];
-					tempPoints[indexLeft+1] = points[i-1];
+					// add one left point to right side
+					if (!leftSwitch) {
+						points[indexRight] = points[i];
+						points[indexRight+1] = points[i+1];
+						points[indexRight+2] = points[i+2];
+						points[indexRight+3] = points[i+3];
+
+						indexRight += 4;
+						leftSwitch = true;
+					}
 					
+					tempPoints[indexLeft] = points[i];
+					tempPoints[indexLeft+1] = points[i+1];
+					
+					// only add first point once on left side
 					if (indexLeft == 0) {
 						indexLeft += 2;
 					} else { 
-						tempPoints[indexLeft+2] = points[i];
-						tempPoints[indexLeft+3] = points[i+1];
+						tempPoints[indexLeft+2] = points[i+2];
+						tempPoints[indexLeft+3] = points[i+3];
 						indexLeft += 4;
 					}
 				}
 			}
+			
+//			for (int i = 4; i < points.length-2; i+=4) {
+//				System.out.println("i: " + i + " (" + points[i-2] + ", " + points[i-1] + ", " + angles[i/4] + ")");
+//				
+//				// right points
+//				if (angles[i/4] < Math.PI/2 || angles[i/4] > 3*Math.PI/2) {
+//					System.out.println("right: " + indexRight);
+//					indexRight += 4;
+//					
+//					// move points if index is different from i
+//					if (indexRight + 2 != i) {
+//						
+//						// add one right point to left side
+//						if (!rightSwitch) {
+//							points[indexLeft] = points[i-2];
+//							points[indexLeft+1] = points[i-1];
+//							points[indexLeft+2] = points[i];
+//							points[indexLeft+3] = points[i+1];
+//
+//							indexLeft += 4;
+//							rightSwitch = true;
+//						}
+//						
+//						points[indexRight-4] = points[i-2];
+//						points[indexRight-3] = points[i-1];
+//						points[indexRight-2] = points[i];
+//						points[indexRight-1] = points[i+1];
+//					}
+//				}
+//				// left points
+//				else {
+//					System.out.println("left: " + indexLeft);
+//					
+//					// add one left point to right side
+//					if (!leftSwitch) {
+//						points[indexRight] = points[i-2];
+//						points[indexRight+1] = points[i-1];
+//						points[indexRight+2] = points[i];
+//						points[indexRight+3] = points[i+1];
+//
+//						indexRight += 4;
+//						rightSwitch = true;
+//					}
+//					
+//					tempPoints[indexLeft] = points[i-2];
+//					tempPoints[indexLeft+1] = points[i-1];
+//					
+//					if (indexLeft == 0) {
+//						indexLeft += 2;
+//					} else { 
+//						tempPoints[indexLeft+2] = points[i];
+//						tempPoints[indexLeft+3] = points[i+1];
+//						indexLeft += 4;
+//					}
+//				}
+//			}
 			
 			// TODO: assuming first/last points are on right
 			
@@ -543,7 +620,7 @@ public class Asteroid extends Sprite {
 				canvas.save();
 				canvas.translate(x + (SPLITTING_UP_DURATION-counter)*SPLITTING_UP_FACTOR,  y);
 
-				canvas.drawLines(points, 0, rightPoints*4, paint);
+				canvas.drawLines(points, 0, rightPoints*4+4, paint);
 				
 				canvas.restore();
 				
