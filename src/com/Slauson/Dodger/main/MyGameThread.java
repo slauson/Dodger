@@ -1,5 +1,10 @@
 package com.slauson.dodger.main;
 
+/**
+ * Game thread
+ * @author Josh Slauson
+ *
+ */
 public class MyGameThread extends Thread {
 
 	volatile boolean running = false;

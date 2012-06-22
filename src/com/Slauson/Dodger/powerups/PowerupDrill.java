@@ -7,7 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class PowerupDrill extends PowerupStationary {
+/**
+ * Drill powerup that splits asteroids in half
+ * @author Josh Slauson
+ *
+ */
+public class PowerupDrill extends ActivePowerup {
 
 	private static final int SPEED = 10;
 	private static final float WEIGHTED_DISTANCE_X_FACTOR = 2;
@@ -15,7 +20,6 @@ public class PowerupDrill extends PowerupStationary {
 	private static final float CONE_CHECK_X_FACTOR = 1.5f;
 	
 	private int direction;
-	private float dirX, dirY;
 	
 	private Asteroid nextAsteroid;
 	private float nextDistance;
@@ -51,7 +55,7 @@ public class PowerupDrill extends PowerupStationary {
 			return;
 		}
 		
-		if (checkCollision(asteroid)) {
+		if (checkBoxCollision(asteroid)) {
 			asteroid.splitUp();
 			nextAsteroid = null;
 		}
@@ -101,15 +105,6 @@ public class PowerupDrill extends PowerupStationary {
 			}
 			
 			dirY = 1.0f - Math.abs(dirX);
-			
-			// limit horizontal movement
-//			if (dirX < -MAX_DIR_X) {
-//				dirY += Math.abs(dirX - MAX_DIR_X);
-//				dirX = -MAX_DIR_X;
-//			} else if (dirX > MAX_DIR_X) {
-//				dirY += Math.abs(dirX - MAX_DIR_X);
-//				dirX = MAX_DIR_X;
-//			}
 		}
 		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
@@ -154,9 +149,9 @@ public class PowerupDrill extends PowerupStationary {
 	@Override
 	public boolean isActive() {
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			return System.currentTimeMillis() < endingTime && y + height/2 > 0;
+			return super.isActive() && y + height/2 > 0;
 		} else {
-			return System.currentTimeMillis() < endingTime && y - height/2 < MyGameView.canvasHeight;
+			return super.isActive() && y - height/2 < MyGameView.canvasHeight;
 		}
 	}
 }

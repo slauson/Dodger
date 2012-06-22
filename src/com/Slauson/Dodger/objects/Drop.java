@@ -4,19 +4,21 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class SpritePowerup extends Sprite {
+/**
+ * Drop which gives the player a powerup
+ * @author Josh Slauson
+ *
+ */
+public class Drop extends Sprite {
 
-	private Bitmap bitmap;
+	// type of powerup granted
 	private int type;
 	
-	public SpritePowerup(Bitmap bitmap, float x, float y, int type) {
-		super(x, y, bitmap.getWidth(), bitmap.getHeight());
-		
-		this.bitmap = bitmap;
+	public Drop(Bitmap bitmap, float x, float y, int type) {
+		super(bitmap, x, y);
 		
 		this.type = type;
-		this.dirY = 1;
-		this.dirX = 0;
+		dirY = 1;
 	}
 
 	@Override
@@ -24,6 +26,10 @@ public class SpritePowerup extends Sprite {
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 	}
 
+	/**
+	 * Returns type of powerup drop is for
+	 * @return type of powerup drop is for
+	 */
 	public int getType() {
 		return type;
 	}

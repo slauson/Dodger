@@ -1,6 +1,11 @@
 package com.slauson.dodger.powerups;
 
-public class PowerupSlow extends Powerup {
+/**
+ * Slow powerup that slows down time
+ * @author Josh Slauson
+ *
+ */
+public class PowerupSlow extends InactivePowerup {
 	
 	private int range;
 	

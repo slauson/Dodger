@@ -6,6 +6,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+/**
+ * Game activity
+ * @author Josh Slauson
+ *
+ */
 public class MyGameActivity extends Activity {
 	
 	private MyGameView myGameView;

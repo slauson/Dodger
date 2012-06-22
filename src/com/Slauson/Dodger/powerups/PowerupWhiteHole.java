@@ -6,9 +6,13 @@ import com.slauson.dodger.objects.Asteroid;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.webkit.WebView.HitTestResult;
 
-public class PowerupWhiteHole extends PowerupStationary {
+/**
+ * White hole powerup that sucks in asteroids
+ * @author Josh Slauson
+ *
+ */
+public class PowerupWhiteHole extends ActivePowerup {
 
 	private static final int MAX_RANGE = 200;
 	private static final int SUCK_RANGE = 50;

@@ -1,29 +1,32 @@
 package com.slauson.dodger.objects;
 
-import com.slauson.dodger.main.MyGameView;
-import com.slauson.dodger.powerups.Powerup;
-import com.slauson.dodger.powerups.PowerupSmall;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import android.graphics.Bitmap;
+import com.slauson.dodger.main.MyGameView;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class Player extends Sprite {
+/**
+ * Player ship
+ * @author Josh Slauson
+ *
+ */
+public class Player extends DrawObject {
 	
-	private float startX, startY;
-	
+	// player state
 	private long startTime;
 	
 	private float goX;
 	
 	private float speedX, speedY;
 	
-	private Bitmap bitmap, smallBitmap;
-	
 	private int move;
 	private boolean inPosition;
 	private int direction;
 
+	
 	/**
 	 * Constants
 	 */
@@ -36,24 +39,20 @@ public class Player extends Sprite {
 	private static final float BUTTON_MOVE_FACTOR = 4f;
 	private static final float BUTTON_MIN_SPEED = 2f;
 	
-	private static final float SLOW_BLUR_FACTOR = 3f;
+	//private static final float SLOW_BLUR_FACTOR = 3f;
 	
 	private static final float Y_BOTTOM = MyGameView.canvasHeight - 100;
 	private static final float Y_TOP = 32;
 	
 	private static final float ROTATION_DEGREES = 900f;
 	
-	private static final int SMALL_DURATION = 10000;
+	private static final int PLAYER_WIDTH = 32;
+	private static final int PLAYER_HEIGHT = 32;
+	private static final int REAR_OFFSET = -6;
 	
-	public Player(Bitmap bitmap, float x) {
-		super(x, Y_BOTTOM, bitmap.getWidth(), bitmap.getHeight());
+	public Player() {
+		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
 
-		this.bitmap = bitmap;
-		smallBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/2, bitmap.getHeight()/2, false);
-
-		startX = x;
-		startY = y;
-		
 		goX = x;
 		
 		speedX = 0;
@@ -62,6 +61,28 @@ public class Player extends Sprite {
 		move = MOVE_NONE;
 		inPosition = true;
 		direction = MyGameView.DIRECTION_NORMAL;
+		
+		points = new float[] {
+				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
+				0, -PLAYER_HEIGHT/2,
+				0, -PLAYER_HEIGHT/2,
+				PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
+				PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
+				0, PLAYER_HEIGHT/2+REAR_OFFSET,
+				0, PLAYER_HEIGHT/2+REAR_OFFSET,
+				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2
+		};
+		
+		altPoints = new float[] {
+				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				0, -PLAYER_HEIGHT/4,
+				0, -PLAYER_HEIGHT/4,
+				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
+		};
 		
 		startTime = System.currentTimeMillis();
 	}
@@ -75,35 +96,45 @@ public class Player extends Sprite {
 	
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
-		
-		// check if we need to rotate
-		if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
+
+		if (status != STATUS_INVISIBLE) {
+			
 			canvas.save();
 			
-			float degrees = ROTATION_DEGREES * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);			
-			canvas.rotate(degrees, x, y);
-		}
-		
-		// if small powerup is active, draw resized bitmap
-		if (MyGameView.powerupSmall.isActive()) {
-			System.out.println("DRAW SMALL SHIP");
-			// poor man's blur effect
-			if (speedX + speedY != 0 && (MyGameView.powerupStop.isActive() || MyGameView.powerupSlow.isActive())) {
-				canvas.drawBitmap(smallBitmap, x-width/4 - SLOW_BLUR_FACTOR*dirX, y-height/4 - SLOW_BLUR_FACTOR*dirY, null);
+			canvas.translate(x, y);
+			
+			// check if we need to rotate
+			if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
+				
+				float degrees = ROTATION_DEGREES * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);			
+				canvas.rotate(degrees);
 			}
-			canvas.drawBitmap(smallBitmap, x-width/4, y-height/4, null);
-		}
-		// draw normal bitmap
-		else {
-			// poor man's blur effect
-			if (speedX + speedY != 0 && (MyGameView.powerupStop.isActive() || MyGameView.powerupSlow.isActive())) {
-				canvas.drawBitmap(bitmap, x-width/2 - SLOW_BLUR_FACTOR*dirX, y-height/2 - SLOW_BLUR_FACTOR*dirY, null);
+
+			// normal
+			if (status == STATUS_NORMAL) {
+				
+				// if small powerup is active, draw resized bitmap
+				if (MyGameView.powerupSmall.isActive()) {
+					canvas.drawLines(altPoints, paint);
+				}
+				// draw normal bitmap
+				else {
+					canvas.drawLines(points, paint);
+				}
 			}
-			canvas.drawBitmap(bitmap, x-width/2, y-height/2, null);
-		}
-		
-		// restore canvas if rotated
-		if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
+			// breaking up
+			else if (status == STATUS_BREAKING_UP) {
+				int savedAlpha = paint.getAlpha();
+				paint.setAlpha((int)(255 * (1.0*counter/BREAKING_UP_DURATION)));
+				Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
+				
+				while(lineSegmentIterator.hasNext()) {
+					lineSegmentIterator.next().draw(canvas, paint);
+				}
+				
+				paint.setAlpha(savedAlpha);	
+			}
+			
 			canvas.restore();
 		}
 	}
@@ -111,96 +142,144 @@ public class Player extends Sprite {
 	@Override
 	public void update() {
 		
-		// touch based controls
-		if (MyGameView.controlMode == MyGameView.CONTROL_TOUCH) {
-			// damn floating point arithmetic
-			if (Math.abs(goX - x) > 1) {
-				speedX = MAX_SPEED;
+		if (status == STATUS_NORMAL) {
+		
+			// touch based controls
+			if (MyGameView.controlMode == MyGameView.CONTROL_TOUCH) {
+				// damn floating point arithmetic
+				if (Math.abs(goX - x) > 1) {
+					speedX = MAX_SPEED;
+	
+					// need to move right
+					if (goX > x) {
+						dirX = 1;
+						
+						if (goX - x < MAX_SPEED) {
+							speedX = goX - x;
+						}
+					}
+					// need to move left
+					else {
+						dirX = -1;
+						
+						if (x - goX < MAX_SPEED) {
+							speedX = x - goX;
+						}
+					}
+				} else {
+					speedX = 0;
+				}
+			}
+			// key based controls
+			else if (MyGameView.controlMode == MyGameView.CONTROL_BUTTONS) {
+				if (move != MOVE_NONE) {
+					if (speedX < MAX_SPEED) {
+						speedX += BUTTON_MOVE_FACTOR;
+						
+						if (speedX > MAX_SPEED) {
+							speedX = MAX_SPEED;
+						}
+					}
+				}
+			}
+			
+			x = x + (dirX*speedX);
+			
+			speedY = 0;
+			dirY = 0;
+			
+			// move from bottom to top
+			if (!inPosition) {
+				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 1) {
+					dirY = -1;
+					
+					speedY = MAX_SPEED;
+					
+					if (y - Y_TOP <= MAX_SPEED) {
+						speedY = y - Y_TOP;
+						inPosition = true;
+					}
+				}
+				// move from top to bottom
+				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 1) {
+					dirY = 1;
+					
+					speedY = MAX_SPEED;
+					
+					if (Y_BOTTOM - y <= MAX_SPEED) {
+						speedY = Y_BOTTOM - y;
+						inPosition = true;
+					}
+				}
+			}
+			
+			y = y + (dirY*speedY);
+		}
+		else if (status == STATUS_BREAKING_UP) {
+			Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
+			
+			while(lineSegmentIterator.hasNext()) {
+				lineSegmentIterator.next().update();
+			}
+			
+			counter--;
 
-				// need to move right
-				if (goX > x) {
-					dirX = 1;
-					
-					if (goX - x < MAX_SPEED) {
-						speedX = goX - x;
-					}
-				}
-				// need to move left
-				else {
-					dirX = -1;
-					
-					if (x - goX < MAX_SPEED) {
-						speedX = x - goX;
-					}
-				}
+			if (counter < 0) {
+				status = STATUS_NORMAL;
+			}
+
+		}
+	}
+	
+	public void breakup() {
+		lineSegments = new ArrayList<LineSegment>();
+		
+		float modifier = 1f;
+		
+		if (MyGameView.powerupSmall.isActive()) {
+			modifier = 0.5f;
+		}
+		
+		for (int i = 0; i < points.length; i+=4) {
+			
+			LineSegment temp = new LineSegment(modifier*points[i], modifier*points[i+1], modifier*points[i+2], modifier*points[i+3]);
+			
+			// need to get perpendicular
+			float yDiff = Math.abs(points[i] - points[i+2]);
+			float xDiff = Math.abs(points[i+1] - points[i+3]);
+			
+			yDiff += Math.abs(dirY)*speed;
+			xDiff += Math.abs(dirX)*speed;
+			
+			lineSegments.add(temp);
+			
+			temp.move = BREAKING_UP_MOVE;
+			
+			// x direction is sometimes positive
+			if (points[i] < 0) {
+				temp.dirX = (-xDiff/(xDiff + yDiff));
 			} else {
-				speedX = 0;
+				temp.dirX = (xDiff/(xDiff + yDiff));
 			}
-		}
-		// key based controls
-		else if (MyGameView.controlMode == MyGameView.CONTROL_BUTTONS) {
-			if (move != MOVE_NONE) {
-				if (speedX < MAX_SPEED) {
-					speedX += BUTTON_MOVE_FACTOR;
-					
-					if (speedX > MAX_SPEED) {
-						speedX = MAX_SPEED;
-					}
-				}
-			}
+			
+			// y direction is always positive
+			temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
 		}
 		
-		x = x + (dirX*speedX);
-		
-		speedY = 0;
-		dirY = 0;
-		
-		// move from bottom to top
-		if (!inPosition) {
-			if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 1) {
-				dirY = -1;
-				
-				speedY = MAX_SPEED;
-				
-				if (y - Y_TOP <= MAX_SPEED) {
-					speedY = y - Y_TOP;
-					inPosition = true;
-				}
-			}
-			// move from top to bottom
-			else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 1) {
-				dirY = 1;
-				
-				speedY = MAX_SPEED;
-				
-				if (Y_BOTTOM - y <= MAX_SPEED) {
-					speedY = Y_BOTTOM - y;
-					inPosition = true;
-				}
-			}
-		}
-		
-		y = y + (dirY*speedY);
+		status = STATUS_BREAKING_UP;
+		counter = BREAKING_UP_DURATION;
 	}
 
 	public long getStartTime() {
 		return startTime;
 	}
 
-	public float getStartX() {
-		return startX;
-	}
-
-	public float getStartY() {
-		return startY;
-	}
-	
 	public void setGoX(float goX) {
 		this.goX = goX;
 	}
 	
 	@Override
-	public boolean checkBoxCollision(Sprite other) {
+	public boolean checkBoxCollision(Item other) {
 		if (MyGameView.powerupSmall.isActive()) {
 			return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
 		} else {

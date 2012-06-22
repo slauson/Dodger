@@ -1,6 +1,5 @@
 package com.slauson.dodger.powerups;
 
-
 import com.slauson.dodger.main.MyGameView;
 import com.slauson.dodger.objects.Asteroid;
 
@@ -8,7 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
-public class PowerupMagnet extends PowerupStationary {
+/**
+ * Magnet powerup that attracts powerups
+ * @author Josh Slauson
+ *
+ */
+public class PowerupMagnet extends ActivePowerup {
 	
 	private static final int MAX_RANGE = 200;
 	

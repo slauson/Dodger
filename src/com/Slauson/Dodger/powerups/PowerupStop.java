@@ -1,6 +1,11 @@
 package com.slauson.dodger.powerups;
 
-public class PowerupStop extends Powerup {
+/**
+ * Stop powerup that stops time
+ * @author josh
+ *
+ */
+public class PowerupStop extends InactivePowerup {
 	
 	private int range;
 	

@@ -5,6 +5,11 @@ import com.slauson.dodger.main.MyGameView;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+/**
+ * Single line segment for when player, asteroids breakup
+ * @author Josh Slauson
+ *
+ */
 public class LineSegment {
 	public float width, height;
 	
@@ -26,6 +31,10 @@ public class LineSegment {
 	
 	public void draw(Canvas canvas, Paint paint) {
 		canvas.drawLine(x1, y1, x2, y2, paint);
+	}
+	
+	public void update() {
+		update(1f);
 	}
 	
 	public void update(float speedModifier) {

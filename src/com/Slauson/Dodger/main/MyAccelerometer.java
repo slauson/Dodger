@@ -6,6 +6,13 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+/**
+ * Accelerometer object
+ * @author Josh Slauson
+ *
+ * adapted from here: http://android-coding.blogspot.com/2012/03/surfaceview-game-step-by-step-react.html
+ *
+ */
 public class MyAccelerometer implements SensorEventListener {
 
 	private SensorManager sensorManager;

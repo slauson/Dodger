@@ -1,10 +1,7 @@
 package com.slauson.dodger.powerups;
 
-import java.util.Iterator;
-
 import com.slauson.dodger.objects.Asteroid;
-import com.slauson.dodger.objects.LineSegment;
-import com.slauson.dodger.objects.Sprite;
+import com.slauson.dodger.objects.Item;
 import com.slauson.dodger.objects.Player;
 import com.slauson.dodger.powerups.PowerupDrill;
 
@@ -13,18 +10,22 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
-public class PowerupBumper extends PowerupStationary {
-	
-	private static final int COUNTER_MAX = 20;
-	private static final int COOLDOWN_MAX = 10;
-	private static final float RESIZE_FACTOR = 2;
-	
+/**
+ * Bumper powerup which causes items to bounce in opposite direction
+ * @author Josh Slauson
+ *
+ */
+public class PowerupBumper extends ActivePowerup {
+
 	private int counter;
 	private int cooldown;
 	
-
 	private Bitmap bitmapAlt;
 	private Rect rectDest;
+	
+	// constants
+	private static final int COUNTER_MAX = 20;
+	private static final int COOLDOWN_MAX = 10;
 
 	public PowerupBumper(Bitmap bitmap, Bitmap bitmapAlt, float x, float y, int duration) {
 		super(bitmap, x, y);
@@ -45,9 +46,9 @@ public class PowerupBumper extends PowerupStationary {
 		}
 	}
 
-	public void alterSprite(Sprite sprite) {
-		if (checkCollision(sprite)) {
-			sprite.setDirY(-1*sprite.getDirY());
+	public void alterSprite(Item item) {
+		if (checkBoxCollision(item)) {
+			item.setDirY(-1*item.getDirY());
 			activateBumper();
 		}
 	}
