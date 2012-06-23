@@ -129,7 +129,7 @@ public class Asteroid extends DrawObject {
 			
 				LineSegment temp = new LineSegment(x + points[i], y + points[i+1], x + points[i+2], y + points[i+3]);
 				
-				// need to get perpendicular
+				// need to get perpendicular (these are opposite on purpose)
 				float yDiff = Math.abs(points[i] - points[i+2]);
 				float xDiff = Math.abs(points[i+1] - points[i+3]);
 				

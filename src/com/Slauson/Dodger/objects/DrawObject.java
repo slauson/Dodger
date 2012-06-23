@@ -24,6 +24,7 @@ public abstract class DrawObject extends Item {
 	public static final int STATUS_DISAPPEARING = 3;
 	public static final int STATUS_FADING_OUT = 4;
 	public static final int STATUS_SPLITTING_UP = 5;
+	public static final int STATUS_INVULNERABLE = 6;
 
 
 	protected static final int BREAKING_UP_DURATION = 50;

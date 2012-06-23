@@ -25,12 +25,19 @@ public class Player extends DrawObject {
 	private int move;
 	private boolean inPosition;
 	private int direction;
+	
+	private int dashTimeout;
 
+	/**
+	 * Public constants
+	 */
+	
+	public static final int MAX_SPEED = 25;
+	
 	
 	/**
-	 * Constants
+	 * Private constants
 	 */
-	public static final int MAX_SPEED = 25;
 	
 	private static final int MOVE_NONE = 0;
 	private static final int MOVE_LEFT = 1;
@@ -38,8 +45,6 @@ public class Player extends DrawObject {
 	
 	private static final float BUTTON_MOVE_FACTOR = 4f;
 	private static final float BUTTON_MIN_SPEED = 2f;
-	
-	//private static final float SLOW_BLUR_FACTOR = 3f;
 	
 	private static final float Y_BOTTOM = MyGameView.canvasHeight - 100;
 	private static final float Y_TOP = 32;
@@ -49,6 +54,8 @@ public class Player extends DrawObject {
 	private static final int PLAYER_WIDTH = 32;
 	private static final int PLAYER_HEIGHT = 32;
 	private static final int REAR_OFFSET = -6;
+	
+	private static final int INVULNERABLE_DURATION = 25;
 	
 	public Player() {
 		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -87,10 +94,10 @@ public class Player extends DrawObject {
 		startTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Resets timer
+	 */
 	public void reset() {
-		//x = startX;
-		//y = startY;
-		
 		this.startTime = System.currentTimeMillis();
 	}
 	
@@ -110,8 +117,8 @@ public class Player extends DrawObject {
 				canvas.rotate(degrees);
 			}
 
-			// normal
-			if (status == STATUS_NORMAL) {
+			// normal or invulnerable blink
+			if (status == STATUS_NORMAL || (status == STATUS_INVULNERABLE && counter % 3 == 0)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive()) {
@@ -142,7 +149,7 @@ public class Player extends DrawObject {
 	@Override
 	public void update() {
 		
-		if (status == STATUS_NORMAL) {
+		if (status == STATUS_NORMAL || status == STATUS_INVULNERABLE) {
 		
 			// touch based controls
 			if (MyGameView.controlMode == MyGameView.CONTROL_TOUCH) {
@@ -214,6 +221,17 @@ public class Player extends DrawObject {
 			}
 			
 			y = y + (dirY*speedY);
+
+			// update invulnerable timer
+			if (status == STATUS_INVULNERABLE) {
+				counter--;
+
+				// make ship invulnerable for short period
+				if (counter < 0) {
+					status = STATUS_NORMAL;
+				}
+			}
+
 		}
 		else if (status == STATUS_BREAKING_UP) {
 			Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
@@ -224,13 +242,17 @@ public class Player extends DrawObject {
 			
 			counter--;
 
+			// make ship invulnerable for short period
 			if (counter < 0) {
-				status = STATUS_NORMAL;
+				status = STATUS_INVULNERABLE;
+				counter = INVULNERABLE_DURATION;
 			}
-
-		}
+		} 
 	}
 	
+	/**
+	 * Breaks up ship into line segments
+	 */
 	public void breakup() {
 		lineSegments = new ArrayList<LineSegment>();
 		
@@ -244,7 +266,7 @@ public class Player extends DrawObject {
 			
 			LineSegment temp = new LineSegment(modifier*points[i], modifier*points[i+1], modifier*points[i+2], modifier*points[i+3]);
 			
-			// need to get perpendicular
+			// need to get perpendicular (these are opposite on purpose)
 			float yDiff = Math.abs(points[i] - points[i+2]);
 			float xDiff = Math.abs(points[i+1] - points[i+3]);
 			
@@ -256,7 +278,7 @@ public class Player extends DrawObject {
 			temp.move = BREAKING_UP_MOVE;
 			
 			// x direction is sometimes positive
-			if (points[i] < 0) {
+			if (points[i] < 0 || points[i+2] < 0) {
 				temp.dirX = (-xDiff/(xDiff + yDiff));
 			} else {
 				temp.dirX = (xDiff/(xDiff + yDiff));
@@ -273,6 +295,8 @@ public class Player extends DrawObject {
 		
 		status = STATUS_BREAKING_UP;
 		counter = BREAKING_UP_DURATION;
+		
+		reset();
 	}
 
 	public long getStartTime() {

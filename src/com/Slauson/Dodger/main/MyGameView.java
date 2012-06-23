@@ -406,7 +406,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player
-					if (player.checkAsteroidCollision(temp)) {
+					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(temp)) {
 						
 						if (player.inPosition()) {
 							player.breakup();
@@ -468,7 +468,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 				
 				// check collision with player
-				if (temp.checkBoxCollision(player)) {
+				if (player.getStatus() == Player.STATUS_NORMAL && temp.checkBoxCollision(player)) {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
@@ -587,16 +587,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// alter player for each active powerup
-		synchronized (activePowerups) {
-			Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
-			ActivePowerup activePowerup;
-		
-			while (activePowerupIterator.hasNext()) {
-				activePowerup = activePowerupIterator.next();
+		if (player.getStatus() == Player.STATUS_NORMAL) {
+			synchronized (activePowerups) {
+				Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
+				ActivePowerup activePowerup;
 			
-				// TODO: use something better here
-				if (activePowerup instanceof PowerupBumper) {
-					((PowerupBumper)activePowerup).alterPlayer(player);
+				while (activePowerupIterator.hasNext()) {
+					activePowerup = activePowerupIterator.next();
+				
+					// TODO: use something better here
+					if (activePowerup instanceof PowerupBumper) {
+						((PowerupBumper)activePowerup).alterPlayer(player);
+					}
 				}
 			}
 		}
@@ -629,6 +631,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		if (!initialized) {
 			init();
+			return false;
+		}
+		
+		// only move player ship when its in normal or invulnerable status
+		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
 			return false;
 		}
 		
@@ -686,6 +693,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 
+		// only move player ship when its in normal or invulnerable status
+		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+			return;
+		}
 
 		switch(keyCode) {
 		// left
@@ -717,6 +728,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 
+		// only move player ship when its in normal or invulnerable status
+		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+			return;
+		}
 
 		switch(keyCode) {
 		// left
@@ -751,6 +766,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			init();
 			return;
 		}
+		
+		// only move player ship when its in normal or invulnerable status
+		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+			return;
+		}
 
 		float ACCELEROMETER_DEADZONE = 0.05f;
 		float ACCELEROMETER_MAX = 0.3f;
@@ -779,6 +799,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
     	setDebugText("" + tx);
 	}
 	
+	/**
+	 * May drop a random powerup at the given position
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 */
 	private void dropPowerup(float x, float y) {
 		// drop powerup					
 		if (random.nextFloat() < DROP_CHANCE) {
@@ -827,6 +852,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Activates bomb powerup, destroying everything on screen
+	 */
 	private void activateBomb() {
 		// destroy all on-screen asteroids
 		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
@@ -842,6 +870,4 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		activePowerups.clear();
 		
 	}
-
-
 }
