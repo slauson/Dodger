@@ -387,4 +387,27 @@ public class Asteroid extends DrawObject {
 	public void setFactor(float factor) {
 		this.factor = factor;
 	}
+	
+	/**
+	 * Returns index into points closest to the given angle
+	 * @param angle angle to check
+	 * @return index into points closest to the given angle
+	 */
+	public int getClosestPointsIndex(double angle) {
+		int i;
+		
+		for(i = 0; i < angles.length; i++) {
+			if (angles[i] >= angle) {
+				break;
+			}
+		}
+		System.out.println("getClosestPoints(): " + i + " out of " + angles.length);
+		
+		// handle special cases
+		if (i == 0 || i == angles.length) {
+			return points.length-2;
+		} else {
+			return 4*i-4;
+		}
+	}
 }

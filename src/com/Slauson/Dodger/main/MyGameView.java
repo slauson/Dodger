@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.slauson.dodger.main.R;
 import com.slauson.dodger.objects.Asteroid;
+import com.slauson.dodger.objects.DrawObject;
 import com.slauson.dodger.objects.Player;
 import com.slauson.dodger.objects.Drop;
 import com.slauson.dodger.powerups.PowerupDrill;
@@ -74,6 +75,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// Initialization flags
 	private boolean surfaceCreated = false;
 	private boolean initialized = false;
+	
+	// for swipe-based dodging
+	private float touchDownY;
 
 	
 	/**
@@ -117,6 +121,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private static final int ASTEROID_PAINT_STROKE_WIDTH = 1;
 	private static final int ASTEROID_PAINT_COLOR = Color.WHITE;
+	
+	// touch
+	private static final float DASH_TOUCH_FACTOR = 1.5f;
+	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
 	
 	/**
 	 * Constants - public
@@ -334,8 +342,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
 			
-			myGameThread = null;
-			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			random = new Random();		
 			
@@ -400,7 +406,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player
-					if (player.checkBoxCollision(temp)) {
+					if (player.checkAsteroidCollision(temp)) {
 						
 						if (player.inPosition()) {
 							player.breakup();
@@ -635,13 +641,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		switch(action) {
 		case MotionEvent.ACTION_DOWN:
 			
-			// check if pressed on player's position, then switch gravity
-			if (x < player.getX() + player.getWidth()/2 && x > player.getX() - player.getWidth()/2 &&
-					y < player.getY() + player.getHeight()/2 && y > player.getY() - player.getHeight()/2)
+			// check if pressed on player's position, then dash
+			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
+					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2)
 			{
 				player.switchDirection();
 				break;
 			}
+			touchDownY = y;
 		case MotionEvent.ACTION_MOVE:
 			
 			// only move horizontally when player is in position
@@ -649,6 +656,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				player.setGoX(x);
 			}
 			break;
+		case MotionEvent.ACTION_UP:
+			
+			// TODO: use touch history here (need to make sure y changed quick enough)
+			// dash based on a swipe motion event
+			if (player.getStatus() == DrawObject.STATUS_NORMAL) {
+				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
+					player.switchDirection();
+				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
+					player.switchDirection();
+				}
+			}
 		default:
 			break;
 		}

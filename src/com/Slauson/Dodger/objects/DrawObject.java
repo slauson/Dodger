@@ -52,5 +52,4 @@ public abstract class DrawObject extends Item {
 	public int getStatus() {
 		return status;
 	}
-
 }
