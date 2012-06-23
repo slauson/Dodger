@@ -1,6 +1,6 @@
-package com.slauson.dodger.objects;
+package com.slauson.dasher.objects;
 
-import com.slauson.dodger.main.MyGameView;
+import com.slauson.dasher.main.MyGameView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -159,6 +159,6 @@ public abstract class Item {
 	 * @return true if this item is currently on the screen
 	 */
 	public boolean onScreen() {
-		return y - height/2 > 0 && y + height/2 < MyGameView.canvasHeight;
+		return y + height/2 > 0 && y - height/2 < MyGameView.canvasHeight;
 	}
 }

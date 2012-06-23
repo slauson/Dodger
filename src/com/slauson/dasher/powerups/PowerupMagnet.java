@@ -1,7 +1,7 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
-import com.slauson.dodger.main.MyGameView;
-import com.slauson.dodger.objects.Asteroid;
+import com.slauson.dasher.main.MyGameView;
+import com.slauson.dasher.objects.Asteroid;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

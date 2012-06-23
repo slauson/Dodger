@@ -1,8 +1,8 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
 
-import com.slauson.dodger.objects.Asteroid;
-import com.slauson.dodger.objects.Sprite;
+import com.slauson.dasher.objects.Asteroid;
+import com.slauson.dasher.objects.Sprite;
 
 import android.graphics.Bitmap;
 

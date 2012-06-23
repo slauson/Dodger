@@ -1,4 +1,4 @@
-package com.slauson.dodger.main;
+package com.slauson.dasher.main;
 
 /**
  * Game thread

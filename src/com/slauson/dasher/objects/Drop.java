@@ -1,4 +1,4 @@
-package com.slauson.dodger.objects;
+package com.slauson.dasher.objects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

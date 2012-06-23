@@ -1,4 +1,4 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
 /**
  * Small powerup that makes the player ship small

@@ -1,9 +1,9 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
-import com.slauson.dodger.objects.Asteroid;
-import com.slauson.dodger.objects.Item;
-import com.slauson.dodger.objects.Player;
-import com.slauson.dodger.powerups.PowerupDrill;
+import com.slauson.dasher.objects.Asteroid;
+import com.slauson.dasher.objects.Item;
+import com.slauson.dasher.objects.Player;
+import com.slauson.dasher.powerups.PowerupDrill;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -55,7 +55,7 @@ public class PowerupBumper extends ActivePowerup {
 	
 	public void alterPlayer(Player player) {
 		if (!player.inPosition() && cooldown == 0 && Math.abs(x - player.getX()) <= width/2 + player.getWidth()/2 && Math.abs(y - player.getY()) <= height/2 + player.getHeight()/2) {
-			player.switchDirection();
+			player.dash();
 			activateBumper();
 		}
 	}

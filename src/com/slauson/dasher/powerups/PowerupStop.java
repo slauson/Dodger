@@ -1,4 +1,4 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
 /**
  * Stop powerup that stops time

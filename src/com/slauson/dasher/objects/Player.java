@@ -1,12 +1,14 @@
-package com.slauson.dodger.objects;
+package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.slauson.dodger.main.MyGameView;
+import com.slauson.dasher.main.MyGameView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.RectF;
 
 /**
  * Player ship
@@ -26,6 +28,8 @@ public class Player extends DrawObject {
 	private boolean inPosition;
 	private int direction;
 	
+	private RectF dashPercentRect;
+	private RectF dashPercentRectSmall;
 	private int dashTimeout;
 
 	/**
@@ -56,6 +60,8 @@ public class Player extends DrawObject {
 	private static final int REAR_OFFSET = -6;
 	
 	private static final int INVULNERABLE_DURATION = 25;
+	
+	private static final int DASH_TIMEOUT_DURATION = 100;
 	
 	public Player() {
 		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -91,6 +97,9 @@ public class Player extends DrawObject {
 				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
 		};
 		
+		dashTimeout = 0;
+		dashPercentRect = new RectF(-4, -2, 4, 6);
+		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
 		startTime = System.currentTimeMillis();
 	}
 	
@@ -127,6 +136,15 @@ public class Player extends DrawObject {
 				// draw normal bitmap
 				else {
 					canvas.drawLines(points, paint);
+				}
+				
+				// draw dash timeout percentage
+				
+				paint.setStyle(Style.FILL_AND_STROKE);
+				if (MyGameView.powerupSmall.isActive()) {
+					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/DASH_TIMEOUT_DURATION), true, paint);
+				} else {
+					canvas.drawArc(dashPercentRect, -90, 360 - 360*(1f*dashTimeout/DASH_TIMEOUT_DURATION), true, paint);
 				}
 			}
 			// breaking up
@@ -221,6 +239,11 @@ public class Player extends DrawObject {
 			}
 			
 			y = y + (dirY*speedY);
+			
+			// update dash timeout
+			if (dashTimeout > 0) {
+				dashTimeout--;
+			}
 
 			// update invulnerable timer
 			if (status == STATUS_INVULNERABLE) {
@@ -601,13 +624,18 @@ public class Player extends DrawObject {
 		move = MOVE_NONE;
 	}
 	
-	public void switchDirection() {
-		inPosition = false;
+	public void dash() {
 		
-		if (direction == MyGameView.DIRECTION_NORMAL) {
-			direction = MyGameView.DIRECTION_REVERSE;
-		} else {
-			direction = MyGameView.DIRECTION_NORMAL;
+		if (dashTimeout <= 0) {
+			inPosition = false;
+		
+			if (direction == MyGameView.DIRECTION_NORMAL) {
+				direction = MyGameView.DIRECTION_REVERSE;
+			} else {
+				direction = MyGameView.DIRECTION_NORMAL;
+			}
+			
+			dashTimeout = DASH_TIMEOUT_DURATION;
 		}
 	}
 	

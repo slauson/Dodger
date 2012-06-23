@@ -1,6 +1,6 @@
-package com.slauson.dodger.objects;
+package com.slauson.dasher.objects;
 
-import com.slauson.dodger.main.MyGameView;
+import com.slauson.dasher.main.MyGameView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

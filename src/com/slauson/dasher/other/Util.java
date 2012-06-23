@@ -1,4 +1,4 @@
-package com.slauson.dodger.other;
+package com.slauson.dasher.other;
 
 /**
  * Utility methods

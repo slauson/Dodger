@@ -1,6 +1,6 @@
-package com.slauson.dodger.main;
+package com.slauson.dasher.main;
 
-import com.slauson.dodger.main.R;
+import com.slauson.dasher.R;
 
 import android.app.Activity;
 import android.os.Bundle;

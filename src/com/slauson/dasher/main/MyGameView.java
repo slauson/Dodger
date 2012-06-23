@@ -1,4 +1,4 @@
-package com.slauson.dodger.main;
+package com.slauson.dasher.main;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,19 +6,19 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import com.slauson.dodger.main.R;
-import com.slauson.dodger.objects.Asteroid;
-import com.slauson.dodger.objects.DrawObject;
-import com.slauson.dodger.objects.Player;
-import com.slauson.dodger.objects.Drop;
-import com.slauson.dodger.powerups.PowerupDrill;
-import com.slauson.dodger.powerups.PowerupMagnet;
-import com.slauson.dodger.powerups.PowerupSlow;
-import com.slauson.dodger.powerups.PowerupSmall;
-import com.slauson.dodger.powerups.PowerupStop;
-import com.slauson.dodger.powerups.ActivePowerup;
-import com.slauson.dodger.powerups.PowerupWhiteHole;
-import com.slauson.dodger.powerups.PowerupBumper;
+import com.slauson.dasher.objects.Asteroid;
+import com.slauson.dasher.objects.DrawObject;
+import com.slauson.dasher.objects.Drop;
+import com.slauson.dasher.objects.Player;
+import com.slauson.dasher.powerups.ActivePowerup;
+import com.slauson.dasher.powerups.PowerupBumper;
+import com.slauson.dasher.powerups.PowerupDrill;
+import com.slauson.dasher.powerups.PowerupMagnet;
+import com.slauson.dasher.powerups.PowerupSlow;
+import com.slauson.dasher.powerups.PowerupSmall;
+import com.slauson.dasher.powerups.PowerupStop;
+import com.slauson.dasher.powerups.PowerupWhiteHole;
+import com.slauson.dasher.R;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -652,7 +652,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
 					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2)
 			{
-				player.switchDirection();
+				player.dash();
 				break;
 			}
 			touchDownY = y;
@@ -669,9 +669,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// dash based on a swipe motion event
 			if (player.getStatus() == DrawObject.STATUS_NORMAL) {
 				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
-					player.switchDirection();
+					player.dash();
 				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
-					player.switchDirection();
+					player.dash();
 				}
 			}
 		default:

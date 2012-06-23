@@ -1,4 +1,4 @@
-package com.slauson.dodger.powerups;
+package com.slauson.dasher.powerups;
 
 /**
  * Inactive powerup that is not drawn on the screen
