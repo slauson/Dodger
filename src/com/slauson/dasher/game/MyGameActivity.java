@@ -1,4 +1,4 @@
-package com.slauson.dasher.main;
+package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
 
@@ -28,8 +28,8 @@ public class MyGameActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        myGameView = (MyGameView)findViewById(R.id.myview);
+        setContentView(R.layout.game);
+        myGameView = (MyGameView)findViewById(R.id.myGameView);
         
         // set myForeground to use transparent background
         //myForeground.setZOrderOnTop(true);

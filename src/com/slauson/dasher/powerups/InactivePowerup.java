@@ -27,4 +27,8 @@ public abstract class InactivePowerup {
 	public void activate(long duration) {
 		endingTime = System.currentTimeMillis() + duration;
 	}
+	
+	public void update() {
+		// do nothing
+	}
 }

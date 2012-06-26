@@ -3,7 +3,7 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.slauson.dasher.main.MyGameView;
+import com.slauson.dasher.game.MyGameView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -127,7 +127,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerable blink
-			if (status == STATUS_NORMAL || (status == STATUS_INVULNERABLE && counter % 3 == 0)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && counter % 3 == 0) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 3 == 0)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive()) {

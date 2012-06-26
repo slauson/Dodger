@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
-import com.slauson.dasher.main.MyGameView;
+import com.slauson.dasher.game.MyGameView;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;

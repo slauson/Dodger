@@ -1,4 +1,4 @@
-package com.slauson.dasher.main;
+package com.slauson.dasher.game;
 
 import android.content.Context;
 import android.hardware.Sensor;

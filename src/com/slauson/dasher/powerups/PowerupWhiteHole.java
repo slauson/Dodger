@@ -1,6 +1,6 @@
 package com.slauson.dasher.powerups;
 
-import com.slauson.dasher.main.MyGameView;
+import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 
 import android.graphics.Bitmap;

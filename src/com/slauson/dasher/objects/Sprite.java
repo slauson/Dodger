@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.main.MyGameView;
+import com.slauson.dasher.game.MyGameView;
 
 import android.graphics.Bitmap;
 

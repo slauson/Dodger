@@ -1,4 +1,4 @@
-package com.slauson.dasher.main;
+package com.slauson.dasher.game;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import com.slauson.dasher.powerups.PowerupDrill;
 import com.slauson.dasher.powerups.PowerupMagnet;
 import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
-import com.slauson.dasher.powerups.PowerupStop;
+import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.R;
 
@@ -34,9 +34,10 @@ import android.view.SurfaceView;
 
 /**
  * Main game view
- * @author Josh Slauson
- *
+ * 
  * Adapted from here: http://android-coding.blogspot.com/2012/01/create-surfaceview-game-step-by-step.html
+ * 
+ * @author Josh Slauson
  *
  */
 public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
@@ -87,12 +88,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// powerup sprites
 	private static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
 	private static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
-	private static final int R_POWERUP_STOP = R.drawable.powerup_stop;
+	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
 	private static final int R_POWERUP_WHITE_HOLE = R.drawable.powerup_white_hole;
 	private static final int R_POWERUP_BUMPER = R.drawable.powerup_bumper;
 	private static final int R_POWERUP_BOMB = R.drawable.powerup_bomb;
 	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
-	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
+	private static final int R_POWERUP_INVULNERABLE = R.drawable.powerup_invulnerable;
 	
 	// asteroid
 	private static final int ASTEROID_COUNT = 25;
@@ -108,7 +109,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// powerup durations
 	private static final int SLOW_DURATION = 10000;
-	private static final int STOP_DURATION = 10000;
+	private static final int INVULNERABLE_DURATION = 10000;
 	private static final int SMALL_DURATION = 10000;
 	private static final int MAGNET_DURATION = 10000;
 	private static final int WHITE_HOLE_DURATION = 10000;
@@ -140,7 +141,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_BUMPER = 4;
 	public static final int POWERUP_BOMB = 5;
 	public static final int POWERUP_SMALL = 6;
-	public static final int POWERUP_STOP = 7;
+	public static final int POWERUP_INVULNERABLE = 7;
 	
 	// powerup stuff
 	
@@ -167,7 +168,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static int canvasWidth, canvasHeight;
 	
 	public static PowerupSlow powerupSlow = new PowerupSlow();
-	public static PowerupStop powerupStop = new PowerupStop();
+	public static PowerupInvulnerable powerupInvulnerable = new PowerupInvulnerable();
 	public static PowerupSmall powerupSmall = new PowerupSmall();
 	
 	// current state
@@ -373,13 +374,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				temp = asteroids.get(i);
 				
 				// move asteroids
-				if (!powerupStop.isActive()) {
-					// move asteroids
-					if (powerupSlow.isActive()) {
-						temp.update(0.5f);
-					} else {
-						temp.update();
-					}
+				if (powerupSlow.isActive()) {
+					temp.update(0.5f);
+				} else {
+					temp.update();
 				}
 				
 				// reset asteroid off screen (include non-visible, non-intact asteroids here)
@@ -406,7 +404,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player
-					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(temp)) {
+					if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive() && player.checkAsteroidCollision(temp)) {
 						
 						if (player.inPosition()) {
 							player.breakup();
@@ -450,12 +448,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				temp = drops.get(i);
 				
-				if (!powerupStop.isActive()) {
-					if (powerupSlow.isActive()) {
-						temp.update(0.5f);
-					} else {
-						temp.update();
-					}
+				if (powerupSlow.isActive()) {
+					temp.update(0.5f);
+				} else {
+					temp.update();
 				}
 				
 				// reset powerup off screen
@@ -468,7 +464,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 				
 				// check collision with player
-				if (player.getStatus() == Player.STATUS_NORMAL && temp.checkBoxCollision(player)) {
+				if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive() && temp.checkBoxCollision(player)) {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
@@ -484,8 +480,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), BUMPER_DURATION));
 						break;
 					// activate one and done powerup
-					case POWERUP_STOP:
-						powerupStop.activate(STOP_DURATION);
+					case POWERUP_INVULNERABLE:
+						powerupInvulnerable.activate(INVULNERABLE_DURATION);
 						break;
 					case POWERUP_BOMB:
 						bombCounter = BOMB_COUNTER_MAX;
@@ -521,17 +517,20 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 		}
 		
+		// update inactive powerups
+		powerupInvulnerable.update();
+		powerupSlow.update();
+		powerupSmall.update();
+		
 		synchronized (activePowerups) {
 		
 			// update any active global powerups
 			for (int i = 0; i < activePowerups.size(); i++) {
 				
-				if (!powerupStop.isActive()) {
-					if (powerupSlow.isActive()) {
-						activePowerups.get(i).update(0.5f);
-					} else {
-						activePowerups.get(i).update(1f);
-					}
+				if (powerupSlow.isActive()) {
+					activePowerups.get(i).update(0.5f);
+				} else {
+					activePowerups.get(i).update(1f);
 				}
 				
 				// check if any active powerups should be removed
@@ -587,7 +586,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// alter player for each active powerup
-		if (player.getStatus() == Player.STATUS_NORMAL) {
+		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive()) {
 			synchronized (activePowerups) {
 				Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
 				ActivePowerup activePowerup;
@@ -840,8 +839,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			case POWERUP_SMALL:
 				r_powerup = R_POWERUP_SMALL;
 				break;
-			case POWERUP_STOP:
-				r_powerup = R_POWERUP_STOP;
+			case POWERUP_INVULNERABLE:
+				r_powerup = R_POWERUP_INVULNERABLE;
 				break;
 			}
 			
