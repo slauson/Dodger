@@ -1,8 +1,12 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.main.Configuration;
+import com.slauson.dasher.main.Instructions;
+import com.slauson.dasher.main.MainMenu;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -16,9 +20,6 @@ public class MyGameActivity extends Activity {
 	private MyGameView myGameView;
 	
 	private MyAccelerometer myAccelerometer;
-	
-	// constants
-	private boolean ACCELEROMETER_ENABLED = false;
 	
 	// Handler for updating debug text
 	// http://stackoverflow.com/questions/5097267/error-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-view
@@ -45,7 +46,7 @@ public class MyGameActivity extends Activity {
     	super.onResume();
     	myGameView.MyGameSurfaceView_OnResume();
     	
-    	if (ACCELEROMETER_ENABLED) {
+    	if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
     		myAccelerometer.registerListener();
     	}
     }
@@ -56,12 +57,11 @@ public class MyGameActivity extends Activity {
     	super.onPause();
     	myGameView.MyGameSurfaceView_OnPause();
     	
-    	if (ACCELEROMETER_ENABLED) {
+    	if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
     		myAccelerometer.unregisterListener();
     	}
     }
     
-	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		
@@ -71,8 +71,21 @@ public class MyGameActivity extends Activity {
 	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		
+
 		myGameView.keyUp(keyCode, event);
+
+		switch(keyCode) {
+		// pause game when menu/back/search is pressed
+		case KeyEvent.KEYCODE_MENU:
+		case KeyEvent.KEYCODE_BACK:
+		case KeyEvent.KEYCODE_SEARCH:
+
+			// TODO: change this to bring up paused menu
+			Intent mainMenuIntent = new Intent(MyGameActivity.this, MainMenu.class);
+			startActivity(mainMenuIntent);
+			break;
+		}
+
 		return true;
 	}
     

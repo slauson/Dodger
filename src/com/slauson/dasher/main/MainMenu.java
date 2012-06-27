@@ -4,8 +4,11 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.game.MyGameActivity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -29,7 +32,7 @@ public class MainMenu extends Activity {
 		startButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this,MyGameActivity.class);
+				Intent StartGameIntent = new Intent(MainMenu.this, MyGameActivity.class);
 				startActivity(StartGameIntent);
 			}
 		});
@@ -39,19 +42,40 @@ public class MainMenu extends Activity {
 		instructionsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this,OptionsMenu.class);
+				Intent StartGameIntent = new Intent(MainMenu.this, Instructions.class);
 				startActivity(StartGameIntent);
 			}
-		});  
+		});
 
 		// options button
 		Button optionsButton = (Button)findViewById(R.id.optionsButton);
 		optionsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this,Instructions.class);
+				Intent StartGameIntent = new Intent(MainMenu.this, OptionsMenu.class);
 				startActivity(StartGameIntent);
 			}
-		});  
+		});
+		
+		// load configuration
+		loadConfiguration();
+		
+		// load saved state
+		SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+				
+		// load achievements
+		
+		// load unlocks/money
+		
+		// load stats
+		
+		// load high scores
+	}
+
+	private void loadConfiguration() {
+		System.out.println("loadCOnfiguration");
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		
+		Configuration.load(preferences);
 	}
 }

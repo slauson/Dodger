@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.main.Configuration;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -170,7 +171,7 @@ public class Player extends DrawObject {
 		if (status == STATUS_NORMAL || status == STATUS_INVULNERABLE) {
 		
 			// touch based controls
-			if (MyGameView.controlMode == MyGameView.CONTROL_TOUCH) {
+			if (Configuration.controlType == Configuration.CONTROL_TOUCH) {
 				// damn floating point arithmetic
 				if (Math.abs(goX - x) > 1) {
 					speedX = MAX_SPEED;
@@ -196,7 +197,7 @@ public class Player extends DrawObject {
 				}
 			}
 			// key based controls
-			else if (MyGameView.controlMode == MyGameView.CONTROL_BUTTONS) {
+			else if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				if (move != MOVE_NONE) {
 					if (speedX < MAX_SPEED) {
 						speedX += BUTTON_MOVE_FACTOR;

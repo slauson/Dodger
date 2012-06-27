@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import com.slauson.dasher.main.Configuration;
+import com.slauson.dasher.main.Instructions;
+import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.DrawObject;
 import com.slauson.dasher.objects.Drop;
@@ -21,6 +24,7 @@ import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.R;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -126,7 +130,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// touch
 	private static final float DASH_TOUCH_FACTOR = 1.5f;
 	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
-	
+
+	// accelerometer
+	private static final float ACCELEROMETER_DEADZONE = 0.05f;
+	private static final float ACCELEROMETER_MAX = 0.3f;
+
 	/**
 	 * Constants - public
 	 */
@@ -144,11 +152,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_INVULNERABLE = 7;
 	
 	// powerup stuff
-	
-	// control
-	public static final int CONTROL_TOUCH = 0;
-	public static final int CONTROL_ACCELEROMETER = 1;
-	public static final int CONTROL_BUTTONS = 2;
 	
 	// direction
 	public static final int DIRECTION_NORMAL = 0;
@@ -173,7 +176,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// current state
 	public static int gameMode = MODE_RUNNING;
-	public static int controlMode = CONTROL_TOUCH;
 	public static int direction = DIRECTION_NORMAL;
 	public static float gravity = 1f;
 
@@ -666,7 +668,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// TODO: use touch history here (need to make sure y changed quick enough)
 			// dash based on a swipe motion event
-			if (player.getStatus() == DrawObject.STATUS_NORMAL) {
+			if (player.getStatus() == Player.STATUS_NORMAL) {
 				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
 					player.dash();
 				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
@@ -700,14 +702,16 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		switch(keyCode) {
 		// left
 		case KeyEvent.KEYCODE_DPAD_LEFT:
-			if (controlMode == CONTROL_BUTTONS) {
+		case KeyEvent.KEYCODE_S:
+			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				player.moveLeft();
 				System.out.println("PLAYER MOVE LEFT");
 			}
 			break;			
 		// right
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			if (controlMode == CONTROL_BUTTONS) {
+		case KeyEvent.KEYCODE_L:
+			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				player.moveRight();
 				System.out.println("PLAYER MOVE RIGHT");
 			}
@@ -733,14 +737,21 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		switch(keyCode) {
-		// left
+		// left/right
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
-			if (controlMode == CONTROL_BUTTONS) {
+		case KeyEvent.KEYCODE_S:
+		case KeyEvent.KEYCODE_L:
+			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				player.moveStop();
 				System.out.println("PLAYER NO MOVE");
 			}
-			break;			
+			break;
+		// dpad center
+		case KeyEvent.KEYCODE_DPAD_CENTER:
+		case KeyEvent.KEYCODE_SPACE:
+			player.dash();
+			break;
 		// pause game when menu/back/search is pressed
 		case KeyEvent.KEYCODE_MENU:
 		case KeyEvent.KEYCODE_BACK:
@@ -770,9 +781,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
 			return;
 		}
-
-		float ACCELEROMETER_DEADZONE = 0.05f;
-		float ACCELEROMETER_MAX = 0.3f;
 		
 		float moveX = 0f;
 		
