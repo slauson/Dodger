@@ -73,7 +73,7 @@ public class PowerupBumper extends ActivePowerup {
 		// update rectDest
 		if (counter > 0) {
 			
-			counter-=2;
+			counter--;
 			
 			float factor = 2 - Math.abs(1f*COUNTER_MAX/2 - counter)/COUNTER_MAX*2;
 			
@@ -97,11 +97,11 @@ public class PowerupBumper extends ActivePowerup {
 	
 	public void activateBumper() {
 		if (counter != 0) {
-			if (counter > 5) {
+			if (counter > COUNTER_MAX/2) {
 				counter = COUNTER_MAX - counter;
 			}
 		} else {
-			counter = COUNTER_MAX + 1;
+			counter = COUNTER_MAX;
 		}
 	}
 }

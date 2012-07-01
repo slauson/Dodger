@@ -30,8 +30,14 @@ public abstract class Sprite extends Item {
 	 * Updates sprite's position based on direction, speed
 	 */
 	public void update(float speedModifier) {
-		x = x + (dirX*speed*speedModifier);
-		y = y + (MyGameView.gravity*dirY*speed*speedModifier);
+		
+		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
+		lastUpdateTime = System.currentTimeMillis();
+		
+		float timeModifier = 1.f*timeElapsed/1000;
+		
+		x = x + (dirX*speed*timeModifier*speedModifier);
+		y = y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
 	}
 
 }

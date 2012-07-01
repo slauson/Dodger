@@ -6,6 +6,7 @@ import com.slauson.dasher.objects.Asteroid;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.FloatMath;
 
 /**
  * Drill powerup that splits asteroids in half
@@ -14,7 +15,8 @@ import android.graphics.Paint;
  */
 public class PowerupDrill extends ActivePowerup {
 
-	private static final int SPEED = 10;
+	// constants
+	private static final int SPEED = 200;
 	private static final float WEIGHTED_DISTANCE_X_FACTOR = 2;
 	private static final float MAX_DIR_CHANGE = 0.05f;
 	private static final float CONE_CHECK_X_FACTOR = 1.5f;
@@ -69,7 +71,7 @@ public class PowerupDrill extends ActivePowerup {
 			return;
 		}
 		
-		float weightedDistance = (float)Math.sqrt(Math.pow(WEIGHTED_DISTANCE_X_FACTOR*distanceX, 2) + Math.pow(distanceY, 2));
+		float weightedDistance = FloatMath.sqrt((float)Math.pow(WEIGHTED_DISTANCE_X_FACTOR*distanceX, 2) + (float)Math.pow(distanceY, 2));
 
 		// update distance for next asteroid
 		if (asteroid.equals(nextAsteroid)) {
@@ -84,6 +86,11 @@ public class PowerupDrill extends ActivePowerup {
 	
 	@Override
 	public void update(float speedModifier) {
+		
+		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
+		lastUpdateTime = System.currentTimeMillis();
+		
+		float timeModifier = 1.f*timeElapsed/1000;
 		
 		// update direction based on next asteroid
 		if (nextAsteroid != null) {
@@ -108,12 +115,12 @@ public class PowerupDrill extends ActivePowerup {
 		}
 		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			y -= dirY*SPEED*speedModifier;
+			y -= dirY*SPEED*timeModifier*speedModifier;
 		} else {
-			y += dirY*SPEED*speedModifier;
+			y += dirY*SPEED*timeModifier*speedModifier;
 		}
 		
-		x += dirX*SPEED*speedModifier;
+		x += dirX*SPEED*timeModifier*speedModifier;
 	}
 	
 	@Override
@@ -126,7 +133,12 @@ public class PowerupDrill extends ActivePowerup {
 		
 		// rotate based on direction
 		canvas.save();
-		canvas.rotate(90*dirX, x, y);
+		
+		if (direction == MyGameView.DIRECTION_NORMAL) {
+			canvas.rotate(90*dirX, x, y);
+		} else {
+			canvas.rotate(-90*dirX, x, y);
+		}
 		
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 		

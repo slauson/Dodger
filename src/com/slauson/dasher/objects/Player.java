@@ -1,7 +1,6 @@
 package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.main.Configuration;
@@ -32,12 +31,14 @@ public class Player extends DrawObject {
 	private RectF dashPercentRect;
 	private RectF dashPercentRectSmall;
 	private int dashTimeout;
+	
+	private int invulnerabilityCounter;
 
 	/**
 	 * Public constants
 	 */
 	
-	public static final int MAX_SPEED = 25;
+	public static final int MAX_SPEED = 250;
 	
 	
 	/**
@@ -60,7 +61,7 @@ public class Player extends DrawObject {
 	private static final int PLAYER_HEIGHT = 32;
 	private static final int REAR_OFFSET = -6;
 	
-	private static final int INVULNERABLE_DURATION = 25;
+	private static final int INVULNERABLE_DURATION = 5000;
 	
 	private static final int DASH_TIMEOUT_DURATION = 100;
 	
@@ -102,6 +103,8 @@ public class Player extends DrawObject {
 		dashPercentRect = new RectF(-4, -2, 4, 6);
 		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
 		startTime = System.currentTimeMillis();
+		
+		invulnerabilityCounter = 0;
 	}
 	
 	/**
@@ -128,7 +131,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerable blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && counter % 3 == 0) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 3 == 0)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 3 == 0) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 3 == 0)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive()) {
@@ -151,11 +154,10 @@ public class Player extends DrawObject {
 			// breaking up
 			else if (status == STATUS_BREAKING_UP) {
 				int savedAlpha = paint.getAlpha();
-				paint.setAlpha((int)(255 * (1.0*counter/BREAKING_UP_DURATION)));
-				Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
+				paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
 				
-				while(lineSegmentIterator.hasNext()) {
-					lineSegmentIterator.next().draw(canvas, paint);
+				for (LineSegment lineSegment : lineSegments) {
+					lineSegment.draw(canvas, paint);
 				}
 				
 				paint.setAlpha(savedAlpha);	
@@ -167,6 +169,15 @@ public class Player extends DrawObject {
 
 	@Override
 	public void update() {
+		
+		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
+		lastUpdateTime = System.currentTimeMillis();
+		
+		float timeModifier = 1.f*timeElapsed/1000;
+
+		if (timeCounter > 0) {
+			timeCounter -= timeElapsed;
+		}
 		
 		if (status == STATUS_NORMAL || status == STATUS_INVULNERABLE) {
 		
@@ -180,17 +191,17 @@ public class Player extends DrawObject {
 					if (goX > x) {
 						dirX = 1;
 						
-						if (goX - x < MAX_SPEED) {
-							speedX = goX - x;
-						}
+//						if (goX - x < MAX_SPEED) {
+//							speedX = goX - x;
+//						}
 					}
 					// need to move left
 					else {
 						dirX = -1;
 						
-						if (x - goX < MAX_SPEED) {
-							speedX = x - goX;
-						}
+//						if (x - goX < MAX_SPEED) {
+//							speedX = x - goX;
+//						}
 					}
 				} else {
 					speedX = 0;
@@ -209,7 +220,12 @@ public class Player extends DrawObject {
 				}
 			}
 			
-			x = x + (dirX*speedX);
+			x = x + (dirX*speedX*timeModifier);
+			
+			// autocorrect position if we overshoot
+			if ((dirX > 0 && x > goX) || (dirX < 0 && x < goX)) {
+				x = goX;
+			}
 			
 			speedY = 0;
 			dirY = 0;
@@ -221,10 +237,10 @@ public class Player extends DrawObject {
 					
 					speedY = MAX_SPEED;
 					
-					if (y - Y_TOP <= MAX_SPEED) {
-						speedY = y - Y_TOP;
-						inPosition = true;
-					}
+//					if (y - Y_TOP <= MAX_SPEED) {
+//						speedY = y - Y_TOP;
+//						inPosition = true;
+//					}
 				}
 				// move from top to bottom
 				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 1) {
@@ -232,14 +248,23 @@ public class Player extends DrawObject {
 					
 					speedY = MAX_SPEED;
 					
-					if (Y_BOTTOM - y <= MAX_SPEED) {
-						speedY = Y_BOTTOM - y;
-						inPosition = true;
-					}
+//					if (Y_BOTTOM - y <= MAX_SPEED) {
+//						speedY = Y_BOTTOM - y;
+//						inPosition = true;
+//					}
+				}
+				
+				y = y + (dirY*speedY*timeModifier);
+				
+				// autocorrect position if we overshoot
+				if (dirY > 0 && y > Y_BOTTOM) {
+					y = Y_BOTTOM;
+					inPosition = true;
+				} else if (dirY < 0 && y < Y_TOP) {
+					y = Y_TOP;
+					inPosition = true;
 				}
 			}
-			
-			y = y + (dirY*speedY);
 			
 			// update dash timeout
 			if (dashTimeout > 0) {
@@ -248,28 +273,26 @@ public class Player extends DrawObject {
 
 			// update invulnerable timer
 			if (status == STATUS_INVULNERABLE) {
-				counter--;
+				invulnerabilityCounter++;
 
 				// make ship invulnerable for short period
-				if (counter < 0) {
+				if (timeCounter <= 0) {
 					status = STATUS_NORMAL;
 				}
 			}
 
 		}
 		else if (status == STATUS_BREAKING_UP) {
-			Iterator<LineSegment> lineSegmentIterator = lineSegments.iterator();
 			
-			while(lineSegmentIterator.hasNext()) {
-				lineSegmentIterator.next().update();
+			for (LineSegment lineSegment : lineSegments) {
+				lineSegment.update(timeModifier);
 			}
 			
-			counter--;
-
 			// make ship invulnerable for short period
-			if (counter < 0) {
+			if (timeCounter <= 0) {
+				//System.out.println("INVULNERABLE");
 				status = STATUS_INVULNERABLE;
-				counter = INVULNERABLE_DURATION;
+				timeCounter = INVULNERABLE_DURATION;
 			}
 		} 
 	}
@@ -318,7 +341,7 @@ public class Player extends DrawObject {
 		}
 		
 		status = STATUS_BREAKING_UP;
-		counter = BREAKING_UP_DURATION;
+		timeCounter = BREAKING_UP_DURATION;
 		
 		reset();
 	}
@@ -387,10 +410,10 @@ public class Player extends DrawObject {
 			float xDiff = x - asteroid.x;
 			float yDiff = y - asteroid.y;
 			
-			System.out.println("Player: " + x + ", " + y);
-			System.out.println("Asteroid: " + asteroid.x + ", " + asteroid.y);
+			//System.out.println("Player: " + x + ", " + y);
+			//System.out.println("Asteroid: " + asteroid.x + ", " + asteroid.y);
 			
-			System.out.println("Diff: " + xDiff + ", " + yDiff);
+			//System.out.println("Diff: " + xDiff + ", " + yDiff);
 			
 
 			// angle with respect to the asteroid
@@ -405,7 +428,7 @@ public class Player extends DrawObject {
 				angle += 2*Math.PI;
 			}
 			
-			System.out.println("Asteroid Angle: " + angle);
+			//System.out.println("Asteroid Angle: " + angle);
 
 			// get two closest asteroid points to angle
 			int asteroidPointsIndex = asteroid.getClosestPointsIndex(angle);

@@ -1,16 +1,12 @@
 package com.slauson.dasher.game;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import com.slauson.dasher.main.Configuration;
-import com.slauson.dasher.main.Instructions;
-import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.objects.Asteroid;
-import com.slauson.dasher.objects.DrawObject;
 import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.objects.Player;
 import com.slauson.dasher.powerups.ActivePowerup;
@@ -24,7 +20,6 @@ import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.R;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -50,8 +45,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Debugging stuff
 	 */
 	
-	private int debugPowerupType = POWERUP_NONE;
+	private int debugPowerupType = POWERUP_WHITE_HOLE;
 	private String debugText = "";
+	private int debugLevel = 0;
 
 	
 	/**
@@ -83,6 +79,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// for swipe-based dodging
 	private float touchDownY;
+	
+	private Level level;
 
 	
 	/**
@@ -100,7 +98,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int R_POWERUP_INVULNERABLE = R.drawable.powerup_invulnerable;
 	
 	// asteroid
-	private static final int ASTEROID_COUNT = 25;
+	//private static final int ASTEROID_COUNT = 25;
 	//private static final int ASTEROID_SIZE = 32;
 	
 	// mode
@@ -108,8 +106,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int MODE_RUNNING = 1;
 	
 	// drops
-	private static final float DROP_CHANCE = 0.5f;
-	private static final int DROP_SPEED = 5;
+	private static final float DROP_CHANCE = 1f;
 	
 	// powerup durations
 	private static final int SLOW_DURATION = 10000;
@@ -200,10 +197,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// TODO Auto-generated method stub
 		
 	}
-	
-	public void setDebugText(String str) {
-		debugText = str;
-	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
 		canvasWidth = getWidth();
@@ -224,9 +217,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		getHolder().addCallback(this);
 		
 		// Create and start background Thread
-		myGameThread = new MyGameThread(this, 50);
+		myGameThread = new MyGameThread(this);
 		myGameThread.setRunning(true);
 		myGameThread.start();
+		
 	}
 	
 	public void MyGameSurfaceView_OnPause() {
@@ -258,10 +252,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// draw active powerups
 		synchronized (activePowerups) {
-			Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
-		
-			while (activePowerupIterator.hasNext()) {
-				activePowerupIterator.next().draw(canvas, paint);
+			for (ActivePowerup activePowerup : activePowerups) {
+				activePowerup.draw(canvas, paint);
 			}
 		}
 		
@@ -270,14 +262,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		paint.setColor(ASTEROID_PAINT_COLOR);
 		synchronized (asteroids) {
 		
-			Iterator<Asteroid> asteroidIterator = asteroids.iterator();
-			
 			paint.setStrokeWidth(2);
 			paint.setColor(Color.WHITE);
 			paint.setStyle(Style.STROKE);
-	
-			while (asteroidIterator.hasNext()) {
-				asteroidIterator.next().draw(canvas, paint);
+
+			for (Asteroid asteroid : asteroids) {
+				asteroid.draw(canvas, paint);
 			}
 		}
 		
@@ -286,12 +276,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		paint.setColor(PLAYER_PAINT_COLOR);
 		player.draw(canvas, paint);
 		
-		// draw powerups
+		// draw drops
 		synchronized (drops) {
-			Iterator<Drop> dropIterator = drops.iterator();
-		
-			while (dropIterator.hasNext()) {
-				dropIterator.next().draw(canvas, paint);
+			for (Drop drop : drops) {
+				drop.draw(canvas, paint);
 			}
 		}
 
@@ -345,6 +333,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
 			
+			level = new Level(debugLevel);
+			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			random = new Random();		
 			
@@ -357,8 +347,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						
 			player = new Player();
 			
-			for (int i = 0; i < ASTEROID_COUNT; i++) {
-				asteroids.add(new Asteroid());
+			int radius;
+			float speed;
+			
+			for (int i = 0; i < level.getNumAsteroids(); i++) {
+				
+				radius = level.getAsteroidRadiusMin() + random.nextInt(level.getAsteroidRadiusOffset() + 1);
+				speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
+				
+				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
 			}
 			
 			initialized = true;
@@ -384,20 +381,19 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				// reset asteroid off screen (include non-visible, non-intact asteroids here)
 				if (direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
-					temp.reset();
+					resetAsteroid(temp);
 				} else if (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0) {
-					temp.reset();
+					resetAsteroid(temp);
+				}
+				
+				// don't do anything for asteroids not on screen
+				if (!temp.onScreen()) {
+					continue;
 				}
 				
 				// alter asteroid for each active powerup
 				synchronized (activePowerups) {
-					Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
-					ActivePowerup activePowerup;
-				
-					while (activePowerupIterator.hasNext()) {
-						activePowerup = activePowerupIterator.next();
-					
-						// check for magnet powerups
+					for (ActivePowerup activePowerup : activePowerups) {
 						activePowerup.alterAsteroid(temp);
 					}
 				}
@@ -411,14 +407,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						if (player.inPosition()) {
 							player.breakup();
 							temp.breakup();
+							level.reset();
+							resetAsteroids();
 						} else {
 							temp.breakup();
+							dropPowerup(temp.getX(), temp.getY());
 						}
 					}
 				}
 				
 				// check collisions with other asteroids
-				for(int j = 0; j < asteroids.size(); j++) {
+				/*for(int j = 0; j < asteroids.size(); j++) {
 					
 					// don't check collision with self
 					if (i == j) {
@@ -434,7 +433,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						
 						dropPowerup(temp.getX(), temp.getY());
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -466,7 +465,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 				
 				// check collision with player
-				if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive() && temp.checkBoxCollision(player)) {
+				if (player.getStatus() == Player.STATUS_NORMAL && temp.isVisible() && temp.checkBoxCollision(player)) {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
@@ -503,12 +502,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 					// alter falling powerup for each active powerup
 					synchronized (activePowerups) {
-						Iterator<ActivePowerup> powerupIterator = activePowerups.iterator();
-						ActivePowerup activePowerup;
-					
-						while (powerupIterator.hasNext()) {
-							activePowerup = powerupIterator.next();
-						
+						for (ActivePowerup activePowerup : activePowerups) {
 							// TODO: use something better here
 							if (activePowerup instanceof PowerupBumper) {
 								((PowerupBumper)activePowerup).alterSprite(temp);
@@ -543,12 +537,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 					// alter active powerup for each active powerup
 					synchronized (activePowerups) {
-						Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
-						ActivePowerup activePowerup;
-					
-						while (activePowerupIterator.hasNext()) {
-							activePowerup = activePowerupIterator.next();
 						
+						for (ActivePowerup activePowerup : activePowerups) {
 							// TODO: use something better here
 							if (activePowerup instanceof PowerupBumper && activePowerups.get(i) instanceof PowerupDrill) {
 								((PowerupBumper)activePowerup).alterDrill((PowerupDrill)activePowerups.get(i));
@@ -564,8 +554,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.update();
 		
 		//System.out.println("updatePlayer(): " + direction + " - " + player.getDirection() + ", " + gravity + " - " + player.getGravity());
-		
-		debugText = "" + player.getSpeed();
 		
 		// check player bounds
 		if (player.getX() - player.getWidth()/2 < 0) {
@@ -590,12 +578,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// alter player for each active powerup
 		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive()) {
 			synchronized (activePowerups) {
-				Iterator<ActivePowerup> activePowerupIterator = activePowerups.iterator();
-				ActivePowerup activePowerup;
-			
-				while (activePowerupIterator.hasNext()) {
-					activePowerup = activePowerupIterator.next();
-				
+				for (ActivePowerup activePowerup : activePowerups) {
 					// TODO: use something better here
 					if (activePowerup instanceof PowerupBumper) {
 						((PowerupBumper)activePowerup).alterPlayer(player);
@@ -617,6 +600,23 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			if (bombCounter == BOMB_COUNTER_MAX/2) {
 				activateBomb();
+			}
+		}
+		
+		debugText = "" + player.getSpeed() + " - level " + level.getLevel();
+		
+		if (level.update()) {
+			// add more asteroids if necessary
+			int numAsteroidsToAdd = level.getNumAsteroids() - asteroids.size();
+			int radius;
+			float speed;
+			
+			for (int i = 0; i < numAsteroidsToAdd; i++) {
+				
+				radius = level.getAsteroidRadiusMin() + random.nextInt(level.getAsteroidRadiusOffset() + 1);
+				speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
+				
+				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
 			}
 		}
 
@@ -803,7 +803,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		moveX = ((tx - ACCELEROMETER_DEADZONE)/ACCELEROMETER_MAX)*Player.MAX_SPEED;
 		player.setSpeed(moveX);
 		//player.setSpeed(move);
-    	setDebugText("" + tx);
+    	//debugText = debugText + tx;
 	}
 	
 	/**
@@ -853,7 +853,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 			
 			Drop drop= new Drop(BitmapFactory.decodeResource(getResources(), r_powerup), x, y, powerup);
-			drop.setSpeed(DROP_SPEED);
 			
 			drops.add(drop);		
 		}
@@ -864,10 +863,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	private void activateBomb() {
 		// destroy all on-screen asteroids
-		Iterator<Asteroid> asteroidIterator = asteroids.iterator();
-		
-		while (asteroidIterator.hasNext()) {
-			asteroidIterator.next().fadeOut();
+		for (Asteroid asteroid : asteroids) {
+			asteroid.fadeOut();
 		}
 		
 		// destroy all falling powerups
@@ -875,6 +872,24 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// destroy all active powerups
 		activePowerups.clear();
+	}
+	
+	private void resetAsteroid(Asteroid asteroid) {
+		int radius = level.getAsteroidRadiusMin() + random.nextInt(level.getAsteroidRadiusOffset() + 1);
+		float speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
 		
+		asteroid.reset(radius, speed, level.hasAsteroidHorizontalMovement());
+	}
+	
+	private void resetAsteroids() {
+		int numAsteroids = level.getNumAsteroids();
+		
+		while (asteroids.size() > numAsteroids) {
+			asteroids.remove(asteroids.size()-1);
+		}
+		
+		for (Asteroid asteroid : asteroids) {
+			resetAsteroid(asteroid);
+		}
 	}
 }

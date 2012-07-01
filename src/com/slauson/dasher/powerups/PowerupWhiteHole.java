@@ -17,6 +17,7 @@ public class PowerupWhiteHole extends ActivePowerup {
 	private static final int MAX_RANGE = 200;
 	private static final int SUCK_RANGE = 50;
 	private static final int ROTATION_SPEED = 10;
+	private static final int ASTEROID_SPEED = 100;
 
 	private int rotation;
 	
@@ -78,6 +79,7 @@ public class PowerupWhiteHole extends ActivePowerup {
 								
 				asteroid.setDirX(asteroidDirX);
 				asteroid.setDirY(asteroidDirY);
+				asteroid.setSpeed(ASTEROID_SPEED);
 			} 
 			// pull asteroid towards white hole
 			else if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
@@ -103,7 +105,11 @@ public class PowerupWhiteHole extends ActivePowerup {
 	
 	@Override
 	public void update(float speedModifier) {
-		rotation += ROTATION_SPEED*speedModifier;
+		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+			rotation += ROTATION_SPEED*speedModifier;
+		} else {
+			rotation -= ROTATION_SPEED*speedModifier;
+		}
 	}
 	
 	@Override

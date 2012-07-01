@@ -17,6 +17,8 @@ public abstract class Item {
 	protected float dirX, dirY;
 	protected float speed;
 	
+	protected long lastUpdateTime;
+	
 	public Item(float x, float y, int width, int height) {
 		this.x = x;
 		this.y = y;
@@ -27,6 +29,8 @@ public abstract class Item {
 		this.dirX = 0;
 		this.dirY = 0;
 		this.speed = 0;
+		
+		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
 	/**

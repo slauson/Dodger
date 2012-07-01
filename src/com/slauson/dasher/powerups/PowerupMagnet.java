@@ -6,6 +6,7 @@ import com.slauson.dasher.objects.Asteroid;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.FloatMath;
 
 /**
  * Magnet powerup that attracts powerups
@@ -14,7 +15,7 @@ import android.graphics.Paint;
  */
 public class PowerupMagnet extends ActivePowerup {
 	
-	private static final int MAX_RANGE = 200;
+	private static final int MAX_RANGE = 100;
 	
 	private int direction;
 	
@@ -56,7 +57,7 @@ public class PowerupMagnet extends ActivePowerup {
 			return;
 		}
 				
-		float distance = (float)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+		float distance = FloatMath.sqrt((float)Math.pow(distanceX, 2) + (float)Math.pow(distanceY, 2));
 		
 		if (distance < MAX_RANGE) {
 			
@@ -72,7 +73,7 @@ public class PowerupMagnet extends ActivePowerup {
 				dirY = 0;
 			}
 			
-			float pullFactor = 1f - (1.0f*distance/MAX_RANGE);
+			float pullFactor = 0.5f - (0.5f*distance/MAX_RANGE);
 			
 			float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 			float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;

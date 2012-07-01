@@ -15,7 +15,7 @@ public abstract class DrawObject extends Item {
 	protected ArrayList<LineSegment> lineSegments;
 	
 	protected int status;
-	protected int counter;
+	protected long timeCounter;
 
 	// constants
 	public static final int STATUS_NORMAL = 0;
@@ -27,18 +27,18 @@ public abstract class DrawObject extends Item {
 	public static final int STATUS_INVULNERABLE = 6;
 
 
-	protected static final int BREAKING_UP_DURATION = 50;
-	protected static final float BREAKING_UP_MOVE = 1f;
+	protected static final int BREAKING_UP_DURATION = 2500;
+	protected static final float BREAKING_UP_MOVE = 20;
 	protected static final float DISAPPEARING_FACTOR = 0.25f;
-	protected static final int FADING_OUT_DURATION = 10;
-	protected static final int SPLITTING_UP_DURATION = 50;
-	protected static final float SPLITTING_UP_FACTOR = 0.5f;
+	protected static final int FADING_OUT_DURATION = 2500;
+	protected static final int SPLITTING_UP_DURATION = 2500;
+	protected static final float SPLITTING_UP_OFFSET = 50;
 	
 	public DrawObject(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		
 		status = STATUS_NORMAL;
-		counter = 0;
+		timeCounter = 0;
 	}
 	
 

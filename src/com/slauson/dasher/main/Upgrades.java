@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 public class Upgrades {
 	
 	// TODO: transfer levels into powerups themselves, then compare against constants
+	// TODO: have description string of each upgrade?
 
 	// constants to represent what powerup upgrade levels mean
 	public static int DASH_UPGRADE_REDUCED_RECHARGE_1 = 1;
