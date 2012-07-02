@@ -1,7 +1,6 @@
 package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 
 import com.slauson.dasher.game.MyGameView;
@@ -38,18 +37,23 @@ public class Asteroid extends DrawObject {
 	
 	private static final float RADIUS_OFFSET = 0.25f;
 	private static final float HORIZONTAL_MOVEMENT_OFFSET = 0.25f;
-	
-//	private static final int RADIUS_MIN = 8;
-//	private static final int RADIUS_AVG = 12;
-//	private static final int RADIUS_MAX = 16;
-//
-//	private static final int MIN_SPEED = 5;
-//	private static final int MAX_SPEED = 10;
+	private static final float SPEED_INVISIBLE = 100;
 
 	public Asteroid(int radius, float speed, boolean horizontalMovement) {
 		super(0, 0, radius, radius);
 		
 		this.random = new Random();
+		
+		int numPoints = NUM_POINTS_MIN + random.nextInt(NUM_POINTS_MAX - NUM_POINTS_MIN - 1);
+		
+		points = new float[numPoints*4];
+		altPoints = new float[numPoints*4];
+		angles = new double[numPoints];
+		lineSegments = new ArrayList<LineSegment>();
+		
+		for (int i = 0; i < numPoints; i++) {
+			lineSegments.add(new LineSegment(0, 0, 0, 0));
+		}
 
 		reset(radius, speed, horizontalMovement);
 	}
@@ -65,7 +69,13 @@ public class Asteroid extends DrawObject {
 			dirX = -HORIZONTAL_MOVEMENT_OFFSET + (2*HORIZONTAL_MOVEMENT_OFFSET*random.nextFloat());
 		}
 		
-		createRandomPoints();
+		// clear out arrays of points
+		for (int i = 0; i < points.length; i++) {
+			points[i] = 0;
+			altPoints[i] = 0;
+		}
+		
+		resetRandomPoints();
 		
 		reset();
 	}
@@ -85,16 +95,6 @@ public class Asteroid extends DrawObject {
 		factor = 1;
 		
 		status = STATUS_NORMAL;
-	}
-	
-	private void createRandomPoints() {
-		
-		int numPoints = NUM_POINTS_MIN + random.nextInt(NUM_POINTS_MAX - NUM_POINTS_MIN - 1);
-		
-		points = new float[numPoints*4];
-		angles = new double[numPoints];
-
-		resetRandomPoints();
 	}
 	
 	private void resetRandomPoints() {
@@ -146,11 +146,16 @@ public class Asteroid extends DrawObject {
 	public void breakup() {
 		if (status == STATUS_NORMAL) {
 			
-			lineSegments = new ArrayList<LineSegment>();
-
+			LineSegment lineSegment;
+			
 			for (int i = 0; i < points.length; i+=4) {
 			
-				LineSegment temp = new LineSegment(x + points[i], y + points[i+1], x + points[i+2], y + points[i+3]);
+				lineSegment = lineSegments.get(i/4);
+				
+				lineSegment.x1 = x + points[i];
+				lineSegment.y1 = y + points[i+1];
+				lineSegment.x2 = x + points[i+2];
+				lineSegment.y2 = y + points[i+3];
 				
 				// need to get perpendicular (these are opposite on purpose)
 				float yDiff = Math.abs(points[i] - points[i+2]);
@@ -159,19 +164,17 @@ public class Asteroid extends DrawObject {
 				yDiff += Math.abs(dirY)*speed;
 				xDiff += Math.abs(dirX)*speed;
 				
-				lineSegments.add(temp);
-				
-				temp.move = BREAKING_UP_MOVE;
+				lineSegment.move = BREAKING_UP_MOVE;
 				
 				// x direction is sometimes positive
 				if (points[i] < 0) {
-					temp.dirX = (-xDiff/(xDiff + yDiff));
+					lineSegment.dirX = (-xDiff/(xDiff + yDiff));
 				} else {
-					temp.dirX = (xDiff/(xDiff + yDiff));
+					lineSegment.dirX = (xDiff/(xDiff + yDiff));
 				}
 				
 				// y direction is always positive
-				temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
+				lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			}
 			
 			status = STATUS_BREAKING_UP;
@@ -184,7 +187,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_DISAPPEARING;
 			
 			// create temporary array of points so we can shrink the asteroid
-			altPoints = new float[points.length];
+			//altPoints = new float[points.length];
 			
 			System.arraycopy(points, 0, altPoints, 0, points.length);
 		}
@@ -203,7 +206,7 @@ public class Asteroid extends DrawObject {
 			timeCounter = SPLITTING_UP_DURATION;
 			
 			// left half points (4 extra for perfect split)
-			altPoints = new float[leftPoints*4 + 4];
+			//altPoints = new float[leftPoints*4 + 4];
 			
 			int indexRight = 2, indexLeft = 0;
 			boolean leftSwitch = false, rightSwitch = false;
@@ -350,7 +353,7 @@ public class Asteroid extends DrawObject {
 				canvas.save();
 				canvas.translate(x - ((1.f*SPLITTING_UP_DURATION - timeCounter)/SPLITTING_UP_DURATION)*SPLITTING_UP_OFFSET,  y);
 
-				canvas.drawLines(altPoints, paint);
+				canvas.drawLines(altPoints, 0, leftPoints*4+4, paint);
 				
 				canvas.restore();
 				paint.setAlpha(savedAlpha);
@@ -385,7 +388,7 @@ public class Asteroid extends DrawObject {
 			}
 			
 			if (timeCounter <= 0) {
-				status = STATUS_INVISIBLE;
+				setInvisible();
 			}
 		}
 		// disappearing asteroid
@@ -416,6 +419,10 @@ public class Asteroid extends DrawObject {
 	
 	public void setInvisible() {
 		status = STATUS_INVISIBLE;
+		
+		speed = SPEED_INVISIBLE;
+		dirX = 0;
+		dirY = 1;
 	}
 	
 	public void setFactor(float factor) {

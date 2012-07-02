@@ -38,12 +38,10 @@ public class MyAccelerometer implements SensorEventListener {
 		sensorManager.unregisterListener(this);
 	}
 	
-	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void onSensorChanged(SensorEvent event) {
 		/*
 		 * event.values[0]: azimuth, rotation around the z-axis
@@ -56,5 +54,4 @@ public class MyAccelerometer implements SensorEventListener {
 		
 		parent.updateAccelerometer(valueAzimuth/maximumRange, -valuePitch/maximumRange);
 	}
-
 }

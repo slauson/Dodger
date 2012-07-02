@@ -165,4 +165,8 @@ public abstract class Item {
 	public boolean onScreen() {
 		return y + height/2 > 0 && y - height/2 < MyGameView.canvasHeight;
 	}
+	
+	public void resetUpdateTime() {
+		lastUpdateTime = System.currentTimeMillis();
+	}
 }

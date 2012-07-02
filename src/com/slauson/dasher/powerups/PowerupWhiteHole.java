@@ -18,7 +18,7 @@ public class PowerupWhiteHole extends ActivePowerup {
 	private static final int SUCK_RANGE = 50;
 	private static final int ROTATION_SPEED = 10;
 	private static final int ASTEROID_SPEED = 100;
-
+	
 	private int rotation;
 	
 	public PowerupWhiteHole(Bitmap bitmap, float x, float y, int duration) {
@@ -115,13 +115,34 @@ public class PowerupWhiteHole extends ActivePowerup {
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		
+		// fade out
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
+			
+			if (alpha < 0) {
+				alpha = 0;
+			}
+			paint.setAlpha(alpha);
+		}
+		
 		// rotate
 		canvas.save();
 		canvas.rotate(rotation, x, y);
 		
-		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
+		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
+		} else {
+			// flip vertically
+			canvas.scale(1, -1, x, y);
+			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
+		}
 		
 		// unrotate
 		canvas.restore();
+		
+		// restore alpha
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			paint.setAlpha(255);
+		}
 	}
 }

@@ -3,7 +3,7 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 
 import com.slauson.dasher.game.MyGameView;
-import com.slauson.dasher.main.Configuration;
+import com.slauson.dasher.status.Configuration;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -63,7 +63,7 @@ public class Player extends DrawObject {
 	
 	private static final int INVULNERABLE_DURATION = 5000;
 	
-	private static final int DASH_TIMEOUT_DURATION = 100;
+	private static final int DASH_TIMEOUT_DURATION = 15000;
 	
 	public Player() {
 		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -102,6 +102,13 @@ public class Player extends DrawObject {
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-4, -2, 4, 6);
 		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
+		
+		lineSegments = new ArrayList<LineSegment>();
+		
+		for(int i = 0; i < points.length; i+=4) {
+			lineSegments.add(new LineSegment(0, 0, 0, 0));
+		}
+		
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
@@ -131,7 +138,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerable blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 3 == 0) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 3 == 0)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 4 < 2)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive()) {
@@ -190,18 +197,10 @@ public class Player extends DrawObject {
 					// need to move right
 					if (goX > x) {
 						dirX = 1;
-						
-//						if (goX - x < MAX_SPEED) {
-//							speedX = goX - x;
-//						}
 					}
 					// need to move left
 					else {
 						dirX = -1;
-						
-//						if (x - goX < MAX_SPEED) {
-//							speedX = x - goX;
-//						}
 					}
 				} else {
 					speedX = 0;
@@ -234,24 +233,12 @@ public class Player extends DrawObject {
 			if (!inPosition) {
 				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 1) {
 					dirY = -1;
-					
 					speedY = MAX_SPEED;
-					
-//					if (y - Y_TOP <= MAX_SPEED) {
-//						speedY = y - Y_TOP;
-//						inPosition = true;
-//					}
 				}
 				// move from top to bottom
 				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 1) {
-					dirY = 1;
-					
+					dirY = 1;	
 					speedY = MAX_SPEED;
-					
-//					if (Y_BOTTOM - y <= MAX_SPEED) {
-//						speedY = Y_BOTTOM - y;
-//						inPosition = true;
-//					}
 				}
 				
 				y = y + (dirY*speedY*timeModifier);
@@ -268,7 +255,7 @@ public class Player extends DrawObject {
 			
 			// update dash timeout
 			if (dashTimeout > 0) {
-				dashTimeout--;
+				dashTimeout-=timeElapsed;
 			}
 
 			// update invulnerable timer
@@ -301,7 +288,6 @@ public class Player extends DrawObject {
 	 * Breaks up ship into line segments
 	 */
 	public void breakup() {
-		lineSegments = new ArrayList<LineSegment>();
 		
 		float modifier = 1f;
 		
@@ -309,9 +295,16 @@ public class Player extends DrawObject {
 			modifier = 0.5f;
 		}
 		
+		LineSegment lineSegment;
+		
 		for (int i = 0; i < points.length; i+=4) {
 			
-			LineSegment temp = new LineSegment(modifier*points[i], modifier*points[i+1], modifier*points[i+2], modifier*points[i+3]);
+			lineSegment = lineSegments.get(i/4);
+			
+			lineSegment.x1 = modifier*points[i];
+			lineSegment.y1 = modifier*points[i+1];
+			lineSegment.x2 = modifier*points[i+2];
+			lineSegment.y2 = modifier*points[i+3];
 			
 			// need to get perpendicular (these are opposite on purpose)
 			float yDiff = Math.abs(points[i] - points[i+2]);
@@ -320,23 +313,21 @@ public class Player extends DrawObject {
 			yDiff += Math.abs(dirY)*speed;
 			xDiff += Math.abs(dirX)*speed;
 			
-			lineSegments.add(temp);
-			
-			temp.move = BREAKING_UP_MOVE;
+			lineSegment.move = BREAKING_UP_MOVE;
 			
 			// x direction is sometimes positive
 			if (points[i] < 0 || points[i+2] < 0) {
-				temp.dirX = (-xDiff/(xDiff + yDiff));
+				lineSegment.dirX = (-xDiff/(xDiff + yDiff));
 			} else {
-				temp.dirX = (xDiff/(xDiff + yDiff));
+				lineSegment.dirX = (xDiff/(xDiff + yDiff));
 			}
 			
 			// y direction is always positive
-			temp.dirY = (yDiff/(xDiff + yDiff)) + 1;
+			lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			
 			// reverse direction
 			if (direction == MyGameView.DIRECTION_REVERSE) {
-				temp.dirY *= -1;
+				lineSegment.dirY *= -1;
 			}
 		}
 		

@@ -125,6 +125,17 @@ public class PowerupDrill extends ActivePowerup {
 	
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
+		
+		// fade out
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
+			
+			if (alpha < 0) {
+				alpha = 0;
+			}
+			paint.setAlpha(alpha);
+		}
+
 		// rotate if needed
 		if (direction == MyGameView.DIRECTION_REVERSE) {
 			canvas.save();
@@ -147,6 +158,11 @@ public class PowerupDrill extends ActivePowerup {
 		// unrotate
 		if (direction == MyGameView.DIRECTION_REVERSE) {
 			canvas.restore();
+		}
+		
+		// restore alpha
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			paint.setAlpha(255);
 		}
 	}
 	

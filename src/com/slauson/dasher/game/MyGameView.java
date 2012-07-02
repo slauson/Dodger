@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import com.slauson.dasher.main.Configuration;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.objects.Player;
@@ -17,6 +16,7 @@ import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
 import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
+import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.R;
 
 import android.content.Context;
@@ -45,7 +45,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Debugging stuff
 	 */
 	
-	private int debugPowerupType = POWERUP_WHITE_HOLE;
+	private int debugPowerupType = POWERUP_NONE;
 	private String debugText = "";
 	private int debugLevel = 0;
 
@@ -303,6 +303,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		canvas.drawText(durationText + "    " + debugText, 0, canvasHeight, paint);
 	}
 	
+	/**
+	 * Update surface view
+	 * @return true on success, false otherwise
+	 */
 	public boolean updateSurfaceView() {
 		
 		// the function run in background thread, not ui thread
@@ -328,6 +332,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		return true;
 	}
 	
+	/**
+	 * Initialize game view
+	 */
 	private void init() {
 		
 		// initialize stuff
@@ -362,6 +369,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Update asteroids
+	 */
 	public void updateAsteroids() {
 		
 		synchronized (asteroids) {
@@ -438,6 +448,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Update drops and powerup
+	 */
 	public void updatePowerups() {
 		
 		synchronized (drops) {
@@ -550,6 +563,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Update player
+	 */
 	public void updatePlayer() {
 		player.update();
 		
@@ -588,10 +604,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Update game status
+	 */
 	public void updateStates() {
 		
 		if (!initialized) {
 			init();
+			return;
+		}
+		
+		if (gameMode == MODE_PAUSED) {
 			return;
 		}
 		
@@ -752,16 +775,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		case KeyEvent.KEYCODE_SPACE:
 			player.dash();
 			break;
-		// pause game when menu/back/search is pressed
-		case KeyEvent.KEYCODE_MENU:
-		case KeyEvent.KEYCODE_BACK:
-		case KeyEvent.KEYCODE_SEARCH:
-			if (gameMode == MODE_PAUSED) {
-				gameMode = MODE_RUNNING;
-			} else {
-				gameMode = MODE_PAUSED;
-			}
-			break;
 		}
 	}
 	
@@ -804,6 +817,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.setSpeed(moveX);
 		//player.setSpeed(move);
     	//debugText = debugText + tx;
+	}
+	
+	public void togglePause(boolean paused) {
+		if (paused) {
+			gameMode = MODE_PAUSED;
+		} else {
+			gameMode = MODE_RUNNING;
+			
+			// reset all update times
+			resetUpdateTimes();
+		}
 	}
 	
 	/**
@@ -890,6 +914,22 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		for (Asteroid asteroid : asteroids) {
 			resetAsteroid(asteroid);
+		}
+	}
+	
+	private void resetUpdateTimes() {
+		player.resetUpdateTime();
+		
+		for (Asteroid asteroid : asteroids) {
+			asteroid.resetUpdateTime();
+		}
+		
+		for (Drop drop : drops) {
+			drop.resetUpdateTime();
+		}
+		
+		for (ActivePowerup activePowerup: activePowerups) {
+			activePowerup.resetUpdateTime();
 		}
 	}
 }

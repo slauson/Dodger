@@ -2,6 +2,7 @@ package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.MyGameActivity;
+import com.slauson.dasher.status.Configuration;
 
 import android.app.Activity;
 import android.content.Context;

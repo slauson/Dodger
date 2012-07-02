@@ -88,10 +88,25 @@ public class PowerupBumper extends ActivePowerup {
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		
+		// fade out
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
+			
+			if (alpha < 0) {
+				alpha = 0;
+			}
+			paint.setAlpha(alpha);
+		}
+		
 		if (counter > 0) {
 			canvas.drawBitmap(bitmapAlt, null, rectDest, paint);
 		} else {
 			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
+		}
+		
+		// restore alpha
+		if (remainingDuration() < FADE_OUT_DURATION) {
+			paint.setAlpha(255);
 		}
 	}
 	

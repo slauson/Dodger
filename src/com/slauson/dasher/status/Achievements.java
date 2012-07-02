@@ -1,4 +1,4 @@
-package com.slauson.dasher.main;
+package com.slauson.dasher.status;
 
 import android.content.SharedPreferences;
 

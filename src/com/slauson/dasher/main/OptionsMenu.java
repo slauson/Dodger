@@ -1,6 +1,7 @@
 package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.status.Configuration;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;

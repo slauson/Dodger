@@ -16,6 +16,8 @@ public abstract class ActivePowerup extends Sprite {
 	// ending time of powerup
 	protected long endingTime;
 	
+	protected static final int FADE_OUT_DURATION = 1000;
+	
 	public ActivePowerup(Bitmap bitmap, float x, float y) {
 		super(bitmap, x, y);
 		
@@ -33,6 +35,10 @@ public abstract class ActivePowerup extends Sprite {
 	 */
 	public boolean isActive() {
 		return System.currentTimeMillis() < endingTime;
+	}
+	
+	public long remainingDuration() {
+		return endingTime - System.currentTimeMillis();
 	}
 	
 	/**
