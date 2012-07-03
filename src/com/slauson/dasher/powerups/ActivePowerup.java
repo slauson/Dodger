@@ -16,12 +16,16 @@ public abstract class ActivePowerup extends Sprite {
 	// ending time of powerup
 	protected long endingTime;
 	
+	// number of affected asteroids
+	protected int numAffectedAsteroids;
+	
 	protected static final int FADE_OUT_DURATION = 1000;
 	
 	public ActivePowerup(Bitmap bitmap, float x, float y) {
 		super(bitmap, x, y);
 		
 		endingTime = 0;
+		numAffectedAsteroids = 0;
 	}
 	
 	@Override
@@ -48,10 +52,20 @@ public abstract class ActivePowerup extends Sprite {
 		endingTime = System.currentTimeMillis() + duration;
 	}
 	
+	public int getNumAffectedAsteroids() {
+		return numAffectedAsteroids;
+	}
+	
 	// abstract methods to be defined in subclasses
 	/**
 	 * Alters asteroid's path
 	 * @param asteroid asteroid to alter
 	 */
 	public abstract void alterAsteroid(Asteroid asteroid);
+	
+	/**
+	 * Checks any powerup-related achievements
+	 */
+	// TODO: save any new achievments somewhere
+	public abstract void checkAchievements();
 }

@@ -3,7 +3,9 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 
 import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.GlobalStatistics;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,6 +33,7 @@ public class Player extends DrawObject {
 	private RectF dashPercentRect;
 	private RectF dashPercentRectSmall;
 	private int dashTimeout;
+	private int numAffectedAsteroids;
 	
 	private int invulnerabilityCounter;
 
@@ -102,6 +105,7 @@ public class Player extends DrawObject {
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-4, -2, 4, 6);
 		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
+		numAffectedAsteroids = 0;
 		
 		lineSegments = new ArrayList<LineSegment>();
 		
@@ -118,7 +122,8 @@ public class Player extends DrawObject {
 	 * Resets timer
 	 */
 	public void reset() {
-		this.startTime = System.currentTimeMillis();
+		GlobalStatistics.timePlayed += (System.currentTimeMillis() - startTime)/1000;
+		startTime = System.currentTimeMillis();
 	}
 	
 	@Override
@@ -231,12 +236,12 @@ public class Player extends DrawObject {
 			
 			// move from bottom to top
 			if (!inPosition) {
-				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 1) {
+				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 0) {
 					dirY = -1;
 					speedY = MAX_SPEED;
 				}
 				// move from top to bottom
-				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 1) {
+				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 0) {
 					dirY = 1;	
 					speedY = MAX_SPEED;
 				}
@@ -244,12 +249,14 @@ public class Player extends DrawObject {
 				y = y + (dirY*speedY*timeModifier);
 				
 				// autocorrect position if we overshoot
-				if (dirY > 0 && y > Y_BOTTOM) {
+				if (dirY > 0 && y >= Y_BOTTOM) {
 					y = Y_BOTTOM;
 					inPosition = true;
-				} else if (dirY < 0 && y < Y_TOP) {
+					checkAchievements();
+				} else if (dirY < 0 && y <= Y_TOP) {
 					y = Y_TOP;
 					inPosition = true;
+					checkAchievements();
 				}
 			}
 			
@@ -643,6 +650,7 @@ public class Player extends DrawObject {
 		
 		if (dashTimeout <= 0) {
 			inPosition = false;
+			numAffectedAsteroids = 0;
 		
 			if (direction == MyGameView.DIRECTION_NORMAL) {
 				direction = MyGameView.DIRECTION_REVERSE;
@@ -668,5 +676,29 @@ public class Player extends DrawObject {
 	 */
 	public float getGravity() {
 		return 1 - 2 * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);
+	}
+	
+	public void affectedAsteroid() {
+		numAffectedAsteroids++;
+	}
+	
+	private void checkAchievements() {
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+				!Achievements.localDestroyAsteroidsWithDash1.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithDash1.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+				!Achievements.localDestroyAsteroidsWithDash2.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithDash2.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+				!Achievements.localDestroyAsteroidsWithDash3.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithDash3.setValue(true);
+		}
 	}
 }

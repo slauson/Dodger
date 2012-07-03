@@ -11,8 +11,8 @@ public class GlobalStatistics {
 
 	// constants
 	private static final String TIME_PLAYED = "statistics_time_played";
-	private static final String ASTEROIDS_DESTROYED_TOTAL = "statistics_asteroids_destroyed_total";
-	private static final String ASTEROIDS_DESTROYED_BY_COLLISION = "statistics_asteroids_destroyed_by_collision";
+	//private static final String ASTEROIDS_DESTROYED_TOTAL = "statistics_asteroids_destroyed_total";
+	//private static final String ASTEROIDS_DESTROYED_BY_COLLISION = "statistics_asteroids_destroyed_by_collision";
 	private static final String ASTEROIDS_DESTROYED_BY_DASH = "statistics_asteroids_destroyed_by_dash";
 	private static final String ASTEROIDS_DESTROYED_BY_DRILL = "statistics_asteroids_destroyed_by_drill";
 	private static final String ASTEROIDS_DESTROYED_BY_MAGNET = "statistics_asteroids_destroyed_by_magnet";
@@ -24,14 +24,14 @@ public class GlobalStatistics {
 	public static int timePlayed;
 	
 	// asteroids destroyed
-	public static int asteroidsDestroyedTotal;
-	public static int asteroidsDestroyedByCollision;
-	public static int asteroidsDestroyedByDash;
-	public static int asteroidsDestroyedByDrill;
+	//public static int asteroidsDestroyedTotal;
+	//public static int asteroidsDestroyedByCollision;
+	public static int asteroidsDestroyedByDash;//
+	public static int asteroidsDestroyedByDrill;//
 	public static int asteroidsDestroyedByMagnet;
-	public static int asteroidsDestroyedByWhiteHole;
-	public static int asteroidsDestroyedByBumper;
-	public static int asteroidsDestroyedByBomb;
+	public static int asteroidsDestroyedByWhiteHole;//
+	public static int asteroidsDestroyedByBumper;//
+	public static int asteroidsDestroyedByBomb;//
 	
 	/**
 	 * Loads statistics from preferences
@@ -41,8 +41,8 @@ public class GlobalStatistics {
 		
 		timePlayed = preferences.getInt(TIME_PLAYED, 0);
 		
-		asteroidsDestroyedTotal = preferences.getInt(ASTEROIDS_DESTROYED_TOTAL, 0);
-		asteroidsDestroyedByCollision = preferences.getInt(ASTEROIDS_DESTROYED_BY_COLLISION, 0);
+		//asteroidsDestroyedTotal = preferences.getInt(ASTEROIDS_DESTROYED_TOTAL, 0);
+		//asteroidsDestroyedByCollision = preferences.getInt(ASTEROIDS_DESTROYED_BY_COLLISION, 0);
 		asteroidsDestroyedByDash = preferences.getInt(ASTEROIDS_DESTROYED_BY_DASH, 0);
 		asteroidsDestroyedByDrill = preferences.getInt(ASTEROIDS_DESTROYED_BY_DRILL, 0);
 		asteroidsDestroyedByMagnet = preferences.getInt(ASTEROIDS_DESTROYED_BY_MAGNET, 0);
@@ -58,8 +58,8 @@ public class GlobalStatistics {
 	public static void save(SharedPreferences.Editor preferencesEditor) {
 		preferencesEditor.putInt(TIME_PLAYED, timePlayed);
 		
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_TOTAL, asteroidsDestroyedTotal);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_COLLISION, asteroidsDestroyedByCollision);
+		//preferencesEditor.putInt(ASTEROIDS_DESTROYED_TOTAL, asteroidsDestroyedTotal);
+		//preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_COLLISION, asteroidsDestroyedByCollision);
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, asteroidsDestroyedByDash);
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, asteroidsDestroyedByDrill);
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, asteroidsDestroyedByMagnet);

@@ -10,9 +10,9 @@ import android.content.SharedPreferences;
 public class Achievements {
 	
 	// constants
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_1 = 3;
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_2 = 5;
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_3 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_1 = 5;
+	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_2 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_3 = 15;
 	
 	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM = 10;
 	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_TIME = 10000;
@@ -65,6 +65,7 @@ public class Achievements {
 	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("local_destroy_asteroids_with_bomb_3");
 
 	// local achievements - powerups
+	// TODO
 	public static Achievement localSlowBeforeDestroyed = new Achievement("local_slow_before_destroyed");
 	public static Achievement localInvulnerabilityPassThrough = new Achievement("local_invulnerability_pass_through");
 	public static Achievement localDrillUseMaximumTime = new Achievement("local_drill_use_maximum_time");
@@ -120,7 +121,7 @@ public class Achievements {
 	/**
 	 * Updates global achievements based on GlobalStatistics
 	 */
-	public void updateGlobalAchievements() {
+	public static void updateGlobalAchievements() {
 		
 		// destroy asteroids - dash
 		if (GlobalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
@@ -189,24 +190,32 @@ public class Achievements {
 		}
 		
 		// destroy asteroids - collisions
-		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_1) {
-			globalDestroyAsteroidsWithDrill1.setValue(true);
-		}
-		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_2) {
-			globalDestroyAsteroidsWithDrill2.setValue(true);
-		}
-		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_3) {
-			globalDestroyAsteroidsWithDrill3.setValue(true);
-		}
+//		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_1) {
+//			globalDestroyAsteroidsWithDrill1.setValue(true);
+//		}
+//		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_2) {
+//			globalDestroyAsteroidsWithDrill2.setValue(true);
+//		}
+//		if (GlobalStatistics.asteroidsDestroyedByCollision >= GLOBAL_DESTROY_ASTEROIDS_COLLISION_NUM_3) {
+//			globalDestroyAsteroidsWithDrill3.setValue(true);
+//		}
+		
+		// calculate total number of asteroids destroyed
+		int asteroidsDestroyedTotal = GlobalStatistics.asteroidsDestroyedByBomb +
+				GlobalStatistics.asteroidsDestroyedByBumper +
+				GlobalStatistics.asteroidsDestroyedByDash +
+				GlobalStatistics.asteroidsDestroyedByDrill +
+				GlobalStatistics.asteroidsDestroyedByMagnet +
+				GlobalStatistics.asteroidsDestroyedByWhiteHole;
 
 		// destroy asteroids - total
-		if (GlobalStatistics.asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1) {
+		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1) {
 			globalDestroyAsteroidsWithDrill1.setValue(true);
 		}
-		if (GlobalStatistics.asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2) {
+		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2) {
 			globalDestroyAsteroidsWithDrill2.setValue(true);
 		}
-		if (GlobalStatistics.asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3) {
+		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3) {
 			globalDestroyAsteroidsWithDrill3.setValue(true);
 		}
 		
@@ -226,7 +235,7 @@ public class Achievements {
 	 * Loads achievement values from application preferences
 	 * @param preferences preferences to load from
 	 */
-	public void load(SharedPreferences preferences) {
+	public static void load(SharedPreferences preferences) {
 		localDestroyAsteroidsWithDash1.load(preferences);
 		localDestroyAsteroidsWithDash2.load(preferences);
 		localDestroyAsteroidsWithDash3.load(preferences);
@@ -305,7 +314,7 @@ public class Achievements {
 	 * Saves achievement values to application preferencesEditor
 	 * @param preferenceEditor preferencesEditor to save to
 	 */
-	public void save(SharedPreferences.Editor preferencesEditor) {
+	public static void save(SharedPreferences.Editor preferencesEditor) {
 		localDestroyAsteroidsWithDash1.save(preferencesEditor);
 		localDestroyAsteroidsWithDash2.save(preferencesEditor);
 		localDestroyAsteroidsWithDash3.save(preferencesEditor);

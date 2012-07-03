@@ -60,21 +60,21 @@ public class Upgrades {
 	public static int BOMB_UPGRADE_CAUSE_DROPS = 3;
 	
 	// actual upgrades
-	public Upgrade dashUpgrade = new Upgrade("upgrade_dash");
-	public Upgrade smallUpgrade = new Upgrade("upgrade_small");
-	public Upgrade slowUpgrade = new Upgrade("upgrade_slow");
-	public Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability");
-	public Upgrade drillUpgrade = new Upgrade("upgrade_drill");
-	public Upgrade magnetUpgrade = new Upgrade("upgrade_magnet");
-	public Upgrade whiteHoleUpgrade = new Upgrade("upgrade_white_hole");
-	public Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
-	public Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
+	public static Upgrade dashUpgrade = new Upgrade("upgrade_dash");
+	public static Upgrade smallUpgrade = new Upgrade("upgrade_small");
+	public static Upgrade slowUpgrade = new Upgrade("upgrade_slow");
+	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability");
+	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill");
+	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet");
+	public static Upgrade whiteHoleUpgrade = new Upgrade("upgrade_white_hole");
+	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
+	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
 	
 	/**
 	 * Loads upgrades from application preferences
 	 * @param preferences preferences to load from
 	 */
-	public void load(SharedPreferences preferences) {
+	public static void load(SharedPreferences preferences) {
 		dashUpgrade.load(preferences);
 		smallUpgrade.load(preferences);
 		slowUpgrade.load(preferences);
@@ -90,7 +90,7 @@ public class Upgrades {
 	 * Saves upgrades to application preferences
 	 * @param preferenceEditor preferences to save to
 	 */
-	public void save(SharedPreferences.Editor preferencesEditor) {
+	public static void save(SharedPreferences.Editor preferencesEditor) {
 		dashUpgrade.save(preferencesEditor);
 		smallUpgrade.save(preferencesEditor);
 		slowUpgrade.save(preferencesEditor);

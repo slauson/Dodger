@@ -2,6 +2,7 @@ package com.slauson.dasher.powerups;
 
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
+import com.slauson.dasher.status.Achievements;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -14,7 +15,7 @@ import android.graphics.Paint;
  */
 public class PowerupWhiteHole extends ActivePowerup {
 
-	private static final int MAX_RANGE = 200;
+	private static final int MAX_RANGE = 100;
 	private static final int SUCK_RANGE = 50;
 	private static final int ROTATION_SPEED = 10;
 	private static final int ASTEROID_SPEED = 100;
@@ -80,6 +81,8 @@ public class PowerupWhiteHole extends ActivePowerup {
 				asteroid.setDirX(asteroidDirX);
 				asteroid.setDirY(asteroidDirY);
 				asteroid.setSpeed(ASTEROID_SPEED);
+				
+				numAffectedAsteroids++;
 			} 
 			// pull asteroid towards white hole
 			else if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
@@ -145,4 +148,25 @@ public class PowerupWhiteHole extends ActivePowerup {
 			paint.setAlpha(255);
 		}
 	}
+	
+	public void checkAchievements() {
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+				!Achievements.localDestroyAsteroidsWithWhiteHole1.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithWhiteHole1.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+				!Achievements.localDestroyAsteroidsWithWhiteHole2.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithWhiteHole2.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+				!Achievements.localDestroyAsteroidsWithWhiteHole3.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithWhiteHole3.setValue(true);
+		}
+	}
+
 }

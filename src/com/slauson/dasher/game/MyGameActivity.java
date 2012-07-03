@@ -1,7 +1,6 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.main.Instructions;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.OptionsMenu;
 import com.slauson.dasher.status.Configuration;

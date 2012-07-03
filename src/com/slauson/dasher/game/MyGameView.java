@@ -16,6 +16,7 @@ import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
 import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.R;
 
@@ -80,6 +81,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// for swipe-based dodging
 	private float touchDownY;
 	
+	// for double-tap based dodging
+	private long lastTouchDownTime1;
+	private long lastTouchDownTime2;
+	
 	private Level level;
 
 	
@@ -127,6 +132,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// touch
 	private static final float DASH_TOUCH_FACTOR = 1.5f;
 	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
+	
+	private static final int DASH_DOUBLE_TAP_MIN_DURATION = 500;
 
 	// accelerometer
 	private static final float ACCELEROMETER_DEADZONE = 0.05f;
@@ -351,6 +358,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// powerups
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
+			
+			// make sure we don't think the first single tap is a double tap
+			lastTouchDownTime1 = 0;
+			lastTouchDownTime2 = -2*DASH_DOUBLE_TAP_MIN_DURATION;
 						
 			player = new Player();
 			
@@ -422,6 +433,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						} else {
 							temp.breakup();
 							dropPowerup(temp.getX(), temp.getY());
+							player.affectedAsteroid();
 						}
 					}
 				}
@@ -544,6 +556,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				// check if any active powerups should be removed
 				if (!activePowerups.get(i).isActive()) {
+					activePowerups.get(i).checkAchievements();
 					activePowerups.remove(i);
 					i--;
 				} else {
@@ -680,6 +693,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				break;
 			}
 			touchDownY = y;
+			lastTouchDownTime2 = lastTouchDownTime1;
+			lastTouchDownTime1 = System.currentTimeMillis();
 		case MotionEvent.ACTION_MOVE:
 			
 			// only move horizontally when player is in position
@@ -695,6 +710,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
 					player.dash();
 				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
+					player.dash();
+				}
+			}
+			
+			// dash based on double tap
+			if (player.getStatus() == Player.STATUS_NORMAL) {
+				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
 					player.dash();
 				}
 			}
@@ -886,10 +908,34 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Activates bomb powerup, destroying everything on screen
 	 */
 	private void activateBomb() {
+		
+		int numAffectedAsteroids = 0;
+		
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
 			asteroid.fadeOut();
+			numAffectedAsteroids++;
 		}
+		
+		// check for achievements
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+				!Achievements.localDestroyAsteroidsWithBomb1.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithBomb1.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+				!Achievements.localDestroyAsteroidsWithBomb2.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithBomb2.setValue(true);
+		}
+		
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+				!Achievements.localDestroyAsteroidsWithBomb3.getValue())
+		{
+			Achievements.localDestroyAsteroidsWithBomb3.setValue(true);
+		}
+
 		
 		// destroy all falling powerups
 		drops.clear();

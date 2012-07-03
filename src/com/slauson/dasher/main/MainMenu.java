@@ -2,7 +2,11 @@ package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.MyGameActivity;
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.HighScores;
+import com.slauson.dasher.status.Upgrades;
 
 import android.app.Activity;
 import android.content.Context;
@@ -63,18 +67,22 @@ public class MainMenu extends Activity {
 		
 		// load saved state
 		SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
-				
-		// load achievements
 		
-		// load unlocks/money
+		// load achievements
+		Achievements.load(preferences);
+		
+		// load upgrades
+		Upgrades.load(preferences);
 		
 		// load stats
+		GlobalStatistics.load(preferences);
 		
 		// load high scores
+		HighScores.load(preferences);
 	}
 
 	private void loadConfiguration() {
-		System.out.println("loadCOnfiguration");
+		System.out.println("loadConfiguration");
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		
 		Configuration.load(preferences);
