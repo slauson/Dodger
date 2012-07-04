@@ -1,5 +1,6 @@
 package com.slauson.dasher.status;
 
+
 import android.content.SharedPreferences;
 
 /**
@@ -7,7 +8,7 @@ import android.content.SharedPreferences;
  * @author Josh Slauson
  *
  */
-public class GlobalStatistics {
+public class GlobalStatistics extends Statistics {
 
 	// constants
 	private static final String TIME_PLAYED = "statistics_time_played";
@@ -19,19 +20,6 @@ public class GlobalStatistics {
 	private static final String ASTEROIDS_DESTROYED_BY_WHITE_HOLE = "statistics_asteroids_destroyed_by_white_hole";
 	private static final String ASTEROIDS_DESTROYED_BY_BUMPER = "statistics_asteroids_destroyed_by_bumper";
 	private static final String ASTEROIDS_DESTROYED_BY_BOMB = "statistics_asteroids_destroyed_by_bomb";
-	
-	// time played
-	public static int timePlayed;
-	
-	// asteroids destroyed
-	//public static int asteroidsDestroyedTotal;
-	//public static int asteroidsDestroyedByCollision;
-	public static int asteroidsDestroyedByDash;//
-	public static int asteroidsDestroyedByDrill;//
-	public static int asteroidsDestroyedByMagnet;
-	public static int asteroidsDestroyedByWhiteHole;//
-	public static int asteroidsDestroyedByBumper;//
-	public static int asteroidsDestroyedByBomb;//
 	
 	/**
 	 * Loads statistics from preferences
@@ -66,5 +54,17 @@ public class GlobalStatistics {
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, asteroidsDestroyedByWhiteHole);
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, asteroidsDestroyedByBumper);
 		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, asteroidsDestroyedByBomb);
+	}
+	
+	/**
+	 * Update global statistics from local statistics
+	 */
+	public static void update() {
+		asteroidsDestroyedByDash += LocalStatistics.asteroidsDestroyedByDash;
+		asteroidsDestroyedByDrill += LocalStatistics.asteroidsDestroyedByDrill;
+		asteroidsDestroyedByMagnet += LocalStatistics.asteroidsDestroyedByMagnet;
+		asteroidsDestroyedByWhiteHole += LocalStatistics.asteroidsDestroyedByWhiteHole;
+		asteroidsDestroyedByBumper += LocalStatistics.asteroidsDestroyedByBumper;
+		asteroidsDestroyedByBomb += LocalStatistics.asteroidsDestroyedByBomb;
 	}
 }

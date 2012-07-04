@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.slauson.dasher.game.MyGameView;
-import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -181,7 +181,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
-			GlobalStatistics.asteroidsDestroyedByDash++;
+			LocalStatistics.asteroidsDestroyedByDash++;
 		}
 	}
 	
@@ -189,7 +189,7 @@ public class Asteroid extends DrawObject {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_DISAPPEARING;
 			
-			GlobalStatistics.asteroidsDestroyedByWhiteHole++;
+			LocalStatistics.asteroidsDestroyedByWhiteHole++;
 			
 			// create temporary array of points so we can shrink the asteroid
 			//altPoints = new float[points.length];
@@ -203,7 +203,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_FADING_OUT;
 			timeCounter = FADING_OUT_DURATION;
 			
-			GlobalStatistics.asteroidsDestroyedByBomb++;
+			LocalStatistics.asteroidsDestroyedByBomb++;
 		}
 	}
 	
@@ -212,7 +212,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_SPLITTING_UP;
 			timeCounter = SPLITTING_UP_DURATION;
 			
-			GlobalStatistics.asteroidsDestroyedByDrill++;
+			LocalStatistics.asteroidsDestroyedByDrill++;
 			
 			// left half points (4 extra for perfect split)
 			//altPoints = new float[leftPoints*4 + 4];

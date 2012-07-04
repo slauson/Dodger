@@ -153,19 +153,19 @@ public class PowerupWhiteHole extends ActivePowerup {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithWhiteHole1.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithWhiteHole1.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole1);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithWhiteHole2.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithWhiteHole2.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole2);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithWhiteHole3.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithWhiteHole3.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole3);
 		}
 	}
 

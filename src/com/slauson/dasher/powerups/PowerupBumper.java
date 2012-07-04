@@ -6,6 +6,7 @@ import com.slauson.dasher.objects.Player;
 import com.slauson.dasher.powerups.PowerupDrill;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -48,7 +49,7 @@ public class PowerupBumper extends ActivePowerup {
 				asteroid.setDirY(-1*asteroid.getDirY());
 				activateBumper();
 				
-				GlobalStatistics.asteroidsDestroyedByBumper++;
+				LocalStatistics.asteroidsDestroyedByBumper++;
 				numAffectedAsteroids++;
 			}
 		}
@@ -132,19 +133,19 @@ public class PowerupBumper extends ActivePowerup {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithBumper1.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithBumper1.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper1);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithBumper2.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithBumper2.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper2);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithBumper3.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithBumper3.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper3);
 		}
 	}
 

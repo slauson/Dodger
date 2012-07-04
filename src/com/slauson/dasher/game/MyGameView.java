@@ -86,6 +86,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private long lastTouchDownTime2;
 	
 	private Level level;
+	
+	private MyGameActivity gameActivity = null;
 
 	
 	/**
@@ -380,6 +382,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	public void setActivity(MyGameActivity gameActivity) {
+		this.gameActivity = gameActivity;
+	}
+	
 	/**
 	 * Update asteroids
 	 */
@@ -428,8 +434,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						if (player.inPosition()) {
 							player.breakup();
 							temp.breakup();
-							level.reset();
-							resetAsteroids();
+							
+							// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
+							gameActivity.runOnUiThread(new Runnable() {
+							     public void run() {
+							    	 gameActivity.showGameOverMenu();
+							    }
+							});
 						} else {
 							temp.breakup();
 							dropPowerup(temp.getX(), temp.getY());
@@ -949,6 +960,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		float speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
 		
 		asteroid.reset(radius, speed, level.hasAsteroidHorizontalMovement());
+	}
+	
+	public void reset() {
+		level.reset();
+		resetAsteroids();
+		resetUpdateTimes();
 	}
 	
 	private void resetAsteroids() {

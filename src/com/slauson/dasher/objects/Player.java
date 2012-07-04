@@ -6,6 +6,7 @@ import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -122,8 +123,18 @@ public class Player extends DrawObject {
 	 * Resets timer
 	 */
 	public void reset() {
-		GlobalStatistics.timePlayed += (System.currentTimeMillis() - startTime)/1000;
+		LocalStatistics.timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
 		startTime = System.currentTimeMillis();
+		
+		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
+			Achievements.unlockLocalAchievement(Achievements.localPlaytime1);
+		}
+		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_2) {
+			Achievements.unlockLocalAchievement(Achievements.localPlaytime2);
+		}
+		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_3) {
+			Achievements.unlockLocalAchievement(Achievements.localPlaytime3);
+		}
 	}
 	
 	@Override

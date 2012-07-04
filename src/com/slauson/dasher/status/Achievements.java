@@ -1,5 +1,7 @@
 package com.slauson.dasher.status;
 
+import java.util.ArrayList;
+
 import android.content.SharedPreferences;
 
 /**
@@ -15,7 +17,7 @@ public class Achievements {
 	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_3 = 15;
 	
 	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM = 10;
-	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_TIME = 10000;
+	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_NUM = 1000;
 	public static final int LOCAL_BOMB_DESTROY_DROPS_NUM = 3;
 	public static final int LOCAL_DASH_ACTIVATE_DROPS_NUM = 3;
 	
@@ -65,7 +67,7 @@ public class Achievements {
 	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("local_destroy_asteroids_with_bomb_3");
 
 	// local achievements - powerups
-	// TODO
+	// TODO: do i want to do these?
 	public static Achievement localSlowBeforeDestroyed = new Achievement("local_slow_before_destroyed");
 	public static Achievement localInvulnerabilityPassThrough = new Achievement("local_invulnerability_pass_through");
 	public static Achievement localDrillUseMaximumTime = new Achievement("local_drill_use_maximum_time");
@@ -117,6 +119,9 @@ public class Achievements {
 	public static Achievement globalPlaytime1 = new Achievement("global_playtime_1");
 	public static Achievement globalPlaytime2 = new Achievement("global_playtime_2");
 	public static Achievement globalPlaytime3 = new Achievement("global_playtime_3");
+	
+	// list of local achievements unlocked during current playthrough
+	public static ArrayList<Achievement> localAchievements = new ArrayList<Achievement>();
 
 	/**
 	 * Updates global achievements based on GlobalStatistics
@@ -384,5 +389,19 @@ public class Achievements {
 		globalPlaytime2.save(preferencesEditor);
 		globalPlaytime3.save(preferencesEditor);
 	}
+	
+	/**
+	 * Adds achievement to list of local achievements
+	 * @param achievement achievement to add
+	 */
+	public static void unlockLocalAchievement(Achievement achievement) {
+		localAchievements.add(achievement);
+	}
 
+	/**
+	 * Removes all achievements from list of local achievements
+	 */
+	public static void resetLocalAchievements() {
+		localAchievements.clear();
+	}
 }

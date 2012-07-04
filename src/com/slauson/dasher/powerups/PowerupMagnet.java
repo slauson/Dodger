@@ -4,6 +4,7 @@ import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -74,7 +75,7 @@ public class PowerupMagnet extends ActivePowerup {
 				dirX = 0;
 				dirY = 0;
 				
-				GlobalStatistics.asteroidsDestroyedByMagnet++;
+				LocalStatistics.asteroidsDestroyedByMagnet++;
 				numAffectedAsteroids++;
 			}
 			
@@ -124,19 +125,19 @@ public class PowerupMagnet extends ActivePowerup {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithMagnet1.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithMagnet1.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithMagnet1);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithMagnet2.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithMagnet2.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithMagnet2);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithMagnet3.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithMagnet3.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithMagnet3);
 		}
 	}
 }
