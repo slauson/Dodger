@@ -3,6 +3,8 @@ package com.slauson.dasher.game;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import com.slauson.dasher.objects.Asteroid;
@@ -435,12 +437,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 							player.breakup();
 							temp.breakup();
 							
-							// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
-							gameActivity.runOnUiThread(new Runnable() {
-							     public void run() {
-							    	 gameActivity.showGameOverMenu();
-							    }
-							});
+							Timer timer = new Timer();
+							timer.schedule(new TimerTask() {
+								@Override
+								public void run() {
+									// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
+									gameActivity.runOnUiThread(new Runnable() {
+									     public void run() {
+									    	 gameActivity.gameOver();
+									    }
+									});
+								}
+							}, Player.BREAKING_UP_DURATION-500);
 						} else {
 							temp.breakup();
 							dropPowerup(temp.getX(), temp.getY());
@@ -966,6 +974,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		level.reset();
 		resetAsteroids();
 		resetUpdateTimes();
+		
+		activePowerups.clear();
+		drops.clear();
 	}
 	
 	private void resetAsteroids() {

@@ -21,7 +21,7 @@ public class OptionsMenu extends PreferenceActivity {
 	public void onDestroy() {
 		super.onDestroy();
 		
-		System.out.println("OptionsMenu: loadConfiguration");
+		//System.out.println("OptionsMenu: loadConfiguration");
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			
 		Configuration.load(preferences);

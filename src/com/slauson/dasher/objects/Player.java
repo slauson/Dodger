@@ -117,6 +117,8 @@ public class Player extends DrawObject {
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
+		status = STATUS_INVULNERABLE;
+		timeCounter = INVULNERABLE_DURATION;
 	}
 	
 	/**
@@ -125,6 +127,7 @@ public class Player extends DrawObject {
 	public void reset() {
 		LocalStatistics.timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
 		startTime = System.currentTimeMillis();
+		dashTimeout = 0;
 		
 		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
 			Achievements.unlockLocalAchievement(Achievements.localPlaytime1);

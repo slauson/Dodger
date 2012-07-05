@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -27,38 +28,81 @@ import android.widget.Button;
  *
  */
 public class MainMenu extends Activity {
+	
+	Button startButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
+	
+	boolean showingMore;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_menu);
+		
+		showingMore = false;
 
 		// start button
-		Button startButton = (Button)findViewById(R.id.startButton);
+		startButton = (Button)findViewById(R.id.mainMenuStartButton);
 		startButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this, MyGameActivity.class);
-				startActivity(StartGameIntent);
+				Intent intent = new Intent(MainMenu.this, MyGameActivity.class);
+				startActivity(intent);
 			}
 		});
 		
-		// how to play button
-		Button instructionsButton = (Button)findViewById(R.id.instructionsButton);
-		instructionsButton.setOnClickListener(new OnClickListener() {
+		// instructions/achievements button
+		instructionsAchievementsButton = (Button)findViewById(R.id.mainMenuInstructionsAchievementsButton);
+		instructionsAchievementsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this, Instructions.class);
-				startActivity(StartGameIntent);
+				if (!showingMore) {
+					Intent intent = new Intent(MainMenu.this, Instructions.class);
+					startActivity(intent);
+				} else {
+					// TODO: show achievements
+				}
 			}
 		});
 
-		// options button
-		Button optionsButton = (Button)findViewById(R.id.optionsButton);
-		optionsButton.setOnClickListener(new OnClickListener() {
+		// options/statistics button
+		optionsStatisticsButton = (Button)findViewById(R.id.mainMenuOptionsStatisticsButton);
+		optionsStatisticsButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MainMenu.this, OptionsMenu.class);
-				startActivity(StartGameIntent);
+				if (!showingMore) {
+					Intent intent = new Intent(MainMenu.this, OptionsMenu.class);
+					startActivity(intent);
+				} else {
+					// TODO: show statistics
+				}
+			}
+		});
+		
+		// more/upgrades button
+		moreUpgradesButton = (Button)findViewById(R.id.mainMenuMoreUpgradesButton);
+		moreUpgradesButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				if (!showingMore) {
+					toggleShowMore();
+				} else {
+					// TODO: show upgrades
+				}
+			}
+		});
+				
+		// quit/back button
+		quitBackButton = (Button)findViewById(R.id.mainMenuQuitBackButton);
+		quitBackButton.setOnClickListener(new OnClickListener() {
+			
+			// quit application
+			// adapted from here: http://stackoverflow.com/questions/2964310/quitting-application-in-android
+			public void onClick(View v) {
+				if (!showingMore) {
+					android.os.Process.killProcess(android.os.Process.myPid());
+				} else {
+					toggleShowMore();
+				}
 			}
 		});
 		
@@ -80,11 +124,48 @@ public class MainMenu extends Activity {
 		// load high scores
 		HighScores.load(preferences);
 	}
+	
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		
+		// TODO: do something better 
+		// override menu/back/search buttons so that user cannot go back to game
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_MENU:
+		case KeyEvent.KEYCODE_BACK:
+		case KeyEvent.KEYCODE_SEARCH:
+			return true;
+		}
+		
+		// let other buttons go through
+		super.onKeyUp(keyCode, event);
+		return true;
+	}
 
 	private void loadConfiguration() {
 		System.out.println("loadConfiguration");
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		
 		Configuration.load(preferences);
+	}
+	
+	private void toggleShowMore() {
+		if (showingMore) {
+			
+			instructionsAchievementsButton.setText(R.string.menu_instructions);
+			optionsStatisticsButton.setText(R.string.menu_options);
+			moreUpgradesButton.setText(R.string.menu_more);
+			quitBackButton.setText(R.string.menu_quit);
+			
+			showingMore = false;
+		} else {
+			
+			instructionsAchievementsButton.setText(R.string.menu_achievements);
+			optionsStatisticsButton.setText(R.string.menu_statistics);
+			moreUpgradesButton.setText(R.string.menu_upgrades);
+			quitBackButton.setText(R.string.menu_back);
+			
+			showingMore = true;
+		}
 	}
 }

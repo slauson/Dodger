@@ -1,6 +1,7 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.main.Instructions;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.OptionsMenu;
 import com.slauson.dasher.status.Configuration;
@@ -24,23 +25,10 @@ public class MyGameActivity extends Activity {
 
 	private MyAccelerometer myAccelerometer;
 
-	private Button pauseMenuResumeButton, pauseMenuOptionsButton, pauseMenuQuitButton;
-
-	private Button gameOverMenuRetryButton, gameOverMenuStatisticsButton, gameOverMenuUpgradesButton, gameOverMenuQuitButton;
+	private Button pauseMenuResumeButton, pauseMenuInstructionsButton, pauseMenuOptionsButton, pauseMenuQuitButton;
 	
-	private int mode;
+	private boolean quitting, paused;
 	
-	private boolean quitting;
-	
-	private int MODE_RUNNING = 0;
-	private int MODE_PAUSED = 1;
-	private int MODE_GAME_OVER = 2;
-
-
-	// Handler for updating debug text
-	// http://stackoverflow.com/questions/5097267/error-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-view
-	//Handler mHandler;
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -55,8 +43,8 @@ public class MyGameActivity extends Activity {
 
 		myAccelerometer = new MyAccelerometer(this);
 
-		mode = MODE_RUNNING;
 		quitting = false;
+		paused = false;
 
 		
 		/**
@@ -72,14 +60,25 @@ public class MyGameActivity extends Activity {
 			}
 		});
 		pauseMenuResumeButton.setVisibility(View.GONE);
+		
+		// instructions button
+		pauseMenuInstructionsButton = (Button)findViewById(R.id.gamePauseMenuInstructionsButton);
+		pauseMenuInstructionsButton.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View v) {
+				Intent intent = new Intent(MyGameActivity.this, Instructions.class);
+				startActivity(intent);
+			}
+		});
+		pauseMenuInstructionsButton.setVisibility(View.GONE);
 
 		// options button
 		pauseMenuOptionsButton = (Button)findViewById(R.id.gamePauseMenuOptionsButton);
 		pauseMenuOptionsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent StartGameIntent = new Intent(MyGameActivity.this, OptionsMenu.class);
-				startActivity(StartGameIntent);
+				Intent intent = new Intent(MyGameActivity.this, OptionsMenu.class);
+				startActivity(intent);
 			}
 		});
 		pauseMenuOptionsButton.setVisibility(View.GONE);
@@ -91,62 +90,12 @@ public class MyGameActivity extends Activity {
 			public void onClick(View v) {
 				quitting = true;
 				myGameView.togglePause(false);
-				Intent StartGameIntent = new Intent(MyGameActivity.this, MainMenu.class);
-				startActivity(StartGameIntent);
+				Intent intent = new Intent(MyGameActivity.this, MainMenu.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
 			}
 		});
 		pauseMenuQuitButton.setVisibility(View.GONE);
-
-		/**
-		 * Setup game over menu
-		 */
-		// retry button
-		gameOverMenuRetryButton = (Button)findViewById(R.id.gameGameOverMenuRetryButton);
-		gameOverMenuRetryButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				mode = MODE_GAME_OVER;
-				hideGameOverMenu();
-				myGameView.reset();
-				myGameView.togglePause(false);
-			}
-		});
-		gameOverMenuRetryButton.setVisibility(View.GONE);
-		
-		// statistics button
-		gameOverMenuStatisticsButton = (Button)findViewById(R.id.gameGameOverMenuStatisticsButton);
-		gameOverMenuStatisticsButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				// TODO
-			}
-		});
-		gameOverMenuStatisticsButton.setVisibility(View.GONE);
-		
-		// upgrades button
-		gameOverMenuUpgradesButton = (Button)findViewById(R.id.gameGameOverMenuUpgradesButton);
-		gameOverMenuUpgradesButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				// TODO
-			}
-		});
-		gameOverMenuUpgradesButton.setVisibility(View.GONE);
-
-		// quit button
-		gameOverMenuQuitButton = (Button)findViewById(R.id.gameGameOverMenuQuitButton);
-		gameOverMenuQuitButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				quitting = true;
-				hideGameOverMenu();
-				myGameView.togglePause(false);
-				Intent StartGameIntent = new Intent(MyGameActivity.this, MainMenu.class);
-				startActivity(StartGameIntent);
-			}
-		});
-		gameOverMenuQuitButton.setVisibility(View.GONE);
-
 	}
 
 	@Override
@@ -195,9 +144,9 @@ public class MyGameActivity extends Activity {
 		case KeyEvent.KEYCODE_MENU:
 		case KeyEvent.KEYCODE_BACK:
 		case KeyEvent.KEYCODE_SEARCH:
-			if (mode == MODE_RUNNING) {
+			if (!paused) {
 				pauseGame();
-			} else if (mode == MODE_PAUSED){
+			} else {
 				unpauseGame();
 			}
 			break;
@@ -207,43 +156,34 @@ public class MyGameActivity extends Activity {
 
 		return true;
 	}
+	
+	public void gameOver() {
+		quitting = true;
+		Intent intent = new Intent(MyGameActivity.this, GameOverMenu.class);
+		startActivity(intent);
+	}
 
-	void updateAccelerometer(float tx, float ty) {
+	public void updateAccelerometer(float tx, float ty) {
 		myGameView.updateAccelerometer(tx, ty);
 	}
 
-	void pauseGame() {
+	private void pauseGame() {
 		pauseMenuResumeButton.setVisibility(View.VISIBLE);
+		pauseMenuInstructionsButton.setVisibility(View.VISIBLE);
 		pauseMenuOptionsButton.setVisibility(View.VISIBLE);
 		pauseMenuQuitButton.setVisibility(View.VISIBLE);
 		
-		mode = MODE_PAUSED;
+		paused = true;
 		myGameView.togglePause(true);
 	}
 
-	void unpauseGame() {
+	private void unpauseGame() {
 		pauseMenuResumeButton.setVisibility(View.GONE);
+		pauseMenuInstructionsButton.setVisibility(View.GONE);
 		pauseMenuOptionsButton.setVisibility(View.GONE);
 		pauseMenuQuitButton.setVisibility(View.GONE);
 		
-		mode = MODE_RUNNING;
+		paused = false;
 		myGameView.togglePause(false);
-	}
-	
-	void hideGameOverMenu() {
-		gameOverMenuRetryButton.setVisibility(View.GONE);
-		gameOverMenuStatisticsButton.setVisibility(View.GONE);
-		gameOverMenuUpgradesButton.setVisibility(View.GONE);
-		gameOverMenuQuitButton.setVisibility(View.GONE);
-	}
-	
-	public void showGameOverMenu() {
-		gameOverMenuRetryButton.setVisibility(View.VISIBLE);
-		gameOverMenuStatisticsButton.setVisibility(View.VISIBLE);
-		gameOverMenuUpgradesButton.setVisibility(View.VISIBLE);
-		gameOverMenuQuitButton.setVisibility(View.VISIBLE);
-
-		mode = MODE_GAME_OVER;
-		myGameView.togglePause(true);
 	}
 }
