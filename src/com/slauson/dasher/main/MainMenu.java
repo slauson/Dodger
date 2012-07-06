@@ -29,7 +29,7 @@ import android.widget.Button;
  */
 public class MainMenu extends Activity {
 	
-	Button startButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
+	Button startHighScoresButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
 	
 	boolean showingMore;
 	
@@ -40,13 +40,17 @@ public class MainMenu extends Activity {
 		
 		showingMore = false;
 
-		// start button
-		startButton = (Button)findViewById(R.id.mainMenuStartButton);
-		startButton.setOnClickListener(new OnClickListener() {
+		// start/high scores button
+		startHighScoresButton = (Button)findViewById(R.id.mainMenuStartHighScoresButton);
+		startHighScoresButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				Intent intent = new Intent(MainMenu.this, MyGameActivity.class);
-				startActivity(intent);
+				if (!showingMore) {
+					Intent intent = new Intent(MainMenu.this, MyGameActivity.class);
+					startActivity(intent);
+				} else {
+					// TODO: show high scores
+				}
 			}
 		});
 		
@@ -86,7 +90,8 @@ public class MainMenu extends Activity {
 				if (!showingMore) {
 					toggleShowMore();
 				} else {
-					// TODO: show upgrades
+					Intent intent = new Intent(MainMenu.this, UpgradesMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -152,6 +157,7 @@ public class MainMenu extends Activity {
 	private void toggleShowMore() {
 		if (showingMore) {
 			
+			startHighScoresButton.setText(R.string.menu_start);
 			instructionsAchievementsButton.setText(R.string.menu_instructions);
 			optionsStatisticsButton.setText(R.string.menu_options);
 			moreUpgradesButton.setText(R.string.menu_more);
@@ -160,6 +166,7 @@ public class MainMenu extends Activity {
 			showingMore = false;
 		} else {
 			
+			startHighScoresButton.setText(R.string.menu_high_scores);
 			instructionsAchievementsButton.setText(R.string.menu_achievements);
 			optionsStatisticsButton.setText(R.string.menu_statistics);
 			moreUpgradesButton.setText(R.string.menu_upgrades);

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.main.MainMenu;
+import com.slauson.dasher.main.UpgradesMenu;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
 
@@ -93,7 +94,8 @@ public class GameOverMenu extends Activity {
 		gameOverMenuUpgradesButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				// TODO
+				Intent intent = new Intent(GameOverMenu.this, UpgradesMenu.class);
+				startActivity(intent);
 			}
 		});
 
