@@ -3,13 +3,18 @@ package com.slauson.dasher.game;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.main.HighScoresMenu;
+import com.slauson.dasher.main.LocalAchievementsMenu;
 import com.slauson.dasher.main.MainMenu;
+import com.slauson.dasher.main.PointDetailsMenu;
+import com.slauson.dasher.main.StatisticsMenu;
 import com.slauson.dasher.main.UpgradesMenu;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
@@ -27,8 +32,6 @@ public class GameOverMenu extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_over_menu);
 
-		setupSummary();
-		
 		setupButtons();
 	}
 	
@@ -38,7 +41,8 @@ public class GameOverMenu extends Activity {
 		gameOverSummaryTime = (TextView)findViewById(R.id.gameOverSummaryTime);
 		gameOverSummaryTime.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO: show high scores
+				Intent intent = new Intent(GameOverMenu.this, HighScoresMenu.class);
+				startActivity(intent);
 			}
 		});
 		gameOverSummaryTime.setText(LocalStatistics.timePlayed + "");
@@ -47,7 +51,8 @@ public class GameOverMenu extends Activity {
 		gameOverSummaryPoints = (TextView)findViewById(R.id.gameOverSummaryPoints);
 		gameOverSummaryPoints.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO: show point details
+				Intent intent = new Intent(GameOverMenu.this, PointDetailsMenu.class);
+				startActivity(intent);
 			}
 		});
 		
@@ -61,7 +66,8 @@ public class GameOverMenu extends Activity {
 		gameOverSummaryAchievements = (TextView)findViewById(R.id.gameOverSummaryAchievements);
 		gameOverSummaryAchievements.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO: show achievement details
+				Intent intent = new Intent(GameOverMenu.this, LocalAchievementsMenu.class);
+				startActivity(intent);
 			}
 		});
 		
@@ -85,7 +91,8 @@ public class GameOverMenu extends Activity {
 		gameOverMenuStatisticsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				// TODO
+				Intent intent = new Intent(GameOverMenu.this, StatisticsMenu.class);
+				startActivity(intent);
 			}
 		});
 		
@@ -111,11 +118,19 @@ public class GameOverMenu extends Activity {
 		});
 	}
 	
-	private void setupSummary() {
-		//gameOverSummary = (TextView)findViewById(R.id.gameOverSummary);
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
-		//String text = "<b>" + LocalStatistics.timePlayed + "</b>\n1000";
+		// TODO: do something better 
+		// override back button so that user cannot go back to game
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			return true;
+		}
 		
-		//gameOverSummary.setText(Html.fromHtml(text));
+		// let other buttons go through
+		super.onKeyUp(keyCode, event);
+		return true;
 	}
+
 }

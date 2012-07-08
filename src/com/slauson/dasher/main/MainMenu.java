@@ -49,7 +49,8 @@ public class MainMenu extends Activity {
 					Intent intent = new Intent(MainMenu.this, MyGameActivity.class);
 					startActivity(intent);
 				} else {
-					// TODO: show high scores
+					Intent intent = new Intent(MainMenu.this, HighScoresMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -60,10 +61,11 @@ public class MainMenu extends Activity {
 			
 			public void onClick(View v) {
 				if (!showingMore) {
-					Intent intent = new Intent(MainMenu.this, Instructions.class);
+					Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 					startActivity(intent);
 				} else {
-					// TODO: show achievements
+					Intent intent = new Intent(MainMenu.this, AchievementsMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -77,7 +79,8 @@ public class MainMenu extends Activity {
 					Intent intent = new Intent(MainMenu.this, OptionsMenu.class);
 					startActivity(intent);
 				} else {
-					// TODO: show statistics
+					Intent intent = new Intent(MainMenu.this, StatisticsMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -134,11 +137,13 @@ public class MainMenu extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
 		// TODO: do something better 
-		// override menu/back/search buttons so that user cannot go back to game
+		// override back button so that user cannot go back to game
 		switch(keyCode) {
-		case KeyEvent.KEYCODE_MENU:
 		case KeyEvent.KEYCODE_BACK:
-		case KeyEvent.KEYCODE_SEARCH:
+			// go back to "main" main menu
+			if (showingMore) {
+				toggleShowMore();
+			}
 			return true;
 		}
 		

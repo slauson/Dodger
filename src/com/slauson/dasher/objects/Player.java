@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
-import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Canvas;
@@ -700,19 +699,19 @@ public class Player extends DrawObject {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithDash1.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithDash1.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash1);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithDash2.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithDash2.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash2);
 		}
 		
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithDash3.getValue())
 		{
-			Achievements.localDestroyAsteroidsWithDash3.setValue(true);
+			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash3);
 		}
 	}
 }

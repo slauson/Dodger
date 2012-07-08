@@ -66,6 +66,5 @@ public abstract class ActivePowerup extends Sprite {
 	/**
 	 * Checks any powerup-related achievements
 	 */
-	// TODO: save any new achievments somewhere
 	public abstract void checkAchievements();
 }

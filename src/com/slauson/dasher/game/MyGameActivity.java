@@ -1,7 +1,7 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.main.Instructions;
+import com.slauson.dasher.main.InstructionsMenu;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.OptionsMenu;
 import com.slauson.dasher.status.Configuration;
@@ -33,7 +33,7 @@ public class MyGameActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.game);
+		setContentView(R.layout.game_menu);
 		myGameView = (MyGameView)findViewById(R.id.myGameView);
 		myGameView.setActivity(this);
 
@@ -66,7 +66,7 @@ public class MyGameActivity extends Activity {
 		pauseMenuInstructionsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(MyGameActivity.this, Instructions.class);
+				Intent intent = new Intent(MyGameActivity.this, InstructionsMenu.class);
 				startActivity(intent);
 			}
 		});

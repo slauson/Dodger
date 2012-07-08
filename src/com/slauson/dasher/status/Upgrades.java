@@ -12,50 +12,50 @@ public class Upgrades {
 	// TODO: have description string of each upgrade?
 
 	// constants to represent what powerup upgrade levels mean
-	public static int DASH_UPGRADE_REDUCED_RECHARGE_1 = 1;
-	public static int DASH_UPGRADE_REDUCED_RECHARGE_2 = 2;
-	public static int DASH_UPGRADE_REDUCED_RECHARGE_3 = 3;
-	public static int DASH_UPGRADE_MULTIPLE_POWERUPS = 4;
+	public static final int DASH_UPGRADE_REDUCED_RECHARGE_1 = 1;
+	public static final int DASH_UPGRADE_REDUCED_RECHARGE_2 = 2;
+	public static final int DASH_UPGRADE_REDUCED_RECHARGE_3 = 3;
+	public static final int DASH_UPGRADE_MULTIPLE_POWERUPS = 4;
 	
-	public static int SMALL_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int SMALL_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int SMALL_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int SMALL_UPGRADE_QUARTER_SIZE = 4;
+	public static final int SMALL_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int SMALL_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int SMALL_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int SMALL_UPGRADE_QUARTER_SIZE = 4;
 	
-	public static int SLOW_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int SLOW_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int SLOW_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int SLOW_UPGRADE_QUARTER_TIME = 4;
+	public static final int SLOW_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int SLOW_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int SLOW_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int SLOW_UPGRADE_QUARTER_TIME = 4;
 	
-	public static int INVULNERABILITY_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int INVULNERABILITY_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int INVULNERABILITY_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int INVULNERABILITY_UPGRADE_SLOW_TIME = 4;
+	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int INVULNERABILITY_UPGRADE_SLOW_TIME = 4;
 	
-	public static int DRILL_UPGRADE_SEEK_1 = 1;
-	public static int DRILL_UPGRADE_SEEK_2 = 2;
-	public static int DRILL_UPGRADE_SEEK_3 = 3;
-	public static int DRILL_UPGRADE_TELEPORT = 4;
+	public static final int DRILL_UPGRADE_SEEK_1 = 1;
+	public static final int DRILL_UPGRADE_SEEK_2 = 2;
+	public static final int DRILL_UPGRADE_SEEK_3 = 3;
+	public static final int DRILL_UPGRADE_TELEPORT = 4;
 	
-	public static int MAGNET_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int MAGNET_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int MAGNET_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int MAGNET_UPGRADE_INCREASED_RANGE = 4;
+	public static final int MAGNET_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int MAGNET_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int MAGNET_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int MAGNET_UPGRADE_INCREASED_RANGE = 4;
 	
-	public static int WHITE_HOLE_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int WHITE_HOLE_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int WHITE_HOLE_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int WHITE_HOLE_UPGRADE_INCREASED_RANGE = 4;
+	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int WHITE_HOLE_UPGRADE_INCREASED_RANGE = 4;
 	
-	public static int BUMPER_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static int BUMPER_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static int BUMPER_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static int BUMPER_UPGRADE_INCREASED_SIZE = 4;
+	public static final int BUMPER_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int BUMPER_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int BUMPER_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int BUMPER_UPGRADE_INCREASED_SIZE = 4;
 	
-	public static int BOMB_UPGRADE_NO_EFFECT_DROPS = 1;
-	public static int BOMB_UPGRADE_NO_EFFECT_POWERUPS = 2;
-	public static int BOMB_UPGRADE_CAUSE_DROP = 3;
-	public static int BOMB_UPGRADE_CAUSE_DROPS = 4;
+	public static final int BOMB_UPGRADE_NO_EFFECT_DROPS = 1;
+	public static final int BOMB_UPGRADE_NO_EFFECT_POWERUPS = 2;
+	public static final int BOMB_UPGRADE_CAUSE_DROP = 3;
+	public static final int BOMB_UPGRADE_CAUSE_DROPS = 4;
 	
 	// actual upgrades
 	public static Upgrade dashUpgrade = new Upgrade("upgrade_dash");
