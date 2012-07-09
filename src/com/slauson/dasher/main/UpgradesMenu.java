@@ -1,59 +1,78 @@
 package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrade;
 import com.slauson.dasher.status.Upgrades;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 public class UpgradesMenu extends Activity {
 	
+	// dialog box constants
+	private static final int DIALOG_NOT_ENOUGH_POINTS = 0;
+	private static final int DIALOG_CONFIRM_UPGRADE = 1;
+	
+	// points textview
+	private TextView pointsView;
+	
 	// dash buttons
-	Button dashButton;
-	Button dashUpgradeButton1,dashUpgradeButton2, dashUpgradeButton3, dashUpgradeButton4;
+	private Button dashButton;
+	private Button dashUpgradeButton1,dashUpgradeButton2, dashUpgradeButton3, dashUpgradeButton4;
 
 	// small buttons
-	Button smallButton;
-	Button smallUpgradeButton1,smallUpgradeButton2, smallUpgradeButton3, smallUpgradeButton4;
+	private Button smallButton;
+	private Button smallUpgradeButton1,smallUpgradeButton2, smallUpgradeButton3, smallUpgradeButton4;
 
 	// slow buttons
-	Button slowButton;
-	Button slowUpgradeButton1,slowUpgradeButton2, slowUpgradeButton3, slowUpgradeButton4;
+	private Button slowButton;
+	private Button slowUpgradeButton1,slowUpgradeButton2, slowUpgradeButton3, slowUpgradeButton4;
 
 	// invulnerability buttons
-	Button invulnerabilityButton;
-	Button invulnerabilityUpgradeButton1,invulnerabilityUpgradeButton2, invulnerabilityUpgradeButton3, invulnerabilityUpgradeButton4;
+	private Button invulnerabilityButton;
+	private Button invulnerabilityUpgradeButton1,invulnerabilityUpgradeButton2, invulnerabilityUpgradeButton3, invulnerabilityUpgradeButton4;
 
 	// drill buttons
-	Button drillButton;
-	Button drillUpgradeButton1,drillUpgradeButton2, drillUpgradeButton3, drillUpgradeButton4;
+	private Button drillButton;
+	private Button drillUpgradeButton1,drillUpgradeButton2, drillUpgradeButton3, drillUpgradeButton4;
 
 	// magnet buttons
-	Button magnetButton;
-	Button magnetUpgradeButton1,magnetUpgradeButton2, magnetUpgradeButton3, magnetUpgradeButton4;
+	private Button magnetButton;
+	private Button magnetUpgradeButton1,magnetUpgradeButton2, magnetUpgradeButton3, magnetUpgradeButton4;
 
 	// black hole buttons
-	Button whiteHoleButton;
-	Button whiteHoleUpgradeButton1,whiteHoleUpgradeButton2, whiteHoleUpgradeButton3, whiteHoleUpgradeButton4;
+	private Button whiteHoleButton;
+	private Button whiteHoleUpgradeButton1,whiteHoleUpgradeButton2, whiteHoleUpgradeButton3, whiteHoleUpgradeButton4;
 
 	// bumper buttons
-	Button bumperButton;
-	Button bumperUpgradeButton1,bumperUpgradeButton2, bumperUpgradeButton3, bumperUpgradeButton4;
+	private Button bumperButton;
+	private Button bumperUpgradeButton1,bumperUpgradeButton2, bumperUpgradeButton3, bumperUpgradeButton4;
 
 	// bomb buttons
-	Button bombButton;
-	Button bombUpgradeButton1,bombUpgradeButton2, bombUpgradeButton3, bombUpgradeButton4;
+	private Button bombButton;
+	private Button bombUpgradeButton1,bombUpgradeButton2, bombUpgradeButton3, bombUpgradeButton4;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.upgrades_menu);
+    	
+    	// load upgrade resources
+    	Upgrades.loadResources(getResources(), getPackageName());
+    	
+    	// points
+    	pointsView = (TextView)findViewById(R.id.upgradesMenuPoints);
+    	pointsView.setText("You have " + Points.getNumPoints() + " points");
     	
     	// dash ability
     	dashUpgradeButton1 = (Button)findViewById(R.id.upgradesMenuDashUpgrade1Button);
@@ -61,12 +80,10 @@ public class UpgradesMenu extends Activity {
     	dashUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuDashUpgrade3Button);
     	dashUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuDashUpgrade4Button);
     	
-    	dashUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_1));
-    	dashUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_2));
-    	dashUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_3));
-    	dashUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS));
-    	
-    	Upgrades.dashUpgrade.setLevel(Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_3);
+    	dashUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_1, R.id.upgradesMenuDashUpgrade1Button));
+    	dashUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_2, R.id.upgradesMenuDashUpgrade2Button));
+    	dashUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_3, R.id.upgradesMenuDashUpgrade3Button));
+    	dashUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS, R.id.upgradesMenuDashUpgrade4Button));
     	
     	dashButton = (Button)findViewById(R.id.upgradesMenuDashButton);
 		dashButton.setOnClickListener(new OnClickListener() {
@@ -117,10 +134,10 @@ public class UpgradesMenu extends Activity {
     	smallUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuSmallUpgrade3Button);
     	smallUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuSmallUpgrade4Button);
     	
-    	smallUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_1));
-    	smallUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_2));
-    	smallUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3));
-    	smallUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_QUARTER_SIZE));
+    	smallUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuSmallUpgrade1Button));
+    	smallUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuSmallUpgrade2Button));
+    	smallUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuSmallUpgrade3Button));
+    	smallUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_QUARTER_SIZE, R.id.upgradesMenuSmallUpgrade4Button));
     	
     	smallButton = (Button)findViewById(R.id.upgradesMenuSmallButton);
 		smallButton.setOnClickListener(new OnClickListener() {
@@ -171,10 +188,10 @@ public class UpgradesMenu extends Activity {
     	slowUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuSlowUpgrade3Button);
     	slowUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuSlowUpgrade4Button);
     	
-    	slowUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1));
-    	slowUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2));
-    	slowUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3));
-    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_QUARTER_TIME));
+    	slowUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuSlowUpgrade1Button));
+    	slowUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuSlowUpgrade2Button));
+    	slowUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuSlowUpgrade3Button));
+    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_QUARTER_TIME, R.id.upgradesMenuSlowUpgrade4Button));
     	
     	slowButton = (Button)findViewById(R.id.upgradesMenuSlowButton);
 		slowButton.setOnClickListener(new OnClickListener() {
@@ -226,10 +243,10 @@ public class UpgradesMenu extends Activity {
     	invulnerabilityUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuInvulnerabilityUpgrade3Button);
     	invulnerabilityUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuInvulnerabilityUpgrade4Button);
     	
-    	invulnerabilityUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1));
-    	invulnerabilityUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_2));
-    	invulnerabilityUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3));
-    	invulnerabilityUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_SLOW_TIME));
+    	invulnerabilityUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuInvulnerabilityUpgrade1Button));
+    	invulnerabilityUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuInvulnerabilityUpgrade2Button));
+    	invulnerabilityUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuInvulnerabilityUpgrade3Button));
+    	invulnerabilityUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_SLOW_TIME, R.id.upgradesMenuInvulnerabilityUpgrade4Button));
     	
     	invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
 		invulnerabilityButton.setOnClickListener(new OnClickListener() {
@@ -281,10 +298,10 @@ public class UpgradesMenu extends Activity {
     	drillUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuDrillUpgrade3Button);
     	drillUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuDrillUpgrade4Button);
     	
-    	drillUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_1));
-    	drillUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_2));
-    	drillUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_3));
-    	drillUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_TELEPORT));
+    	drillUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_1, R.id.upgradesMenuDrillUpgrade1Button));
+    	drillUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_2, R.id.upgradesMenuDrillUpgrade2Button));
+    	drillUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_SEEK_3, R.id.upgradesMenuDrillUpgrade3Button));
+    	drillUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_TELEPORT, R.id.upgradesMenuDrillUpgrade4Button));
     	
     	drillButton = (Button)findViewById(R.id.upgradesMenuDrillButton);
 		drillButton.setOnClickListener(new OnClickListener() {
@@ -335,10 +352,10 @@ public class UpgradesMenu extends Activity {
     	magnetUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuMagnetUpgrade3Button);
     	magnetUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuMagnetUpgrade4Button);
     	
-    	magnetUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_1));
-    	magnetUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_2));
-    	magnetUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3));
-    	magnetUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_RANGE));
+    	magnetUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuMagnetUpgrade1Button));
+    	magnetUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuMagnetUpgrade2Button));
+    	magnetUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuMagnetUpgrade3Button));
+    	magnetUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_RANGE, R.id.upgradesMenuMagnetUpgrade4Button));
     	
     	magnetButton = (Button)findViewById(R.id.upgradesMenuMagnetButton);
 		magnetButton.setOnClickListener(new OnClickListener() {
@@ -390,10 +407,10 @@ public class UpgradesMenu extends Activity {
     	whiteHoleUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade3Button);
     	whiteHoleUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade4Button);
     	
-    	whiteHoleUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1));
-    	whiteHoleUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2));
-    	whiteHoleUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3));
-    	whiteHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_RANGE));
+    	whiteHoleUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuWhiteHoleUpgrade1Button));
+    	whiteHoleUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuWhiteHoleUpgrade2Button));
+    	whiteHoleUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuWhiteHoleUpgrade3Button));
+    	whiteHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_RANGE, R.id.upgradesMenuWhiteHoleUpgrade4Button));
     	
     	whiteHoleButton = (Button)findViewById(R.id.upgradesMenuWhiteHoleButton);
 		whiteHoleButton.setOnClickListener(new OnClickListener() {
@@ -445,10 +462,10 @@ public class UpgradesMenu extends Activity {
     	bumperUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuBumperUpgrade3Button);
     	bumperUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuBumperUpgrade4Button);
     	
-    	bumperUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_1));
-    	bumperUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_2));
-    	bumperUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_3));
-    	bumperUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_SIZE));
+    	bumperUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuBumperUpgrade1Button));
+    	bumperUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuBumperUpgrade2Button));
+    	bumperUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuBumperUpgrade3Button));
+    	bumperUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_SIZE, R.id.upgradesMenuBumperUpgrade4Button));
     	
     	bumperButton = (Button)findViewById(R.id.upgradesMenuBumperButton);
 		bumperButton.setOnClickListener(new OnClickListener() {
@@ -500,10 +517,10 @@ public class UpgradesMenu extends Activity {
     	bombUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuBombUpgrade3Button);
     	bombUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuBombUpgrade4Button);
     	
-    	bombUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_NO_EFFECT_DROPS));
-    	bombUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_NO_EFFECT_POWERUPS));
-    	bombUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_CAUSE_DROP));
-    	bombUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_CAUSE_DROPS));
+    	bombUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_NO_EFFECT_DROPS, R.id.upgradesMenuBombUpgrade1Button));
+    	bombUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_NO_EFFECT_POWERUPS, R.id.upgradesMenuBombUpgrade2Button));
+    	bombUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_CAUSE_DROP, R.id.upgradesMenuBombUpgrade3Button));
+    	bombUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_CAUSE_DROPS, R.id.upgradesMenuBombUpgrade4Button));
     	
     	bombButton = (Button)findViewById(R.id.upgradesMenuBombButton);
 		bombButton.setOnClickListener(new OnClickListener() {
@@ -547,37 +564,160 @@ public class UpgradesMenu extends Activity {
 				}
 			}
 		});
-
-
-
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		
+		// save points
+		Points.save(getPreferences(MODE_PRIVATE).edit());
+		
+		// save upgrades
+		Upgrades.save(getPreferences(MODE_PRIVATE).edit());
 	}
 	
+	@Override
+	public Dialog onCreateDialog(int id, Bundle args) {
+
+		// get args
+		final String title = args.getString("title");
+		final int level = args.getInt("level");
+		final int points = args.getInt("points");
+		final int upgradeID = args.getInt("upgradeID");
+		final int buttonID = args.getInt("buttonID");
+		
+		Dialog dialog = null;
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+		switch(id) {
+		case DIALOG_NOT_ENOUGH_POINTS:
+			alertDialogBuilder
+				.setTitle("Not Enough Points")
+				.setMessage("You do not have enough points for the upgrade '" + title + "'")
+				.setPositiveButton("OK", null);
+			
+			dialog = alertDialogBuilder.create();
+
+			break;
+		case DIALOG_CONFIRM_UPGRADE:
+			
+			alertDialogBuilder
+				.setTitle("Confirm Upgrade")
+				.setMessage("Are you sure you want to purchase the upgrade '" + title + "'")
+				
+				// do nothing when user selects no 
+				.setNegativeButton("No", null)
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						// set upgrade level
+						Upgrade upgrade = Upgrades.getUpgrade(upgradeID);
+						upgrade.setLevel(level);
+						
+						// update background color
+						Button button = (Button)findViewById(buttonID);
+						toggleButtonColor(button);
+						
+						// update points
+						Points.update(-points);
+						
+						// update points textview
+				    	pointsView.setText("You have " + Points.getNumPoints() + " points");
+					}
+				});
+
+			
+			dialog = alertDialogBuilder.create();
+
+			break;
+		default:
+			dialog = null;
+		}
+		
+		return dialog;
+	}
+	
+	/**
+	 * Sets button text to be black and sets the row background color to white
+	 * @param button button to toggle
+	 */
+	public void toggleButtonColor(Button button) {
+		button.setTextColor(Color.BLACK);
+		((TableRow)button.getParent()).setBackgroundColor(Color.WHITE);
+	}
+	
+	/**
+	 * Click handler for upgrade buttons
+	 * @author Josh Slauson
+	 *
+	 */
 	private class UpgradeOnClickListener implements OnClickListener {
 		
+		// upgrade
 		private Upgrade upgrade;
-		private int type;
 		
-		public UpgradeOnClickListener(Upgrade upgrade, int type) {
+		// upgrade level
+		private int level;
+		
+		// resource id of button
+		private int buttonID;
+		
+		public UpgradeOnClickListener(Upgrade upgrade, int level, int buttonID) {
 			this.upgrade = upgrade;
-			this.type = type;
+			this.level = level;
+			this.buttonID = buttonID;
 		}
 
 		public void onClick(View v) {
 			// check if upgrade is unlocked
-			if (upgrade.getLevel() >= type) {
+			if (upgrade.getLevel() >= level) {
 				return;
 			}
 			
+			int pointsRequired = Upgrades.POINTS_UPGRADE_1;
+			
+			switch(level) {
+			case 2:
+				pointsRequired = Upgrades.POINTS_UPGRADE_2;
+				break;
+			case 3:
+				pointsRequired = Upgrades.POINTS_UPGRADE_3;
+				break;
+			case 4:
+				pointsRequired = Upgrades.POINTS_UPGRADE_4;
+				break;
+			}
+			
+			// get title of upgrade
+			int resourceID = upgrade.getTitleResourceId(level);
+			String title = "Title";
+			
+			if (resourceID != -1) {
+				title = getResources().getString(resourceID);
+				
+				// remove '- cost' from title
+				title = title.substring(0, title.indexOf('-')).trim();
+			}
+
+			// create bundle for dialog box
+			Bundle bundle = new Bundle();
+			bundle.putString("title", title);
+			bundle.putInt("upgradeID", Upgrades.getUpgradeID(upgrade));
+			bundle.putInt("buttonID", buttonID);
+			bundle.putInt("level", level);
+			bundle.putInt("points", pointsRequired);
+			
 			// check if player has enough points
+			if (false && Points.getNumPoints() < pointsRequired) {
+				showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+				return;
+			}
+
+			// confirm upgrade
+			showDialog(DIALOG_CONFIRM_UPGRADE, bundle);
 			
-			// verify selection
-			
-			// save upgrade
+			// TODO: save upgrade, points if changed
 		}
 	}
 }

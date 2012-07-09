@@ -1,6 +1,9 @@
 package com.slauson.dasher.status;
 
+import java.util.ArrayList;
+
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 /**
  * Contains upgrades to powerups/player
@@ -9,8 +12,12 @@ import android.content.SharedPreferences;
  */
 public class Upgrades {
 	
-	// TODO: have description string of each upgrade?
-
+	// constants for upgrade costs
+	public static final int POINTS_UPGRADE_1 = 1000;
+	public static final int POINTS_UPGRADE_2 = 2500;
+	public static final int POINTS_UPGRADE_3 = 5000;
+	public static final int POINTS_UPGRADE_4 = 10000;
+	
 	// constants to represent what powerup upgrade levels mean
 	public static final int DASH_UPGRADE_REDUCED_RECHARGE_1 = 1;
 	public static final int DASH_UPGRADE_REDUCED_RECHARGE_2 = 2;
@@ -68,20 +75,30 @@ public class Upgrades {
 	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
 	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
 	
+	// array of upgrades
+	private static ArrayList<Upgrade> upgrades = new ArrayList<Upgrade>();
+	
+	// populate array
+	static {
+		upgrades.add(dashUpgrade);
+		upgrades.add(smallUpgrade);
+		upgrades.add(slowUpgrade);
+		upgrades.add(invulnerabilityUpgrade);
+		upgrades.add(drillUpgrade);
+		upgrades.add(magnetUpgrade);
+		upgrades.add(whiteHoleUpgrade);
+		upgrades.add(bumperUpgrade);
+		upgrades.add(bombUpgrade);
+	}
+	
 	/**
 	 * Loads upgrades from application preferences
 	 * @param preferences preferences to load from
 	 */
 	public static void load(SharedPreferences preferences) {
-		dashUpgrade.load(preferences);
-		smallUpgrade.load(preferences);
-		slowUpgrade.load(preferences);
-		invulnerabilityUpgrade.load(preferences);
-		drillUpgrade.load(preferences);
-		magnetUpgrade.load(preferences);
-		whiteHoleUpgrade.load(preferences);
-		bumperUpgrade.load(preferences);
-		bombUpgrade.load(preferences);
+		for (Upgrade upgrade : upgrades) {
+			upgrade.load(preferences);
+		}
 	}
 	
 	/**
@@ -89,14 +106,42 @@ public class Upgrades {
 	 * @param preferenceEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor preferencesEditor) {
-		dashUpgrade.save(preferencesEditor);
-		smallUpgrade.save(preferencesEditor);
-		slowUpgrade.save(preferencesEditor);
-		invulnerabilityUpgrade.save(preferencesEditor);
-		drillUpgrade.save(preferencesEditor);
-		magnetUpgrade.save(preferencesEditor);
-		whiteHoleUpgrade.save(preferencesEditor);
-		bumperUpgrade.save(preferencesEditor);
-		bombUpgrade.save(preferencesEditor);
+		for (Upgrade upgrade : upgrades) {
+			upgrade.save(preferencesEditor);
+		}
 	}
+	
+	/**
+	 * Loads resources for upgrades
+	 * @param resources resources to use
+	 * @param packageName package name
+	 */
+	public static void loadResources(Resources resources, String packageName) {
+		for (Upgrade upgrade : upgrades) {
+			upgrade.loadResources(resources, packageName);
+		}
+	}
+	
+	/**
+	 * Returns upgrade id
+	 * @param upgrade upgrade to get id of
+	 * @return upgrade id
+	 */
+	public static int getUpgradeID(Upgrade upgrade) {
+		return upgrades.indexOf(upgrade);
+	}
+	
+	/**
+	 * Returns upgrade associated with given id
+	 * @param id upgrade id
+	 * @return upgrade associated with given id
+	 */
+	public static Upgrade getUpgrade(int id) {
+		if (id < 0 || id >= upgrades.size()) {
+			return null;
+		}
+		
+		return upgrades.get(id);
+	}
+
 }

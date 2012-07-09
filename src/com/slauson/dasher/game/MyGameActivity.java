@@ -4,7 +4,9 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.main.InstructionsMenu;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.OptionsMenu;
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.LocalStatistics;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -34,6 +36,7 @@ public class MyGameActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_menu);
+		
 		myGameView = (MyGameView)findViewById(R.id.myGameView);
 		myGameView.setActivity(this);
 
@@ -46,6 +49,12 @@ public class MyGameActivity extends Activity {
 		quitting = false;
 		paused = false;
 
+		/**
+		 * Reset state
+		 */
+		LocalStatistics.reset();
+		Achievements.resetLocalAchievements();
+		
 		
 		/**
 		 * Setup pause menu

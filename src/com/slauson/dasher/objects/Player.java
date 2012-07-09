@@ -354,6 +354,9 @@ public class Player extends DrawObject {
 		status = STATUS_BREAKING_UP;
 		timeCounter = BREAKING_UP_DURATION;
 		
+		// don't count this as a dash kill
+		LocalStatistics.asteroidsDestroyedByDash--;
+		
 		reset();
 	}
 

@@ -1,25 +1,32 @@
 package com.slauson.dasher.status;
 
+import java.util.LinkedList;
+
 import android.content.SharedPreferences;
 
 public class HighScores {
 	
-	public static HighScore highScore1 = new HighScore(1);
-	public static HighScore highScore2 = new HighScore(2);
-	public static HighScore highScore3 = new HighScore(3);
-	public static HighScore highScore4 = new HighScore(4);
-	public static HighScore highScore5 = new HighScore(5);
-
+	private static LinkedList<HighScore> highScores = new LinkedList<HighScore>();
+	
+	static {
+		highScores.add(new HighScore());
+		highScores.add(new HighScore());
+		highScores.add(new HighScore());
+		highScores.add(new HighScore());
+		highScores.add(new HighScore());
+	}
+	
 	/**
 	 * Loads high scores from application preferences
 	 * @param preferences preferences to load from
 	 */
 	public static void load(SharedPreferences preferences) {
-		highScore1.load(preferences);
-		highScore2.load(preferences);
-		highScore3.load(preferences);
-		highScore4.load(preferences);
-		highScore5.load(preferences);
+		
+		int num = 1;
+		for (HighScore highScore : highScores) {
+			highScore.load(preferences, num);
+			num++;
+		}
 	}
 	
 	/**
@@ -27,10 +34,41 @@ public class HighScores {
 	 * @param preferenceEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor preferencesEditor) {
-		highScore1.save(preferencesEditor);
-		highScore2.save(preferencesEditor);
-		highScore3.save(preferencesEditor);
-		highScore4.save(preferencesEditor);
-		highScore5.save(preferencesEditor);
+		
+		int num = 1;
+		for (HighScore highScore : highScores) {
+			highScore.save(preferencesEditor, num);
+		}
+	}
+
+	/**
+	 * Updates high scores with given score
+	 * @param timePlayed score to add
+	 */
+	public static void update(int timePlayed) {
+		
+		for (int i = 0; i < highScores.size(); i++) {
+			if (timePlayed > highScores.get(i).getScore()) {
+				
+				// remove last high score, update score, add it at i 
+				HighScore temp = highScores.get(highScores.size()-1);
+				temp.setScore(timePlayed);
+				highScores.add(i, temp);
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Returns high score for given number
+	 * @param num number of high score to return
+	 * @return high score for given number
+	 */
+	public static HighScore getHighScore(int num) {
+		if (num > highScores.size()) {
+			return null;
+		}
+		
+		return highScores.get(num-1);
 	}
 }

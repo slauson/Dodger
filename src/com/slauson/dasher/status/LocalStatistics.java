@@ -16,8 +16,4 @@ public class LocalStatistics extends Statistics {
 		asteroidsDestroyedByBumper = 0;
 		asteroidsDestroyedByBomb = 0;
 	}
-	
-	public static int getPoints() {
-		return timePlayed;
-	}
 }

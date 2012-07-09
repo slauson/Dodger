@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.GlobalStatistics;
-
 
 public class StatisticsMenu extends Activity {
 
@@ -16,43 +14,53 @@ public class StatisticsMenu extends Activity {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.statistics_menu);
     	
-    	// add local statistics
-    	TextView localStatisticsDash = (TextView)findViewById(R.id.statisticsMenuDashLastPlaythrough);
-    	TextView localStatisticsDrill = (TextView)findViewById(R.id.statisticsMenuDrillLastPlaythrough);
-    	TextView localStatisticsMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetLastPlaythrough);
-    	TextView localStatisticsWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleLastPlaythrough);
-    	TextView localStatisticsBumper = (TextView)findViewById(R.id.statisticsMenuBumperLastPlaythrough);
-    	TextView localStatisticsBomb = (TextView)findViewById(R.id.statisticsMenuBombLastPlaythrough);
+    	// add uses statistics
+    	TextView usesDash = (TextView)findViewById(R.id.statisticsMenuDashUses);
+    	TextView usesSmall = (TextView)findViewById(R.id.statisticsMenuSmallUses);
+    	TextView usesSlow = (TextView)findViewById(R.id.statisticsMenuSlowUses);
+    	TextView usesInvulnerability = (TextView)findViewById(R.id.statisticsMenuInvulnerabilityUses);
+    	TextView usesDrill = (TextView)findViewById(R.id.statisticsMenuDrillUses);
+    	TextView usesMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetUses);
+    	TextView usesWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleUses);
+    	TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
+    	TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
     	
-    	localStatisticsDash.setText("" + LocalStatistics.asteroidsDestroyedByDash);
-    	localStatisticsDrill.setText("" + LocalStatistics.asteroidsDestroyedByDrill);
-    	localStatisticsMagnet.setText("" + LocalStatistics.asteroidsDestroyedByMagnet);
-    	localStatisticsWhiteHole.setText("" + LocalStatistics.asteroidsDestroyedByWhiteHole);
-    	localStatisticsBumper.setText("" + LocalStatistics.asteroidsDestroyedByBumper);
-    	localStatisticsBomb.setText("" + LocalStatistics.asteroidsDestroyedByBomb);
+    	usesDash.setText("" + GlobalStatistics.usesDash);
+    	usesSmall.setText("" + GlobalStatistics.usesSmall);
+    	usesSlow.setText("" + GlobalStatistics.usesSlow);
+    	usesInvulnerability.setText("" + GlobalStatistics.usesInvulnerability);
+    	usesDrill.setText("" + GlobalStatistics.usesDrill);
+    	usesMagnet.setText("" + GlobalStatistics.usesMagnet);
+    	usesWhiteHole.setText("" + GlobalStatistics.usesWhiteHole);
+    	usesBumper.setText("" + GlobalStatistics.usesBumper);
+    	usesBomb.setText("" + GlobalStatistics.usesBomb);
     	
-    	// add global statistics
-    	TextView globalStatisticsDash = (TextView)findViewById(R.id.statisticsMenuDashOverall);
-    	TextView globalStatisticsDrill = (TextView)findViewById(R.id.statisticsMenuDrillOverall);
-    	TextView globalStatisticsMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetOverall);
-    	TextView globalStatisticsWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleOverall);
-    	TextView globalStatisticsBumper = (TextView)findViewById(R.id.statisticsMenuBumperOverall);
-    	TextView globalStatisticsBomb = (TextView)findViewById(R.id.statisticsMenuBombOverall);
+    	// add asteroids destroyed statistics
+    	TextView asteroidsDestroyedDash = (TextView)findViewById(R.id.statisticsMenuDashAsteroidsDestroyed);
+    	TextView asteroidsDestroyedSmall = (TextView)findViewById(R.id.statisticsMenuSmallAsteroidsDestroyed);
+    	TextView asteroidsDestroyedSlow = (TextView)findViewById(R.id.statisticsMenuSlowAsteroidsDestroyed);
+    	TextView asteroidsDestroyedInvulnerability = (TextView)findViewById(R.id.statisticsMenuInvulnerabilityAsteroidsDestroyed);
+    	TextView asteroidsDestroyedDrill = (TextView)findViewById(R.id.statisticsMenuDrillAsteroidsDestroyed);
+    	TextView asteroidsDestroyedMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetAsteroidsDestroyed);
+    	TextView asteroidsDestroyedWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleAsteroidsDestroyed);
+    	TextView asteroidsDestroyedBumper = (TextView)findViewById(R.id.statisticsMenuBumperAsteroidsDestroyed);
+    	TextView asteroidsDestroyedBomb = (TextView)findViewById(R.id.statisticsMenuBombAsteroidsDestroyed);
     	
-    	globalStatisticsDash.setText("" + GlobalStatistics.asteroidsDestroyedByDash);
-    	globalStatisticsDrill.setText("" + GlobalStatistics.asteroidsDestroyedByDrill);
-    	globalStatisticsMagnet.setText("" + GlobalStatistics.asteroidsDestroyedByMagnet);
-    	globalStatisticsWhiteHole.setText("" + GlobalStatistics.asteroidsDestroyedByWhiteHole);
-    	globalStatisticsBumper.setText("" + GlobalStatistics.asteroidsDestroyedByBumper);
-    	globalStatisticsBomb.setText("" + GlobalStatistics.asteroidsDestroyedByBomb);
+    	// these are always 0
+    	asteroidsDestroyedSmall.setText("0");
+    	asteroidsDestroyedSlow.setText("0");
+    	asteroidsDestroyedInvulnerability.setText("0");
+    	
+    	asteroidsDestroyedDash.setText("" + GlobalStatistics.asteroidsDestroyedByDash);
+    	asteroidsDestroyedDrill.setText("" + GlobalStatistics.asteroidsDestroyedByDrill);
+    	asteroidsDestroyedMagnet.setText("" + GlobalStatistics.asteroidsDestroyedByMagnet);
+    	asteroidsDestroyedWhiteHole.setText("" + GlobalStatistics.asteroidsDestroyedByWhiteHole);
+    	asteroidsDestroyedBumper.setText("" + GlobalStatistics.asteroidsDestroyedByBumper);
+    	asteroidsDestroyedBomb.setText("" + GlobalStatistics.asteroidsDestroyedByBomb);
 
-    	// add local time played
-    	TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayedLastPlaythrough);
-    	localTimePlayed.setText("" + LocalStatistics.timePlayed);
-    	
-    	// add global time played
-    	TextView globalTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayedOverall);
-    	globalTimePlayed.setText("" + GlobalStatistics.timePlayed);
+    	// add time played
+    	TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
+    	localTimePlayed.setText(GlobalStatistics.getTimePlayedString());
 	}
 	
 	@Override

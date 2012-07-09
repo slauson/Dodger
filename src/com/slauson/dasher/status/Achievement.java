@@ -1,8 +1,9 @@
 package com.slauson.dasher.status;
 
-import android.R;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+
+import com.slauson.dasher.other.Util;
 
 /**
  * Represents an individual achievement
@@ -25,20 +26,29 @@ public class Achievement {
 	private int idTitle;
 	private int idDescription;
 	
-	// text to substitute into description using %s
-	private String substitutionText;
+	// number of something required for achievement, this is inserted into description using %s
+	private int num;
+	
+	// id of statistic associated with this achievement
+	private int statistic;
 	
 	// description
 	private String description;
 	
 	public Achievement(String key, int idIcon) {
-		this(key, idIcon, "");
+		this(key, idIcon, -1, -1);
 	}
 	
-	public Achievement(String key, int idIcon, String substitutionText) {
+	public Achievement(String key, int idIcon, int num) {
+		this(key, idIcon, num, -1);
+	}
+
+	
+	public Achievement(String key, int idIcon, int num, int statistic) {
 		this.key = key;
 		this.idIcon = idIcon;
-		this.substitutionText = substitutionText;
+		this.num = num;
+		this.statistic = statistic;
 	
 		this.value = false;
 		this.time = 0;
@@ -162,8 +172,8 @@ public class Achievement {
 		}
 		
 		// load description, substitution text where necessary
-		if (!substitutionText.isEmpty()) {
-			description = resources.getString(idDescription, substitutionText);
+		if (num != -1) {
+			description = resources.getString(idDescription, "" + num);
 		} else {
 			description = resources.getString(idDescription);
 		}
@@ -172,5 +182,34 @@ public class Achievement {
 	@Override
 	public String toString() {
 		return key;
+	}
+	
+	/**
+	 * Returns date representation of time achievement was unlocked
+	 * @return date representation of time achievement was unlocked
+	 */
+	public String getTimeString() {
+		return Util.getDateString(time);
+	}
+	
+	/**
+	 * Returns progress of this achievement (0 - 1)
+	 * @return progress of this achievement
+	 */
+	public float getProgress() {
+		if (num == -1 || statistic == -1) {
+			return 0;
+		}
+		
+		// get current count
+		int count = GlobalStatistics.getStatistic(statistic);
+		
+		float percent = 1.f * count / num;
+		
+		if (percent > 1) {
+			percent = 1;
+		}
+		
+		return percent;
 	}
 }

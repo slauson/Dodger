@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ public class AchievementsMenu extends Activity {
     	
     	table = (TableLayout)findViewById(R.id.achievementsMenuTable);
 
-    	Achievements.loadAchievementResources(getResources(), getPackageName());
+    	Achievements.loadResources(getResources(), getPackageName());
     	
     	// for local achievements menu
     	if (!achievementsLoaded) {
@@ -47,16 +48,10 @@ public class AchievementsMenu extends Activity {
 	}
 	
 	private void loadAchievements() {
-    	List<Achievement> lockedAchievements = Achievements.getLockedAchievements();
-    	List<Achievement> unlockedAchievements = Achievements.getUnlockedAchievements();
-    	
-    	// add locked achievements first
-    	for (Achievement achievement : lockedAchievements) {
-    		addAchievement(achievement);
-    	}
-    	
-    	// now add unlocked achievements
-    	for (Achievement achievement : unlockedAchievements) {
+    	List<Achievement> achievements = Achievements.getAchievements();
+
+    	// add achievements
+    	for (Achievement achievement : achievements) {
     		addAchievement(achievement);
     	}
 	}
@@ -69,7 +64,7 @@ public class AchievementsMenu extends Activity {
 		
 		System.out.println("adding achievement " + achievement + " to row " + row);
 		
-		// get first row
+		// get second row
 		TableRow tableRow1 = (TableRow)table.getChildAt(row);
 		tableRow1.setVisibility(View.VISIBLE);
 		
@@ -87,8 +82,21 @@ public class AchievementsMenu extends Activity {
 		TableRow tableRow2 = (TableRow)table.getChildAt(row);
 		tableRow2.setVisibility(View.VISIBLE);
 		
+		// set progress bar
+		ProgressBar progressBar = (ProgressBar)tableRow2.getChildAt(0);
+		
+		if (achievement.getProgress() > 0) {
+			progressBar.setProgress((int)(achievement.getProgress()*100));
+		}
+
+		row++;
+		
+		// get third row
+		TableRow tableRow3 = (TableRow)table.getChildAt(row);
+		tableRow3.setVisibility(View.VISIBLE);
+		
 		// get textview
-		TextView textView2 = (TextView)tableRow2.getChildAt(0);
+		TextView textView2 = (TextView)tableRow3.getChildAt(0);
 		textView2.setText(achievement.getDescription());
 
 		row++;
@@ -96,9 +104,16 @@ public class AchievementsMenu extends Activity {
 		// check if achievement is unlocked
 		if (achievement.getValue()) {
 			textView1.setTextColor(Color.BLACK);
-			tableRow1.setBackgroundColor(Color.WHITE);
-			textView2.setTextColor(Color.BLACK);
 			tableRow2.setBackgroundColor(Color.WHITE);
+			textView2.setTextColor(Color.BLACK);
+			tableRow3.setBackgroundColor(Color.WHITE);
+			
+			progressBar.setProgress(0);
+			
+			// add time unlocked
+			if (!achievement.getTimeString().isEmpty()) {
+				textView2.setText(textView2.getText() + "\n" + achievement.getTimeString());
+			}
 		}		
 	}
 
