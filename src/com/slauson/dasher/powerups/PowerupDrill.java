@@ -3,10 +3,12 @@ package com.slauson.dasher.powerups;
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
+import com.slauson.dasher.status.Upgrades;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.FloatMath;
 
 /**
@@ -19,15 +21,27 @@ public class PowerupDrill extends ActivePowerup {
 	// constants
 	private static final int SPEED = 200;
 	private static final float WEIGHTED_DISTANCE_X_FACTOR = 2;
-	private static final float MAX_DIR_CHANGE = 0.05f;
 	private static final float CONE_CHECK_X_FACTOR = 1.5f;
+	private static final int TELEPORT_DURATION = 500;
+	
+	private static final float MAX_DIR_CHANGE_0 = 0.05f;
+	private static final float MAX_DIR_CHANGE_1 = 0.10f;
+	private static final float MAX_DIR_CHANGE_2 = 0.15f;
+	private static final float MAX_DIR_CHANGE_3 = 0.25f;
 	
 	private int direction;
+	private RectF rectDest;
 	
 	private Asteroid nextAsteroid;
 	private float nextDistance;
+	
+	private int teleportDuration;
+
+	// upgrades
+	private float maxDirChange;
+	private boolean hasTeleport;
 		
-	public PowerupDrill(Bitmap bitmap, float x, float y, int duration, int direction) {
+	public PowerupDrill(Bitmap bitmap, float x, float y, int duration, int direction, int level) {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
@@ -37,6 +51,28 @@ public class PowerupDrill extends ActivePowerup {
 
 		dirY = 1;
 		dirX = 0;
+		
+		rectDest = new RectF(-width/2, -height/2, width/2, height/2);
+		
+		// calculate maximum direction change
+		switch(level) {
+		case Upgrades.DRILL_UPGRADE_SEEK_1:
+			maxDirChange = MAX_DIR_CHANGE_1;
+			break;
+		case Upgrades.DRILL_UPGRADE_SEEK_2:
+			maxDirChange = MAX_DIR_CHANGE_2;
+			break;
+		case Upgrades.DRILL_UPGRADE_SEEK_3:
+		case Upgrades.DRILL_UPGRADE_TELEPORT:
+			maxDirChange = MAX_DIR_CHANGE_3;
+			break;
+		default:
+			maxDirChange = MAX_DIR_CHANGE_0;
+			break;
+		}
+		
+		hasTeleport = level >= Upgrades.DRILL_UPGRADE_TELEPORT;
+		teleportDuration = 0;
 		
 		activate(duration);
 	}
@@ -91,6 +127,29 @@ public class PowerupDrill extends ActivePowerup {
 		
 		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
 		lastUpdateTime = System.currentTimeMillis();
+
+		if (teleportDuration > 0) {
+			teleportDuration -= timeElapsed;
+			
+			// reset drill position
+			if (hasTeleport && teleportDuration <= TELEPORT_DURATION/2) {
+
+				// pick random x coordinate
+				x = width/2 + (MyGameView.canvasWidth - width)*MyGameView.random.nextFloat();
+				
+				// position drill back on opposite side
+				if (direction == MyGameView.DIRECTION_NORMAL) {
+					y = MyGameView.canvasHeight - height/2; 
+				} else {
+					y = height/2;
+				}
+				
+				System.out.println("RESET drill to " + (int)x + ", " + (int)y);
+				
+				hasTeleport = false;
+			}
+			return;
+		}
 		
 		float timeModifier = 1.f*timeElapsed/1000;
 		
@@ -105,12 +164,12 @@ public class PowerupDrill extends ActivePowerup {
 			//float actualDirY = 0.5f + distanceY/(distanceAbsoluteValue)/2;
 			
 			float dirChangeX = actualDirX - dirX;
-			if (Math.abs(dirChangeX) < MAX_DIR_CHANGE) {
+			if (Math.abs(dirChangeX) < maxDirChange) {
 				dirX = actualDirX;
 			} else if (dirChangeX > 0) {
-				dirX += MAX_DIR_CHANGE;
+				dirX += maxDirChange;
 			} else {
-				dirX -= MAX_DIR_CHANGE;
+				dirX -= maxDirChange;
 			}
 			
 			dirY = 1.0f - Math.abs(dirX);
@@ -138,29 +197,43 @@ public class PowerupDrill extends ActivePowerup {
 			paint.setAlpha(alpha);
 		}
 
+		// translate to drill's position
+		canvas.save();
+		canvas.translate(x, y);
+
 		// rotate if needed
 		if (direction == MyGameView.DIRECTION_REVERSE) {
 			canvas.save();
-			canvas.rotate(180, x, y);
+			canvas.rotate(180, 0, 0);
 		}
 		
 		// rotate based on direction
-		canvas.save();
-		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			canvas.rotate(90*dirX, x, y);
+			canvas.rotate(90*dirX, 0, 0);
 		} else {
-			canvas.rotate(-90*dirX, x, y);
+			canvas.rotate(-90*dirX, 0, 0);
 		}
-		
-		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
-		
-		canvas.restore();
+
+		// scale if teleporting
+		if (teleportDuration > 0) {
+			
+			float factor = Math.abs(TELEPORT_DURATION/2 - teleportDuration)/(1.f*TELEPORT_DURATION/2);
+			
+			System.out.println("Draw teleport: " + factor);
+			
+			rectDest.set(-width/2*factor, -height/2*factor, width/2*factor, height/2*factor);
+			
+			canvas.drawBitmap(bitmap, null, rectDest, paint);
+		} else {
+			canvas.drawBitmap(bitmap, -width/2, - height/2, paint);
+		}
 		
 		// unrotate
 		if (direction == MyGameView.DIRECTION_REVERSE) {
 			canvas.restore();
 		}
+		
+		canvas.restore();
 		
 		// restore alpha
 		if (remainingDuration() < FADE_OUT_DURATION) {
@@ -178,13 +251,42 @@ public class PowerupDrill extends ActivePowerup {
 	
 	@Override
 	public boolean isActive() {
+		
+		if (teleportDuration > 0) {
+			return true;
+		}
+		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			return super.isActive() && y + height/2 > 0;
+			if (hasTeleport) {
+				return super.isActive() && y - height/2 > 0;
+			} else {
+				return super.isActive() && y + height/2 > 0;
+			}
 		} else {
-			return super.isActive() && y - height/2 < MyGameView.canvasHeight;
+			if (hasTeleport) {
+				return super.isActive() && y + height/2 < MyGameView.canvasHeight;
+			} else {
+				return super.isActive() && y - height/2 < MyGameView.canvasHeight;
+			}
 		}
 	}
 	
+	/**
+	 * Teleports drill to other side of screen at random x position
+	 */
+	public void teleport() {
+		
+		System.out.println("TELEPORT");
+		
+		nextAsteroid = null;
+		nextDistance = 0;
+
+		teleportDuration = TELEPORT_DURATION;
+	}
+	
+	/**
+	 * Checks local drill-related achievements
+	 */
 	public void checkAchievements() {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithDrill1.getValue())
@@ -203,6 +305,14 @@ public class PowerupDrill extends ActivePowerup {
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill3);
 		}
+	}
+	
+	/**
+	 * Returns true if drill has teleport ability
+	 * @return true if drill has teleport ability
+	 */
+	public boolean hasTeleport() {
+		return hasTeleport;
 	}
 
 }

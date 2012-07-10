@@ -6,6 +6,7 @@ import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Upgrades;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -33,9 +34,15 @@ public class Player extends DrawObject {
 	private RectF dashPercentRect;
 	private RectF dashPercentRectSmall;
 	private int dashTimeout;
-	private int numAffectedAsteroids;
+	private int dashNumAffectedAsteroids;
 	
 	private int invulnerabilityCounter;
+
+	private boolean smallPowerupQuarterSize;
+	
+	// dash upgrades
+	private int dashRechargeDuration;
+	private boolean dashMultipleDrops;
 
 	/**
 	 * Public constants
@@ -66,7 +73,11 @@ public class Player extends DrawObject {
 	
 	private static final int INVULNERABLE_DURATION = 5000;
 	
-	private static final int DASH_TIMEOUT_DURATION = 15000;
+	// dash recharge
+	private static final int DASH_RECHARGE_DURATION_0 = 20000;
+	private static final int DASH_RECHARGE_DURATION_1 = 17500;
+	private static final int DASH_RECHARGE_DURATION_2 = 15000;
+	private static final int DASH_RECHARGE_DURATION_3 = 10000;
 	
 	public Player() {
 		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
@@ -80,6 +91,8 @@ public class Player extends DrawObject {
 		inPosition = true;
 		direction = MyGameView.DIRECTION_NORMAL;
 		
+		smallPowerupQuarterSize = Upgrades.smallUpgrade.getLevel() >= Upgrades.SMALL_UPGRADE_QUARTER_SIZE;
+		
 		points = new float[] {
 				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
 				0, -PLAYER_HEIGHT/2,
@@ -91,21 +104,38 @@ public class Player extends DrawObject {
 				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2
 		};
 		
-		altPoints = new float[] {
-				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				0, -PLAYER_HEIGHT/4,
-				0, -PLAYER_HEIGHT/4,
-				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
-		};
-		
+		// quarter size
+		if (smallPowerupQuarterSize) {
+			altPoints = new float[] {
+					-PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
+					0, -PLAYER_HEIGHT/8,
+					0, -PLAYER_HEIGHT/8,
+					PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
+					PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
+					0, PLAYER_HEIGHT/8+REAR_OFFSET/4,
+					0, PLAYER_HEIGHT/8+REAR_OFFSET/4,
+					-PLAYER_WIDTH/8, PLAYER_HEIGHT/8
+			};
+			dashPercentRectSmall = new RectF(-1, 0, 1, 2);
+		}
+		// half size
+		else {
+			altPoints = new float[] {
+					-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+					0, -PLAYER_HEIGHT/4,
+					0, -PLAYER_HEIGHT/4,
+					PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+					PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+					0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+					0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+					-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
+			};
+			dashPercentRectSmall = new RectF(-2, 0, 2, 4);
+		}
+			
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-4, -2, 4, 6);
-		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
-		numAffectedAsteroids = 0;
+		dashNumAffectedAsteroids = 0;
 		
 		lineSegments = new ArrayList<LineSegment>();
 		
@@ -118,6 +148,26 @@ public class Player extends DrawObject {
 		invulnerabilityCounter = 0;
 		status = STATUS_INVULNERABLE;
 		timeCounter = INVULNERABLE_DURATION;
+		
+		// calculate dash recharge duration
+		switch (Upgrades.dashUpgrade.getLevel()) {
+		case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_1:
+			dashRechargeDuration = DASH_RECHARGE_DURATION_1;
+			break;
+		case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_2:
+			dashRechargeDuration = DASH_RECHARGE_DURATION_2;
+			break;
+		case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_3:
+		case Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS:
+			dashRechargeDuration = DASH_RECHARGE_DURATION_3;
+			break;
+		default:
+			dashRechargeDuration = DASH_RECHARGE_DURATION_0;
+			break;
+		}
+		
+		// determine if multiple drops are enabled for dash
+		dashMultipleDrops = Upgrades.dashUpgrade.getLevel() >= Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS;
 	}
 	
 	/**
@@ -127,16 +177,6 @@ public class Player extends DrawObject {
 		LocalStatistics.timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
 		startTime = System.currentTimeMillis();
 		dashTimeout = 0;
-		
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
-			Achievements.unlockLocalAchievement(Achievements.localPlaytime1);
-		}
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_2) {
-			Achievements.unlockLocalAchievement(Achievements.localPlaytime2);
-		}
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_3) {
-			Achievements.unlockLocalAchievement(Achievements.localPlaytime3);
-		}
 	}
 	
 	@Override
@@ -156,7 +196,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerable blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 4 < 2)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive()) {
@@ -169,11 +209,12 @@ public class Player extends DrawObject {
 				
 				// draw dash timeout percentage
 				
+				
 				paint.setStyle(Style.FILL_AND_STROKE);
 				if (MyGameView.powerupSmall.isActive()) {
-					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/DASH_TIMEOUT_DURATION), true, paint);
+					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
 				} else {
-					canvas.drawArc(dashPercentRect, -90, 360 - 360*(1f*dashTimeout/DASH_TIMEOUT_DURATION), true, paint);
+					canvas.drawArc(dashPercentRect, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
 				}
 			}
 			// breaking up
@@ -312,7 +353,11 @@ public class Player extends DrawObject {
 		float modifier = 1f;
 		
 		if (MyGameView.powerupSmall.isActive()) {
-			modifier = 0.5f;
+			if (smallPowerupQuarterSize) {
+				modifier = 0.25f;
+			} else {
+				modifier = 0.5f;
+			}
 		}
 		
 		LineSegment lineSegment;
@@ -371,7 +416,11 @@ public class Player extends DrawObject {
 	@Override
 	public boolean checkBoxCollision(Item other) {
 		if (MyGameView.powerupSmall.isActive()) {
-			return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
+			if (smallPowerupQuarterSize) {
+				return Math.abs(x - other.x) <= width/8 + other.width/4 && Math.abs(y - other.y) <= width/8 + other.height/4;
+			} else {
+				return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
+			}
 		} else {
 			return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
 		}
@@ -394,9 +443,16 @@ public class Player extends DrawObject {
 		
 		// small ship
 		if (MyGameView.powerupSmall.isActive()) {
-			yOffset /= 2;
-			return checkX >= x - width*widthFactor/4 && checkX < x + width*widthFactor/4 &&
-					checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/4;
+			
+			if (smallPowerupQuarterSize) {
+				yOffset /= 4;
+				return checkX >= x - width*widthFactor/8 && checkX < x + width*widthFactor/8 &&
+						checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/8;
+			} else {
+				yOffset /= 2;
+				return checkX >= x - width*widthFactor/4 && checkX < x + width*widthFactor/4 &&
+						checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/4;
+			}
 		}
 		// normal ship
 		else {
@@ -666,7 +722,7 @@ public class Player extends DrawObject {
 		
 		if (dashTimeout <= 0) {
 			inPosition = false;
-			numAffectedAsteroids = 0;
+			dashNumAffectedAsteroids = 0;
 		
 			if (direction == MyGameView.DIRECTION_NORMAL) {
 				direction = MyGameView.DIRECTION_REVERSE;
@@ -674,7 +730,7 @@ public class Player extends DrawObject {
 				direction = MyGameView.DIRECTION_NORMAL;
 			}
 			
-			dashTimeout = DASH_TIMEOUT_DURATION;
+			dashTimeout = dashRechargeDuration;
 		}
 	}
 	
@@ -694,27 +750,49 @@ public class Player extends DrawObject {
 		return 1 - 2 * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);
 	}
 	
-	public void affectedAsteroid() {
-		numAffectedAsteroids++;
+	/**
+	 * Increments dash number of affected asteroids
+	 */
+	public void dashAffectedAsteroid() {
+		dashNumAffectedAsteroids++;
 	}
 	
+	/**
+	 * Checks local dash achievements
+	 */
 	private void checkAchievements() {
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithDash1.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithDash2.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithDash3.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash3);
 		}
 	}
+	
+	/**
+	 * Returns number of affected asteroids with dash ability
+	 */
+	public int getDashNumAffectedAsteroids() {
+		return dashNumAffectedAsteroids;
+	}
+	
+	/**
+	 * Returns true if the dash ability causes multiple drops
+	 * @return true if the dash ability causes multiple drops
+	 */
+	public boolean getDashMultipleDrops() {
+		return dashMultipleDrops;
+	}
+	
 }

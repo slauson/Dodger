@@ -8,9 +8,10 @@ package com.slauson.dasher.powerups;
 public abstract class InactivePowerup {
 	
 	protected long endingTime;
+	protected int level;
 	
-	public InactivePowerup() {
-		// do nothing
+	public InactivePowerup(int level) {
+		this.level = level;
 	}
 	
 	/**
@@ -22,13 +23,17 @@ public abstract class InactivePowerup {
 	}
 	
 	/**
-	 * Activates this powerup
+	 * Activates this powerup for the given duration
+	 * @param duration duration to activate powerup for
 	 */
-	public void activate(long duration) {
+	protected void activate(long duration) {
 		endingTime = System.currentTimeMillis() + duration;
 	}
 	
 	public void update() {
 		// do nothing
 	}
+	
+	// abstract methods
+	public abstract void activate();
 }

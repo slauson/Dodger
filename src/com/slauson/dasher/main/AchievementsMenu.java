@@ -64,7 +64,7 @@ public class AchievementsMenu extends Activity {
 		
 		System.out.println("adding achievement " + achievement + " to row " + row);
 		
-		// get second row
+		// get first row
 		TableRow tableRow1 = (TableRow)table.getChildAt(row);
 		tableRow1.setVisibility(View.VISIBLE);
 		
@@ -103,6 +103,7 @@ public class AchievementsMenu extends Activity {
 		
 		// check if achievement is unlocked
 		if (achievement.getValue()) {
+			tableRow1.setBackgroundColor(Color.WHITE);
 			textView1.setTextColor(Color.BLACK);
 			tableRow2.setBackgroundColor(Color.WHITE);
 			textView2.setTextColor(Color.BLACK);

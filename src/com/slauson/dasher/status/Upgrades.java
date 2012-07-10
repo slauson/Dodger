@@ -32,12 +32,12 @@ public class Upgrades {
 	public static final int SLOW_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int SLOW_UPGRADE_INCREASED_DURATION_2 = 2;
 	public static final int SLOW_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static final int SLOW_UPGRADE_QUARTER_TIME = 4;
+	public static final int SLOW_UPGRADE_QUARTER_SPEED = 4;
 	
 	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_2 = 2;
 	public static final int INVULNERABILITY_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static final int INVULNERABILITY_UPGRADE_SLOW_TIME = 4;
+	public static final int INVULNERABILITY_UPGRADE_DASHER = 4;
 	
 	public static final int DRILL_UPGRADE_SEEK_1 = 1;
 	public static final int DRILL_UPGRADE_SEEK_2 = 2;

@@ -5,13 +5,12 @@ import com.slauson.dasher.objects.Item;
 import com.slauson.dasher.objects.Player;
 import com.slauson.dasher.powerups.PowerupDrill;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * Bumper powerup which causes items to bounce in opposite direction
@@ -24,7 +23,7 @@ public class PowerupBumper extends ActivePowerup {
 	private int cooldown;
 	
 	private Bitmap bitmapAlt;
-	private Rect rectDest;
+	private RectF rectDest;
 	
 	// constants
 	private static final int COUNTER_MAX = 20;
@@ -37,7 +36,7 @@ public class PowerupBumper extends ActivePowerup {
 		
 		counter = 0;
 		cooldown = COOLDOWN_MAX;
-		rectDest = new Rect((int)(x - width/2), (int)(y - height/2), (int)(x + width/2), (int)(y + height/2));
+		rectDest = new RectF(x - width/2, y - height/2, x + width/2, y + height/2);
 		
 		activate(duration);
 	}

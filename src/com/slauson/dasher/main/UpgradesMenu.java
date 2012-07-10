@@ -191,7 +191,7 @@ public class UpgradesMenu extends Activity {
     	slowUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuSlowUpgrade1Button));
     	slowUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuSlowUpgrade2Button));
     	slowUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuSlowUpgrade3Button));
-    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_QUARTER_TIME, R.id.upgradesMenuSlowUpgrade4Button));
+    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_QUARTER_SPEED, R.id.upgradesMenuSlowUpgrade4Button));
     	
     	slowButton = (Button)findViewById(R.id.upgradesMenuSlowButton);
 		slowButton.setOnClickListener(new OnClickListener() {
@@ -210,7 +210,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.slowUpgrade.getLevel()) {
-					case Upgrades.SLOW_UPGRADE_QUARTER_TIME:
+					case Upgrades.SLOW_UPGRADE_QUARTER_SPEED:
 						slowUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3:
@@ -246,7 +246,7 @@ public class UpgradesMenu extends Activity {
     	invulnerabilityUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuInvulnerabilityUpgrade1Button));
     	invulnerabilityUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuInvulnerabilityUpgrade2Button));
     	invulnerabilityUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuInvulnerabilityUpgrade3Button));
-    	invulnerabilityUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_SLOW_TIME, R.id.upgradesMenuInvulnerabilityUpgrade4Button));
+    	invulnerabilityUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_DASHER, R.id.upgradesMenuInvulnerabilityUpgrade4Button));
     	
     	invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
 		invulnerabilityButton.setOnClickListener(new OnClickListener() {
@@ -265,7 +265,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.invulnerabilityUpgrade.getLevel()) {
-					case Upgrades.INVULNERABILITY_UPGRADE_SLOW_TIME:
+					case Upgrades.INVULNERABILITY_UPGRADE_DASHER:
 						invulnerabilityUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)invulnerabilityUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3:
@@ -709,7 +709,7 @@ public class UpgradesMenu extends Activity {
 			bundle.putInt("points", pointsRequired);
 			
 			// check if player has enough points
-			if (false && Points.getNumPoints() < pointsRequired) {
+			if (Points.getNumPoints() < pointsRequired) {
 				showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
 				return;
 			}

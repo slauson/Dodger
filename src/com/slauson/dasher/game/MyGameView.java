@@ -20,6 +20,7 @@ import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
 import android.content.Context;
@@ -64,8 +65,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// Canvas stuff
 	private Paint paint;
-	
-	private Random random;
 	
 	// Stuff on screen
 	private Player player;
@@ -118,9 +117,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final float DROP_CHANCE = 1f;
 	
 	// powerup durations
-	private static final int SLOW_DURATION = 10000;
-	private static final int INVULNERABLE_DURATION = 10000;
-	private static final int SMALL_DURATION = 10000;
 	private static final int MAGNET_DURATION = 10000;
 	private static final int WHITE_HOLE_DURATION = 10000;
 	private static final int BUMPER_DURATION = 10000;
@@ -176,16 +172,21 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Shared stuff
 	 */
 	
+	// canvas
 	public static int canvasWidth, canvasHeight;
 	
-	public static PowerupSlow powerupSlow = new PowerupSlow();
-	public static PowerupInvulnerable powerupInvulnerable = new PowerupInvulnerable();
-	public static PowerupSmall powerupSmall = new PowerupSmall();
+	// powerups
+	public static PowerupSlow powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
+	public static PowerupInvulnerable powerupInvulnerability = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
+	public static PowerupSmall powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
 	
 	// current state
 	public static int gameMode = MODE_RUNNING;
 	public static int direction = DIRECTION_NORMAL;
 	public static float gravity = 1f;
+	
+	// random
+	public static Random random;
 
 	
 	public MyGameView(Context context) {
@@ -431,28 +432,39 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player
-					if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive() && player.checkAsteroidCollision(temp)) {
+					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(temp)) {
 						
+						// player is on top or bottom
 						if (player.inPosition()) {
-							player.breakup();
 							temp.breakup();
 							
-							Timer timer = new Timer();
-							timer.schedule(new TimerTask() {
-								@Override
-								public void run() {
-									// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
-									gameActivity.runOnUiThread(new Runnable() {
-									     public void run() {
-									    	 gameActivity.gameOver();
-									    }
-									});
-								}
-							}, Player.BREAKING_UP_DURATION-500);
-						} else {
+							// game over if player isn't invulnerable
+							if (!powerupInvulnerability.isActive()) {
+								player.breakup();
+								Timer timer = new Timer();
+								timer.schedule(new TimerTask() {
+									@Override
+									public void run() {
+										// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
+										gameActivity.runOnUiThread(new Runnable() {
+										     public void run() {
+										    	 gameActivity.gameOver();
+										    }
+										});
+									}
+								}, Player.BREAKING_UP_DURATION-500);
+							}
+						}
+						// player is dashing (only destroy asteroids when invulnerability has upgrade)
+						else if (!powerupInvulnerability.isActive() || powerupInvulnerability.isDasher()) {
+
 							temp.breakup();
-							dropPowerup(temp.getX(), temp.getY());
-							player.affectedAsteroid();
+
+							// causes drop depending on upgrade
+							if (player.getDashNumAffectedAsteroids() == 0 || player.getDashMultipleDrops()) {
+								dropPowerup(temp.getX(), temp.getY());
+							}
+							player.dashAffectedAsteroid();
 						}
 					}
 				}
@@ -499,11 +511,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					temp.update();
 				}
 				
-				// reset powerup off screen
-				if (direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
-					drops.remove(temp);
-					i--;
-				} else if (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0) {
+				// reset drop off screen
+				if ((direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) || (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0)) {
 					drops.remove(temp);
 					i--;
 				}
@@ -519,24 +528,24 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), WHITE_HOLE_DURATION));
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), DRILL_DURATION, player.getDirection()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), DRILL_DURATION, player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						break;
 					case POWERUP_BUMPER:
 						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), BUMPER_DURATION));
 						break;
 					// activate one and done powerup
 					case POWERUP_INVULNERABLE:
-						powerupInvulnerable.activate(INVULNERABLE_DURATION);
+						powerupInvulnerability.activate();
 						break;
 					case POWERUP_BOMB:
 						bombCounter = BOMB_COUNTER_MAX;
 						break;
 					// activate player powerup
 					case POWERUP_SMALL:
-						powerupSmall.activate(SMALL_DURATION);
+						powerupSmall.activate();
 						break;
 					case POWERUP_SLOW:
-						powerupSlow.activate(SLOW_DURATION);
+						powerupSlow.activate();
 						break;
 					}
 					
@@ -558,36 +567,48 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// update inactive powerups
-		powerupInvulnerable.update();
+		powerupInvulnerability.update();
 		powerupSlow.update();
 		powerupSmall.update();
 		
 		synchronized (activePowerups) {
 		
+			ActivePowerup powerup;
+			
 			// update any active global powerups
 			for (int i = 0; i < activePowerups.size(); i++) {
 				
+				powerup = activePowerups.get(i);
+				
 				if (powerupSlow.isActive()) {
-					activePowerups.get(i).update(0.5f);
+					if (powerupSlow.isQuarterSpeed()) {
+						powerup.update(0.25f);						
+					} else {
+						powerup.update(0.5f);
+					}
 				} else {
-					activePowerups.get(i).update(1f);
+					powerup.update(1f);
 				}
 				
 				// check if any active powerups should be removed
 				if (!activePowerups.get(i).isActive()) {
-					activePowerups.get(i).checkAchievements();
-					activePowerups.remove(i);
-					i--;
+										
+					// reset teleporting drill
+					if (powerup instanceof PowerupDrill && ((PowerupDrill)powerup).hasTeleport()) {
+						((PowerupDrill)powerup).teleport();
+					} else {
+						System.out.println("Removing Active Powerup");
+						powerup.checkAchievements();
+						activePowerups.remove(i);
+						i--;
+					}
 				} else {
 				
-					// alter active powerup for each active powerup
-					synchronized (activePowerups) {
-						
-						for (ActivePowerup activePowerup : activePowerups) {
-							// TODO: use something better here
-							if (activePowerup instanceof PowerupBumper && activePowerups.get(i) instanceof PowerupDrill) {
-								((PowerupBumper)activePowerup).alterDrill((PowerupDrill)activePowerups.get(i));
-							}
+					// alter drill active powerups for each bumper active powerup
+					for (ActivePowerup activePowerup : activePowerups) {
+						// TODO: use something better here
+						if (activePowerup instanceof PowerupBumper && activePowerups.get(i) instanceof PowerupDrill) {
+							((PowerupBumper)activePowerup).alterDrill((PowerupDrill)activePowerups.get(i));
 						}
 					}
 				}
@@ -624,7 +645,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// alter player for each active powerup
-		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive()) {
+		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerability.isActive()) {
 			synchronized (activePowerups) {
 				for (ActivePowerup activePowerup : activePowerups) {
 					// TODO: use something better here
