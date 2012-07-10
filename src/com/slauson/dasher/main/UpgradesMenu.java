@@ -355,7 +355,7 @@ public class UpgradesMenu extends Activity {
     	magnetUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuMagnetUpgrade1Button));
     	magnetUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuMagnetUpgrade2Button));
     	magnetUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuMagnetUpgrade3Button));
-    	magnetUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_INCREASED_RANGE, R.id.upgradesMenuMagnetUpgrade4Button));
+    	magnetUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_SPIN, R.id.upgradesMenuMagnetUpgrade4Button));
     	
     	magnetButton = (Button)findViewById(R.id.upgradesMenuMagnetButton);
 		magnetButton.setOnClickListener(new OnClickListener() {
@@ -374,7 +374,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.magnetUpgrade.getLevel()) {
-					case Upgrades.MAGNET_UPGRADE_INCREASED_RANGE:
+					case Upgrades.MAGNET_UPGRADE_SPIN:
 						magnetUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)magnetUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3:
@@ -410,7 +410,7 @@ public class UpgradesMenu extends Activity {
     	whiteHoleUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuWhiteHoleUpgrade1Button));
     	whiteHoleUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuWhiteHoleUpgrade2Button));
     	whiteHoleUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuWhiteHoleUpgrade3Button));
-    	whiteHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_RANGE, R.id.upgradesMenuWhiteHoleUpgrade4Button));
+    	whiteHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_QUASAR, R.id.upgradesMenuWhiteHoleUpgrade4Button));
     	
     	whiteHoleButton = (Button)findViewById(R.id.upgradesMenuWhiteHoleButton);
 		whiteHoleButton.setOnClickListener(new OnClickListener() {
@@ -429,7 +429,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.whiteHoleUpgrade.getLevel()) {
-					case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_RANGE:
+					case Upgrades.WHITE_HOLE_UPGRADE_QUASAR:
 						whiteHoleUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)whiteHoleUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3:
@@ -709,7 +709,8 @@ public class UpgradesMenu extends Activity {
 			bundle.putInt("points", pointsRequired);
 			
 			// check if player has enough points
-			if (Points.getNumPoints() < pointsRequired) {
+			// TODO: REMOVE ME
+			if (false && Points.getNumPoints() < pointsRequired) {
 				showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
 				return;
 			}

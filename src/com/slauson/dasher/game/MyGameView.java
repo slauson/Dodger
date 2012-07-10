@@ -20,6 +20,7 @@ import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Upgrade;
 import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
@@ -52,6 +53,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private int debugPowerupType = POWERUP_NONE;
 	private String debugText = "";
 	private int debugLevel = 0;
+	private int debugUpgradeLevel = 0;//Upgrades.WHITE_HOLE_UPGRADE_QUASAR;
+	private Upgrade debugUpgrade = null;//Upgrades.whiteHoleUpgrade;
 
 	
 	/**
@@ -74,6 +77,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// powerups
 	private LinkedList<ActivePowerup> activePowerups;	
 	private int bombCounter;
+	private int quasarCounter;
 	
 	// Initialization flags
 	private boolean surfaceCreated = false;
@@ -105,10 +109,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
 	private static final int R_POWERUP_INVULNERABLE = R.drawable.powerup_invulnerable;
 	
-	// asteroid
-	//private static final int ASTEROID_COUNT = 25;
-	//private static final int ASTEROID_SIZE = 32;
-	
 	// mode
 	private static final int MODE_PAUSED = 0;
 	private static final int MODE_RUNNING = 1;
@@ -117,11 +117,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final float DROP_CHANCE = 1f;
 	
 	// powerup durations
-	private static final int MAGNET_DURATION = 10000;
-	private static final int WHITE_HOLE_DURATION = 10000;
 	private static final int BUMPER_DURATION = 10000;
-	private static final int DRILL_DURATION = 10000;
 	private static final int BOMB_COUNTER_MAX = 10;
+	
+	private static final int QUASAR_COUNTER_MAX = 5;
 
 	private static final int PLAYER_PAINT_STROKE_WIDTH = 2;
 	private static final int PLAYER_PAINT_COLOR = Color.WHITE;
@@ -306,6 +305,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
+		// overlay quasar animation
+		if (quasarCounter > 0) {
+			float factor = Math.abs(1f*QUASAR_COUNTER_MAX/2 - quasarCounter)/QUASAR_COUNTER_MAX*2;
+			
+			paint.setAlpha((int)(255 - 255*factor));
+			paint.setStyle(Style.FILL);
+			canvas.drawRect(0, 0, canvasWidth, canvasHeight, paint);
+
+			paint.setAlpha(255);
+		}
+
+		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
 		
@@ -363,6 +374,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// powerups
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
+			quasarCounter = 0;
 			
 			// make sure we don't think the first single tap is a double tap
 			lastTouchDownTime1 = 0;
@@ -379,6 +391,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
 				
 				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
+			}
+			
+			if (debugUpgrade != null) {
+				debugUpgrade.setLevel(debugUpgradeLevel);
 			}
 			
 			initialized = true;
@@ -522,13 +538,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), MAGNET_DURATION, player.getDirection()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						break;
 					case POWERUP_WHITE_HOLE:
-						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), WHITE_HOLE_DURATION));
+						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), Upgrades.whiteHoleUpgrade.getLevel()));
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), DRILL_DURATION, player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						break;
 					case POWERUP_BUMPER:
 						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), BUMPER_DURATION));
@@ -597,6 +613,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					if (powerup instanceof PowerupDrill && ((PowerupDrill)powerup).hasTeleport()) {
 						((PowerupDrill)powerup).teleport();
 					} else {
+						
+						// destroy white hole
+						if (powerup instanceof PowerupWhiteHole) {
+							if (((PowerupWhiteHole)powerup).hasQuasar()) {
+								quasarCounter = QUASAR_COUNTER_MAX;
+								activateQuasar();
+							}
+							
+							((PowerupWhiteHole)powerup).destroy();
+						}
+
 						System.out.println("Removing Active Powerup");
 						powerup.checkAchievements();
 						activePowerups.remove(i);
@@ -677,6 +704,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (bombCounter == BOMB_COUNTER_MAX/2) {
 				activateBomb();
 			}
+		}
+		
+		if (quasarCounter > 0) {
+			quasarCounter--;
 		}
 		
 		debugText = "" + player.getSpeed() + " - level " + level.getLevel();
@@ -982,6 +1013,16 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// destroy all active powerups
 		activePowerups.clear();
+	}
+	
+	/**
+	 * Activates quasar powerup, destroying all asteroids on screen
+	 */
+	private void activateQuasar() {
+		// destroy all on-screen asteroids
+		for (Asteroid asteroid : asteroids) {
+			asteroid.fadeOut();
+		}
 	}
 	
 	private void resetAsteroid(Asteroid asteroid) {

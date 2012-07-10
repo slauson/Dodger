@@ -47,12 +47,12 @@ public class Upgrades {
 	public static final int MAGNET_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int MAGNET_UPGRADE_INCREASED_DURATION_2 = 2;
 	public static final int MAGNET_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static final int MAGNET_UPGRADE_INCREASED_RANGE = 4;
+	public static final int MAGNET_UPGRADE_SPIN = 4;
 	
 	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_2 = 2;
 	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static final int WHITE_HOLE_UPGRADE_INCREASED_RANGE = 4;
+	public static final int WHITE_HOLE_UPGRADE_QUASAR = 4;
 	
 	public static final int BUMPER_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int BUMPER_UPGRADE_INCREASED_DURATION_2 = 2;

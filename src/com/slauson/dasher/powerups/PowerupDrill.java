@@ -29,6 +29,8 @@ public class PowerupDrill extends ActivePowerup {
 	private static final float MAX_DIR_CHANGE_2 = 0.15f;
 	private static final float MAX_DIR_CHANGE_3 = 0.25f;
 	
+	private static final int DURATION = 10000;
+	
 	private int direction;
 	private RectF rectDest;
 	
@@ -41,7 +43,7 @@ public class PowerupDrill extends ActivePowerup {
 	private float maxDirChange;
 	private boolean hasTeleport;
 		
-	public PowerupDrill(Bitmap bitmap, float x, float y, int duration, int direction, int level) {
+	public PowerupDrill(Bitmap bitmap, float x, float y, int direction, int level) {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
@@ -74,7 +76,7 @@ public class PowerupDrill extends ActivePowerup {
 		hasTeleport = level >= Upgrades.DRILL_UPGRADE_TELEPORT;
 		teleportDuration = 0;
 		
-		activate(duration);
+		activate(DURATION);
 	}
 
 	@Override

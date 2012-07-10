@@ -4,6 +4,7 @@ import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Upgrades;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,16 +18,41 @@ import android.util.FloatMath;
  */
 public class PowerupMagnet extends ActivePowerup {
 	
+	// constants
+	private static final int DURATION_0 = 5000;
+	private static final int DURATION_1 = 10000;
+	private static final int DURATION_2 = 15000;
+	private static final int DURATION_3 = 20000;
+	
 	private static final int MAX_RANGE = 100;
 	
 	private int direction;
+	private boolean hasSpin;
 	
-	public PowerupMagnet(Bitmap bitmap, float x, float y, int duration, int direction) {
+	public PowerupMagnet(Bitmap bitmap, float x, float y, int direction, int level) {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
 		
-		activate(duration);
+		// get duration
+		switch(level) {
+		case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_1:
+			activate(DURATION_1);
+			break;
+		case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_2:
+			activate(DURATION_2);
+			break;
+		case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3:
+		case Upgrades.MAGNET_UPGRADE_SPIN:
+			activate(DURATION_3);
+			break;
+		default:
+			activate(DURATION_0);
+			break;
+		}
+		
+		// get spin
+		hasSpin = level >= Upgrades.MAGNET_UPGRADE_SPIN;
 	}
 	
 	/**
@@ -39,28 +65,33 @@ public class PowerupMagnet extends ActivePowerup {
 		if (asteroid.getStatus() != Asteroid.STATUS_NORMAL) {
 			return;
 		}
-	
+		
 		// get distance from asteroid
 		float distanceX = x - asteroid.getX();
 		float distanceY;
-		
-		if (direction == MyGameView.DIRECTION_NORMAL) {
-			distanceY = (y - height/2) - (asteroid.getY() + asteroid.getHeight()/2);
+
+		if (hasSpin) {
+			distanceY = y - asteroid.getY();
 		} else {
-			distanceY = (y + height/2) - (asteroid.getY() - asteroid.getHeight()/2);
+			if (direction == MyGameView.DIRECTION_NORMAL) {
+				distanceY = (y - height/2) - (asteroid.getY() + asteroid.getHeight()/2);
+			} else {
+				distanceY = (y + height/2) - (asteroid.getY() - asteroid.getHeight()/2);
+			}
 		}
 		
 		float absDistanceX = Math.abs(distanceX);
 		float absDistanceY = Math.abs(distanceY);
 
-		// don't pull asteroids past magnet
-		if (direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 > y - height/2 ||
-				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 < y + height/2) {
+		// don't pull asteroids past magnet if not spinning
+		if (!hasSpin && (direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 > y - height/2 ||
+				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 < y + height/2)) {
 			return;
 		}
 				
 		float distance = FloatMath.sqrt((float)Math.pow(distanceX, 2) + (float)Math.pow(distanceY, 2));
-		
+
+		// pull in asteroid
 		if (distance < MAX_RANGE) {
 			
 			float holdRange = height/2 + asteroid.getHeight()/2;
@@ -74,8 +105,11 @@ public class PowerupMagnet extends ActivePowerup {
 				dirX = 0;
 				dirY = 0;
 				
-				LocalStatistics.asteroidsDestroyedByMagnet++;
-				numAffectedAsteroids++;
+				// only count each asteroid once
+				if (asteroid.getDirX() > 0.01 && asteroid.getDirY() > 0.01) {
+					LocalStatistics.asteroidsDestroyedByMagnet++;
+					numAffectedAsteroids++;
+				}
 			}
 			
 			float pullFactor = 0.5f - (0.5f*distance/MAX_RANGE);
@@ -107,10 +141,20 @@ public class PowerupMagnet extends ActivePowerup {
 			canvas.rotate(180, x, y);
 		}
 		
+		// rotate if spinning
+		if (hasSpin) {
+			canvas.save();
+			canvas.rotate(1.f*remainingDuration()/1000*360, x, y);
+		}
+		
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 		
 		// unrotate
 		if (direction == MyGameView.DIRECTION_REVERSE) {
+			canvas.restore();
+		}
+
+		if (hasSpin) {
 			canvas.restore();
 		}
 		

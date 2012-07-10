@@ -1,8 +1,11 @@
 package com.slauson.dasher.powerups;
 
+import java.util.ArrayList;
+
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
+import com.slauson.dasher.status.Upgrades;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -15,19 +18,47 @@ import android.graphics.Paint;
  */
 public class PowerupWhiteHole extends ActivePowerup {
 
+	// constants
 	private static final int MAX_RANGE = 100;
 	private static final int SUCK_RANGE = 50;
 	private static final int ROTATION_SPEED = 10;
 	private static final int ASTEROID_SPEED = 100;
 	
-	private int rotation;
+	private static final int DURATION_0 = 5000;
+	private static final int DURATION_1 = 10000;
+	private static final int DURATION_2 = 15000;
+	private static final int DURATION_3 = 20000;
+
+	private static final int QUASAR_ASTEROID_SPEED = 500;
 	
-	public PowerupWhiteHole(Bitmap bitmap, float x, float y, int duration) {
+	private int rotation;
+	private boolean hasQuasar;
+	private ArrayList<Asteroid> asteroids;
+	
+	public PowerupWhiteHole(Bitmap bitmap, float x, float y, int level) {
 		super(bitmap, x, y);
 		
 		rotation = 0;
+		asteroids = new ArrayList<Asteroid>();
 		
-		activate(duration);
+		// get duration
+		switch(level) {
+		case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1:
+			activate(DURATION_1);
+			break;
+		case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2:
+			activate(DURATION_2);
+			break;
+		case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3:
+		case Upgrades.WHITE_HOLE_UPGRADE_QUASAR:
+			activate(DURATION_3);
+			break;
+		default:
+			activate(DURATION_0);
+			break;
+		}
+		
+		hasQuasar = level >= Upgrades.WHITE_HOLE_UPGRADE_QUASAR;
 	}
 	
 	/**
@@ -61,6 +92,7 @@ public class PowerupWhiteHole extends ActivePowerup {
 				
 				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
 					asteroid.disappear();
+					asteroids.add(asteroid);
 				}
 				
 				// update factor
@@ -104,6 +136,34 @@ public class PowerupWhiteHole extends ActivePowerup {
 				asteroid.setDirY(asteroidDirY);
 			}
 		}
+	}
+	
+	public void destroy() {
+		
+		// if has quasar, shoot out the remaining asteroids
+		if (hasQuasar) {
+			for (Asteroid asteroid : asteroids) {
+				
+				asteroid.setDirX(-1 + 2*MyGameView.random.nextFloat());
+				
+				if (MyGameView.random.nextBoolean()) {
+					asteroid.setDirY(1 - Math.abs(asteroid.getDirX()));
+				} else {
+					asteroid.setDirY(-1 + Math.abs(asteroid.getDirX()));
+				}
+				
+				asteroid.setSpeed(QUASAR_ASTEROID_SPEED);
+				asteroid.fadeOut();
+			}
+		}
+		// otherwise just reset the asteroids
+		else {
+			for (Asteroid asteroid : asteroids) {
+				asteroid.reset();
+			}
+		}
+		
+		asteroids.clear();
 	}
 	
 	@Override
@@ -167,6 +227,10 @@ public class PowerupWhiteHole extends ActivePowerup {
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole3);
 		}
+	}
+	
+	public boolean hasQuasar() {
+		return hasQuasar;
 	}
 
 }
