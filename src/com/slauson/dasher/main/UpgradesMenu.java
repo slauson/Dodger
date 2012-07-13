@@ -9,8 +9,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -20,8 +22,17 @@ import android.widget.TextView;
 public class UpgradesMenu extends Activity {
 	
 	// dialog box constants
-	private static final int DIALOG_NOT_ENOUGH_POINTS = 0;
-	private static final int DIALOG_CONFIRM_UPGRADE = 1;
+	private final static int DIALOG_PURCHASE_PREVIOUS_UPGRADE = 0;
+	private final static int DIALOG_NOT_ENOUGH_POINTS = 1;
+	private final static int DIALOG_CONFIRM_UPGRADE = 2;
+	
+	private final static String DIALOG_TITLE = "title";
+	private final static String DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE = "requiredTitle";
+	private final static String DIALOG_CONFIRM_UPGRADE_LEVEL = "level";
+	private final static String DIALOG_CONFIRM_UPGRADE_POINTS = "points";
+	private final static String DIALOG_CONFIRM_UPGRADE_UPGRADE_ID = "upgradeID";
+	private final static String DIALOG_CONFIRM_UPGRADE_BUTTON_ID = "buttonID";
+
 	
 	// points textview
 	private TextView pointsView;
@@ -570,44 +581,74 @@ public class UpgradesMenu extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 		
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+		
 		// save points
-		Points.save(getPreferences(MODE_PRIVATE).edit());
+		Points.save(sharedPreferencesEditor);
 		
 		// save upgrades
-		Upgrades.save(getPreferences(MODE_PRIVATE).edit());
+		Upgrades.save(sharedPreferencesEditor);
+		
+		if (!sharedPreferencesEditor.commit()) {
+			System.out.println("Failed to save upgrades/points");
+		}
 	}
 	
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args) {
 
 		// get args
-		final String title = args.getString("title");
-		final int level = args.getInt("level");
-		final int points = args.getInt("points");
-		final int upgradeID = args.getInt("upgradeID");
-		final int buttonID = args.getInt("buttonID");
+		final String title = args.getString(DIALOG_TITLE);
 		
 		Dialog dialog = null;
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 		switch(id) {
+		case DIALOG_PURCHASE_PREVIOUS_UPGRADE:
+			String requiredTitle = args.getString(DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE);
+			
+			alertDialogBuilder
+			.setTitle("Unable to Purchase Upgrade")
+			.setMessage("You must first purchase the upgrade '" + requiredTitle + "' before purchasing the upgrade '" + title + "'")
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					removeDialog(DIALOG_PURCHASE_PREVIOUS_UPGRADE);
+				}
+			});
+			dialog = alertDialogBuilder.create();
+			break;
 		case DIALOG_NOT_ENOUGH_POINTS:
 			alertDialogBuilder
 				.setTitle("Not Enough Points")
 				.setMessage("You do not have enough points for the upgrade '" + title + "'")
-				.setPositiveButton("OK", null);
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_NOT_ENOUGH_POINTS);
+					}
+				});
 			
 			dialog = alertDialogBuilder.create();
 
 			break;
 		case DIALOG_CONFIRM_UPGRADE:
 			
+			// get more args
+			final int level = args.getInt(DIALOG_CONFIRM_UPGRADE_LEVEL);
+			final int points = args.getInt(DIALOG_CONFIRM_UPGRADE_POINTS);
+			final int upgradeID = args.getInt(DIALOG_CONFIRM_UPGRADE_UPGRADE_ID);
+			final int buttonID = args.getInt(DIALOG_CONFIRM_UPGRADE_BUTTON_ID);
+			
 			alertDialogBuilder
 				.setTitle("Confirm Upgrade")
 				.setMessage("Are you sure you want to purchase the upgrade '" + title + "'")
 				
 				// do nothing when user selects no 
-				.setNegativeButton("No", null)
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_CONFIRM_UPGRADE);
+					}
+				})
 				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					
 					public void onClick(DialogInterface dialog, int which) {
@@ -624,6 +665,9 @@ public class UpgradesMenu extends Activity {
 						
 						// update points textview
 				    	pointsView.setText("You have " + Points.getNumPoints() + " points");
+				    	
+				    	// remove dialog so that we can change message/title
+				    	removeDialog(DIALOG_CONFIRM_UPGRADE);
 					}
 				});
 
@@ -637,7 +681,7 @@ public class UpgradesMenu extends Activity {
 		
 		return dialog;
 	}
-	
+
 	/**
 	 * Sets button text to be black and sets the row background color to white
 	 * @param button button to toggle
@@ -702,11 +746,28 @@ public class UpgradesMenu extends Activity {
 
 			// create bundle for dialog box
 			Bundle bundle = new Bundle();
-			bundle.putString("title", title);
-			bundle.putInt("upgradeID", Upgrades.getUpgradeID(upgrade));
-			bundle.putInt("buttonID", buttonID);
-			bundle.putInt("level", level);
-			bundle.putInt("points", pointsRequired);
+			bundle.putString(DIALOG_TITLE, title);
+			
+			// check if player hasn't bought previous upgrade
+			// TODO: REMOVE ME
+			if (false && upgrade.getLevel() < level - 1) {
+				
+				// get required upgrade title
+				int requiredResourceID = upgrade.getTitleResourceId(upgrade.getLevel()+1);
+				String requiredTitle = "Title";
+				
+				if (requiredResourceID != -1) {
+					requiredTitle = getResources().getString(requiredResourceID);
+					
+					// remove '- cost' from title
+					requiredTitle = requiredTitle.substring(0, requiredTitle.indexOf('-')).trim();
+				}
+				bundle.putString(DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE, requiredTitle);
+				
+				
+				showDialog(DIALOG_PURCHASE_PREVIOUS_UPGRADE, bundle);
+				return;
+			}
 			
 			// check if player has enough points
 			// TODO: REMOVE ME
@@ -714,6 +775,12 @@ public class UpgradesMenu extends Activity {
 				showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
 				return;
 			}
+			
+			// add remaining args
+			bundle.putInt(DIALOG_CONFIRM_UPGRADE_UPGRADE_ID, Upgrades.getUpgradeID(upgrade));
+			bundle.putInt(DIALOG_CONFIRM_UPGRADE_BUTTON_ID, buttonID);
+			bundle.putInt(DIALOG_CONFIRM_UPGRADE_LEVEL, level);
+			bundle.putInt(DIALOG_CONFIRM_UPGRADE_POINTS, pointsRequired);
 
 			// confirm upgrade
 			showDialog(DIALOG_CONFIRM_UPGRADE, bundle);

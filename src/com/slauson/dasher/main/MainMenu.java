@@ -6,10 +6,10 @@ import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
+import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrades;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Main menu
@@ -29,9 +30,9 @@ import android.widget.Button;
  */
 public class MainMenu extends Activity {
 	
-	Button startHighScoresButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
+	private Button startHighScoresButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
 	
-	boolean showingMore;
+	private boolean showingMore;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,16 @@ public class MainMenu extends Activity {
 		setContentView(R.layout.main_menu);
 		
 		showingMore = false;
+		
+		// debugging menu
+		TextView title = (TextView)findViewById(R.id.mainMenuTitle);
+		title.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(MainMenu.this, DebuggingMenu.class);
+				startActivity(intent);
+			}
+		});
+		
 
 		// start/high scores button
 		startHighScoresButton = (Button)findViewById(R.id.mainMenuStartHighScoresButton);
@@ -99,7 +110,7 @@ public class MainMenu extends Activity {
 			}
 		});
 				
-		// quit/back button
+		// quit/back/debug button
 		quitBackButton = (Button)findViewById(R.id.mainMenuQuitBackButton);
 		quitBackButton.setOnClickListener(new OnClickListener() {
 			
@@ -114,23 +125,48 @@ public class MainMenu extends Activity {
 			}
 		});
 		
-		// load configuration
-		loadConfiguration();
+		System.out.println("MainMenu::onCreate()");
 		
 		// load saved state
-		SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		
+		// load configuration
+		loadConfiguration(sharedPreferences);
+				
 		// load achievements
-		Achievements.load(preferences);
+		if (!Achievements.initialized()) {
+			Achievements.load(sharedPreferences);
+		}
 		
 		// load upgrades
-		Upgrades.load(preferences);
+		if (!Upgrades.initialized()) {
+			Upgrades.load(sharedPreferences);
+		}
+		
+		// load points
+		if (!Points.initialized()) {
+			Points.load(sharedPreferences);
+		}
 		
 		// load stats
-		GlobalStatistics.load(preferences);
+		if (!GlobalStatistics.initialized()) {
+			GlobalStatistics.load(sharedPreferences);
+		}
 		
 		// load high scores
-		HighScores.load(preferences);
+		if (!HighScores.initialized()) {
+			HighScores.load(sharedPreferences);
+		}
+		
+	}
+	
+	@Override
+	public void onResume() {
+		
+		super.onResume();
+		
+		System.out.println("MainMenu::onResume()");
+		
 	}
 	
 	@Override
@@ -152,11 +188,8 @@ public class MainMenu extends Activity {
 		return true;
 	}
 
-	private void loadConfiguration() {
-		System.out.println("loadConfiguration");
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
-		Configuration.load(preferences);
+	private void loadConfiguration(SharedPreferences sharedPreferences) {
+		Configuration.load(sharedPreferences);
 	}
 	
 	private void toggleShowMore() {

@@ -3,6 +3,7 @@ package com.slauson.dasher.status;
 import java.util.ArrayList;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 
 /**
@@ -75,6 +76,8 @@ public class Upgrades {
 	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
 	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
 	
+	private static boolean initialized = false;
+	
 	// array of upgrades
 	private static ArrayList<Upgrade> upgrades = new ArrayList<Upgrade>();
 	
@@ -93,21 +96,21 @@ public class Upgrades {
 	
 	/**
 	 * Loads upgrades from application preferences
-	 * @param preferences preferences to load from
+	 * @param sharedPreferences preferences to load from
 	 */
-	public static void load(SharedPreferences preferences) {
+	public static void load(SharedPreferences sharedPreferences) {
 		for (Upgrade upgrade : upgrades) {
-			upgrade.load(preferences);
+			upgrade.load(sharedPreferences);
 		}
 	}
 	
 	/**
 	 * Saves upgrades to application preferences
-	 * @param preferenceEditor preferences to save to
+	 * @param sharedPreferencesEditor preferences to save to
 	 */
-	public static void save(SharedPreferences.Editor preferencesEditor) {
+	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
 		for (Upgrade upgrade : upgrades) {
-			upgrade.save(preferencesEditor);
+			upgrade.save(sharedPreferencesEditor);
 		}
 	}
 	
@@ -142,6 +145,27 @@ public class Upgrades {
 		}
 		
 		return upgrades.get(id);
+	}
+
+	/**
+	 * Returns true if the upgrades were initialized from application preferences
+	 * @return true if the upgrades were initialized from application preferences
+	 */
+	public static boolean initialized() {
+		return initialized;
+	}
+
+	/**
+	 * Resets all upgrades back to 0
+	 * @param sharedPreferencesEditor preferences to save to
+	 */
+	public static void reset(Editor sharedPreferencesEditor) {
+		
+		for (Upgrade upgrade : upgrades) {
+			upgrade.setLevel(0);
+		}
+		
+		save(sharedPreferencesEditor);
 	}
 
 }

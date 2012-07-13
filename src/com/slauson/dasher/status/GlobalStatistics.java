@@ -53,56 +53,69 @@ public class GlobalStatistics extends Statistics {
 	private static final String USES_BUMPER = "statistics_uses_bumper";
 	private static final String USES_BOMB = "statistics_uses_bomb";
 	
+	private static boolean initialized = false;
+	
 	/**
 	 * Loads statistics from preferences
-	 * @param preferences preferences to load from
+	 * @param sharedPreferences preferences to load from
 	 */
-	public static void load(SharedPreferences preferences) {
+	public static void load(SharedPreferences sharedPreferences) {
 		
-		timePlayed = preferences.getInt(TIME_PLAYED, 0);
+		initialized = true;
 		
-		asteroidsDestroyedByDash = preferences.getInt(ASTEROIDS_DESTROYED_BY_DASH, 0);
-		asteroidsDestroyedByDrill = preferences.getInt(ASTEROIDS_DESTROYED_BY_DRILL, 0);
-		asteroidsDestroyedByMagnet = preferences.getInt(ASTEROIDS_DESTROYED_BY_MAGNET, 0);
-		asteroidsDestroyedByWhiteHole = preferences.getInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, 0);
-		asteroidsDestroyedByBumper = preferences.getInt(ASTEROIDS_DESTROYED_BY_BUMPER, 0);
-		asteroidsDestroyedByBomb = preferences.getInt(ASTEROIDS_DESTROYED_BY_BOMB, 0);
+		timePlayed = sharedPreferences.getInt(TIME_PLAYED, 0);
 		
-		usesDash = preferences.getInt(USES_DASH, 0);
-		usesSmall = preferences.getInt(USES_SMALL, 0);
-		usesSlow = preferences.getInt(USES_SLOW, 0);
-		usesInvulnerability = preferences.getInt(USES_INVULNERABILITY, 0);
-		usesDrill = preferences.getInt(USES_DRILL, 0);
-		usesMagnet = preferences.getInt(USES_MAGNET, 0);
-		usesWhiteHole = preferences.getInt(USES_WHITE_HOLE, 0);
-		usesBumper = preferences.getInt(USES_BUMPER, 0);
-		usesBomb = preferences.getInt(USES_BOMB, 0);
+		asteroidsDestroyedByDash = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DASH, 0);
+		asteroidsDestroyedByDrill = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DRILL, 0);
+		asteroidsDestroyedByMagnet = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_MAGNET, 0);
+		asteroidsDestroyedByWhiteHole = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, 0);
+		asteroidsDestroyedByBumper = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BUMPER, 0);
+		asteroidsDestroyedByBomb = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BOMB, 0);
+		
+		usesDash = sharedPreferences.getInt(USES_DASH, 0);
+		usesSmall = sharedPreferences.getInt(USES_SMALL, 0);
+		usesSlow = sharedPreferences.getInt(USES_SLOW, 0);
+		usesInvulnerability = sharedPreferences.getInt(USES_INVULNERABILITY, 0);
+		usesDrill = sharedPreferences.getInt(USES_DRILL, 0);
+		usesMagnet = sharedPreferences.getInt(USES_MAGNET, 0);
+		usesWhiteHole = sharedPreferences.getInt(USES_WHITE_HOLE, 0);
+		usesBumper = sharedPreferences.getInt(USES_BUMPER, 0);
+		usesBomb = sharedPreferences.getInt(USES_BOMB, 0);
 	}
 	
 	/**
 	 * Saves statistics to preferences
-	 * @param preferences preferences to save to
+	 * @param sharedPreferencesEditor preferences to save to
 	 */
-	public static void save(SharedPreferences.Editor preferencesEditor) {
-		preferencesEditor.putInt(TIME_PLAYED, timePlayed);
+	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
+		sharedPreferencesEditor.putInt(TIME_PLAYED, timePlayed);
 		
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, asteroidsDestroyedByDash);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, asteroidsDestroyedByDrill);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, asteroidsDestroyedByMagnet);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, asteroidsDestroyedByWhiteHole);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, asteroidsDestroyedByBumper);
-		preferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, asteroidsDestroyedByBomb);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, asteroidsDestroyedByDash);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, asteroidsDestroyedByDrill);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, asteroidsDestroyedByMagnet);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, asteroidsDestroyedByWhiteHole);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, asteroidsDestroyedByBumper);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, asteroidsDestroyedByBomb);
 		
-		preferencesEditor.putInt(USES_DASH, usesDash);
-		preferencesEditor.putInt(USES_SMALL, usesSmall);
-		preferencesEditor.putInt(USES_SLOW, usesSlow);
-		preferencesEditor.putInt(USES_INVULNERABILITY, usesInvulnerability);
-		preferencesEditor.putInt(USES_DRILL, usesDrill);
-		preferencesEditor.putInt(USES_MAGNET, usesMagnet);
-		preferencesEditor.putInt(USES_WHITE_HOLE, usesWhiteHole);
-		preferencesEditor.putInt(USES_BUMPER, usesBumper);
-		preferencesEditor.putInt(USES_BOMB, usesBomb);
+		sharedPreferencesEditor.putInt(USES_DASH, usesDash);
+		sharedPreferencesEditor.putInt(USES_SMALL, usesSmall);
+		sharedPreferencesEditor.putInt(USES_SLOW, usesSlow);
+		sharedPreferencesEditor.putInt(USES_INVULNERABILITY, usesInvulnerability);
+		sharedPreferencesEditor.putInt(USES_DRILL, usesDrill);
+		sharedPreferencesEditor.putInt(USES_MAGNET, usesMagnet);
+		sharedPreferencesEditor.putInt(USES_WHITE_HOLE, usesWhiteHole);
+		sharedPreferencesEditor.putInt(USES_BUMPER, usesBumper);
+		sharedPreferencesEditor.putInt(USES_BOMB, usesBomb);
 	}
+	
+	/**
+	 * Returns true if the global statistics were initialized from application preferences
+	 * @return true if the global statistics were initialized from application preferences
+	 */
+	public static boolean initialized() {
+		return initialized;
+	}
+
 	
 	/**
 	 * Update global statistics from local statistics
@@ -177,6 +190,14 @@ public class GlobalStatistics extends Statistics {
 		default:
 			return -1;
 		}
-		
+	}
+
+	/**
+	 * Resets all global statistics to 0
+	 * @param preferencesEditor preferences to save to
+	 */
+	public static void reset(SharedPreferences.Editor sharedPreferencesEditor) {
+		reset();
+		save(sharedPreferencesEditor);
 	}
 }

@@ -2,7 +2,9 @@ package com.slauson.dasher.game;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,9 +14,9 @@ import android.widget.TextView;
 import com.slauson.dasher.R;
 import com.slauson.dasher.main.HighScoresMenu;
 import com.slauson.dasher.main.LocalAchievementsMenu;
+import com.slauson.dasher.main.LocalStatisticsMenu;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.PointDetailsMenu;
-import com.slauson.dasher.main.LocalStatisticsMenu;
 import com.slauson.dasher.main.UpgradesMenu;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
@@ -31,19 +33,22 @@ public class GameOverMenu extends Activity {
 		setContentView(R.layout.game_over_menu);
 
 		setupButtons();
+	
 	}
 	
 	private void setupButtons() {
 
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+		
 		// update statistics
-		updateStatistics();
+		updateStatistics(sharedPreferencesEditor);
 
 		// check/update achievements
-		checkAchievements();
-		updateAchievements();
+		updateAchievements(sharedPreferencesEditor);
 		
 		// update high scores
-		updateHighScores();
+		updateHighScores(sharedPreferencesEditor);
 		
 		// calculate points
 		int points = 0;
@@ -52,7 +57,10 @@ public class GameOverMenu extends Activity {
 		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
 
 		// update points
-		updatePoints(points);
+		updatePoints(sharedPreferencesEditor, points);
+		
+		// commit everything
+		sharedPreferencesEditor.commit();
 
 		// calculate number of achievements
 		int numAchievements = Achievements.localAchievements.size();
@@ -146,9 +154,17 @@ public class GameOverMenu extends Activity {
 	}
 	
 	/**
-	 * Checks for any non-in-game achievements
+	 * Updates statistics
 	 */
-	private void checkAchievements() {
+	private void updateStatistics(SharedPreferences.Editor sharedPreferencesEditor) {
+		GlobalStatistics.update();
+		GlobalStatistics.save(sharedPreferencesEditor);
+	}
+
+	/**
+	 * Updates achievements
+	 */
+	private void updateAchievements(SharedPreferences.Editor sharedPreferencesEditor) {
 		// playtime
 		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
 			Achievements.unlockLocalAchievement(Achievements.localPlaytime1);
@@ -161,36 +177,23 @@ public class GameOverMenu extends Activity {
 		}
 		
 		Achievements.checkGlobalAchievements();
-	}
-	
-	/**
-	 * Updates statistics
-	 */
-	private void updateStatistics() {
-		GlobalStatistics.update();
-		GlobalStatistics.save(getPreferences(MODE_PRIVATE).edit());
-	}
-
-	/**
-	 * Updates achievements
-	 */
-	private void updateAchievements() {
-		Achievements.save(getPreferences(MODE_PRIVATE).edit());
+		
+		Achievements.save(sharedPreferencesEditor);
 	}
 	
 	/**
 	 * Updates points
 	 */
-	private void updatePoints(int points) {
+	private void updatePoints(SharedPreferences.Editor sharedPreferencesEditor, int points) {
 		Points.update(points);
-		Points.save(getPreferences(MODE_PRIVATE).edit());
+		Points.save(sharedPreferencesEditor);
 	}
 
 	/**
 	 * Updates high scores
 	 */
-	private void updateHighScores() {
+	private void updateHighScores(SharedPreferences.Editor sharedPreferencesEditor) {
 		HighScores.update(LocalStatistics.timePlayed);
-		HighScores.save(getPreferences(MODE_PRIVATE).edit());
+		HighScores.save(sharedPreferencesEditor);
 	}
 }

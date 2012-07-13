@@ -14,9 +14,6 @@ public class LocalAchievementsMenu extends AchievementsMenu {
     	super.onCreate(savedInstanceState);
 
     	// add local achievements
-    	Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole1);
-    	Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithWhiteHole2);
-    	
     	for(Achievement achievement : Achievements.localAchievements) {
     		addAchievement(achievement);
     	}

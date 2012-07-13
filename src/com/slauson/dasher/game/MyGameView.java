@@ -20,7 +20,8 @@ import com.slauson.dasher.powerups.PowerupInvulnerable;
 import com.slauson.dasher.powerups.PowerupWhiteHole;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
-import com.slauson.dasher.status.Upgrade;
+import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
@@ -50,11 +51,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Debugging stuff
 	 */
 	
-	private int debugPowerupType = POWERUP_NONE;
 	private String debugText = "";
-	private int debugLevel = 0;
-	private int debugUpgradeLevel = 0;//Upgrades.WHITE_HOLE_UPGRADE_QUASAR;
-	private Upgrade debugUpgrade = null;//Upgrades.whiteHoleUpgrade;
+//	private int debugPowerupType = POWERUP_NONE;
+//	private int debugLevel = 0;
+//	private int debugUpgradeLevel = 0;//Upgrades.WHITE_HOLE_UPGRADE_QUASAR;
+//	private Upgrade debugUpgrade = null;//Upgrades.whiteHoleUpgrade;
 
 	
 	/**
@@ -116,22 +117,19 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	// drops
 	private static final float DROP_CHANCE = 1f;
 	
-	// powerup durations
-	private static final int BUMPER_DURATION = 10000;
+	// powerup stuff
 	private static final int BOMB_COUNTER_MAX = 10;
-	
 	private static final int QUASAR_COUNTER_MAX = 5;
 
+	// paint stuff
 	private static final int PLAYER_PAINT_STROKE_WIDTH = 2;
 	private static final int PLAYER_PAINT_COLOR = Color.WHITE;
-	
 	private static final int ASTEROID_PAINT_STROKE_WIDTH = 1;
 	private static final int ASTEROID_PAINT_COLOR = Color.WHITE;
 	
 	// touch
 	private static final float DASH_TOUCH_FACTOR = 1.5f;
 	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
-	
 	private static final int DASH_DOUBLE_TAP_MIN_DURATION = 500;
 
 	// accelerometer
@@ -144,15 +142,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// powerups
 	public static final int NUM_POWERUPS = 8;
-	public static final int POWERUP_NONE = -100;
-	public static final int POWERUP_DRILL = 0;
-	public static final int POWERUP_SLOW = 1;
-	public static final int POWERUP_MAGNET = 2;
-	public static final int POWERUP_WHITE_HOLE = 3;
-	public static final int POWERUP_BUMPER = 4;
-	public static final int POWERUP_BOMB = 5;
-	public static final int POWERUP_SMALL = 6;
-	public static final int POWERUP_INVULNERABLE = 7;
+	public static final int POWERUP_NONE = 0;
+	public static final int POWERUP_SMALL = 1;
+	public static final int POWERUP_SLOW = 2;
+	public static final int POWERUP_INVULNERABLE = 3;
+	public static final int POWERUP_DRILL = 4;
+	public static final int POWERUP_MAGNET = 5;
+	public static final int POWERUP_WHITE_HOLE = 6;
+	public static final int POWERUP_BUMPER = 7;
+	public static final int POWERUP_BOMB = 8;
 	
 	// powerup stuff
 	
@@ -164,6 +162,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int R_MAGNET = R.drawable.magnet;
 	public static final int R_WHITE_HOLE = R.drawable.white_hole;
 	public static final int R_DRILL = R.drawable.drill_external_1;
+	public static final int R_BUMPER_LARGE = R.drawable.bumper_large;
+	public static final int R_BUMPER_LARGE_ALT = R.drawable.bumper_large_alt;
 	public static final int R_BUMPER = R.drawable.bumper4;
 	public static final int R_BUMPER_ALT = R.drawable.bumper4_1;
 
@@ -175,9 +175,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static int canvasWidth, canvasHeight;
 	
 	// powerups
-	public static PowerupSlow powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
-	public static PowerupInvulnerable powerupInvulnerability = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
-	public static PowerupSmall powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
+	public static PowerupSlow powerupSlow;
+	public static PowerupInvulnerable powerupInvulnerability;
+	public static PowerupSmall powerupSmall;
 	
 	// current state
 	public static int gameMode = MODE_RUNNING;
@@ -363,7 +363,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
 			
-			level = new Level(debugLevel);
+			level = new Level(Debugging.level);
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			random = new Random();		
@@ -382,6 +382,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						
 			player = new Player();
 			
+			powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
+			powerupInvulnerability = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
+			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
+
+			
 			int radius;
 			float speed;
 			
@@ -391,10 +396,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				speed = level.getAsteroidSpeedMin() + (level.getAsteroidSpeedOffset()*random.nextFloat());
 				
 				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
-			}
-			
-			if (debugUpgrade != null) {
-				debugUpgrade.setLevel(debugUpgradeLevel);
 			}
 			
 			initialized = true;
@@ -455,7 +456,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 							temp.breakup();
 							
 							// game over if player isn't invulnerable
-							if (!powerupInvulnerability.isActive()) {
+							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
 								player.breakup();
 								Timer timer = new Timer();
 								timer.schedule(new TimerTask() {
@@ -539,29 +540,39 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
 						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
+						LocalStatistics.usesMagnet++;
 						break;
 					case POWERUP_WHITE_HOLE:
 						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), Upgrades.whiteHoleUpgrade.getLevel()));
+						LocalStatistics.usesWhiteHole++;
 						break;
 					case POWERUP_DRILL:
 						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						LocalStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
-						activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), BUMPER_DURATION));
+						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER_LARGE), BitmapFactory.decodeResource(getResources(), R_BUMPER_LARGE_ALT), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+						} else {
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+						}
+						LocalStatistics.usesBumper++;
 						break;
-					// activate one and done powerup
 					case POWERUP_INVULNERABLE:
 						powerupInvulnerability.activate();
+						LocalStatistics.usesInvulnerability++;
 						break;
 					case POWERUP_BOMB:
 						bombCounter = BOMB_COUNTER_MAX;
+						LocalStatistics.usesBomb++;
 						break;
-					// activate player powerup
 					case POWERUP_SMALL:
 						powerupSmall.activate();
+						LocalStatistics.usesSmall++;
 						break;
 					case POWERUP_SLOW:
 						powerupSlow.activate();
+						LocalStatistics.usesSlow++;
 						break;
 					}
 					
@@ -712,7 +723,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		debugText = "" + player.getSpeed() + " - level " + level.getLevel();
 		
-		if (level.update()) {
+		if (level.update() && Debugging.levelProgression) {
 			// add more asteroids if necessary
 			int numAsteroidsToAdd = level.getNumAsteroids() - asteroids.size();
 			int radius;
@@ -936,8 +947,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			int powerup = random.nextInt(NUM_POWERUPS);
 			
 			// debug mode
-			if (debugPowerupType != POWERUP_NONE) {
-				powerup = debugPowerupType;
+			if (Debugging.dropType != POWERUP_NONE) {
+				powerup = Debugging.dropType;
 			}
 			
 			int r_powerup = 0;
@@ -981,11 +992,20 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private void activateBomb() {
 		
 		int numAffectedAsteroids = 0;
+		int numDrops = 0;
 		
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
 			asteroid.fadeOut();
 			numAffectedAsteroids++;
+			
+			// cause drop if upgraded
+			if (Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROP) {
+				if (numDrops == 0 || (numDrops == 1 && Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROPS)) {
+					dropPowerup(asteroid.getX(), asteroid.getY());
+					numDrops++;
+				}
+			}
 		}
 		
 		// check for achievements
@@ -1009,10 +1029,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		
 		// destroy all falling powerups
-		drops.clear();
+		if (Upgrades.bombUpgrade.getLevel() < Upgrades.BOMB_UPGRADE_NO_EFFECT_DROPS) {
+			drops.clear();
+		}
 		
 		// destroy all active powerups
-		activePowerups.clear();
+		if (Upgrades.bombUpgrade.getLevel() < Upgrades.BOMB_UPGRADE_NO_EFFECT_POWERUPS) {
+			activePowerups.clear();
+		}
 	}
 	
 	/**

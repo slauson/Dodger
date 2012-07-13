@@ -16,7 +16,14 @@ public class Util {
 	 * @return time string for given number of seconds
 	 */
 	public static String getTimeString(int seconds) {
-		return "" + (seconds/60) + ":" + (seconds%60);
+		int m = seconds/60;
+		int s = seconds%60;
+		
+		if (s < 10) {
+			return "" + m + ":0" + s;
+		} else {
+			return "" + m + ":" + s;
+		}
 	}
 	
 	/**

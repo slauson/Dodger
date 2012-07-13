@@ -1,5 +1,7 @@
 package com.slauson.dasher.status;
 
+import com.slauson.dasher.other.Util;
+
 public abstract class Statistics {
 
 	// time played
@@ -42,9 +44,30 @@ public abstract class Statistics {
 	 * @return string representation of time played
 	 */
 	public static String getTimePlayedString() {
-		int minutes = timePlayed / 60;
-		int seconds = timePlayed % 60;
+		return Util.getTimeString(timePlayed);
+	}
+	
+	/**
+	 * Resets all statistics to 0
+	 */
+	public static void reset() {
+		timePlayed = 0;
 		
-		return "" + minutes + ":" + seconds;
+		asteroidsDestroyedByDash = 0;
+		asteroidsDestroyedByDrill = 0;
+		asteroidsDestroyedByMagnet = 0;
+		asteroidsDestroyedByWhiteHole = 0;
+		asteroidsDestroyedByBumper = 0;
+		asteroidsDestroyedByBomb = 0;
+		
+		usesDash = 0;
+		usesSmall = 0;
+		usesSlow = 0;
+		usesInvulnerability = 0;
+		usesDrill = 0;
+		usesMagnet = 0;
+		usesWhiteHole = 0;
+		usesBumper = 0;
+		usesBomb = 0;
 	}
 }

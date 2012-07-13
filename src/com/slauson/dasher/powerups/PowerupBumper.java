@@ -6,6 +6,7 @@ import com.slauson.dasher.objects.Player;
 import com.slauson.dasher.powerups.PowerupDrill;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Upgrades;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -19,6 +20,12 @@ import android.graphics.RectF;
  */
 public class PowerupBumper extends ActivePowerup {
 
+	// constants
+	private static final int DURATION_0 = 5000;
+	private static final int DURATION_1 = 10000;
+	private static final int DURATION_2 = 15000;
+	private static final int DURATION_3 = 20000;
+	
 	private int counter;
 	private int cooldown;
 	
@@ -29,7 +36,7 @@ public class PowerupBumper extends ActivePowerup {
 	private static final int COUNTER_MAX = 20;
 	private static final int COOLDOWN_MAX = 10;
 
-	public PowerupBumper(Bitmap bitmap, Bitmap bitmapAlt, float x, float y, int duration) {
+	public PowerupBumper(Bitmap bitmap, Bitmap bitmapAlt, float x, float y, int level) {
 		super(bitmap, x, y);
 		
 		this.bitmapAlt = bitmapAlt;
@@ -38,7 +45,21 @@ public class PowerupBumper extends ActivePowerup {
 		cooldown = COOLDOWN_MAX;
 		rectDest = new RectF(x - width/2, y - height/2, x + width/2, y + height/2);
 		
-		activate(duration);
+		switch(level) {
+		case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_1:
+			activate(DURATION_1);
+			break;
+		case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_2:
+			activate(DURATION_2);
+			break;
+		case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_3:
+		case Upgrades.BUMPER_UPGRADE_INCREASED_SIZE:
+			activate(DURATION_3);
+			break;
+		default:
+			activate(DURATION_0);
+			break;
+		}
 	}
 
 	@Override

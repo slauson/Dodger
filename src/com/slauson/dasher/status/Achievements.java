@@ -6,6 +6,7 @@ import java.util.List;
 import com.slauson.dasher.R;
 
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 
 /**
@@ -132,13 +133,15 @@ public class Achievements {
 	 * - purchase all upgrades
 	 * - get every achievement
 	 */
-	
+
 	// list of local achievements unlocked during current playthrough
 	public static ArrayList<Achievement> localAchievements = new ArrayList<Achievement>();
 
+	private static boolean initialized = false;
+	
 	// list of all achievements
 	private static ArrayList<Achievement> achievements = new ArrayList<Achievement>();
-
+	
 	// populate list of all achievements
 	static {
 		
@@ -321,22 +324,33 @@ public class Achievements {
 	
 	/**
 	 * Loads achievement values from application preferences
-	 * @param preferences preferences to load from
+	 * @param sharedPreferences preferences to load from
 	 */
-	public static void load(SharedPreferences preferences) {
+	public static void load(SharedPreferences sharedPreferences) {
+		
+		initialized = true;
+		
 		for (Achievement achievement : achievements) {
-			achievement.load(preferences);
+			achievement.load(sharedPreferences);
 		}
 	}
 	
 	/**
 	 * Saves achievement values to application preferencesEditor
-	 * @param preferenceEditor preferencesEditor to save to
+	 * @param sharedPreferencesEditor preferencesEditor to save to
 	 */
-	public static void save(SharedPreferences.Editor preferencesEditor) {
+	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
 		for (Achievement achievement : achievements) {
-			achievement.save(preferencesEditor);
+			achievement.save(sharedPreferencesEditor);
 		}
+	}
+	
+	/**
+	 * Returns true if the achievements were initialized from application preferences
+	 * @return true if the achievements were initialized from application preferences
+	 */
+	public static boolean initialized() {
+		return initialized;
 	}
 	
 	/**
@@ -344,8 +358,11 @@ public class Achievements {
 	 * @param achievement achievement to add
 	 */
 	public static void unlockLocalAchievement(Achievement achievement) {
-		achievement.unlock();
-		localAchievements.add(achievement);
+		
+		if (!achievement.getValue()) {
+			achievement.unlock();
+			localAchievements.add(achievement);
+		}
 	}
 
 	/**
@@ -402,5 +419,18 @@ public class Achievements {
 	 */
 	public static List<Achievement> getAchievements() {
 		return achievements;
+	}
+
+	/**
+	 * Resets all achievements
+	 * @param sharedPreferencesEditor preferences to save to
+	 */
+	public static void reset(Editor sharedPreferencesEditor) {
+		
+		for (Achievement achievement : achievements) {
+			achievement.reset();
+		}
+		
+		save(sharedPreferencesEditor);
 	}
 }
