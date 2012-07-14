@@ -174,9 +174,7 @@ public class Player extends DrawObject {
 	 * Resets timer
 	 */
 	public void reset() {
-		LocalStatistics.timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
-		startTime = System.currentTimeMillis();
-		dashTimeout = 0;
+		LocalStatistics.getInstance().timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
 	}
 	
 	@Override
@@ -208,8 +206,6 @@ public class Player extends DrawObject {
 				}
 				
 				// draw dash timeout percentage
-				
-				
 				paint.setStyle(Style.FILL_AND_STROKE);
 				if (MyGameView.powerupSmall.isActive()) {
 					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
@@ -400,7 +396,7 @@ public class Player extends DrawObject {
 		timeCounter = BREAKING_UP_DURATION;
 		
 		// don't count this as a dash kill
-		LocalStatistics.asteroidsDestroyedByDash--;
+		LocalStatistics.getInstance().asteroidsDestroyedByDash--;
 		
 		reset();
 	}

@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Statistics;
 
 public class LocalStatisticsMenu extends Activity {
 
@@ -13,6 +15,8 @@ public class LocalStatisticsMenu extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.statistics_menu);
+    	
+    	Statistics localStatistics = LocalStatistics.getInstance();
 
 		// add uses statistics
 		TextView usesDash = (TextView)findViewById(R.id.statisticsMenuDashUses);
@@ -25,15 +29,15 @@ public class LocalStatisticsMenu extends Activity {
 		TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
 		TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
 		
-		usesDash.setText("" + LocalStatistics.usesDash);
-		usesSmall.setText("" + LocalStatistics.usesSmall);
-		usesSlow.setText("" + LocalStatistics.usesSlow);
-		usesInvulnerability.setText("" + LocalStatistics.usesInvulnerability);
-		usesDrill.setText("" + LocalStatistics.usesDrill);
-		usesMagnet.setText("" + LocalStatistics.usesMagnet);
-		usesWhiteHole.setText("" + LocalStatistics.usesWhiteHole);
-		usesBumper.setText("" + LocalStatistics.usesBumper);
-		usesBomb.setText("" + LocalStatistics.usesBomb);
+		usesDash.setText("" + localStatistics.usesDash);
+		usesSmall.setText("" + localStatistics.usesSmall);
+		usesSlow.setText("" + localStatistics.usesSlow);
+		usesInvulnerability.setText("" + localStatistics.usesInvulnerability);
+		usesDrill.setText("" + localStatistics.usesDrill);
+		usesMagnet.setText("" + localStatistics.usesMagnet);
+		usesWhiteHole.setText("" + localStatistics.usesWhiteHole);
+		usesBumper.setText("" + localStatistics.usesBumper);
+		usesBomb.setText("" + localStatistics.usesBomb);
 		
 		// add asteroids destroyed statistics
 		TextView asteroidsDestroyedDash = (TextView)findViewById(R.id.statisticsMenuDashAsteroidsDestroyed);
@@ -51,15 +55,23 @@ public class LocalStatisticsMenu extends Activity {
 		asteroidsDestroyedSlow.setText("0");
 		asteroidsDestroyedInvulnerability.setText("0");
 		
-		asteroidsDestroyedDash.setText("" + LocalStatistics.asteroidsDestroyedByDash);
-		asteroidsDestroyedDrill.setText("" + LocalStatistics.asteroidsDestroyedByDrill);
-		asteroidsDestroyedMagnet.setText("" + LocalStatistics.asteroidsDestroyedByMagnet);
-		asteroidsDestroyedWhiteHole.setText("" + LocalStatistics.asteroidsDestroyedByWhiteHole);
-		asteroidsDestroyedBumper.setText("" + LocalStatistics.asteroidsDestroyedByBumper);
-		asteroidsDestroyedBomb.setText("" + LocalStatistics.asteroidsDestroyedByBomb);
+		asteroidsDestroyedDash.setText("" + localStatistics.asteroidsDestroyedByDash);
+		asteroidsDestroyedDrill.setText("" + localStatistics.asteroidsDestroyedByDrill);
+		asteroidsDestroyedMagnet.setText("" + localStatistics.asteroidsDestroyedByMagnet);
+		asteroidsDestroyedWhiteHole.setText("" + localStatistics.asteroidsDestroyedByWhiteHole);
+		asteroidsDestroyedBumper.setText("" + localStatistics.asteroidsDestroyedByBumper);
+		asteroidsDestroyedBomb.setText("" + localStatistics.asteroidsDestroyedByBomb);
 	
 		// add time played
 		TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
-		localTimePlayed.setText(LocalStatistics.getTimePlayedString());
+		localTimePlayed.setText(localStatistics.getTimePlayedString());
+		
+		// add average time played
+    	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);
+    	averageTimePerPlay.setText(GlobalStatistics.getAverageTimePerPlayString());
+    	
+    	// add # of times played
+    	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
+    	timesPlayed.setText("" + GlobalStatistics.getInstance().timesPlayed);
 	}
 }

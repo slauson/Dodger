@@ -181,7 +181,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
-			LocalStatistics.asteroidsDestroyedByDash++;
+			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
 		}
 	}
 	
@@ -189,7 +189,7 @@ public class Asteroid extends DrawObject {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_DISAPPEARING;
 			
-			LocalStatistics.asteroidsDestroyedByWhiteHole++;
+			LocalStatistics.getInstance().asteroidsDestroyedByWhiteHole++;
 			
 			// create temporary array of points so we can shrink the asteroid
 			//altPoints = new float[points.length];
@@ -203,7 +203,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_FADING_OUT;
 			timeCounter = FADING_OUT_DURATION;
 			
-			LocalStatistics.asteroidsDestroyedByBomb++;
+			LocalStatistics.getInstance().asteroidsDestroyedByBomb++;
 		}
 	}
 	
@@ -212,7 +212,7 @@ public class Asteroid extends DrawObject {
 			status = STATUS_SPLITTING_UP;
 			timeCounter = SPLITTING_UP_DURATION;
 			
-			LocalStatistics.asteroidsDestroyedByDrill++;
+			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 			
 			// left half points (4 extra for perfect split)
 			//altPoints = new float[leftPoints*4 + 4];

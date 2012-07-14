@@ -23,6 +23,7 @@ import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Points;
+import com.slauson.dasher.status.Statistics;
 
 
 public class GameOverMenu extends Activity {
@@ -51,9 +52,10 @@ public class GameOverMenu extends Activity {
 		updateHighScores(sharedPreferencesEditor);
 		
 		// calculate points
+		Statistics localStatistics = LocalStatistics.getInstance();
 		int points = 0;
-		points += Points.POINTS_TIME_PLAYED*LocalStatistics.timePlayed;
-		points += Points.POINTS_ASTEROIDS_DESTROYED*LocalStatistics.getTotalNumAsteroidsDestroyed();
+		points += Points.POINTS_TIME_PLAYED*localStatistics.timePlayed;
+		points += Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed();
 		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
 
 		// update points
@@ -74,7 +76,7 @@ public class GameOverMenu extends Activity {
 				startActivity(intent);
 			}
 		});
-		gameOverSummaryTime.setText(LocalStatistics.timePlayed + "");
+		gameOverSummaryTime.setText(localStatistics.timePlayed + "");
 		
 		// points earned
 		TextView gameOverSummaryPoints = (TextView)findViewById(R.id.gameOverSummaryPoints);
@@ -94,7 +96,12 @@ public class GameOverMenu extends Activity {
 				startActivity(intent);
 			}
 		});
-		gameOverSummaryAchievements.setText(numAchievements + " achievements unlocked");
+		
+		if (numAchievements == 1) {
+			gameOverSummaryAchievements.setText(numAchievements + " achievement unlocked");
+		} else {
+			gameOverSummaryAchievements.setText(numAchievements + " achievements unlocked");			
+		}
 		
 		// retry button
 		Button gameOverMenuRetryButton = (Button)findViewById(R.id.gameOverMenuRetryButton);
@@ -165,14 +172,17 @@ public class GameOverMenu extends Activity {
 	 * Updates achievements
 	 */
 	private void updateAchievements(SharedPreferences.Editor sharedPreferencesEditor) {
+		
+		Statistics localStatistics = LocalStatistics.getInstance();
+		
 		// playtime
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
+		if (localStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_1) {
 			Achievements.unlockLocalAchievement(Achievements.localPlaytime1);
 		}
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_2) {
+		if (localStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_2) {
 			Achievements.unlockLocalAchievement(Achievements.localPlaytime2);
 		}
-		if (LocalStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_3) {
+		if (localStatistics.timePlayed > Achievements.LOCAL_PLAYTIME_3) {
 			Achievements.unlockLocalAchievement(Achievements.localPlaytime3);
 		}
 		
@@ -193,7 +203,7 @@ public class GameOverMenu extends Activity {
 	 * Updates high scores
 	 */
 	private void updateHighScores(SharedPreferences.Editor sharedPreferencesEditor) {
-		HighScores.update(LocalStatistics.timePlayed);
+		HighScores.update(LocalStatistics.getInstance().timePlayed);
 		HighScores.save(sharedPreferencesEditor);
 	}
 }

@@ -2,5 +2,9 @@ package com.slauson.dasher.status;
 
 
 public class LocalStatistics extends Statistics {
-	// TODO: do I need this?
+	private static Statistics statistics = new Statistics();
+	
+	public static Statistics getInstance() {
+		return statistics;
+	}
 }

@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.status.GlobalStatistics;
+import com.slauson.dasher.status.Statistics;
 
 public class StatisticsMenu extends Activity {
 
@@ -13,6 +14,8 @@ public class StatisticsMenu extends Activity {
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.statistics_menu);
+    	
+    	Statistics globalStatistics = GlobalStatistics.getInstance();
     	
     	// add uses statistics
     	TextView usesDash = (TextView)findViewById(R.id.statisticsMenuDashUses);
@@ -25,15 +28,15 @@ public class StatisticsMenu extends Activity {
     	TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
     	TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
     	
-    	usesDash.setText("" + GlobalStatistics.usesDash);
-    	usesSmall.setText("" + GlobalStatistics.usesSmall);
-    	usesSlow.setText("" + GlobalStatistics.usesSlow);
-    	usesInvulnerability.setText("" + GlobalStatistics.usesInvulnerability);
-    	usesDrill.setText("" + GlobalStatistics.usesDrill);
-    	usesMagnet.setText("" + GlobalStatistics.usesMagnet);
-    	usesWhiteHole.setText("" + GlobalStatistics.usesWhiteHole);
-    	usesBumper.setText("" + GlobalStatistics.usesBumper);
-    	usesBomb.setText("" + GlobalStatistics.usesBomb);
+    	usesDash.setText("" + globalStatistics.usesDash);
+    	usesSmall.setText("" + globalStatistics.usesSmall);
+    	usesSlow.setText("" + globalStatistics.usesSlow);
+    	usesInvulnerability.setText("" + globalStatistics.usesInvulnerability);
+    	usesDrill.setText("" + globalStatistics.usesDrill);
+    	usesMagnet.setText("" + globalStatistics.usesMagnet);
+    	usesWhiteHole.setText("" + globalStatistics.usesWhiteHole);
+    	usesBumper.setText("" + globalStatistics.usesBumper);
+    	usesBomb.setText("" + globalStatistics.usesBomb);
     	
     	// add asteroids destroyed statistics
     	TextView asteroidsDestroyedDash = (TextView)findViewById(R.id.statisticsMenuDashAsteroidsDestroyed);
@@ -51,16 +54,24 @@ public class StatisticsMenu extends Activity {
     	asteroidsDestroyedSlow.setText("0");
     	asteroidsDestroyedInvulnerability.setText("0");
     	
-    	asteroidsDestroyedDash.setText("" + GlobalStatistics.asteroidsDestroyedByDash);
-    	asteroidsDestroyedDrill.setText("" + GlobalStatistics.asteroidsDestroyedByDrill);
-    	asteroidsDestroyedMagnet.setText("" + GlobalStatistics.asteroidsDestroyedByMagnet);
-    	asteroidsDestroyedWhiteHole.setText("" + GlobalStatistics.asteroidsDestroyedByWhiteHole);
-    	asteroidsDestroyedBumper.setText("" + GlobalStatistics.asteroidsDestroyedByBumper);
-    	asteroidsDestroyedBomb.setText("" + GlobalStatistics.asteroidsDestroyedByBomb);
+    	asteroidsDestroyedDash.setText("" + globalStatistics.asteroidsDestroyedByDash);
+    	asteroidsDestroyedDrill.setText("" + globalStatistics.asteroidsDestroyedByDrill);
+    	asteroidsDestroyedMagnet.setText("" + globalStatistics.asteroidsDestroyedByMagnet);
+    	asteroidsDestroyedWhiteHole.setText("" + globalStatistics.asteroidsDestroyedByWhiteHole);
+    	asteroidsDestroyedBumper.setText("" + globalStatistics.asteroidsDestroyedByBumper);
+    	asteroidsDestroyedBomb.setText("" + globalStatistics.asteroidsDestroyedByBomb);
 
     	// add time played
-    	TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
-    	localTimePlayed.setText(GlobalStatistics.getTimePlayedString());
+    	TextView timePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
+    	timePlayed.setText(globalStatistics.getTimePlayedString());
+    	
+    	// add average time played
+    	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);
+    	averageTimePerPlay.setText(GlobalStatistics.getAverageTimePerPlayString());
+    	
+    	// add # of times played
+    	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
+    	timesPlayed.setText("" + globalStatistics.timesPlayed);
 	}
 	
 	@Override

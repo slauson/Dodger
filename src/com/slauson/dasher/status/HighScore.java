@@ -44,9 +44,6 @@ public class HighScore {
 	public void load(SharedPreferences preferences, int num) {
 		score = preferences.getInt("high_score_score_" + num, 0);
 		time = preferences.getLong("high_score_time_" + num, 0);
-		
-		System.out.println("HighScore::load(): high_score_score_" + num + " = " + score);
-		System.out.println("HighScore::load(): high_score_time_" + num + " = " + time);
 	}
 	
 	/**
@@ -56,9 +53,6 @@ public class HighScore {
 	public void save(SharedPreferences.Editor preferencesEditor, int num) {
 		preferencesEditor.putInt("high_score_score_" + num, score);
 		preferencesEditor.putLong("high_score_time_" + num, time);
-		
-		System.out.println("HighScore::save(): high_score_score_" + num + " = " + score);
-		System.out.println("HighScore::save(): high_score_time_" + num + " = " + time);
 	}
 	
 	public String getScoreString() {

@@ -69,7 +69,7 @@ public class PowerupBumper extends ActivePowerup {
 				asteroid.setDirY(-1*asteroid.getDirY());
 				activateBumper();
 				
-				LocalStatistics.asteroidsDestroyedByBumper++;
+				LocalStatistics.getInstance().asteroidsDestroyedByBumper++;
 				numAffectedAsteroids++;
 			}
 		}

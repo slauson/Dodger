@@ -107,7 +107,7 @@ public class PowerupMagnet extends ActivePowerup {
 				
 				// only count each asteroid once
 				if (asteroid.getDirX() > 0.01 && asteroid.getDirY() > 0.01) {
-					LocalStatistics.asteroidsDestroyedByMagnet++;
+					LocalStatistics.getInstance().asteroidsDestroyedByMagnet++;
 					numAffectedAsteroids++;
 				}
 			}

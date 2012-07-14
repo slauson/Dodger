@@ -225,79 +225,81 @@ public class Achievements {
 	 */
 	public static void checkGlobalAchievements() {
 		
+		Statistics globalStatistics = GlobalStatistics.getInstance();
+		
 		// destroy asteroids - dash
-		if (GlobalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithDash1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithDash2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithDash3.unlock();
 		}
 		
 		// destroy asteroids - drill
-		if (GlobalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithDrill1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithDrill2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithDrill3.unlock();
 		}
 
 		// destroy asteroids - magnet
-		if (GlobalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithMagnet1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithMagnet2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithMagnet3.unlock();
 		}
 
 		// destroy asteroids - white hole
-		if (GlobalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithWhiteHole1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithWhiteHole2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithWhiteHole3.unlock();
 		}
 
 		// destroy asteroids - bumper
-		if (GlobalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithBumper1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithBumper2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithBumper3.unlock();
 		}
 
 		// destroy asteroids - bomb
-		if (GlobalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
 			globalDestroyAsteroidsWithBomb1.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
 			globalDestroyAsteroidsWithBomb2.unlock();
 		}
-		if (GlobalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
 			globalDestroyAsteroidsWithBomb3.unlock();
 		}
 		
 		// calculate total number of asteroids destroyed
-		int asteroidsDestroyedTotal = GlobalStatistics.asteroidsDestroyedByBomb +
-				GlobalStatistics.asteroidsDestroyedByBumper +
-				GlobalStatistics.asteroidsDestroyedByDash +
-				GlobalStatistics.asteroidsDestroyedByDrill +
-				GlobalStatistics.asteroidsDestroyedByMagnet +
-				GlobalStatistics.asteroidsDestroyedByWhiteHole;
+		int asteroidsDestroyedTotal = globalStatistics.asteroidsDestroyedByBomb +
+				globalStatistics.asteroidsDestroyedByBumper +
+				globalStatistics.asteroidsDestroyedByDash +
+				globalStatistics.asteroidsDestroyedByDrill +
+				globalStatistics.asteroidsDestroyedByMagnet +
+				globalStatistics.asteroidsDestroyedByWhiteHole;
 
 		// destroy asteroids - total
 		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1) {
@@ -311,13 +313,13 @@ public class Achievements {
 		}
 		
 		// destroy asteroids - playtime
-		if (GlobalStatistics.timePlayed >= GLOBAL_PLAYTIME_1) {
+		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_1) {
 			globalPlaytime1.unlock();
 		}
-		if (GlobalStatistics.timePlayed >= GLOBAL_PLAYTIME_2) {
+		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_2) {
 			globalPlaytime2.unlock();
 		}
-		if (GlobalStatistics.timePlayed >= GLOBAL_PLAYTIME_3) {
+		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_3) {
 			globalPlaytime3.unlock();
 		}
 	}

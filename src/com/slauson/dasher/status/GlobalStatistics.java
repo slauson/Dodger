@@ -1,6 +1,8 @@
 package com.slauson.dasher.status;
 
 
+import com.slauson.dasher.other.Util;
+
 import android.content.SharedPreferences;
 
 /**
@@ -8,33 +10,35 @@ import android.content.SharedPreferences;
  * @author Josh Slauson
  *
  */
-public class GlobalStatistics extends Statistics {
+public class GlobalStatistics {
 
 	// public constants
 	
 	// ids for achievements associated with statistics
 	public static final int ID_TIME_PLAYED = 0;
+	public static final int ID_TIMES_PLAYED = 1;
 	
-	public static final int ID_ASTEROIDS_DESTROYED_BY_DASH = 1;
-	public static final int ID_ASTEROIDS_DESTROYED_BY_DRILL = 2;
-	public static final int ID_ASTEROIDS_DESTROYED_BY_MAGNET = 3;
-	public static final int ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE = 4;
-	public static final int ID_ASTEROIDS_DESTROYED_BY_BUMPER = 5;
-	public static final int ID_ASTEROIDS_DESTROYED_BY_BOMB = 6;
-	public static final int ID_ASTEROIDS_DESTROYED_TOTAL = 7;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_DASH = 2;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_DRILL = 3;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_MAGNET = 4;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE = 5;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_BUMPER = 6;
+	public static final int ID_ASTEROIDS_DESTROYED_BY_BOMB = 7;
+	public static final int ID_ASTEROIDS_DESTROYED_TOTAL = 8;
 	
-	public static final int ID_USES_DASH = 8;
-	public static final int ID_USES_SMALL = 9;
-	public static final int ID_USES_SLOW = 10;
-	public static final int ID_USES_INVULNERABILITY = 11;
-	public static final int ID_USES_DRILL = 12;
-	public static final int ID_USES_MAGNET = 13;
-	public static final int ID_USES_WHITE_HOLE = 14;
-	public static final int ID_USES_BUMPER = 15;
-	public static final int ID_USES_BOMB = 16;
+	public static final int ID_USES_DASH = 9;
+	public static final int ID_USES_SMALL = 10;
+	public static final int ID_USES_SLOW = 11;
+	public static final int ID_USES_INVULNERABILITY = 12;
+	public static final int ID_USES_DRILL = 13;
+	public static final int ID_USES_MAGNET = 14;
+	public static final int ID_USES_WHITE_HOLE = 15;
+	public static final int ID_USES_BUMPER = 16;
+	public static final int ID_USES_BOMB = 17;
 	
 	// private constants
 	private static final String TIME_PLAYED = "statistics_time_played";
+	private static final String TIMES_PLAYED = "statistics_times_played";
 	
 	private static final String ASTEROIDS_DESTROYED_BY_DASH = "statistics_asteroids_destroyed_by_dash";
 	private static final String ASTEROIDS_DESTROYED_BY_DRILL = "statistics_asteroids_destroyed_by_drill";
@@ -54,7 +58,16 @@ public class GlobalStatistics extends Statistics {
 	private static final String USES_BOMB = "statistics_uses_bomb";
 	
 	private static boolean initialized = false;
+	private static Statistics statistics = new Statistics();
 	
+	/**
+	 * Returns statistics instance
+	 * @return statistics instance
+	 */
+	public static Statistics getInstance() {
+		return statistics;
+	}
+
 	/**
 	 * Loads statistics from preferences
 	 * @param sharedPreferences preferences to load from
@@ -63,24 +76,25 @@ public class GlobalStatistics extends Statistics {
 		
 		initialized = true;
 		
-		timePlayed = sharedPreferences.getInt(TIME_PLAYED, 0);
+		statistics.timePlayed = sharedPreferences.getInt(TIME_PLAYED, 0);
+		statistics.timesPlayed = sharedPreferences.getInt(TIMES_PLAYED, 0);
 		
-		asteroidsDestroyedByDash = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DASH, 0);
-		asteroidsDestroyedByDrill = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DRILL, 0);
-		asteroidsDestroyedByMagnet = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_MAGNET, 0);
-		asteroidsDestroyedByWhiteHole = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, 0);
-		asteroidsDestroyedByBumper = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BUMPER, 0);
-		asteroidsDestroyedByBomb = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BOMB, 0);
+		statistics.asteroidsDestroyedByDash = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DASH, 0);
+		statistics.asteroidsDestroyedByDrill = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_DRILL, 0);
+		statistics.asteroidsDestroyedByMagnet = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_MAGNET, 0);
+		statistics.asteroidsDestroyedByWhiteHole = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, 0);
+		statistics.asteroidsDestroyedByBumper = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BUMPER, 0);
+		statistics.asteroidsDestroyedByBomb = sharedPreferences.getInt(ASTEROIDS_DESTROYED_BY_BOMB, 0);
 		
-		usesDash = sharedPreferences.getInt(USES_DASH, 0);
-		usesSmall = sharedPreferences.getInt(USES_SMALL, 0);
-		usesSlow = sharedPreferences.getInt(USES_SLOW, 0);
-		usesInvulnerability = sharedPreferences.getInt(USES_INVULNERABILITY, 0);
-		usesDrill = sharedPreferences.getInt(USES_DRILL, 0);
-		usesMagnet = sharedPreferences.getInt(USES_MAGNET, 0);
-		usesWhiteHole = sharedPreferences.getInt(USES_WHITE_HOLE, 0);
-		usesBumper = sharedPreferences.getInt(USES_BUMPER, 0);
-		usesBomb = sharedPreferences.getInt(USES_BOMB, 0);
+		statistics.usesDash = sharedPreferences.getInt(USES_DASH, 0);
+		statistics.usesSmall = sharedPreferences.getInt(USES_SMALL, 0);
+		statistics.usesSlow = sharedPreferences.getInt(USES_SLOW, 0);
+		statistics.usesInvulnerability = sharedPreferences.getInt(USES_INVULNERABILITY, 0);
+		statistics.usesDrill = sharedPreferences.getInt(USES_DRILL, 0);
+		statistics.usesMagnet = sharedPreferences.getInt(USES_MAGNET, 0);
+		statistics.usesWhiteHole = sharedPreferences.getInt(USES_WHITE_HOLE, 0);
+		statistics.usesBumper = sharedPreferences.getInt(USES_BUMPER, 0);
+		statistics.usesBomb = sharedPreferences.getInt(USES_BOMB, 0);
 	}
 	
 	/**
@@ -88,24 +102,25 @@ public class GlobalStatistics extends Statistics {
 	 * @param sharedPreferencesEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
-		sharedPreferencesEditor.putInt(TIME_PLAYED, timePlayed);
+		sharedPreferencesEditor.putInt(TIME_PLAYED, statistics.timePlayed);
+		sharedPreferencesEditor.putInt(TIMES_PLAYED, statistics.timesPlayed);
 		
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, asteroidsDestroyedByDash);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, asteroidsDestroyedByDrill);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, asteroidsDestroyedByMagnet);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, asteroidsDestroyedByWhiteHole);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, asteroidsDestroyedByBumper);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, asteroidsDestroyedByBomb);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, statistics.asteroidsDestroyedByDash);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, statistics.asteroidsDestroyedByDrill);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, statistics.asteroidsDestroyedByMagnet);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_WHITE_HOLE, statistics.asteroidsDestroyedByWhiteHole);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, statistics.asteroidsDestroyedByBumper);
+		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, statistics.asteroidsDestroyedByBomb);
 		
-		sharedPreferencesEditor.putInt(USES_DASH, usesDash);
-		sharedPreferencesEditor.putInt(USES_SMALL, usesSmall);
-		sharedPreferencesEditor.putInt(USES_SLOW, usesSlow);
-		sharedPreferencesEditor.putInt(USES_INVULNERABILITY, usesInvulnerability);
-		sharedPreferencesEditor.putInt(USES_DRILL, usesDrill);
-		sharedPreferencesEditor.putInt(USES_MAGNET, usesMagnet);
-		sharedPreferencesEditor.putInt(USES_WHITE_HOLE, usesWhiteHole);
-		sharedPreferencesEditor.putInt(USES_BUMPER, usesBumper);
-		sharedPreferencesEditor.putInt(USES_BOMB, usesBomb);
+		sharedPreferencesEditor.putInt(USES_DASH, statistics.usesDash);
+		sharedPreferencesEditor.putInt(USES_SMALL, statistics.usesSmall);
+		sharedPreferencesEditor.putInt(USES_SLOW, statistics.usesSlow);
+		sharedPreferencesEditor.putInt(USES_INVULNERABILITY, statistics.usesInvulnerability);
+		sharedPreferencesEditor.putInt(USES_DRILL, statistics.usesDrill);
+		sharedPreferencesEditor.putInt(USES_MAGNET, statistics.usesMagnet);
+		sharedPreferencesEditor.putInt(USES_WHITE_HOLE, statistics.usesWhiteHole);
+		sharedPreferencesEditor.putInt(USES_BUMPER, statistics.usesBumper);
+		sharedPreferencesEditor.putInt(USES_BOMB, statistics.usesBomb);
 	}
 	
 	/**
@@ -121,24 +136,28 @@ public class GlobalStatistics extends Statistics {
 	 * Update global statistics from local statistics
 	 */
 	public static void update() {
-		asteroidsDestroyedByDash += LocalStatistics.asteroidsDestroyedByDash;
-		asteroidsDestroyedByDrill += LocalStatistics.asteroidsDestroyedByDrill;
-		asteroidsDestroyedByMagnet += LocalStatistics.asteroidsDestroyedByMagnet;
-		asteroidsDestroyedByWhiteHole += LocalStatistics.asteroidsDestroyedByWhiteHole;
-		asteroidsDestroyedByBumper += LocalStatistics.asteroidsDestroyedByBumper;
-		asteroidsDestroyedByBomb += LocalStatistics.asteroidsDestroyedByBomb;
 		
-		usesDash += LocalStatistics.usesDash;
-		usesSmall += LocalStatistics.usesSmall;
-		usesSlow += LocalStatistics.usesSlow;
-		usesInvulnerability += LocalStatistics.usesInvulnerability;
-		usesDrill += LocalStatistics.usesDrill;
-		usesMagnet += LocalStatistics.usesMagnet;
-		usesWhiteHole += LocalStatistics.usesWhiteHole;
-		usesBumper += LocalStatistics.usesBumper;
-		usesBomb += LocalStatistics.usesBomb;
+		Statistics localStatistics = LocalStatistics.getInstance();
 		
-		timePlayed += LocalStatistics.timePlayed;
+		statistics.asteroidsDestroyedByDash += localStatistics.asteroidsDestroyedByDash;
+		statistics.asteroidsDestroyedByDrill += localStatistics.asteroidsDestroyedByDrill;
+		statistics.asteroidsDestroyedByMagnet += localStatistics.asteroidsDestroyedByMagnet;
+		statistics.asteroidsDestroyedByWhiteHole += localStatistics.asteroidsDestroyedByWhiteHole;
+		statistics.asteroidsDestroyedByBumper += localStatistics.asteroidsDestroyedByBumper;
+		statistics.asteroidsDestroyedByBomb += localStatistics.asteroidsDestroyedByBomb;
+		
+		statistics.usesDash += localStatistics.usesDash;
+		statistics.usesSmall += localStatistics.usesSmall;
+		statistics.usesSlow += localStatistics.usesSlow;
+		statistics.usesInvulnerability += localStatistics.usesInvulnerability;
+		statistics.usesDrill += localStatistics.usesDrill;
+		statistics.usesMagnet += localStatistics.usesMagnet;
+		statistics.usesWhiteHole += localStatistics.usesWhiteHole;
+		statistics.usesBumper += localStatistics.usesBumper;
+		statistics.usesBomb += localStatistics.usesBomb;
+		
+		statistics.timePlayed += localStatistics.timePlayed;
+		statistics.timesPlayed++;
 	}
 	
 	/**
@@ -149,44 +168,46 @@ public class GlobalStatistics extends Statistics {
 	public static int getStatistic(int id) {
 		switch(id) {
 		case ID_TIME_PLAYED:
-			return timePlayed/60;
+			return statistics.timePlayed/60;
+		case ID_TIMES_PLAYED:
+			return statistics.timesPlayed;
 		case ID_ASTEROIDS_DESTROYED_BY_DASH:
-			return asteroidsDestroyedByDash;
+			return statistics.asteroidsDestroyedByDash;
 		case ID_ASTEROIDS_DESTROYED_BY_DRILL:
-			return asteroidsDestroyedByDrill;
+			return statistics.asteroidsDestroyedByDrill;
 		case ID_ASTEROIDS_DESTROYED_BY_MAGNET:
-			return asteroidsDestroyedByMagnet;
+			return statistics.asteroidsDestroyedByMagnet;
 		case ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE:
-			return asteroidsDestroyedByWhiteHole;
+			return statistics.asteroidsDestroyedByWhiteHole;
 		case ID_ASTEROIDS_DESTROYED_BY_BUMPER:
-			return asteroidsDestroyedByBumper;
+			return statistics.asteroidsDestroyedByBumper;
 		case ID_ASTEROIDS_DESTROYED_BY_BOMB:
-			return asteroidsDestroyedByBomb;
+			return statistics.asteroidsDestroyedByBomb;
 		case ID_ASTEROIDS_DESTROYED_TOTAL:
-			return asteroidsDestroyedByDash +
-					asteroidsDestroyedByDrill +
-					asteroidsDestroyedByMagnet +
-					asteroidsDestroyedByWhiteHole +
-					asteroidsDestroyedByBumper +
-					asteroidsDestroyedByBomb;
+			return statistics.asteroidsDestroyedByDash +
+					statistics.asteroidsDestroyedByDrill +
+					statistics.asteroidsDestroyedByMagnet +
+					statistics.asteroidsDestroyedByWhiteHole +
+					statistics.asteroidsDestroyedByBumper +
+					statistics.asteroidsDestroyedByBomb;
 		case ID_USES_DASH:
-			return usesDash;
+			return statistics.usesDash;
 		case ID_USES_SMALL:
-			return usesSmall;
+			return statistics.usesSmall;
 		case ID_USES_SLOW:
-			return usesSlow;
+			return statistics.usesSlow;
 		case ID_USES_INVULNERABILITY:
-			return usesInvulnerability;
+			return statistics.usesInvulnerability;
 		case ID_USES_DRILL:
-			return usesDrill;
+			return statistics.usesDrill;
 		case ID_USES_MAGNET:
-			return usesMagnet;
+			return statistics.usesMagnet;
 		case ID_USES_WHITE_HOLE:
-			return usesWhiteHole;
+			return statistics.usesWhiteHole;
 		case ID_USES_BUMPER:
-			return usesBumper;
+			return statistics.usesBumper;
 		case ID_USES_BOMB:
-			return usesBomb;
+			return statistics.usesBomb;
 		default:
 			return -1;
 		}
@@ -197,7 +218,16 @@ public class GlobalStatistics extends Statistics {
 	 * @param preferencesEditor preferences to save to
 	 */
 	public static void reset(SharedPreferences.Editor sharedPreferencesEditor) {
-		reset();
+		
+		statistics.reset();
 		save(sharedPreferencesEditor);
+	}
+	
+	public static String getAverageTimePerPlayString() {
+		if (statistics.timesPlayed != 0) {
+			return Util.getTimeString(statistics.timePlayed/statistics.timesPlayed);
+		}
+		
+		return Util.getTimeString(0);
 	}
 }

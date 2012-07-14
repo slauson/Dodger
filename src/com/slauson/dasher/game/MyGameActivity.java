@@ -52,9 +52,8 @@ public class MyGameActivity extends Activity {
 		/**
 		 * Reset state
 		 */
-		LocalStatistics.reset();
+		LocalStatistics.getInstance().reset();
 		Achievements.resetLocalAchievements();
-		
 		
 		/**
 		 * Setup pause menu

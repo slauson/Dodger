@@ -22,6 +22,7 @@ import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Debugging;
+import com.slauson.dasher.status.Statistics;
 import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
@@ -94,6 +95,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private Level level;
 	
 	private MyGameActivity gameActivity = null;
+	private Statistics localStatistics = null;
 
 	
 	/**
@@ -398,6 +400,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
 			}
 			
+			localStatistics = LocalStatistics.getInstance();
+			
 			initialized = true;
 		}
 	}
@@ -540,15 +544,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
 						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
-						LocalStatistics.usesMagnet++;
+						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_WHITE_HOLE:
 						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), Upgrades.whiteHoleUpgrade.getLevel()));
-						LocalStatistics.usesWhiteHole++;
+						localStatistics.usesWhiteHole++;
 						break;
 					case POWERUP_DRILL:
 						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
-						LocalStatistics.usesDrill++;
+						localStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
 						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
@@ -556,23 +560,23 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						} else {
 							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						}
-						LocalStatistics.usesBumper++;
+						localStatistics.usesBumper++;
 						break;
 					case POWERUP_INVULNERABLE:
 						powerupInvulnerability.activate();
-						LocalStatistics.usesInvulnerability++;
+						localStatistics.usesInvulnerability++;
 						break;
 					case POWERUP_BOMB:
 						bombCounter = BOMB_COUNTER_MAX;
-						LocalStatistics.usesBomb++;
+						localStatistics.usesBomb++;
 						break;
 					case POWERUP_SMALL:
 						powerupSmall.activate();
-						LocalStatistics.usesSmall++;
+						localStatistics.usesSmall++;
 						break;
 					case POWERUP_SLOW:
 						powerupSlow.activate();
-						LocalStatistics.usesSlow++;
+						localStatistics.usesSlow++;
 						break;
 					}
 					
