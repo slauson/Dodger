@@ -53,10 +53,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	
 	private String debugText = "";
-//	private int debugPowerupType = POWERUP_NONE;
-//	private int debugLevel = 0;
-//	private int debugUpgradeLevel = 0;//Upgrades.BLACK_HOLE_UPGRADE_QUASAR;
-//	private Upgrade debugUpgrade = null;//Upgrades.blackHoleUpgrade;
 
 	
 	/**
@@ -96,6 +92,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private MyGameActivity gameActivity = null;
 	private Statistics localStatistics = null;
+	
+	private long pauseTime;
 
 	
 	/**
@@ -320,6 +318,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
 		
+		if (pauseTime > 0) {
+			duration = pauseTime - player.getStartTime();
+		}
+		
 		String durationText = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(duration), TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
 		paint.setStrokeWidth(1);
 		paint.setColor(Color.WHITE);
@@ -381,6 +383,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// make sure we don't think the first single tap is a double tap
 			lastTouchDownTime1 = 0;
 			lastTouchDownTime2 = -2*DASH_DOUBLE_TAP_MIN_DURATION;
+			
+			pauseTime = -1;
 						
 			player = new Player();
 			
@@ -929,8 +933,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void togglePause(boolean paused) {
 		if (paused) {
 			gameMode = MODE_PAUSED;
+			
+			pauseTime = System.currentTimeMillis();
 		} else {
 			gameMode = MODE_RUNNING;
+			
+			// update player start time to get accurate time
+			if (pauseTime > 0) {
+				player.addToStartTime(System.currentTimeMillis() - pauseTime);
+			}
+			
+			pauseTime = -1;
 			
 			// reset all update times
 			resetUpdateTimes();

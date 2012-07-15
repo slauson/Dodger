@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.view.Gravity;
+import android.view.KeyEvent;
 
 /**
  * Player ship
@@ -151,7 +152,7 @@ public class Player extends DrawObject {
 	}
 	
 	/**
-	 * Resets timer
+	 * Resets start time
 	 */
 	public void reset() {
 		LocalStatistics.getInstance().timePlayed = (int) ((System.currentTimeMillis() - startTime)/1000);
@@ -377,10 +378,26 @@ public class Player extends DrawObject {
 		reset();
 	}
 
+	/**
+	 * Returns start time of player
+	 * @return start time of player
+	 */
 	public long getStartTime() {
 		return startTime;
 	}
+	
+	/**
+	 * Adds the given amount of time to the start time (used for pause menu)
+	 * @param milliseconds number of milliseconds to add
+	 */
+	public void addToStartTime(long milliseconds) {
+		startTime += milliseconds;
+	}
 
+	/**
+	 * Sets player's move x coordinate
+	 * @param goX x coordinate player should move to
+	 */
 	public void setGoX(float goX) {
 		this.goX = goX;
 	}

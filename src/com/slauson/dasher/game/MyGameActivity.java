@@ -42,10 +42,6 @@ public class MyGameActivity extends Activity {
 		myGameView = (MyGameView)findViewById(R.id.myGameView);
 		myGameView.setActivity(this);
 
-		// set myForeground to use transparent background
-		//myForeground.setZOrderOnTop(true);
-		//myForeground.getHolder().setFormat(PixelFormat.TRANSPARENT);
-
 		myAccelerometer = new MyAccelerometer(this);
 
 		quitting = false;
@@ -152,13 +148,15 @@ public class MyGameActivity extends Activity {
 		
 		switch(keyCode) {
 		// pause game when menu/back/search is pressed
-		case KeyEvent.KEYCODE_MENU:
 		case KeyEvent.KEYCODE_BACK:
+			if (paused) {
+				unpauseGame();
+			}
+			// no break here so that we have the ability to pause game too
+		case KeyEvent.KEYCODE_MENU:
 		case KeyEvent.KEYCODE_SEARCH:
 			if (!paused) {
 				pauseGame();
-			} else {
-				unpauseGame();
 			}
 			break;
 		}
