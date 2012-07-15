@@ -67,11 +67,11 @@ public class LocalStatisticsMenu extends Activity {
 		localTimePlayed.setText(localStatistics.getTimePlayedString());
 		
 		// add average time played
-    	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);
+/*    	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);
     	averageTimePerPlay.setText(GlobalStatistics.getAverageTimePerPlayString());
     	
     	// add # of times played
     	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
-    	timesPlayed.setText("" + GlobalStatistics.getInstance().timesPlayed);
+    	timesPlayed.setText("" + GlobalStatistics.getInstance().timesPlayed);*/
 	}
 }

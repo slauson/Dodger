@@ -59,6 +59,12 @@ public class Asteroid extends DrawObject {
 		reset(radius, speed, horizontalMovement);
 	}
 	
+	/**
+	 * Resets asteroid
+	 * @param radius radius of asteroid
+	 * @param speed speed of asteroid
+	 * @param horizontalMovement whether or not the asteroid has horizontal movement
+	 */
 	public void reset(int radius, float speed, boolean horizontalMovement) {
 		this.radius = radius;
 		this.speed = speed;
@@ -81,6 +87,9 @@ public class Asteroid extends DrawObject {
 		reset();
 	}
 	
+	/**
+	 * Resets asteroid
+	 */
 	public void reset() {
 		
 		x = random.nextInt(MyGameView.canvasWidth);
@@ -98,6 +107,9 @@ public class Asteroid extends DrawObject {
 		status = STATUS_NORMAL;
 	}
 	
+	/**
+	 * Resets random points for asteroid
+	 */
 	private void resetRandomPoints() {
 		
 		int numPoints = points.length/4;
@@ -143,7 +155,9 @@ public class Asteroid extends DrawObject {
 		points[4*numPoints-1] = points[1];
 	}
 	
-	// item breaks into line segments that move outward
+	/**
+	 * Make asteroid break up into line segments, caused by dash
+	 */
 	public void breakup() {
 		if (status == STATUS_NORMAL) {
 			
@@ -185,6 +199,9 @@ public class Asteroid extends DrawObject {
 		}
 	}
 	
+	/**
+	 * Make asteroid disappear, caused by black hole
+	 */
 	public void disappear() {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_DISAPPEARING;
@@ -192,21 +209,28 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
 			// create temporary array of points so we can shrink the asteroid
-			//altPoints = new float[points.length];
-			
 			System.arraycopy(points, 0, altPoints, 0, points.length);
 		}
 	}
 	
-	public void fadeOut() {
+	/**
+	 * Fade out asteroid
+	 * @param causedByBomb true if this was caused by a bomb
+	 */
+	public void fadeOut(boolean causedByBomb) {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_FADING_OUT;
 			timeCounter = FADING_OUT_DURATION;
 			
-			LocalStatistics.getInstance().asteroidsDestroyedByBomb++;
+			if (causedByBomb) {
+				LocalStatistics.getInstance().asteroidsDestroyedByBomb++;
+			}
 		}
 	}
 	
+	/**
+	 * Split up asteroid, caused by drill
+	 */
 	public void splitUp() {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_SPLITTING_UP;
@@ -295,7 +319,11 @@ public class Asteroid extends DrawObject {
 		}
 	}
 	
-	
+	/**
+	 * Checks asteroid collision with other asteroid
+	 * @param other asteroid to check collision with
+	 * @return true if asteroids collided
+	 */
 	public boolean checkCollision(Asteroid other) {
 		
 		if (status == STATUS_NORMAL && other.status == STATUS_NORMAL && checkBoxCollision(other)) {
@@ -305,6 +333,7 @@ public class Asteroid extends DrawObject {
 		return false;
 	}
 	
+	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		if (status != STATUS_INVISIBLE && onScreen()) {
 			
@@ -426,6 +455,9 @@ public class Asteroid extends DrawObject {
 		}
 	}
 	
+	/**
+	 * Makes asteroid invisible
+	 */
 	public void setInvisible() {
 		status = STATUS_INVISIBLE;
 		
@@ -434,6 +466,10 @@ public class Asteroid extends DrawObject {
 		dirY = 1;
 	}
 	
+	/**
+	 * Sets factor, used for black hole
+	 * @param factor factor
+	 */
 	public void setFactor(float factor) {
 		this.factor = factor;
 	}

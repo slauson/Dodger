@@ -4,6 +4,7 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.game.MyGameActivity;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
 import com.slauson.dasher.status.Points;
@@ -158,6 +159,10 @@ public class MainMenu extends Activity {
 			HighScores.load(sharedPreferences);
 		}
 		
+		// load debugging info
+		if (!Debugging.initialized()) {
+			Debugging.load(sharedPreferences);
+		}
 	}
 	
 	@Override

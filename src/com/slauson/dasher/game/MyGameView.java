@@ -80,6 +80,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private LinkedList<ActivePowerup> activePowerups;	
 	private int bombCounter;
 	private int quasarCounter;
+	private int quasarX, quasarY;
 	
 	// Initialization flags
 	private boolean surfaceCreated = false;
@@ -121,7 +122,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// powerup stuff
 	private static final int BOMB_COUNTER_MAX = 10;
-	private static final int QUASAR_COUNTER_MAX = 5;
+	private static final int QUASAR_COUNTER_MAX = 20;
 
 	// paint stuff
 	private static final int PLAYER_PAINT_STROKE_WIDTH = 2;
@@ -307,7 +308,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
-		// overlay quasar animation
+		// overlay bomb animation 
 		if (quasarCounter > 0) {
 			float factor = Math.abs(1f*QUASAR_COUNTER_MAX/2 - quasarCounter)/QUASAR_COUNTER_MAX*2;
 			
@@ -317,7 +318,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			paint.setAlpha(255);
 		}
-
 		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
@@ -377,6 +377,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
 			quasarCounter = 0;
+			quasarX = 0;
+			quasarY = 0;
 			
 			// make sure we don't think the first single tap is a double tap
 			lastTouchDownTime1 = 0;
@@ -621,6 +623,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					powerup.update(1f);
 				}
 				
+				// check if we need to activate the quasar for the black hole
+				if (powerup instanceof PowerupBlackHole && powerup.isFadingOut() && ((PowerupBlackHole)powerup).hasQuasar()) {
+					quasarCounter = QUASAR_COUNTER_MAX;
+					quasarX = (int)powerup.getX();
+					quasarY = (int)powerup.getY();
+					activateQuasar();
+					((PowerupBlackHole)powerup).activateQuasar();
+				}
+				
 				// check if any active powerups should be removed
 				if (!activePowerups.get(i).isActive()) {
 										
@@ -628,18 +639,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					if (powerup instanceof PowerupDrill && ((PowerupDrill)powerup).hasTeleport()) {
 						((PowerupDrill)powerup).teleport();
 					} else {
-						
-						// destroy black hole
-						if (powerup instanceof PowerupBlackHole) {
-							if (((PowerupBlackHole)powerup).hasQuasar()) {
-								quasarCounter = QUASAR_COUNTER_MAX;
-								activateQuasar();
-							}
-							
-							((PowerupBlackHole)powerup).destroy();
-						}
-
-						System.out.println("Removing Active Powerup");
 						powerup.checkAchievements();
 						activePowerups.remove(i);
 						i--;
@@ -1000,7 +999,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut();
+			asteroid.fadeOut(true);
 			numAffectedAsteroids++;
 			
 			// cause drop if upgraded
@@ -1049,7 +1048,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private void activateQuasar() {
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut();
+			asteroid.fadeOut(false);
 		}
 	}
 	

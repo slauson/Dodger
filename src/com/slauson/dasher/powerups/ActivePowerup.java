@@ -52,8 +52,20 @@ public abstract class ActivePowerup extends Sprite {
 		endingTime = System.currentTimeMillis() + duration;
 	}
 	
+	/**
+	 * Returns the number of affected asteroids
+	 * @return the number of affected asteroids
+	 */
 	public int getNumAffectedAsteroids() {
 		return numAffectedAsteroids;
+	}
+	
+	/**
+	 * Returns true if powerup is fading out
+	 * @return true if powerup is fading out
+	 */
+	public boolean isFadingOut() {
+		return remainingDuration() < FADE_OUT_DURATION;
 	}
 	
 	// abstract methods to be defined in subclasses

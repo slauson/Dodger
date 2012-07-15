@@ -1,7 +1,5 @@
 package com.slauson.dasher.powerups;
 
-import java.util.ArrayList;
-
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
@@ -27,19 +25,15 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final int DURATION_0 = 10000;
 	private static final int DURATION_1 = 15000;
 	private static final int DURATION_2 = 20000;
-	private static final int DURATION_3 = 30000;
+	private static final int DURATION_3 = 10000;
 
-	private static final int QUASAR_ASTEROID_SPEED = 500;
-	
 	private int rotation;
 	private boolean hasQuasar;
-	private ArrayList<Asteroid> asteroids;
 	
 	public PowerupBlackHole(Bitmap bitmap, float x, float y, int level) {
 		super(bitmap, x, y);
 		
 		rotation = 0;
-		asteroids = new ArrayList<Asteroid>();
 		
 		// get duration
 		switch(level) {
@@ -92,7 +86,6 @@ public class PowerupBlackHole extends ActivePowerup {
 				
 				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
 					asteroid.disappear();
-					asteroids.add(asteroid);
 				}
 				
 				// update factor
@@ -136,34 +129,6 @@ public class PowerupBlackHole extends ActivePowerup {
 				asteroid.setDirY(asteroidDirY);
 			}
 		}
-	}
-	
-	public void destroy() {
-		
-		// if has quasar, shoot out the remaining asteroids
-		if (hasQuasar) {
-			for (Asteroid asteroid : asteroids) {
-				
-				asteroid.setDirX(-1 + 2*MyGameView.random.nextFloat());
-				
-				if (MyGameView.random.nextBoolean()) {
-					asteroid.setDirY(1 - Math.abs(asteroid.getDirX()));
-				} else {
-					asteroid.setDirY(-1 + Math.abs(asteroid.getDirX()));
-				}
-				
-				asteroid.setSpeed(QUASAR_ASTEROID_SPEED);
-				asteroid.fadeOut();
-			}
-		}
-		// otherwise just reset the asteroids
-		else {
-			for (Asteroid asteroid : asteroids) {
-				asteroid.reset();
-			}
-		}
-		
-		asteroids.clear();
 	}
 	
 	@Override
@@ -229,8 +194,26 @@ public class PowerupBlackHole extends ActivePowerup {
 		}
 	}
 	
+	/**
+	 * Returns true if the black hole is active
+	 * @return true if the black hole is active
+	 */
+	public boolean isActive() {
+		return System.currentTimeMillis() < endingTime;
+	}
+	
+	/**
+	 * Returns true if the black hole has the quasar upgrade
+	 * @return true if the black hole has the quasar upgrade
+	 */
 	public boolean hasQuasar() {
 		return hasQuasar;
 	}
-
+	
+	/**
+	 * Activates black hole's quasar
+	 */
+	public void activateQuasar() {
+		hasQuasar = false;
+	}
 }
