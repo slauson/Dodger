@@ -21,18 +21,25 @@ public class Achievements {
 	public static final int LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2 = 5;
 	public static final int LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3 = 10;
 	
-	
 	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_1 = 10;
 	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_2 = 20;
 	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_3 = 30;
 	
-	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_1 = 5;
-	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_2 = 10;
-	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_3 = 20;
-	
-	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_NUM = 1000;
 	public static final int LOCAL_DASH_ACTIVATE_DROPS_NUM = 1;
-	public static final int LOCAL_OTHER_STAY_IN_PLACE_NUM = 20;
+	public static final int LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM = 2;
+	public static final int LOCAL_SLOW_LONG_TIME = 60;
+	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM = 10;
+	
+	// Use constant from Asteroid.java here after implementing timeout for magnet
+	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_TIME = 1000;
+	
+	public static final int LOCAL_OTHER_STAY_IN_PLACE_TIME = 20;
+	public static final int LOCAL_OTHER_POINTS_NUM_1 = 10000;
+	public static final int LOCAL_OTHER_POINTS_NUM_2 = 25000;
+	public static final int LOCAL_OTHER_POINTS_NUM_3 = 50000;
+	public static final int LOCAL_OTHER_NUM_POWERUPS = 8;
+	public static final int LOCAL_OTHER_NUM_UPGRADES = 36;
+	public static final int LOCAL_OTHER_NUM_ACHIEVEMENTS = 57;
 	
 	public static final int LOCAL_PLAYTIME_1 = 60;
 	public static final int LOCAL_PLAYTIME_2 = 300;
@@ -77,17 +84,26 @@ public class Achievements {
 
 	// local achievements - powerups
 	// TODO: implement these
-	public static Achievement localInvulnerabilityPassThrough1 = new Achievement("achievement_local_invulnerability_pass_through_1", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_1);
-	public static Achievement localInvulnerabilityPassThrough2 = new Achievement("achievement_local_invulnerability_pass_through_2", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_2);
-	public static Achievement localInvulnerabilityPassThrough3 = new Achievement("achievement_local_invulnerability_pass_through_3", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_3);
-	
+	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.powerup_ship, LOCAL_DASH_ACTIVATE_DROPS_NUM);
+	public static Achievement localSmallDashDestroy = new Achievement("achievement_local_small_dash_destroy", R.drawable.powerup_ship, LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM);
+	public static Achievement localSlowLongTime = new Achievement("achievement_local_slow_long_time", R.drawable.powerup_slow, LOCAL_SLOW_LONG_TIME);
+	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
 	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
 	public static Achievement localBlackHolePlayerDestroyed = new Achievement("achievement_local_black_hole_player_destroyed", R.drawable.powerup_white_hole);
-	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);
+	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_TIME);
 	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.powerup_bumper);
-	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.powerup_ship, LOCAL_DASH_ACTIVATE_DROPS_NUM);
-	public static Achievement localOtherStayInPlace = new Achievement("achievement_local_other_stay_in_place", R.drawable.powerup_ship, LOCAL_OTHER_STAY_IN_PLACE_NUM);
+	public static Achievement localBombDropBomb = new Achievement("achievement_local_bomb_activate_bomb", R.drawable.powerup_bomb);
+
+	// local achievements - other
+	public static Achievement localOtherStayInPlace = new Achievement("achievement_local_other_stay_in_place", R.drawable.powerup_ship, LOCAL_OTHER_STAY_IN_PLACE_TIME);
+	public static Achievement localOtherPoints1 = new Achievement("achievement_local_other_points_1", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_1);
+	public static Achievement localOtherPoints2 = new Achievement("achievement_local_other_points_2", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_2);
+	public static Achievement localOtherPoints3 = new Achievement("achievement_local_other_points_3", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_3);
 	
+	public static Achievement localOtherUnlockAllPowerups = new Achievement("achievement_local_other_unlock_all_powerups", R.drawable.powerup_ship, LOCAL_OTHER_NUM_POWERUPS);
+	public static Achievement localOtherPurchaseAllUpgrades = new Achievement("achievement_local_other_purchase_all_upgrades", R.drawable.powerup_ship, LOCAL_OTHER_NUM_UPGRADES);
+	public static Achievement localOtherUnlockAllAchievements = new Achievement("achievement_local_other_unlock_all_achievements", R.drawable.powerup_ship, LOCAL_OTHER_NUM_ACHIEVEMENTS);
+		
 	// local achievements - playtime
 	public static Achievement localPlaytime1 = new Achievement("achievement_local_playtime_1", R.drawable.powerup_slow, LOCAL_PLAYTIME_1/60);
 	public static Achievement localPlaytime2 = new Achievement("achievement_local_playtime_2", R.drawable.powerup_slow, LOCAL_PLAYTIME_2/60);
@@ -147,7 +163,10 @@ public class Achievements {
 		
 		// other
 		achievements.add(localOtherStayInPlace);
-
+		achievements.add(localOtherPoints1);
+		achievements.add(localOtherPoints2);
+		achievements.add(localOtherPoints3);
+		
 		// dash
 		achievements.add(localDestroyAsteroidsWithDash1);
 		achievements.add(localDestroyAsteroidsWithDash2);
@@ -157,11 +176,15 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithDash2);
 		achievements.add(globalDestroyAsteroidsWithDash3);
 
+		// small
+		achievements.add(localSmallDashDestroy);
+		
+		// slow
+		achievements.add(localSlowLongTime);
+		
 		// invulnerability
-		achievements.add(localInvulnerabilityPassThrough1);
-		achievements.add(localInvulnerabilityPassThrough2);
-		achievements.add(localInvulnerabilityPassThrough3);
-
+		achievements.add(localInvulnerabilityPassThrough);
+		
 		// drill
 		achievements.add(localDestroyAsteroidsWithDrill1);
 		achievements.add(localDestroyAsteroidsWithDrill2);
@@ -218,6 +241,11 @@ public class Achievements {
 		achievements.add(globalPlaytime1);
 		achievements.add(globalPlaytime2);
 		achievements.add(globalPlaytime3);
+		
+		// unlocking/purchasing stuff
+		achievements.add(localOtherUnlockAllPowerups);
+		achievements.add(localOtherPurchaseAllUpgrades);
+		achievements.add(localOtherUnlockAllAchievements);
 	}
 	
 	/**
