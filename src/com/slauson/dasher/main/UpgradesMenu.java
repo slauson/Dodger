@@ -62,8 +62,8 @@ public class UpgradesMenu extends Activity {
 	private Button magnetUpgradeButton1,magnetUpgradeButton2, magnetUpgradeButton3, magnetUpgradeButton4;
 
 	// black hole buttons
-	private Button whiteHoleButton;
-	private Button whiteHoleUpgradeButton1,whiteHoleUpgradeButton2, whiteHoleUpgradeButton3, whiteHoleUpgradeButton4;
+	private Button blackHoleButton;
+	private Button blackHoleUpgradeButton1,blackHoleUpgradeButton2, blackHoleUpgradeButton3, blackHoleUpgradeButton4;
 
 	// bumper buttons
 	private Button bumperButton;
@@ -412,19 +412,19 @@ public class UpgradesMenu extends Activity {
 		});
 
 		
-    	// white hole powerup
-    	whiteHoleUpgradeButton1 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade1Button);
-    	whiteHoleUpgradeButton2 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade2Button);
-    	whiteHoleUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade3Button);
-    	whiteHoleUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuWhiteHoleUpgrade4Button);
+    	// black hole powerup
+    	blackHoleUpgradeButton1 = (Button)findViewById(R.id.upgradesMenuBlackHoleUpgrade1Button);
+    	blackHoleUpgradeButton2 = (Button)findViewById(R.id.upgradesMenuBlackHoleUpgrade2Button);
+    	blackHoleUpgradeButton3 = (Button)findViewById(R.id.upgradesMenuBlackHoleUpgrade3Button);
+    	blackHoleUpgradeButton4 = (Button)findViewById(R.id.upgradesMenuBlackHoleUpgrade4Button);
     	
-    	whiteHoleUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuWhiteHoleUpgrade1Button));
-    	whiteHoleUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuWhiteHoleUpgrade2Button));
-    	whiteHoleUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuWhiteHoleUpgrade3Button));
-    	whiteHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.whiteHoleUpgrade, Upgrades.WHITE_HOLE_UPGRADE_QUASAR, R.id.upgradesMenuWhiteHoleUpgrade4Button));
+    	blackHoleUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.blackHoleUpgrade, Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuBlackHoleUpgrade1Button));
+    	blackHoleUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.blackHoleUpgrade, Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuBlackHoleUpgrade2Button));
+    	blackHoleUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.blackHoleUpgrade, Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuBlackHoleUpgrade3Button));
+    	blackHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.blackHoleUpgrade, Upgrades.BLACK_HOLE_UPGRADE_QUASAR, R.id.upgradesMenuBlackHoleUpgrade4Button));
     	
-    	whiteHoleButton = (Button)findViewById(R.id.upgradesMenuWhiteHoleButton);
-		whiteHoleButton.setOnClickListener(new OnClickListener() {
+    	blackHoleButton = (Button)findViewById(R.id.upgradesMenuBlackHoleButton);
+		blackHoleButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -432,35 +432,35 @@ public class UpgradesMenu extends Activity {
 			public void onClick(View v) {
 				// show details
 				if (!showDetails) {
-					whiteHoleUpgradeButton1.setVisibility(View.VISIBLE);
-					whiteHoleUpgradeButton2.setVisibility(View.VISIBLE);
-					whiteHoleUpgradeButton3.setVisibility(View.VISIBLE);
-					whiteHoleUpgradeButton4.setVisibility(View.VISIBLE);
+					blackHoleUpgradeButton1.setVisibility(View.VISIBLE);
+					blackHoleUpgradeButton2.setVisibility(View.VISIBLE);
+					blackHoleUpgradeButton3.setVisibility(View.VISIBLE);
+					blackHoleUpgradeButton4.setVisibility(View.VISIBLE);
 					showDetails = true;
 					
 					// check for purchased upgrades
-					switch(Upgrades.whiteHoleUpgrade.getLevel()) {
-					case Upgrades.WHITE_HOLE_UPGRADE_QUASAR:
-						whiteHoleUpgradeButton4.setTextColor(Color.BLACK);
-						((TableRow)whiteHoleUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
-					case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_3:
-						whiteHoleUpgradeButton3.setTextColor(Color.BLACK);
-						((TableRow)whiteHoleUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
-					case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_2:
-						whiteHoleUpgradeButton2.setTextColor(Color.BLACK);
-						((TableRow)whiteHoleUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
-					case Upgrades.WHITE_HOLE_UPGRADE_INCREASED_DURATION_1:
-						whiteHoleUpgradeButton1.setTextColor(Color.BLACK);
-						((TableRow)whiteHoleUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+					switch(Upgrades.blackHoleUpgrade.getLevel()) {
+					case Upgrades.BLACK_HOLE_UPGRADE_QUASAR:
+						blackHoleUpgradeButton4.setTextColor(Color.BLACK);
+						((TableRow)blackHoleUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_3:
+						blackHoleUpgradeButton3.setTextColor(Color.BLACK);
+						((TableRow)blackHoleUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_2:
+						blackHoleUpgradeButton2.setTextColor(Color.BLACK);
+						((TableRow)blackHoleUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_1:
+						blackHoleUpgradeButton1.setTextColor(Color.BLACK);
+						((TableRow)blackHoleUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
 						break;
 					}
 				}
 				// hide details
 				else {
-					whiteHoleUpgradeButton1.setVisibility(View.GONE);
-					whiteHoleUpgradeButton2.setVisibility(View.GONE);
-					whiteHoleUpgradeButton3.setVisibility(View.GONE);
-					whiteHoleUpgradeButton4.setVisibility(View.GONE);
+					blackHoleUpgradeButton1.setVisibility(View.GONE);
+					blackHoleUpgradeButton2.setVisibility(View.GONE);
+					blackHoleUpgradeButton3.setVisibility(View.GONE);
+					blackHoleUpgradeButton4.setVisibility(View.GONE);
 					showDetails = false;
 				}
 			}
@@ -683,7 +683,7 @@ public class UpgradesMenu extends Activity {
 	}
 
 	/**
-	 * Sets button text to be black and sets the row background color to white
+	 * Sets button text to be black and sets the row background color to black
 	 * @param button button to toggle
 	 */
 	public void toggleButtonColor(Button button) {

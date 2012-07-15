@@ -10,10 +10,10 @@ import com.slauson.dasher.status.Upgrades;
 public class PowerupSmall extends InactivePowerup {
 
 	// constants
-	private final static int DURATION_0 = 5000;
-	private final static int DURATION_1 = 10000;
-	private final static int DURATION_2 = 15000;
-	private final static int DURATION_3 = 20000;
+	private static final int DURATION_0 = 10000;
+	private static final int DURATION_1 = 15000;
+	private static final int DURATION_2 = 20000;
+	private static final int DURATION_3 = 30000;
 
 	public PowerupSmall(int level) {
 		super(level);

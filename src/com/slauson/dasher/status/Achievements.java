@@ -63,9 +63,9 @@ public class Achievements {
 	public static Achievement localDestroyAsteroidsWithMagnet2 = new Achievement("achievement_local_destroy_asteroids_with_magnet_2", R.drawable.powerup_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_2);
 	public static Achievement localDestroyAsteroidsWithMagnet3 = new Achievement("achievement_local_destroy_asteroids_with_magnet_3", R.drawable.powerup_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithWhiteHole1 = new Achievement("achievement_local_destroy_asteroids_with_white_hole_1", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithWhiteHole2 = new Achievement("achievement_local_destroy_asteroids_with_white_hole_2", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithWhiteHole3 = new Achievement("achievement_local_destroy_asteroids_with_white_hole_3", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_1", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_2", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_3", R.drawable.powerup_white_hole, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
 	public static Achievement localDestroyAsteroidsWithBumper1 = new Achievement("achievement_local_destroy_asteroids_with_bumper_1", R.drawable.powerup_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_1);
 	public static Achievement localDestroyAsteroidsWithBumper2 = new Achievement("achievement_local_destroy_asteroids_with_bumper_2", R.drawable.powerup_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_2);
@@ -82,7 +82,7 @@ public class Achievements {
 	public static Achievement localInvulnerabilityPassThrough3 = new Achievement("achievement_local_invulnerability_pass_through_3", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM_3);
 	
 	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
-	public static Achievement localWhiteHolePlayerDestroyed = new Achievement("achievement_local_white_hole_player_destroyed", R.drawable.powerup_white_hole);
+	public static Achievement localBlackHolePlayerDestroyed = new Achievement("achievement_local_black_hole_player_destroyed", R.drawable.powerup_white_hole);
 	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);
 	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.powerup_bumper);
 	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.powerup_ship, LOCAL_DASH_ACTIVATE_DROPS_NUM);
@@ -106,9 +106,9 @@ public class Achievements {
 	public static Achievement globalDestroyAsteroidsWithMagnet2 = new Achievement("achievement_global_destroy_asteroids_with_magnet_2", R.drawable.powerup_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
 	public static Achievement globalDestroyAsteroidsWithMagnet3 = new Achievement("achievement_global_destroy_asteroids_with_magnet_3", R.drawable.powerup_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
 	
-	public static Achievement globalDestroyAsteroidsWithWhiteHole1 = new Achievement("achievement_global_destroy_asteroids_with_white_hole_1", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE);
-	public static Achievement globalDestroyAsteroidsWithWhiteHole2 = new Achievement("achievement_global_destroy_asteroids_with_white_hole_2", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE);
-	public static Achievement globalDestroyAsteroidsWithWhiteHole3 = new Achievement("achievement_global_destroy_asteroids_with_white_hole_3", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_WHITE_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_1", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_2", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_3", R.drawable.powerup_white_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
 	
 	public static Achievement globalDestroyAsteroidsWithBumper1 = new Achievement("achievement_global_destroy_asteroids_with_bumper_1", R.drawable.powerup_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
 	public static Achievement globalDestroyAsteroidsWithBumper2 = new Achievement("achievement_global_destroy_asteroids_with_bumper_2", R.drawable.powerup_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
@@ -180,14 +180,14 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithMagnet2);
 		achievements.add(globalDestroyAsteroidsWithMagnet3);
 
-		// white hole
-		achievements.add(localDestroyAsteroidsWithWhiteHole1);
-		achievements.add(localDestroyAsteroidsWithWhiteHole2);
-		achievements.add(localDestroyAsteroidsWithWhiteHole3);
-		achievements.add(localWhiteHolePlayerDestroyed);
-		achievements.add(globalDestroyAsteroidsWithWhiteHole1);
-		achievements.add(globalDestroyAsteroidsWithWhiteHole2);
-		achievements.add(globalDestroyAsteroidsWithWhiteHole3);
+		// black hole
+		achievements.add(localDestroyAsteroidsWithBlackHole1);
+		achievements.add(localDestroyAsteroidsWithBlackHole2);
+		achievements.add(localDestroyAsteroidsWithBlackHole3);
+		achievements.add(localBlackHolePlayerDestroyed);
+		achievements.add(globalDestroyAsteroidsWithBlackHole1);
+		achievements.add(globalDestroyAsteroidsWithBlackHole2);
+		achievements.add(globalDestroyAsteroidsWithBlackHole3);
 
 		// bumper
 		achievements.add(localDestroyAsteroidsWithBumper1);
@@ -260,15 +260,15 @@ public class Achievements {
 			globalDestroyAsteroidsWithMagnet3.unlock();
 		}
 
-		// destroy asteroids - white hole
-		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithWhiteHole1.unlock();
+		// destroy asteroids - black hole
+		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
+			globalDestroyAsteroidsWithBlackHole1.unlock();
 		}
-		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithWhiteHole2.unlock();
+		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
+			globalDestroyAsteroidsWithBlackHole2.unlock();
 		}
-		if (globalStatistics.asteroidsDestroyedByWhiteHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithWhiteHole3.unlock();
+		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
+			globalDestroyAsteroidsWithBlackHole3.unlock();
 		}
 
 		// destroy asteroids - bumper
@@ -299,7 +299,7 @@ public class Achievements {
 				globalStatistics.asteroidsDestroyedByDash +
 				globalStatistics.asteroidsDestroyedByDrill +
 				globalStatistics.asteroidsDestroyedByMagnet +
-				globalStatistics.asteroidsDestroyedByWhiteHole;
+				globalStatistics.asteroidsDestroyedByBlackHole;
 
 		// destroy asteroids - total
 		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1) {

@@ -17,7 +17,7 @@ import com.slauson.dasher.powerups.PowerupMagnet;
 import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
 import com.slauson.dasher.powerups.PowerupInvulnerable;
-import com.slauson.dasher.powerups.PowerupWhiteHole;
+import com.slauson.dasher.powerups.PowerupBlackHole;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
@@ -55,8 +55,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private String debugText = "";
 //	private int debugPowerupType = POWERUP_NONE;
 //	private int debugLevel = 0;
-//	private int debugUpgradeLevel = 0;//Upgrades.WHITE_HOLE_UPGRADE_QUASAR;
-//	private Upgrade debugUpgrade = null;//Upgrades.whiteHoleUpgrade;
+//	private int debugUpgradeLevel = 0;//Upgrades.BLACK_HOLE_UPGRADE_QUASAR;
+//	private Upgrade debugUpgrade = null;//Upgrades.blackHoleUpgrade;
 
 	
 	/**
@@ -106,7 +106,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
 	private static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
 	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
-	private static final int R_POWERUP_WHITE_HOLE = R.drawable.powerup_white_hole;
+	private static final int R_POWERUP_BLACK_HOLE = R.drawable.powerup_white_hole;
 	private static final int R_POWERUP_BUMPER = R.drawable.powerup_bumper;
 	private static final int R_POWERUP_BOMB = R.drawable.powerup_bomb;
 	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
@@ -150,7 +150,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_INVULNERABLE = 3;
 	public static final int POWERUP_DRILL = 4;
 	public static final int POWERUP_MAGNET = 5;
-	public static final int POWERUP_WHITE_HOLE = 6;
+	public static final int POWERUP_BLACK_HOLE = 6;
 	public static final int POWERUP_BUMPER = 7;
 	public static final int POWERUP_BOMB = 8;
 	
@@ -162,7 +162,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	// stationary powerups to draw
 	public static final int R_MAGNET = R.drawable.magnet;
-	public static final int R_WHITE_HOLE = R.drawable.white_hole;
+	public static final int R_BLACK_HOLE = R.drawable.black_hole;
 	public static final int R_DRILL = R.drawable.drill_external_1;
 	public static final int R_BUMPER_LARGE = R.drawable.bumper_large;
 	public static final int R_BUMPER_LARGE_ALT = R.drawable.bumper_large_alt;
@@ -546,9 +546,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						localStatistics.usesMagnet++;
 						break;
-					case POWERUP_WHITE_HOLE:
-						activePowerups.add(new PowerupWhiteHole(BitmapFactory.decodeResource(getResources(), R_WHITE_HOLE), temp.getX(), temp.getY(), Upgrades.whiteHoleUpgrade.getLevel()));
-						localStatistics.usesWhiteHole++;
+					case POWERUP_BLACK_HOLE:
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(getResources(), R_BLACK_HOLE), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
 						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
@@ -629,14 +629,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						((PowerupDrill)powerup).teleport();
 					} else {
 						
-						// destroy white hole
-						if (powerup instanceof PowerupWhiteHole) {
-							if (((PowerupWhiteHole)powerup).hasQuasar()) {
+						// destroy black hole
+						if (powerup instanceof PowerupBlackHole) {
+							if (((PowerupBlackHole)powerup).hasQuasar()) {
 								quasarCounter = QUASAR_COUNTER_MAX;
 								activateQuasar();
 							}
 							
-							((PowerupWhiteHole)powerup).destroy();
+							((PowerupBlackHole)powerup).destroy();
 						}
 
 						System.out.println("Removing Active Powerup");
@@ -967,8 +967,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			case POWERUP_MAGNET:
 				r_powerup = R_POWERUP_MAGNET;
 				break;
-			case POWERUP_WHITE_HOLE:
-				r_powerup = R_POWERUP_WHITE_HOLE;
+			case POWERUP_BLACK_HOLE:
+				r_powerup = R_POWERUP_BLACK_HOLE;
 				break;
 			case POWERUP_BUMPER:
 				r_powerup = R_POWERUP_BUMPER;

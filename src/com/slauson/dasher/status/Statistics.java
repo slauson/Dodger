@@ -12,7 +12,7 @@ public class Statistics {
 	public int asteroidsDestroyedByDash = 0;
 	public int asteroidsDestroyedByDrill = 0;
 	public int asteroidsDestroyedByMagnet = 0;
-	public int asteroidsDestroyedByWhiteHole = 0;
+	public int asteroidsDestroyedByBlackHole = 0;
 	public int asteroidsDestroyedByBumper = 0;
 	public int asteroidsDestroyedByBomb = 0;
 	
@@ -23,7 +23,7 @@ public class Statistics {
 	public int usesInvulnerability = 0;
 	public int usesDrill = 0;
 	public int usesMagnet = 0;
-	public int usesWhiteHole = 0;
+	public int usesBlackHole = 0;
 	public int usesBumper = 0;
 	public int usesBomb = 0;
 	
@@ -34,7 +34,7 @@ public class Statistics {
 		asteroidsDestroyedByDash = 0;
 		asteroidsDestroyedByDrill = 0;
 		asteroidsDestroyedByMagnet = 0;
-		asteroidsDestroyedByWhiteHole = 0;
+		asteroidsDestroyedByBlackHole = 0;
 		asteroidsDestroyedByBumper = 0;
 		asteroidsDestroyedByBomb = 0;
 		
@@ -44,7 +44,7 @@ public class Statistics {
 		usesInvulnerability = 0;
 		usesDrill = 0;
 		usesMagnet = 0;
-		usesWhiteHole = 0;
+		usesBlackHole = 0;
 		usesBumper = 0;
 		usesBomb = 0;
 	}
@@ -57,7 +57,7 @@ public class Statistics {
 		return asteroidsDestroyedByDash +
 				asteroidsDestroyedByDrill +
 				asteroidsDestroyedByMagnet +
-				asteroidsDestroyedByWhiteHole +
+				asteroidsDestroyedByBlackHole +
 				asteroidsDestroyedByBumper +
 				asteroidsDestroyedByBomb;
 	}
@@ -80,7 +80,7 @@ public class Statistics {
 		asteroidsDestroyedByDash = 0;
 		asteroidsDestroyedByDrill = 0;
 		asteroidsDestroyedByMagnet = 0;
-		asteroidsDestroyedByWhiteHole = 0;
+		asteroidsDestroyedByBlackHole = 0;
 		asteroidsDestroyedByBumper = 0;
 		asteroidsDestroyedByBomb = 0;
 		
@@ -90,7 +90,7 @@ public class Statistics {
 		usesInvulnerability = 0;
 		usesDrill = 0;
 		usesMagnet = 0;
-		usesWhiteHole = 0;
+		usesBlackHole = 0;
 		usesBumper = 0;
 		usesBomb = 0;
 	}

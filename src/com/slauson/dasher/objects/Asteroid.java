@@ -189,7 +189,7 @@ public class Asteroid extends DrawObject {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_DISAPPEARING;
 			
-			LocalStatistics.getInstance().asteroidsDestroyedByWhiteHole++;
+			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
 			// create temporary array of points so we can shrink the asteroid
 			//altPoints = new float[points.length];

@@ -93,7 +93,7 @@ public class DebuggingMenu extends Activity {
 					Debugging.dropType = MyGameView.POWERUP_MAGNET;
 					break;
 				case 6:
-					Debugging.dropType = MyGameView.POWERUP_WHITE_HOLE;
+					Debugging.dropType = MyGameView.POWERUP_BLACK_HOLE;
 					break;
 				case 7:
 					Debugging.dropType = MyGameView.POWERUP_BUMPER;

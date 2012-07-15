@@ -25,7 +25,7 @@ public class LocalStatisticsMenu extends Activity {
 		TextView usesInvulnerability = (TextView)findViewById(R.id.statisticsMenuInvulnerabilityUses);
 		TextView usesDrill = (TextView)findViewById(R.id.statisticsMenuDrillUses);
 		TextView usesMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetUses);
-		TextView usesWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleUses);
+		TextView usesBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleUses);
 		TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
 		TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
 		
@@ -35,7 +35,7 @@ public class LocalStatisticsMenu extends Activity {
 		usesInvulnerability.setText("" + localStatistics.usesInvulnerability);
 		usesDrill.setText("" + localStatistics.usesDrill);
 		usesMagnet.setText("" + localStatistics.usesMagnet);
-		usesWhiteHole.setText("" + localStatistics.usesWhiteHole);
+		usesBlackHole.setText("" + localStatistics.usesBlackHole);
 		usesBumper.setText("" + localStatistics.usesBumper);
 		usesBomb.setText("" + localStatistics.usesBomb);
 		
@@ -46,7 +46,7 @@ public class LocalStatisticsMenu extends Activity {
 		TextView asteroidsDestroyedInvulnerability = (TextView)findViewById(R.id.statisticsMenuInvulnerabilityAsteroidsDestroyed);
 		TextView asteroidsDestroyedDrill = (TextView)findViewById(R.id.statisticsMenuDrillAsteroidsDestroyed);
 		TextView asteroidsDestroyedMagnet = (TextView)findViewById(R.id.statisticsMenuMagnetAsteroidsDestroyed);
-		TextView asteroidsDestroyedWhiteHole = (TextView)findViewById(R.id.statisticsMenuWhiteHoleAsteroidsDestroyed);
+		TextView asteroidsDestroyedBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleAsteroidsDestroyed);
 		TextView asteroidsDestroyedBumper = (TextView)findViewById(R.id.statisticsMenuBumperAsteroidsDestroyed);
 		TextView asteroidsDestroyedBomb = (TextView)findViewById(R.id.statisticsMenuBombAsteroidsDestroyed);
 		
@@ -58,7 +58,7 @@ public class LocalStatisticsMenu extends Activity {
 		asteroidsDestroyedDash.setText("" + localStatistics.asteroidsDestroyedByDash);
 		asteroidsDestroyedDrill.setText("" + localStatistics.asteroidsDestroyedByDrill);
 		asteroidsDestroyedMagnet.setText("" + localStatistics.asteroidsDestroyedByMagnet);
-		asteroidsDestroyedWhiteHole.setText("" + localStatistics.asteroidsDestroyedByWhiteHole);
+		asteroidsDestroyedBlackHole.setText("" + localStatistics.asteroidsDestroyedByBlackHole);
 		asteroidsDestroyedBumper.setText("" + localStatistics.asteroidsDestroyedByBumper);
 		asteroidsDestroyedBomb.setText("" + localStatistics.asteroidsDestroyedByBomb);
 	

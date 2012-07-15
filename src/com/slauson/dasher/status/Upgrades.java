@@ -50,10 +50,10 @@ public class Upgrades {
 	public static final int MAGNET_UPGRADE_INCREASED_DURATION_3 = 3;
 	public static final int MAGNET_UPGRADE_SPIN = 4;
 	
-	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_1 = 1;
-	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_2 = 2;
-	public static final int WHITE_HOLE_UPGRADE_INCREASED_DURATION_3 = 3;
-	public static final int WHITE_HOLE_UPGRADE_QUASAR = 4;
+	public static final int BLACK_HOLE_UPGRADE_INCREASED_DURATION_1 = 1;
+	public static final int BLACK_HOLE_UPGRADE_INCREASED_DURATION_2 = 2;
+	public static final int BLACK_HOLE_UPGRADE_INCREASED_DURATION_3 = 3;
+	public static final int BLACK_HOLE_UPGRADE_QUASAR = 4;
 	
 	public static final int BUMPER_UPGRADE_INCREASED_DURATION_1 = 1;
 	public static final int BUMPER_UPGRADE_INCREASED_DURATION_2 = 2;
@@ -72,7 +72,7 @@ public class Upgrades {
 	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability");
 	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill");
 	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet");
-	public static Upgrade whiteHoleUpgrade = new Upgrade("upgrade_white_hole");
+	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole");
 	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
 	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
 	
@@ -89,7 +89,7 @@ public class Upgrades {
 		upgrades.add(invulnerabilityUpgrade);
 		upgrades.add(drillUpgrade);
 		upgrades.add(magnetUpgrade);
-		upgrades.add(whiteHoleUpgrade);
+		upgrades.add(blackHoleUpgrade);
 		upgrades.add(bumperUpgrade);
 		upgrades.add(bombUpgrade);
 	}
