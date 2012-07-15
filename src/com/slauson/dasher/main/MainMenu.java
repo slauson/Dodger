@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Main menu
@@ -31,9 +32,13 @@ import android.widget.TextView;
  */
 public class MainMenu extends Activity {
 	
+	private static final int TOAST_LENGTH_SHORT = 2000;
+	
 	private Button startHighScoresButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
 	
 	private boolean showingMore;
+	
+	private long backButtonQuitEndTime;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class MainMenu extends Activity {
 		setContentView(R.layout.main_menu);
 		
 		showingMore = false;
+		backButtonQuitEndTime = 0;
 		
 		// debugging menu
 		TextView title = (TextView)findViewById(R.id.mainMenuTitle);
@@ -184,6 +190,15 @@ public class MainMenu extends Activity {
 			// go back to "main" main menu
 			if (showingMore) {
 				toggleShowMore();
+			} else {
+				if (System.currentTimeMillis() < backButtonQuitEndTime) {
+					android.os.Process.killProcess(android.os.Process.myPid());
+				} else {
+					
+					Toast.makeText(this, "Press again to quit", Toast.LENGTH_SHORT).show();
+					
+					backButtonQuitEndTime = System.currentTimeMillis() + TOAST_LENGTH_SHORT;
+				}
 			}
 			return true;
 		}
