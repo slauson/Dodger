@@ -24,21 +24,25 @@ public class PowerupSmall extends InactivePowerup {
 		switch(level) {
 		case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_1:
 			activate(DURATION_1);
+			break;
 		case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_2:
 			activate(DURATION_2);
+			break;
 		case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3:
-		case Upgrades.SMALL_UPGRADE_QUARTER_SIZE:
+		case Upgrades.SMALL_UPGRADE_BIG_DASH:
 			activate(DURATION_3);
+			break;
 		default:
 			activate(DURATION_0);
+			break;
 		}
 	}
 	
 	/**
-	 * Returns true if ship is one quarter size
-	 * @return true if ship is one quarter size
+	 * Returns true if dash is normal size
+	 * @return true if dash is normal size
 	 */
-	public boolean isQuarterSize() {
-		return level >= Upgrades.SLOW_UPGRADE_QUARTER_SPEED;
+	public boolean isBigDash() {
+		return level >= Upgrades.SMALL_UPGRADE_BIG_DASH;
 	}
 }

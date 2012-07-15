@@ -37,6 +37,8 @@ public class MyGameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_menu);
 		
+		System.out.println("MyGameActivity onCreate()");
+		
 		myGameView = (MyGameView)findViewById(R.id.myGameView);
 		myGameView.setActivity(this);
 
@@ -114,7 +116,7 @@ public class MyGameActivity extends Activity {
 		
 		quitting = false;
 		
-		System.out.println("game onResume()");
+		System.out.println("MyGameActivity onResume()");
 
 		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
 			myAccelerometer.registerListener();
@@ -126,7 +128,8 @@ public class MyGameActivity extends Activity {
 		super.onPause();
 		myGameView.MyGameSurfaceView_OnPause();
 		
-		System.out.println("game onPause(): " + quitting);
+		System.out.println("MyGameActivity onPause()");
+
 		
 		if (!quitting) {
 			pauseGame();

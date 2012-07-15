@@ -40,13 +40,17 @@ public class PowerupInvulnerable extends InactivePowerup {
 		switch(level) {
 		case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1:
 			activate(DURATION_1);
+			break;
 		case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_2:
 			activate(DURATION_2);
+			break;
 		case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3:
 		case Upgrades.INVULNERABILITY_UPGRADE_DASHER:
 			activate(DURATION_3);
+			break;
 		default:
 			activate(DURATION_0);
+			break;
 		}
 	}
 	

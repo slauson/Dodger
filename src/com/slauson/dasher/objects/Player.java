@@ -38,8 +38,6 @@ public class Player extends DrawObject {
 	
 	private int invulnerabilityCounter;
 
-	private boolean smallPowerupQuarterSize;
-	
 	// dash upgrades
 	private int dashRechargeDuration;
 	private boolean dashMultipleDrops;
@@ -91,8 +89,6 @@ public class Player extends DrawObject {
 		inPosition = true;
 		direction = MyGameView.DIRECTION_NORMAL;
 		
-		smallPowerupQuarterSize = Upgrades.smallUpgrade.getLevel() >= Upgrades.SMALL_UPGRADE_QUARTER_SIZE;
-		
 		points = new float[] {
 				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
 				0, -PLAYER_HEIGHT/2,
@@ -104,34 +100,17 @@ public class Player extends DrawObject {
 				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2
 		};
 		
-		// quarter size
-		if (smallPowerupQuarterSize) {
-			altPoints = new float[] {
-					-PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
-					0, -PLAYER_HEIGHT/8,
-					0, -PLAYER_HEIGHT/8,
-					PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
-					PLAYER_WIDTH/8, PLAYER_HEIGHT/8,
-					0, PLAYER_HEIGHT/8+REAR_OFFSET/4,
-					0, PLAYER_HEIGHT/8+REAR_OFFSET/4,
-					-PLAYER_WIDTH/8, PLAYER_HEIGHT/8
-			};
-			dashPercentRectSmall = new RectF(-1, 0, 1, 2);
-		}
-		// half size
-		else {
-			altPoints = new float[] {
-					-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-					0, -PLAYER_HEIGHT/4,
-					0, -PLAYER_HEIGHT/4,
-					PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-					PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-					0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-					0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-					-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
-			};
-			dashPercentRectSmall = new RectF(-2, 0, 2, 4);
-		}
+		altPoints = new float[] {
+				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				0, -PLAYER_HEIGHT/4,
+				0, -PLAYER_HEIGHT/4,
+				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
+				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
+				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
+		};
+		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
 			
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-4, -2, 4, 6);
@@ -197,7 +176,7 @@ public class Player extends DrawObject {
 			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
 				
 				// if small powerup is active, draw resized bitmap
-				if (MyGameView.powerupSmall.isActive()) {
+				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
 					canvas.drawLines(altPoints, paint);
 				}
 				// draw normal bitmap
@@ -207,7 +186,7 @@ public class Player extends DrawObject {
 				
 				// draw dash timeout percentage
 				paint.setStyle(Style.FILL_AND_STROKE);
-				if (MyGameView.powerupSmall.isActive()) {
+				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
 					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
 				} else {
 					canvas.drawArc(dashPercentRect, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
@@ -349,11 +328,7 @@ public class Player extends DrawObject {
 		float modifier = 1f;
 		
 		if (MyGameView.powerupSmall.isActive()) {
-			if (smallPowerupQuarterSize) {
-				modifier = 0.25f;
-			} else {
-				modifier = 0.5f;
-			}
+			modifier = 0.5f;
 		}
 		
 		LineSegment lineSegment;
@@ -411,12 +386,8 @@ public class Player extends DrawObject {
 	
 	@Override
 	public boolean checkBoxCollision(Item other) {
-		if (MyGameView.powerupSmall.isActive()) {
-			if (smallPowerupQuarterSize) {
-				return Math.abs(x - other.x) <= width/8 + other.width/4 && Math.abs(y - other.y) <= width/8 + other.height/4;
-			} else {
-				return Math.abs(x - other.x) <= width/4 + other.width/2 && Math.abs(y - other.y) <= width/4 + other.height/2;
-			}
+		if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
+			return Math.abs(x - other.x) <= width/8 + other.width/4 && Math.abs(y - other.y) <= width/8 + other.height/4;
 		} else {
 			return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
 		}
@@ -440,15 +411,9 @@ public class Player extends DrawObject {
 		// small ship
 		if (MyGameView.powerupSmall.isActive()) {
 			
-			if (smallPowerupQuarterSize) {
-				yOffset /= 4;
-				return checkX >= x - width*widthFactor/8 && checkX < x + width*widthFactor/8 &&
-						checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/8;
-			} else {
-				yOffset /= 2;
-				return checkX >= x - width*widthFactor/4 && checkX < x + width*widthFactor/4 &&
-						checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/4;
-			}
+			yOffset /= 2;
+			return checkX >= x - width*widthFactor/4 && checkX < x + width*widthFactor/4 &&
+					checkY >= y + yOffset && checkY <= y + yOffset + height*heightFactor/4;
 		}
 		// normal ship
 		else {

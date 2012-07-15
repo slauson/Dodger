@@ -148,7 +148,7 @@ public class UpgradesMenu extends Activity {
     	smallUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuSmallUpgrade1Button));
     	smallUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuSmallUpgrade2Button));
     	smallUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuSmallUpgrade3Button));
-    	smallUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_QUARTER_SIZE, R.id.upgradesMenuSmallUpgrade4Button));
+    	smallUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_BIG_DASH, R.id.upgradesMenuSmallUpgrade4Button));
     	
     	smallButton = (Button)findViewById(R.id.upgradesMenuSmallButton);
 		smallButton.setOnClickListener(new OnClickListener() {
@@ -167,7 +167,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.smallUpgrade.getLevel()) {
-					case Upgrades.SMALL_UPGRADE_QUARTER_SIZE:
+					case Upgrades.SMALL_UPGRADE_BIG_DASH:
 						smallUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)smallUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3:
@@ -202,7 +202,7 @@ public class UpgradesMenu extends Activity {
     	slowUpgradeButton1.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1, R.id.upgradesMenuSlowUpgrade1Button));
     	slowUpgradeButton2.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2, R.id.upgradesMenuSlowUpgrade2Button));
     	slowUpgradeButton3.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3, R.id.upgradesMenuSlowUpgrade3Button));
-    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_QUARTER_SPEED, R.id.upgradesMenuSlowUpgrade4Button));
+    	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS, R.id.upgradesMenuSlowUpgrade4Button));
     	
     	slowButton = (Button)findViewById(R.id.upgradesMenuSlowButton);
 		slowButton.setOnClickListener(new OnClickListener() {
@@ -221,7 +221,7 @@ public class UpgradesMenu extends Activity {
 					
 					// check for purchased upgrades
 					switch(Upgrades.slowUpgrade.getLevel()) {
-					case Upgrades.SLOW_UPGRADE_QUARTER_SPEED:
+					case Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS:
 						slowUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
 					case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3:
@@ -641,7 +641,7 @@ public class UpgradesMenu extends Activity {
 			
 			alertDialogBuilder
 				.setTitle("Confirm Upgrade")
-				.setMessage("Are you sure you want to purchase the upgrade '" + title + "'")
+				.setMessage("Are you sure you want to purchase the upgrade '" + title + "' (" + level + ", " + points + ", " + upgradeID + ", " + buttonID + ")")
 				
 				// do nothing when user selects no 
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -654,8 +654,15 @@ public class UpgradesMenu extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						// set upgrade level
 						Upgrade upgrade = Upgrades.getUpgrade(upgradeID);
-						upgrade.setLevel(level);
 						
+						// this should never happen...
+						if (upgrade == null) {
+							System.out.println("Null upgrade for id " + upgradeID);
+							return;
+						}
+
+						upgrade.setLevel(level);
+
 						// update background color
 						Button button = (Button)findViewById(buttonID);
 						toggleButtonColor(button);

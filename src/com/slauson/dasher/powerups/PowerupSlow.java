@@ -24,21 +24,25 @@ public class PowerupSlow extends InactivePowerup {
 		switch(level) {
 		case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1:
 			activate(DURATION_1);
+			break;
 		case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2:
 			activate(DURATION_2);
+			break;
 		case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3:
-		case Upgrades.SLOW_UPGRADE_QUARTER_SPEED:
+		case Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS:
 			activate(DURATION_3);
+			break;
 		default:
 			activate(DURATION_0);
+			break;
 		}
 	}
 	
 	/**
-	 * Returns true if time is at one quarter speed
-	 * @return true if time is at one quarter speed
+	 * Returns true if slowed time affects drops and powerups
+	 * @return true if slowed time affects drops and powerups
 	 */
-	public boolean isQuarterSpeed() {
-		return level >= Upgrades.SMALL_UPGRADE_QUARTER_SIZE;
+	public boolean isAffectingDropsAndPowerups() {
+		return level >= Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS;
 	}
 }

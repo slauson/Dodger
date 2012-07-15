@@ -92,4 +92,9 @@ public class Upgrade {
 		
 		return titles[level];
 	}
+	
+	@Override
+	public String toString() { 
+		return key + ": " + level;
+	}
 }

@@ -80,7 +80,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private LinkedList<ActivePowerup> activePowerups;	
 	private int bombCounter;
 	private int quasarCounter;
-	private int quasarX, quasarY;
 	
 	// Initialization flags
 	private boolean surfaceCreated = false;
@@ -226,7 +225,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	public void MyGameSurfaceView_OnResume() {
 		
-		random = new Random();
 		surfaceHolder = getHolder();
 		getHolder().addCallback(this);
 		
@@ -365,6 +363,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// initialize stuff
 		if (surfaceCreated && !initialized) {
 			
+			System.out.println("MyGameView init()");
+			
 			level = new Level(Debugging.level);
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -377,8 +377,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
 			quasarCounter = 0;
-			quasarX = 0;
-			quasarY = 0;
 			
 			// make sure we don't think the first single tap is a double tap
 			lastTouchDownTime1 = 0;
@@ -459,10 +457,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						
 						// player is on top or bottom
 						if (player.inPosition()) {
-							temp.breakup();
 							
 							// game over if player isn't invulnerable
 							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
+								temp.breakup();
 								player.breakup();
 								Timer timer = new Timer();
 								timer.schedule(new TimerTask() {
@@ -515,12 +513,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
-	 * Update drops and powerup
+	 * Updates drops
 	 */
-	public void updatePowerups() {
+	public void updateDrops() {
 		
 		synchronized (drops) {
-		
+			
 			Drop temp;
 			
 			// update falling powerups
@@ -528,7 +526,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				temp = drops.get(i);
 				
-				if (powerupSlow.isActive()) {
+				if (powerupSlow.isActive() && !powerupSlow.isAffectingDropsAndPowerups()) {
 					temp.update(0.5f);
 				} else {
 					temp.update();
@@ -598,6 +596,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Update powerups
+	 */
+	public void updatePowerups() {
 		
 		// update inactive powerups
 		powerupInvulnerability.update();
@@ -613,12 +617,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				powerup = activePowerups.get(i);
 				
-				if (powerupSlow.isActive()) {
-					if (powerupSlow.isQuarterSpeed()) {
-						powerup.update(0.25f);						
-					} else {
-						powerup.update(0.5f);
-					}
+				if (powerupSlow.isActive() && !powerupSlow.isAffectingDropsAndPowerups()) {
+					powerup.update(0.5f);
 				} else {
 					powerup.update(1f);
 				}
@@ -626,8 +626,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				// check if we need to activate the quasar for the black hole
 				if (powerup instanceof PowerupBlackHole && powerup.isFadingOut() && ((PowerupBlackHole)powerup).hasQuasar()) {
 					quasarCounter = QUASAR_COUNTER_MAX;
-					quasarX = (int)powerup.getX();
-					quasarY = (int)powerup.getY();
 					activateQuasar();
 					((PowerupBlackHole)powerup).activateQuasar();
 				}
@@ -742,6 +740,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		updateAsteroids();
+		
+		updateDrops();
 		
 		updatePowerups();
 		

@@ -34,6 +34,10 @@ public abstract class InactivePowerup {
 		// do nothing
 	}
 	
+	public void setLevel(int level) {
+		this.level = level;
+	}
+	
 	// abstract methods
 	public abstract void activate();
 }
