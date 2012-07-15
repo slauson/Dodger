@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.view.Gravity;
 
 /**
  * Player ship
@@ -406,8 +407,6 @@ public class Player extends DrawObject {
 	 */
 	public boolean checkAsteroidCollisionHelper(float widthFactor, float heightFactor, float yOffset, float checkX, float checkY) {
 		
-		// TODO: handle reverse direction
-		
 		// small ship
 		if (MyGameView.powerupSmall.isActive()) {
 			
@@ -481,8 +480,11 @@ public class Player extends DrawObject {
 			// variables for helper method
 			float widthFactor = 0.25f;
 			float heightFactor = 0.25f;
-			// checkAsteroidCollisionHelper() handles small ship
 			float yOffset = -16;
+			
+			if (direction == MyGameView.DIRECTION_REVERSE) {
+				yOffset = 16;
+			}
 			
 			// check top box
 			if (checkAsteroidCollisionHelper(widthFactor, heightFactor, yOffset, x1, y1) ||
@@ -492,7 +494,11 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			yOffset += 8;
+			if (direction == MyGameView.DIRECTION_NORMAL) {
+				yOffset += 8;
+			} else {
+				yOffset -= 8;
+			}
 			
 			// check middle top box
 			if (checkAsteroidCollisionHelper(widthFactor, heightFactor, yOffset, x1, y1) ||
@@ -502,7 +508,11 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			yOffset += 8;
+			if (direction == MyGameView.DIRECTION_NORMAL) {
+				yOffset += 8;
+			} else {
+				yOffset -= 8;
+			}
 			
 			// check middle bottom box
 			if (checkAsteroidCollisionHelper(widthFactor, heightFactor, yOffset, x1, y1) ||
@@ -512,7 +522,11 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			yOffset += 8;
+			if (direction == MyGameView.DIRECTION_NORMAL) {
+				yOffset += 8;
+			} else {
+				yOffset -= 8;
+			}
 			
 			// check bottom box
 			if (checkAsteroidCollisionHelper(widthFactor, heightFactor, yOffset, x1, y1) ||
@@ -527,122 +541,6 @@ public class Player extends DrawObject {
 		
 		return false;
 			
-		// this is too complicated and not worth my time (rotation, etc...)
-/*			// if dashing, just return true
-			
-			// determine angle between player and asteroid
-			float xDiff = x - asteroid.x;
-			float yDiff = y - asteroid.y;
-			
-			System.out.println("Player: " + x + ", " + y);
-			System.out.println("Asteroid: " + asteroid.x + ", " + asteroid.y);
-			
-			System.out.println("Diff: " + xDiff + ", " + yDiff);
-			
-
-			// angle is originally with respect to the asteroid
-			double angle = Math.atan(yDiff/xDiff);
-			
-			// on left side
-			if (xDiff < 0) {
-				angle += Math.PI;
-			}
-			
-			if (angle < 0) {
-				angle += 2*Math.PI;
-			}
-			
-			System.out.println("Asteroid Angle: " + angle);
-
-			// get two closest asteroid points to angle
-			float[] asteroidClosestPoints = asteroid.getClosestPoints(angle);
-			
-			// get angle with respect to the player
-			angle += Math.PI;
-			angle %= 2*Math.PI;
-
-			System.out.println("Player Angle: " + angle);
-			System.out.println("Asteroid Closest Points: " + asteroidClosestPoints[0] + ", " + asteroidClosestPoints[1] + " - " + asteroidClosestPoints[2] + ", " + asteroidClosestPoints[3]);
-			
-			// determine if asteroid intersects with player ship
-			float x1;
-			float y1;
-			float x2;
-			float y2;
-			
-			// TODO: handle reverse direction
-			// check ship's right side
-			if (angle < Math.PI/2 || angle > 3*Math.PI/2) {
-				
-				x1 = x + points[4];
-				y1 = y + points[5];
-				x2 = x + points[6];
-				y2 = y + points[7];
-				
-				if (MyGameView.powerupSmall.isActive()) {
-					x1 = x + altPoints[4];
-					y1 = y + altPoints[5];
-					x2 = x + altPoints[6];
-					y2 = y + altPoints[7];	
-				}
-			}
-			// check ship's left side
-			else {
-				x1 = x + points[0];
-				y1 = y + points[1];
-				x2 = x + points[2];
-				y2 = y + points[3];
-				
-				if (MyGameView.powerupSmall.isActive()) {
-					x1 = x + altPoints[0];
-					y1 = y + altPoints[1];
-					x2 = x + altPoints[2];
-					y2 = y + altPoints[3];	
-				}				
-			}
-			
-			System.out.println("Player Closest Points: " + x1 + ", " + y1 + " - " + x2 + ", " + y2);
-			
-			// first do a simple check to make sure lines will actually intersect
-			if (asteroidClosestPoints[0] < x1 && asteroidClosestPoints[2] < x1 ||
-					asteroidClosestPoints[0] > x2 && asteroidClosestPoints[2] > x2 ||
-					y1 < y2 && (asteroidClosestPoints[1] < y1 && asteroidClosestPoints[3] < y1 || asteroidClosestPoints[1] > y2 && asteroidClosestPoints[3] > y2) ||
-					y1 > y2 && (asteroidClosestPoints[1] < y2 && asteroidClosestPoints[3] < y2 || asteroidClosestPoints[1] > y1 && asteroidClosestPoints[3] > y1))
-			{
-				return false;
-			}
-			
-			// get slope
-			float slope = (y2 - y1) / (x2 - x1);
-			
-			// get y offset (use actual x,y values here)
-			float yOffset = (y + y1) - slope*(x + x1);
-			
-			// determine y values for asteroid's x values
-			float asteroidY1 = slope*asteroidClosestPoints[0] + yOffset;
-			float asteroidY2 = slope*asteroidClosestPoints[2] + yOffset;
-			
-			System.out.println("slope: " + slope);
-			System.out.println("yOffset: " + yOffset);
-			System.out.println("asteroidY1: " + asteroidY1);
-			System.out.println("asteroidY2: " + asteroidY2);
-			
-			// finally check if line intersects
-			// TODO: make sure asteroid actually intersects with ship
-			// and doesn't just intersect with line
-			
-			// check if both asteroid y points are less/greater than both ship y points
-			// or both asteroid x points are less/greater than both ship x points
-			if (asteroidClosestPoints[1] <= asteroidY1 && asteroidClosestPoints[3] >= asteroidY2 ||
-					asteroidClosestPoints[1] >= asteroidY1 && asteroidClosestPoints[3] <= asteroidY2)
-			{
-				return true;
-			}
-			
-			return false;
-		}
-		
-		return false;*/
 	}
 	
 	/**
