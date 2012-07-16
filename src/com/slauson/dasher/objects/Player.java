@@ -12,8 +12,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
-import android.view.Gravity;
-import android.view.KeyEvent;
 
 /**
  * Player ship
@@ -607,6 +605,8 @@ public class Player extends DrawObject {
 			}
 			
 			dashTimeout = dashRechargeDuration;
+			
+			LocalStatistics.getInstance().usesDash++;
 		}
 	}
 	

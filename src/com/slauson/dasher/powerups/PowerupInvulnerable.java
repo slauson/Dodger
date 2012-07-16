@@ -1,5 +1,6 @@
 package com.slauson.dasher.powerups;
 
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Upgrades;
 
 /**
@@ -16,11 +17,13 @@ public class PowerupInvulnerable extends InactivePowerup {
 	private static final int DURATION_3 = 30000;
 
 	private int counter;
+	private int passThroughNum;
 	
 	public PowerupInvulnerable(int level) {
 		super(level);
 		
 		counter = Integer.MAX_VALUE;
+		passThroughNum = 0;
 	}
 	
 	public void update() {
@@ -37,6 +40,11 @@ public class PowerupInvulnerable extends InactivePowerup {
 	
 	@Override
 	public void activate() {
+		
+		if (!isActive()) {
+			passThroughNum = 0;
+		}
+		
 		switch(level) {
 		case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1:
 			activate(DURATION_1);
@@ -60,6 +68,22 @@ public class PowerupInvulnerable extends InactivePowerup {
 	 */
 	public boolean isDasher() {
 		return level >= Upgrades.INVULNERABILITY_UPGRADE_DASHER;
+	}
+	
+	/**
+	 * Increments the number of passed through asteroids
+	 */
+	public void passThrough() {
+		passThroughNum++;
+	}
+
+	/**
+	 * Checks invulnerability powerup related achievements
+	 */
+	public void checkAchievements() {
+		if (passThroughNum > Achievements.LOCAL_INVULNERABILITY_PASS_THROUGH_NUM) {
+			Achievements.unlockLocalAchievement(Achievements.localInvulnerabilityPassThrough);
+		}
 	}
 
 }

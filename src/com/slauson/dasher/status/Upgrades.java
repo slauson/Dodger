@@ -168,4 +168,24 @@ public class Upgrades {
 		save(sharedPreferencesEditor);
 	}
 
+	/**
+	 * Checks upgrade related achievements
+	 */
+	public static void checkAchievements() {
+		
+		// check if all powerups are unlocked
+		// TODO
+		
+		// check if all upgrades are purchased
+		int i;
+		for (i = 0; i < upgrades.size(); i++) {
+			if (upgrades.get(i).getLevel() < 4) {
+				break;
+			}
+		}
+		if (i == upgrades.size()) {
+			Achievements.globalPurchaseAllUpgrades.unlock();
+		}
+	}
+
 }

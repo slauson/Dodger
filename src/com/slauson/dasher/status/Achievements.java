@@ -29,6 +29,7 @@ public class Achievements {
 	public static final int LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM = 2;
 	public static final int LOCAL_SLOW_LONG_TIME = 60;
 	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM = 10;
+	public static final int LOCAL_BLACK_HOLE_TRIFECTA_NUM = 3;
 	
 	// Use constant from Asteroid.java here after implementing timeout for magnet
 	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_TIME = 1000;
@@ -37,9 +38,6 @@ public class Achievements {
 	public static final int LOCAL_OTHER_POINTS_NUM_1 = 10000;
 	public static final int LOCAL_OTHER_POINTS_NUM_2 = 25000;
 	public static final int LOCAL_OTHER_POINTS_NUM_3 = 50000;
-	public static final int LOCAL_OTHER_NUM_POWERUPS = 8;
-	public static final int LOCAL_OTHER_NUM_UPGRADES = 36;
-	public static final int LOCAL_OTHER_NUM_ACHIEVEMENTS = 57;
 	
 	public static final int LOCAL_PLAYTIME_1 = 60;
 	public static final int LOCAL_PLAYTIME_2 = 300;
@@ -56,6 +54,13 @@ public class Achievements {
 	public static final int GLOBAL_PLAYTIME_1 = 600;
 	public static final int GLOBAL_PLAYTIME_2 = 3600;
 	public static final int GLOBAL_PLAYTIME_3 = 36000;
+	
+	public static final int GLOBAL_PLAY_COUNT_NUM = 100;
+	
+	public static final int GLOBAL_NUM_POWERUPS = 8;
+	public static final int GLOBAL_NUM_UPGRADES = 36;
+	public static final int GLOBAL_NUM_ACHIEVEMENTS = 58;
+	
 	
 	// local achievments - destroy asteroids
 	public static Achievement localDestroyAsteroidsWithDash1 = new Achievement("achievement_local_destroy_asteroids_with_dash_1", R.drawable.powerup_ship, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_1);
@@ -89,7 +94,7 @@ public class Achievements {
 	public static Achievement localSlowLongTime = new Achievement("achievement_local_slow_long_time", R.drawable.powerup_slow, LOCAL_SLOW_LONG_TIME);
 	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
 	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
-	public static Achievement localBlackHolePlayerDestroyed = new Achievement("achievement_local_black_hole_player_destroyed", R.drawable.powerup_white_hole);
+	public static Achievement localBlackHoleTrifecta = new Achievement("achievement_local_black_hole_trifecta", R.drawable.powerup_white_hole, LOCAL_BLACK_HOLE_TRIFECTA_NUM);
 	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_TIME);
 	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.powerup_bumper);
 	public static Achievement localBombDropBomb = new Achievement("achievement_local_bomb_activate_bomb", R.drawable.powerup_bomb);
@@ -100,10 +105,6 @@ public class Achievements {
 	public static Achievement localOtherPoints2 = new Achievement("achievement_local_other_points_2", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_2);
 	public static Achievement localOtherPoints3 = new Achievement("achievement_local_other_points_3", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_3);
 	
-	public static Achievement localOtherUnlockAllPowerups = new Achievement("achievement_local_other_unlock_all_powerups", R.drawable.powerup_ship, LOCAL_OTHER_NUM_POWERUPS);
-	public static Achievement localOtherPurchaseAllUpgrades = new Achievement("achievement_local_other_purchase_all_upgrades", R.drawable.powerup_ship, LOCAL_OTHER_NUM_UPGRADES);
-	public static Achievement localOtherUnlockAllAchievements = new Achievement("achievement_local_other_unlock_all_achievements", R.drawable.powerup_ship, LOCAL_OTHER_NUM_ACHIEVEMENTS);
-		
 	// local achievements - playtime
 	public static Achievement localPlaytime1 = new Achievement("achievement_local_playtime_1", R.drawable.powerup_slow, LOCAL_PLAYTIME_1/60);
 	public static Achievement localPlaytime2 = new Achievement("achievement_local_playtime_2", R.drawable.powerup_slow, LOCAL_PLAYTIME_2/60);
@@ -138,10 +139,18 @@ public class Achievements {
 	public static Achievement globalDestroyAsteroidsTotal2 = new Achievement("achievement_global_destroy_asteroids_total_2", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
 	public static Achievement globalDestroyAsteroidsTotal3 = new Achievement("achievement_global_destroy_asteroids_total_3", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
 
-	// global achievements - playtime
+	// global achievements - playtime/play count
 	public static Achievement globalPlaytime1 = new Achievement("achievement_global_playtime_1", R.drawable.powerup_slow, GLOBAL_PLAYTIME_1/60, GlobalStatistics.ID_TIME_PLAYED);
 	public static Achievement globalPlaytime2 = new Achievement("achievement_global_playtime_2", R.drawable.powerup_slow, GLOBAL_PLAYTIME_2/60, GlobalStatistics.ID_TIME_PLAYED);
 	public static Achievement globalPlaytime3 = new Achievement("achievement_global_playtime_3", R.drawable.powerup_slow, GLOBAL_PLAYTIME_3/60, GlobalStatistics.ID_TIME_PLAYED);
+	
+	public static Achievement globalPlayCount = new Achievement("achievement_global_play_count", R.drawable.powerup_ship, GLOBAL_PLAY_COUNT_NUM);
+	
+	// global achievements - unlocking/purchasing
+	public static Achievement globalUnlockAllPowerups = new Achievement("achievement_global_unlock_all_powerups", R.drawable.powerup_ship, GLOBAL_NUM_POWERUPS);
+	public static Achievement globalPurchaseAllUpgrades = new Achievement("achievement_global_purchase_all_upgrades", R.drawable.powerup_ship, GLOBAL_NUM_UPGRADES);
+	public static Achievement globalUnlockAllAchievements = new Achievement("achievement_global_unlock_all_achievements", R.drawable.powerup_ship, GLOBAL_NUM_ACHIEVEMENTS);
+		
 	
 	/**
 	 * TODO: more achievements
@@ -207,7 +216,7 @@ public class Achievements {
 		achievements.add(localDestroyAsteroidsWithBlackHole1);
 		achievements.add(localDestroyAsteroidsWithBlackHole2);
 		achievements.add(localDestroyAsteroidsWithBlackHole3);
-		achievements.add(localBlackHolePlayerDestroyed);
+		achievements.add(localBlackHoleTrifecta);
 		achievements.add(globalDestroyAsteroidsWithBlackHole1);
 		achievements.add(globalDestroyAsteroidsWithBlackHole2);
 		achievements.add(globalDestroyAsteroidsWithBlackHole3);
@@ -242,10 +251,13 @@ public class Achievements {
 		achievements.add(globalPlaytime2);
 		achievements.add(globalPlaytime3);
 		
+		// play count
+		achievements.add(globalPlayCount);
+		
 		// unlocking/purchasing stuff
-		achievements.add(localOtherUnlockAllPowerups);
-		achievements.add(localOtherPurchaseAllUpgrades);
-		achievements.add(localOtherUnlockAllAchievements);
+		achievements.add(globalUnlockAllPowerups);
+		achievements.add(globalPurchaseAllUpgrades);
+		achievements.add(globalUnlockAllAchievements);
 	}
 	
 	/**
@@ -340,7 +352,7 @@ public class Achievements {
 			globalDestroyAsteroidsTotal3.unlock();
 		}
 		
-		// destroy asteroids - playtime
+		//  playtime
 		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_1) {
 			globalPlaytime1.unlock();
 		}
@@ -349,6 +361,25 @@ public class Achievements {
 		}
 		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_3) {
 			globalPlaytime3.unlock();
+		}
+		
+		// playcount
+		if (globalStatistics.timesPlayed > GLOBAL_PLAY_COUNT_NUM) {
+			globalPlayCount.unlock();
+		}
+		
+		// unlock all powerups/upgrades
+		Upgrades.checkAchievements();
+		
+		// unlock all achievements
+		int i;
+		for (i = 0; i < achievements.size(); i++) {
+			if (!achievements.get(i).getValue()) {
+				break;
+			}
+		}
+		if (i == achievements.size()) {
+			globalUnlockAllAchievements.unlock();
 		}
 	}
 	
@@ -384,11 +415,12 @@ public class Achievements {
 	}
 	
 	/**
-	 * Adds achievement to list of local achievements
+	 * Adds achievement to list of local achievements if its not already unlocked
 	 * @param achievement achievement to add
 	 */
 	public static void unlockLocalAchievement(Achievement achievement) {
 		
+		// make sure its not already unlocked
 		if (!achievement.getValue()) {
 			achievement.unlock();
 			localAchievements.add(achievement);

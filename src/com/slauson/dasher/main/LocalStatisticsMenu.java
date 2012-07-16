@@ -2,10 +2,11 @@ package com.slauson.dasher.main;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Statistics;
 
@@ -66,12 +67,8 @@ public class LocalStatisticsMenu extends Activity {
 		TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
 		localTimePlayed.setText(localStatistics.getTimePlayedString());
 		
-		// add average time played
-/*    	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);
-    	averageTimePerPlay.setText(GlobalStatistics.getAverageTimePerPlayString());
-    	
-    	// add # of times played
-    	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
-    	timesPlayed.setText("" + GlobalStatistics.getInstance().timesPlayed);*/
+		// hide average time played and times played
+		((TableRow)findViewById(R.id.statisticsMenuAverageTimePlayedRow)).setVisibility(View.GONE);
+		((TableRow)findViewById(R.id.statisticsMenuTimesPlayedRow)).setVisibility(View.GONE);
 	}
 }

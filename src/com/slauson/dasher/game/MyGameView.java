@@ -88,6 +88,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private long lastTouchDownTime1;
 	private long lastTouchDownTime2;
 	
+	// for stay in place achievement
+	private long lastMoveTime;
+	
 	private Level level;
 	
 	private MyGameActivity gameActivity = null;
@@ -384,6 +387,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			lastTouchDownTime1 = 0;
 			lastTouchDownTime2 = -2*DASH_DOUBLE_TAP_MIN_DURATION;
 			
+			lastMoveTime = 0;
+			
 			pauseTime = -1;
 						
 			player = new Player();
@@ -478,6 +483,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 										});
 									}
 								}, Player.BREAKING_UP_DURATION-500);
+							} else {
+								// increment pass through counter
+								powerupInvulnerability.passThrough();
 							}
 						}
 						// player is dashing (only destroy asteroids when invulnerability has upgrade)
@@ -490,28 +498,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 								dropPowerup(temp.getX(), temp.getY());
 							}
 							player.dashAffectedAsteroid();
+							
+							// check small dash destroy achievement
+							if (powerupSmall.isActive()) {
+								Achievements.unlockLocalAchievement(Achievements.localSmallDashDestroy);
+							}
 						}
 					}
 				}
-				
-				// check collisions with other asteroids
-				/*for(int j = 0; j < asteroids.size(); j++) {
-					
-					// don't check collision with self
-					if (i == j) {
-						continue;
-					}
-					
-					// check if there's a collision 
-					if (temp.checkCollision(asteroids.get(j))) {
-						
-						// breakup asteroids
-						temp.breakup();
-						asteroids.get(j).breakup();
-						
-						dropPowerup(temp.getX(), temp.getY());
-					}
-				}*/
 			}
 		}
 	}
@@ -586,6 +580,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					drops.remove(temp);
 					i--;
+					
+					// check dash activate drop achievement
+					if (!player.inPosition()) {
+						Achievements.unlockLocalAchievement(Achievements.localDashActivateDrops);
+					}
 				} else {
 				
 					// alter falling powerup for each active powerup
@@ -612,9 +611,19 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		powerupSlow.update();
 		powerupSmall.update();
 		
+		// check achievements
+		if (powerupSlow.isActive()) {
+			powerupSlow.checkAchievements();
+		}
+		if (powerupInvulnerability.isActive()) {
+			powerupInvulnerability.checkAchievements();
+		}
+		
 		synchronized (activePowerups) {
 		
 			ActivePowerup powerup;
+			
+			int blackHoleCount = 0;
 			
 			// update any active global powerups
 			for (int i = 0; i < activePowerups.size(); i++) {
@@ -627,11 +636,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					powerup.update(1f);
 				}
 				
-				// check if we need to activate the quasar for the black hole
-				if (powerup instanceof PowerupBlackHole && powerup.isFadingOut() && ((PowerupBlackHole)powerup).hasQuasar()) {
-					quasarCounter = QUASAR_COUNTER_MAX;
-					activateQuasar();
-					((PowerupBlackHole)powerup).activateQuasar();
+				// black hole specific stuff
+				if (powerup instanceof PowerupBlackHole) {
+					
+					blackHoleCount++;
+					
+					// check if we need to activate the quasar for the black hole
+					if (powerup.isFadingOut() && ((PowerupBlackHole)powerup).hasQuasar()) {
+						quasarCounter = QUASAR_COUNTER_MAX;
+						activateQuasar();
+						((PowerupBlackHole)powerup).activateQuasar();
+					}
 				}
 				
 				// check if any active powerups should be removed
@@ -655,6 +670,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						}
 					}
 				}
+			}
+			
+			// check black hole trifecta achievement
+			if (blackHoleCount > Achievements.LOCAL_BLACK_HOLE_TRIFECTA_NUM) {
+				Achievements.unlockLocalAchievement(Achievements.localBlackHoleTrifecta);
 			}
 		}
 	}
@@ -784,12 +804,20 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			touchDownY = y;
 			lastTouchDownTime2 = lastTouchDownTime1;
 			lastTouchDownTime1 = System.currentTimeMillis();
+			
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+			}
+			
+			// don't break here so that player still moves
 		case MotionEvent.ACTION_MOVE:
 			
 			// only move horizontally when player is in position
 			if (player.inPosition()) {
 				player.setGoX(x);
 			}
+			
 			break;
 		case MotionEvent.ACTION_UP:
 			
@@ -809,6 +837,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					player.dash();
 				}
 			}
+			
+			lastMoveTime = System.currentTimeMillis();
 		default:
 			break;
 		}
@@ -840,6 +870,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				player.moveLeft();
 				System.out.println("PLAYER MOVE LEFT");
+				
+				// check stay in place achievement
+				if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+					Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+				}
+				lastMoveTime = System.currentTimeMillis();
 			}
 			break;			
 		// right
@@ -848,6 +884,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				player.moveRight();
 				System.out.println("PLAYER MOVE RIGHT");
+				
+				// check stay in place achievement
+				if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+					Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+				}
+				lastMoveTime = System.currentTimeMillis();
 			}
 			break;
 		}
@@ -928,6 +970,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		player.setSpeed(moveX);
 		//player.setSpeed(move);
     	//debugText = debugText + tx;
+		
+		// check stay in place achievement
+		if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+		}
+		lastMoveTime = System.currentTimeMillis();
 	}
 	
 	public void togglePause(boolean paused) {
@@ -954,52 +1002,51 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * May drop a random powerup at the given position
 	 * @param x x coordinate
 	 * @param y y coordinate
+	 * @return powerup type
 	 */
-	private void dropPowerup(float x, float y) {
-		// drop powerup					
-		if (random.nextFloat() < DROP_CHANCE) {
+	private int dropPowerup(float x, float y) {
+		// create powerup
+		int powerup = random.nextInt(NUM_POWERUPS);
 		
-			// create powerup
-			int powerup = random.nextInt(NUM_POWERUPS);
-			
-			// debug mode
-			if (Debugging.dropType != POWERUP_NONE) {
-				powerup = Debugging.dropType;
-			}
-			
-			int r_powerup = 0;
-			
-			switch(powerup) {
-			case POWERUP_DRILL:
-				r_powerup = R_POWERUP_DRILL;
-				break;
-			case POWERUP_SLOW:
-				r_powerup = R_POWERUP_SLOW;
-				break;
-			case POWERUP_MAGNET:
-				r_powerup = R_POWERUP_MAGNET;
-				break;
-			case POWERUP_BLACK_HOLE:
-				r_powerup = R_POWERUP_BLACK_HOLE;
-				break;
-			case POWERUP_BUMPER:
-				r_powerup = R_POWERUP_BUMPER;
-				break;
-			case POWERUP_BOMB:
-				r_powerup = R_POWERUP_BOMB;
-				break;
-			case POWERUP_SMALL:
-				r_powerup = R_POWERUP_SMALL;
-				break;
-			case POWERUP_INVULNERABLE:
-				r_powerup = R_POWERUP_INVULNERABLE;
-				break;
-			}
-			
-			Drop drop= new Drop(BitmapFactory.decodeResource(getResources(), r_powerup), x, y, powerup);
-			
-			drops.add(drop);		
+		// debug mode
+		if (Debugging.dropType != POWERUP_NONE) {
+			powerup = Debugging.dropType;
 		}
+		
+		int r_powerup = 0;
+		
+		switch(powerup) {
+		case POWERUP_DRILL:
+			r_powerup = R_POWERUP_DRILL;
+			break;
+		case POWERUP_SLOW:
+			r_powerup = R_POWERUP_SLOW;
+			break;
+		case POWERUP_MAGNET:
+			r_powerup = R_POWERUP_MAGNET;
+			break;
+		case POWERUP_BLACK_HOLE:
+			r_powerup = R_POWERUP_BLACK_HOLE;
+			break;
+		case POWERUP_BUMPER:
+			r_powerup = R_POWERUP_BUMPER;
+			break;
+		case POWERUP_BOMB:
+			r_powerup = R_POWERUP_BOMB;
+			break;
+		case POWERUP_SMALL:
+			r_powerup = R_POWERUP_SMALL;
+			break;
+		case POWERUP_INVULNERABLE:
+			r_powerup = R_POWERUP_INVULNERABLE;
+			break;
+		}
+		
+		Drop drop= new Drop(BitmapFactory.decodeResource(getResources(), r_powerup), x, y, powerup);
+		
+		drops.add(drop);
+		
+		return powerup;
 	}
 	
 	/**
@@ -1018,8 +1065,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// cause drop if upgraded
 			if (Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROP) {
 				if (numDrops == 0 || (numDrops == 1 && Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROPS)) {
-					dropPowerup(asteroid.getX(), asteroid.getY());
+					int powerupType = dropPowerup(asteroid.getX(), asteroid.getY());
 					numDrops++;
+					
+					// check bomb drop bomb achievement
+					if (powerupType == POWERUP_BOMB) {
+						Achievements.unlockLocalAchievement(Achievements.localBombDropBomb);
+					}
 				}
 			}
 		}

@@ -42,6 +42,24 @@ public class GameOverMenu extends Activity {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
 		
+		// calculate points
+		Statistics localStatistics = LocalStatistics.getInstance();
+		int points = 0;
+		points += Points.POINTS_TIME_PLAYED*localStatistics.timePlayed;
+		points += Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed();
+		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
+
+		// points achievements
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherPoints1);
+		}
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherPoints2);
+		}
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherPoints3);
+		}
+		
 		// update statistics
 		updateStatistics(sharedPreferencesEditor);
 
@@ -51,13 +69,6 @@ public class GameOverMenu extends Activity {
 		// update high scores
 		updateHighScores(sharedPreferencesEditor);
 		
-		// calculate points
-		Statistics localStatistics = LocalStatistics.getInstance();
-		int points = 0;
-		points += Points.POINTS_TIME_PLAYED*localStatistics.timePlayed;
-		points += Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed();
-		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
-
 		// update points
 		updatePoints(sharedPreferencesEditor, points);
 		

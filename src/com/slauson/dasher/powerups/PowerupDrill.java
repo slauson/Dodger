@@ -254,21 +254,30 @@ public class PowerupDrill extends ActivePowerup {
 	@Override
 	public boolean isActive() {
 		
+		// check time component
+		if (!super.isActive()) {
+			
+			// drill use max time achievement
+			Achievements.unlockLocalAchievement(Achievements.localDrillUseMaximumTime);
+			
+			return false;
+		}
+		
 		if (teleportDuration > 0) {
 			return true;
 		}
 		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
 			if (hasTeleport) {
-				return super.isActive() && y - height/2 > 0;
+				return y - height/2 > 0;
 			} else {
-				return super.isActive() && y + height/2 > 0;
+				return y + height/2 > 0;
 			}
 		} else {
 			if (hasTeleport) {
-				return super.isActive() && y + height/2 < MyGameView.canvasHeight;
+				return y + height/2 < MyGameView.canvasHeight;
 			} else {
-				return super.isActive() && y - height/2 < MyGameView.canvasHeight;
+				return y - height/2 < MyGameView.canvasHeight;
 			}
 		}
 	}
@@ -289,6 +298,7 @@ public class PowerupDrill extends ActivePowerup {
 	/**
 	 * Checks local drill-related achievements
 	 */
+	@Override
 	public void checkAchievements() {
 		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithDrill1.getValue())

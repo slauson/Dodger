@@ -86,6 +86,9 @@ public class PowerupBumper extends ActivePowerup {
 		if (!player.inPosition() && cooldown == 0 && Math.abs(x - player.getX()) <= width/2 + player.getWidth()/2 && Math.abs(y - player.getY()) <= height/2 + player.getHeight()/2) {
 			player.dash();
 			activateBumper();
+			
+			// bumper between achievement
+			Achievements.unlockLocalAchievement(Achievements.localBumperBetween);
 		}
 	}
 	
