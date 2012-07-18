@@ -446,6 +446,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					resetAsteroid(temp);
 				}
 				
+				// reset asteroid that needs reset
+				if (temp.getStatus() == Asteroid.STATUS_NEEDS_RESET) {
+					resetAsteroid(temp);
+				}
+				
 				// don't do anything for asteroids not on screen
 				if (!temp.onScreen()) {
 					continue;

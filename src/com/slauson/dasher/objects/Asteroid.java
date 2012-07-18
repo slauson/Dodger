@@ -39,7 +39,12 @@ public class Asteroid extends DrawObject {
 	private static final float RADIUS_OFFSET = 0.25f;
 	private static final float HORIZONTAL_MOVEMENT_OFFSET = 0.25f;
 	private static final float SPEED_INVISIBLE = 100;
+	
+	private static final int HELD_IN_PLACE_DURATION = 10000;
+	private static final int INVISIBLE_DURATION = 2000;
 
+	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
+	
 	public Asteroid(int radius, float speed, boolean horizontalMovement) {
 		super(0, 0, radius, radius);
 		
@@ -318,6 +323,16 @@ public class Asteroid extends DrawObject {
 			altPoints[indexLeft+1] = altPoints[1];
 		}
 	}
+
+	/**
+	 * Hold asteroid in place, caused by magnet
+	 */
+	public void holdInPlace() {
+		if (status == STATUS_NORMAL) {
+			status = STATUS_HELD_IN_PLACE;
+			timeCounter = HELD_IN_PLACE_DURATION;			
+		}
+	}
 	
 	/**
 	 * Checks asteroid collision with other asteroid
@@ -396,6 +411,20 @@ public class Asteroid extends DrawObject {
 				canvas.restore();
 				paint.setAlpha(savedAlpha);
 			}
+			// held in place
+			else if (status == STATUS_HELD_IN_PLACE) {
+				
+				int savedAlpha = paint.getAlpha();
+				paint.setAlpha((int)(255 * (1.0*timeCounter/HELD_IN_PLACE_DURATION)));
+
+				canvas.save();
+				canvas.translate(x, y);
+				
+				canvas.drawLines(points, paint);
+				canvas.restore();
+				
+				paint.setAlpha(savedAlpha);
+			}
 		}
 	}
 	
@@ -438,19 +467,39 @@ public class Asteroid extends DrawObject {
 			}
 			
 			if (factor < DISAPPEARING_FACTOR) {
-				status = STATUS_INVISIBLE;
+				setInvisible();
 			}
 		}
 		// fading out asteroid
 		else if (status == STATUS_FADING_OUT) {
 			if (timeCounter <= 0) {
-				status = STATUS_INVISIBLE;
+				setInvisible();
 			}
 		}
 		// splitting up asteroid
 		else if (status == STATUS_SPLITTING_UP) {			
 			if (timeCounter <= 0) {
-				status = STATUS_INVISIBLE;
+				setInvisible();
+			}
+		} 
+		// held in place asteroid
+		else if (status == STATUS_HELD_IN_PLACE) {
+			
+			// update speed
+			speed *= SPEED_HELD_IN_PLACE_FACTOR;
+			
+			if (speed < 0.01) {
+				speed = 0;
+			}
+			
+			if (timeCounter <= 0) {
+				setInvisible();
+			}
+		}
+		// invisible asteroid
+		else if (status == STATUS_INVISIBLE) {
+			if (timeCounter <= 0) {
+				status = STATUS_NEEDS_RESET;
 			}
 		}
 	}
@@ -460,6 +509,7 @@ public class Asteroid extends DrawObject {
 	 */
 	public void setInvisible() {
 		status = STATUS_INVISIBLE;
+		timeCounter = INVISIBLE_DURATION;
 		
 		speed = SPEED_INVISIBLE;
 		dirX = 0;

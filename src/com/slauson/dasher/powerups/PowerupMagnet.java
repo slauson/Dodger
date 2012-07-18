@@ -100,25 +100,23 @@ public class PowerupMagnet extends ActivePowerup {
 			float dirX = distanceX/(absDistanceX + absDistanceY);
 			float dirY = Math.abs(distanceY/(absDistanceX + absDistanceY));
 			
-			if (distance < holdRange) {
-				distance = 0;
-				dirX = 0;
-				dirY = 0;
-				
-				// only count each asteroid once
-				if (asteroid.getDirX() > 0.01 && asteroid.getDirY() > 0.01) {
-					LocalStatistics.getInstance().asteroidsDestroyedByMagnet++;
-					numAffectedAsteroids++;
-				}
+			// hold in place
+			if (distance < holdRange && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) {
+				asteroid.holdInPlace();
+				LocalStatistics.getInstance().asteroidsDestroyedByMagnet++;
+				numAffectedAsteroids++;
 			}
+			// otherwise pull in
+			else {
 			
-			float pullFactor = 0.5f - (0.5f*distance/MAX_RANGE);
-			
-			float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
-			float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;
-						
-			asteroid.setDirX(asteroidDirX);
-			asteroid.setDirY(asteroidDirY);
+				float pullFactor = 0.5f - (0.5f*distance/MAX_RANGE);
+				
+				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
+				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;
+							
+				asteroid.setDirX(asteroidDirX);
+				asteroid.setDirY(asteroidDirY);
+			}
 		}
 	}
 	
