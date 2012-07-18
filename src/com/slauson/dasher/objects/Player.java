@@ -35,6 +35,7 @@ public class Player extends DrawObject {
 	private RectF dashPercentRectSmall;
 	private int dashTimeout;
 	private int dashNumAffectedAsteroids;
+	private int dashNumAffectedAsteroidsHeldInPlace;
 	
 	private int invulnerabilityCounter;
 
@@ -115,6 +116,7 @@ public class Player extends DrawObject {
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-4, -2, 4, 6);
 		dashNumAffectedAsteroids = 0;
+		dashNumAffectedAsteroidsHeldInPlace = 0;
 		
 		lineSegments = new ArrayList<LineSegment>();
 		
@@ -597,6 +599,7 @@ public class Player extends DrawObject {
 		if (dashTimeout <= 0) {
 			inPosition = false;
 			dashNumAffectedAsteroids = 0;
+			dashNumAffectedAsteroidsHeldInPlace = 0;
 		
 			if (direction == MyGameView.DIRECTION_NORMAL) {
 				direction = MyGameView.DIRECTION_REVERSE;
@@ -629,30 +632,32 @@ public class Player extends DrawObject {
 	/**
 	 * Increments dash number of affected asteroids
 	 */
-	public void dashAffectedAsteroid() {
+	public void dashAffectedAsteroid(Asteroid asteroid) {
 		dashNumAffectedAsteroids++;
+		
+		if (asteroid.getStatus() == STATUS_HELD_IN_PLACE) {
+			dashNumAffectedAsteroidsHeldInPlace++;
+		}
 	}
 	
 	/**
 	 * Checks local dash achievements
 	 */
 	private void checkAchievements() {
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
-				!Achievements.localDestroyAsteroidsWithDash1.getValue())
-		{
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash1);
 		}
 		
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
-				!Achievements.localDestroyAsteroidsWithDash2.getValue())
-		{
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash2);
 		}
 		
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
-				!Achievements.localDestroyAsteroidsWithDash3.getValue())
-		{
+		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash3);
+		}
+		
+		if (dashNumAffectedAsteroidsHeldInPlace > Achievements.LOCAL_MAGNET_HOLD_IN_PLACE_NUM) {
+			Achievements.unlockLocalAchievement(Achievements.localMagnetHoldInPlace);
 		}
 	}
 	

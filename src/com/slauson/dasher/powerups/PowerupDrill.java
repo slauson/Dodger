@@ -300,21 +300,15 @@ public class PowerupDrill extends ActivePowerup {
 	 */
 	@Override
 	public void checkAchievements() {
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
-				!Achievements.localDestroyAsteroidsWithDrill1.getValue())
-		{
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
-				!Achievements.localDestroyAsteroidsWithDrill2.getValue())
-		{
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
-				!Achievements.localDestroyAsteroidsWithDrill3.getValue())
-		{
+		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill3);
 		}
 	}

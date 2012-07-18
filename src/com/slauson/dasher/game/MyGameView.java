@@ -502,7 +502,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 							if (player.getDashNumAffectedAsteroids() == 0 || player.getDashMultipleDrops()) {
 								dropPowerup(temp.getX(), temp.getY());
 							}
-							player.dashAffectedAsteroid();
+							player.dashAffectedAsteroid(temp);
 							
 							// check small dash destroy achievement
 							if (powerupSmall.isActive()) {

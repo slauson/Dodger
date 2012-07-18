@@ -30,10 +30,7 @@ public class Achievements {
 	public static final int LOCAL_SLOW_LONG_TIME = 60;
 	public static final int LOCAL_INVULNERABILITY_PASS_THROUGH_NUM = 10;
 	public static final int LOCAL_BLACK_HOLE_TRIFECTA_NUM = 3;
-	
-	// Use constant from Asteroid.java here after implementing timeout for magnet
-	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_TIME = 1000;
-	
+	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_NUM = 10;
 	public static final int LOCAL_OTHER_STAY_IN_PLACE_TIME = 20;
 	public static final int LOCAL_OTHER_POINTS_NUM_1 = 10000;
 	public static final int LOCAL_OTHER_POINTS_NUM_2 = 25000;
@@ -95,7 +92,7 @@ public class Achievements {
 	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
 	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
 	public static Achievement localBlackHoleTrifecta = new Achievement("achievement_local_black_hole_trifecta", R.drawable.powerup_white_hole, LOCAL_BLACK_HOLE_TRIFECTA_NUM);
-	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_TIME);
+	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);
 	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.powerup_bumper);
 	public static Achievement localBombDropBomb = new Achievement("achievement_local_bomb_activate_bomb", R.drawable.powerup_bomb);
 
