@@ -25,6 +25,7 @@ public class UpgradesMenu extends Activity {
 	private final static int DIALOG_PURCHASE_PREVIOUS_UPGRADE = 0;
 	private final static int DIALOG_NOT_ENOUGH_POINTS = 1;
 	private final static int DIALOG_CONFIRM_UPGRADE = 2;
+	private final static int DIALOG_CONFIRM_POWERUP_UNLOCK = 3;
 	
 	private final static String DIALOG_TITLE = "title";
 	private final static String DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE = "requiredTitle";
@@ -32,7 +33,9 @@ public class UpgradesMenu extends Activity {
 	private final static String DIALOG_CONFIRM_UPGRADE_POINTS = "points";
 	private final static String DIALOG_CONFIRM_UPGRADE_UPGRADE_ID = "upgradeID";
 	private final static String DIALOG_CONFIRM_UPGRADE_BUTTON_ID = "buttonID";
-
+	private final static String DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID = "upgradeID";
+	private final static String DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS = "points";
+	private final static String DIALOG_CONFIRM_POWERUP_BUTTON_ID = "buttonID";
 	
 	// points textview
 	private TextView pointsView;
@@ -103,6 +106,7 @@ public class UpgradesMenu extends Activity {
 			private boolean showDetails = false;
 			
 			public void onClick(View v) {
+				
 				// show details
 				if (!showDetails) {
 					dashUpgradeButton1.setVisibility(View.VISIBLE);
@@ -375,6 +379,26 @@ public class UpgradesMenu extends Activity {
 			private boolean showDetails = false;
 			
 			public void onClick(View v) {
+
+				// check if unlocked
+				if (Upgrades.magnetUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
+					
+					Bundle bundle = new Bundle();
+					bundle.putString(DIALOG_TITLE, getString(R.string.upgrade_magnet_0));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.magnetUpgrade));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS, Upgrades.POINTS_MAGNET_POWERUP);
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuMagnetButton);
+			
+					// check if we have enough points
+					if (Points.getNumPoints() < Upgrades.POINTS_MAGNET_POWERUP) {
+						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+					} else {
+						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
+					}
+					return;
+				}
+				
+
 				// show details
 				if (!showDetails) {
 					magnetUpgradeButton1.setVisibility(View.VISIBLE);
@@ -430,6 +454,26 @@ public class UpgradesMenu extends Activity {
 			private boolean showDetails = false;
 			
 			public void onClick(View v) {
+				
+				// check if unlocked
+				if (Upgrades.blackHoleUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
+					
+					Bundle bundle = new Bundle();
+					bundle.putString(DIALOG_TITLE, getString(R.string.upgrade_black_hole_0));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.blackHoleUpgrade));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS, Upgrades.POINTS_BLACK_HOLE_POWERUP);
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBlackHoleButton);
+			
+					// check if we have enough points
+					if (Points.getNumPoints() < Upgrades.POINTS_BLACK_HOLE_POWERUP) {
+						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+					} else {
+						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
+					}
+					return;
+				}
+
+				
 				// show details
 				if (!showDetails) {
 					blackHoleUpgradeButton1.setVisibility(View.VISIBLE);
@@ -485,6 +529,25 @@ public class UpgradesMenu extends Activity {
 			private boolean showDetails = false;
 			
 			public void onClick(View v) {
+				
+				// check if unlocked
+				if (Upgrades.bumperUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
+					
+					Bundle bundle = new Bundle();
+					bundle.putString(DIALOG_TITLE, getString(R.string.upgrade_bumper_0));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.bumperUpgrade));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS, Upgrades.POINTS_BUMPER_POWERUP);
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBumperButton);
+			
+					// check if we have enough points
+					if (Points.getNumPoints() < Upgrades.POINTS_BUMPER_POWERUP) {
+						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+					} else {
+						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
+					}
+					return;
+				}
+
 				// show details
 				if (!showDetails) {
 					bumperUpgradeButton1.setVisibility(View.VISIBLE);
@@ -540,6 +603,25 @@ public class UpgradesMenu extends Activity {
 			private boolean showDetails = false;
 			
 			public void onClick(View v) {
+				
+				// check if unlocked
+				if (Upgrades.bombUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
+					
+					Bundle bundle = new Bundle();
+					bundle.putString(DIALOG_TITLE, getString(R.string.upgrade_bomb_0));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.bombUpgrade));
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS, Upgrades.POINTS_BOMB_POWERUP);
+					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBombButton);
+			
+					// check if we have enough points
+					if (Points.getNumPoints() < Upgrades.POINTS_BOMB_POWERUP) {
+						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+					} else {
+						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
+					}
+					return;
+				}
+
 				// show details
 				if (!showDetails) {
 					bombUpgradeButton1.setVisibility(View.VISIBLE);
@@ -681,6 +763,56 @@ public class UpgradesMenu extends Activity {
 			
 			dialog = alertDialogBuilder.create();
 
+			break;
+		case DIALOG_CONFIRM_POWERUP_UNLOCK:
+
+			// get more args
+			final int powerupUnlockPoints = args.getInt(DIALOG_CONFIRM_POWERUP_UNLOCK_POINTS);
+			final int powerupUnlockUpgradeID = args.getInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID);
+			final int powerupUnlockButtonID = args.getInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID);
+			
+			alertDialogBuilder
+				.setTitle("Confirm Powerup")
+				.setMessage("Are you sure you want to unlock the '" + title + "' for " + powerupUnlockPoints + " points?")
+				
+				// do nothing when user selects no 
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_CONFIRM_POWERUP_UNLOCK);
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						// set upgrade level
+						Upgrade upgrade = Upgrades.getUpgrade(powerupUnlockUpgradeID);
+						
+						// this should never happen...
+						if (upgrade == null) {
+							System.out.println("Null upgrade for id " + powerupUnlockUpgradeID);
+							return;
+						}
+
+						upgrade.setLevel(Upgrades.POWERUP_UNLOCKED);
+
+						// update button text
+						Button button = (Button)findViewById(powerupUnlockButtonID);
+						button.setText(button.getText().toString().replaceAll("-.*", ""));
+						toggleButtonColor(button);
+						
+						// update points
+						Points.update(-powerupUnlockPoints);
+						
+						// update points textview
+				    	pointsView.setText("You have " + Points.getNumPoints() + " points");
+				    	
+				    	// remove dialog so that we can change message/title
+				    	removeDialog(DIALOG_CONFIRM_POWERUP_UNLOCK);
+					}
+				});
+
+			
+			dialog = alertDialogBuilder.create();
 			break;
 		default:
 			dialog = null;

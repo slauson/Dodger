@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ public class DebuggingMenu extends Activity {
 
 	private SharedPreferences sharedPreferences;
 	private SharedPreferences.Editor sharedPreferencesEditor;
+	
+	EditText points;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -186,6 +189,37 @@ public class DebuggingMenu extends Activity {
 				
 				Toast.makeText(button.getContext(), "God mode set to " + Debugging.godMode, Toast.LENGTH_SHORT).show();
 			}
+    	});
+    	
+    	// points
+    	points = (EditText)findViewById(R.id.debuggingMenuPoints);
+
+    	// set current points
+    	points.setText("" + Points.getNumPoints());
+
+    	Button updatePoints = (Button)findViewById(R.id.debuggingMenuPointsUpdate);
+    	
+    	updatePoints.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View view) {
+				int numPoints = 0;
+				
+				// make sure its a valid integer
+				try {
+					numPoints = Integer.parseInt(points.getText().toString());
+				}
+				catch (NumberFormatException e) {
+					Toast.makeText(view.getContext(), "Invalid points", Toast.LENGTH_SHORT).show();
+				}
+				
+				// update points
+				Points.update(numPoints - Points.getNumPoints());
+				Points.save(sharedPreferencesEditor);
+				sharedPreferencesEditor.commit();
+				
+				Toast.makeText(view.getContext(), "You have " + Points.getNumPoints() + " points", Toast.LENGTH_SHORT).show();
+			}
+    		
     	});
     	
     	// reset stats

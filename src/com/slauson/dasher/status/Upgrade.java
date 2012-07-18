@@ -13,6 +13,16 @@ public class Upgrade {
 	private static int NUM_LEVELS = 5;
 	
 	private String key;
+	
+	/**
+	 * Level
+	 * -1: locked
+	 * 0: unlocked
+	 * 1: upgraded once
+	 * 2: upgraded twice
+	 * 3: upgraded three times
+	 * 4: upgraded four times
+	 */
 	private int level;
 	
 	private int[] titles;

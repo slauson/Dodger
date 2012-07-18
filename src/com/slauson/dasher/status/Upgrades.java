@@ -19,6 +19,16 @@ public class Upgrades {
 	public static final int POINTS_UPGRADE_3 = 5000;
 	public static final int POINTS_UPGRADE_4 = 10000;
 	
+	// constants for powerup purchases
+	public static final int POINTS_MAGNET_POWERUP = 10000;
+	public static final int POINTS_BLACK_HOLE_POWERUP = 15000;
+	public static final int POINTS_BUMPER_POWERUP = 20000;
+	public static final int POINTS_BOMB_POWERUP = 25000;
+	
+	// constants for powerup unlocking
+	public static final int POWERUP_LOCKED = -1;
+	public static final int POWERUP_UNLOCKED = 0;
+	
 	// constants to represent what powerup upgrade levels mean
 	public static final int DASH_UPGRADE_REDUCED_RECHARGE_1 = 1;
 	public static final int DASH_UPGRADE_REDUCED_RECHARGE_2 = 2;
@@ -73,10 +83,10 @@ public class Upgrades {
 	public static Upgrade slowUpgrade = new Upgrade("upgrade_slow");
 	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability");
 	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill");
-	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet");
-	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole");
-	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper");
-	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb");
+	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet", 0);
+	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", 0);
+	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", 0);
+	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", 0);
 	
 	private static boolean initialized = false;
 	
@@ -162,10 +172,16 @@ public class Upgrades {
 	 * @param sharedPreferencesEditor preferences to save to
 	 */
 	public static void reset(Editor sharedPreferencesEditor) {
-		
+
 		for (Upgrade upgrade : upgrades) {
 			upgrade.setLevel(0);
 		}
+		
+		// set locked powerups
+		magnetUpgrade.setLevel(-1);
+		blackHoleUpgrade.setLevel(-1);
+		bumperUpgrade.setLevel(-1);
+		bombUpgrade.setLevel(-1);
 		
 		save(sharedPreferencesEditor);
 	}
@@ -204,5 +220,19 @@ public class Upgrades {
 		
 		return 1.f*sum/maxSum;
 	}
-
+	
+	/**
+	 * Returns the number of powerups available
+	 * @return the number of powerups available
+	 */
+	public static int numPowerupsAvailable() {
+		
+		// start at 1 so that we skip the dash upgrades
+		for(int i = 1; i < upgrades.size(); i++) {
+			if (upgrades.get(i).getLevel() < 0) {
+				return i-1;
+			}
+		}
+		return 0;
+	}
 }
