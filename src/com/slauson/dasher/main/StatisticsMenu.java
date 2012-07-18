@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.Statistics;
+import com.slauson.dasher.status.Upgrades;
 
 public class StatisticsMenu extends Activity {
 
@@ -72,11 +74,16 @@ public class StatisticsMenu extends Activity {
     	// add # of times played
     	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
     	timesPlayed.setText("" + globalStatistics.timesPlayed);
+    	
+    	// completion percentage
+    	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
+    	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);
+    	completionPercentage.setText("" + ((int)(completion*100)) + " %");
+    	
 	}
 	
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 	}
-
 }

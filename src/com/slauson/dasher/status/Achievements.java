@@ -495,4 +495,21 @@ public class Achievements {
 		
 		save(sharedPreferencesEditor);
 	}
+	
+	/**
+	 * Returns completion percentage of achievements unlocked
+	 * @return completion percentage of achievements unlocked
+	 */
+	public static float completionPercentage() {
+		
+		int numAchievementsUnlocked = 0;
+		
+		for (Achievement achievement : achievements) {
+			if (achievement.getValue()) {
+				numAchievementsUnlocked++;
+			}
+		}
+		
+		return 1.f*numAchievementsUnlocked/achievements.size();
+	}
 }

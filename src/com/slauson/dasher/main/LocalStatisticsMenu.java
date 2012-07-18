@@ -67,8 +67,9 @@ public class LocalStatisticsMenu extends Activity {
 		TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
 		localTimePlayed.setText(localStatistics.getTimePlayedString());
 		
-		// hide average time played and times played
+		// hide average time played, times played, completion percentage
 		((TableRow)findViewById(R.id.statisticsMenuAverageTimePlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuTimesPlayedRow)).setVisibility(View.GONE);
+		((TableRow)findViewById(R.id.statisticsMenuCompletionPercentageRow)).setVisibility(View.GONE);
 	}
 }

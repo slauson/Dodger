@@ -64,6 +64,8 @@ public class Upgrades {
 	public static final int BOMB_UPGRADE_NO_EFFECT_POWERUPS = 2;
 	public static final int BOMB_UPGRADE_CAUSE_DROP = 3;
 	public static final int BOMB_UPGRADE_CAUSE_DROPS = 4;
+
+	public static final int NUM_UPGRADES = 4;
 	
 	// actual upgrades
 	public static Upgrade dashUpgrade = new Upgrade("upgrade_dash");
@@ -186,6 +188,21 @@ public class Upgrades {
 		if (i == upgrades.size()) {
 			Achievements.globalPurchaseAllUpgrades.unlock();
 		}
+	}
+	
+	/**
+	 * Returns completion percentage of upgrades unlocked
+	 * @return completion percentage of upgrades unlocked
+	 */
+	public static float completionPercentage() {
+		int maxSum = NUM_UPGRADES * upgrades.size();
+		
+		int sum = 0;
+		for (Upgrade upgrade : upgrades) {
+			sum += upgrade.getLevel();
+		}
+		
+		return 1.f*sum/maxSum;
 	}
 
 }
