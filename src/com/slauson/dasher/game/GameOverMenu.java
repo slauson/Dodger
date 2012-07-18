@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.main.HighScoresMenu;
@@ -28,6 +29,10 @@ import com.slauson.dasher.status.Statistics;
 
 public class GameOverMenu extends Activity {
 	
+	private static final int TOAST_LENGTH_SHORT = 2000;
+	
+	private long backButtonQuitEndTime;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +40,7 @@ public class GameOverMenu extends Activity {
 
 		setupButtons();
 	
+		backButtonQuitEndTime = 0;
 	}
 	
 	private void setupButtons() {
@@ -163,6 +169,14 @@ public class GameOverMenu extends Activity {
 		// override back button so that user cannot go back to game
 		switch(keyCode) {
 		case KeyEvent.KEYCODE_BACK:
+			if (System.currentTimeMillis() < backButtonQuitEndTime) {
+				Intent intent = new Intent(GameOverMenu.this, MainMenu.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			} else {
+				Toast.makeText(this, "Press again to quit", Toast.LENGTH_SHORT).show();
+				backButtonQuitEndTime = System.currentTimeMillis() + TOAST_LENGTH_SHORT;
+			}
 			return true;
 		}
 		
