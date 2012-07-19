@@ -100,6 +100,7 @@ public class UpgradesMenu extends Activity {
     	dashUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.dashUpgrade, Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS, R.id.upgradesMenuDashUpgrade4Button));
     	
     	dashButton = (Button)findViewById(R.id.upgradesMenuDashButton);
+    	toggleButtonColor(dashButton);
 		dashButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
@@ -120,15 +121,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS:
 						dashUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)dashUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(dashUpgradeButton4);
 					case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_3:
 						dashUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)dashUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(dashUpgradeButton3);
 					case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_2:
 						dashUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)dashUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(dashUpgradeButton2);
 					case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_1:
 						dashUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)dashUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(dashUpgradeButton1);
 						break;	
 					}
 				}
@@ -155,6 +160,7 @@ public class UpgradesMenu extends Activity {
     	smallUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.smallUpgrade, Upgrades.SMALL_UPGRADE_BIG_DASH, R.id.upgradesMenuSmallUpgrade4Button));
     	
     	smallButton = (Button)findViewById(R.id.upgradesMenuSmallButton);
+    	toggleButtonColor(smallButton);
 		smallButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
@@ -174,15 +180,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.SMALL_UPGRADE_BIG_DASH:
 						smallUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)smallUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(smallUpgradeButton4);
 					case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_3:
 						smallUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)smallUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(smallUpgradeButton3);
 					case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_2:
 						smallUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)smallUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(smallUpgradeButton2);
 					case Upgrades.SMALL_UPGRADE_INCREASED_DURATION_1:
 						smallUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)smallUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(smallUpgradeButton1);
 						break;
 					}
 				}
@@ -209,7 +219,8 @@ public class UpgradesMenu extends Activity {
     	slowUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.slowUpgrade, Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS, R.id.upgradesMenuSlowUpgrade4Button));
     	
     	slowButton = (Button)findViewById(R.id.upgradesMenuSlowButton);
-		slowButton.setOnClickListener(new OnClickListener() {
+    	toggleButtonColor(slowButton);
+    	slowButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -228,15 +239,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.SLOW_UPGRADE_NO_AFFECT_DROPS_AND_POWERUPS:
 						slowUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(slowUpgradeButton4);
 					case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_3:
 						slowUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(slowUpgradeButton3);
 					case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_2:
 						slowUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(slowUpgradeButton2);
 					case Upgrades.SLOW_UPGRADE_INCREASED_DURATION_1:
 						slowUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)slowUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(slowUpgradeButton1);
 						break;
 					}
 						
@@ -264,6 +279,7 @@ public class UpgradesMenu extends Activity {
     	invulnerabilityUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.invulnerabilityUpgrade, Upgrades.INVULNERABILITY_UPGRADE_DASHER, R.id.upgradesMenuInvulnerabilityUpgrade4Button));
     	
     	invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
+    	toggleButtonColor(invulnerabilityButton);
 		invulnerabilityButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
@@ -283,15 +299,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.INVULNERABILITY_UPGRADE_DASHER:
 						invulnerabilityUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)invulnerabilityUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(invulnerabilityUpgradeButton4);
 					case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_3:
 						invulnerabilityUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)invulnerabilityUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(invulnerabilityUpgradeButton3);
 					case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_2:
 						invulnerabilityUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)invulnerabilityUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(invulnerabilityUpgradeButton2);
 					case Upgrades.INVULNERABILITY_UPGRADE_INCREASED_DURATION_1:
 						invulnerabilityUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)invulnerabilityUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(invulnerabilityUpgradeButton1);
 						break;
 					}
 				}
@@ -319,7 +339,8 @@ public class UpgradesMenu extends Activity {
     	drillUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.drillUpgrade, Upgrades.DRILL_UPGRADE_TELEPORT, R.id.upgradesMenuDrillUpgrade4Button));
     	
     	drillButton = (Button)findViewById(R.id.upgradesMenuDrillButton);
-		drillButton.setOnClickListener(new OnClickListener() {
+    	toggleButtonColor(drillButton);
+    	drillButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -338,15 +359,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.DRILL_UPGRADE_TELEPORT:
 						drillUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)drillUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(drillUpgradeButton4);
 					case Upgrades.DRILL_UPGRADE_SEEK_3:
 						drillUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)drillUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(drillUpgradeButton3);
 					case Upgrades.DRILL_UPGRADE_SEEK_2:
 						drillUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)drillUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(drillUpgradeButton2);
 					case Upgrades.DRILL_UPGRADE_SEEK_1:
 						drillUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)drillUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(drillUpgradeButton1);
 						break;
 					}
 				}
@@ -373,7 +398,14 @@ public class UpgradesMenu extends Activity {
     	magnetUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.magnetUpgrade, Upgrades.MAGNET_UPGRADE_SPIN, R.id.upgradesMenuMagnetUpgrade4Button));
     	
     	magnetButton = (Button)findViewById(R.id.upgradesMenuMagnetButton);
-		magnetButton.setOnClickListener(new OnClickListener() {
+    	
+    	if (Upgrades.magnetUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+    		toggleButtonColor(magnetButton);
+    	} else {
+    		magnetButton.setText(magnetButton.getText() + " - " + Upgrades.POINTS_MAGNET_POWERUP);
+    	}
+    	
+    	magnetButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -412,15 +444,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.MAGNET_UPGRADE_SPIN:
 						magnetUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)magnetUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(magnetUpgradeButton4);
 					case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_3:
 						magnetUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)magnetUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(magnetUpgradeButton3);
 					case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_2:
 						magnetUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)magnetUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(magnetUpgradeButton2);
 					case Upgrades.MAGNET_UPGRADE_INCREASED_DURATION_1:
 						magnetUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)magnetUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(magnetUpgradeButton1);
 						break;
 					}
 				}
@@ -448,7 +484,14 @@ public class UpgradesMenu extends Activity {
     	blackHoleUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.blackHoleUpgrade, Upgrades.BLACK_HOLE_UPGRADE_QUASAR, R.id.upgradesMenuBlackHoleUpgrade4Button));
     	
     	blackHoleButton = (Button)findViewById(R.id.upgradesMenuBlackHoleButton);
-		blackHoleButton.setOnClickListener(new OnClickListener() {
+    	
+    	if (Upgrades.blackHoleUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+    		toggleButtonColor(blackHoleButton);
+    	} else {
+    		blackHoleButton.setText(blackHoleButton.getText() + " - " + Upgrades.POINTS_BLACK_HOLE_POWERUP);
+    	}
+    	
+    	blackHoleButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -487,15 +530,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.BLACK_HOLE_UPGRADE_QUASAR:
 						blackHoleUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)blackHoleUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(blackHoleUpgradeButton4);
 					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_3:
 						blackHoleUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)blackHoleUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(blackHoleUpgradeButton3);
 					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_2:
 						blackHoleUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)blackHoleUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(blackHoleUpgradeButton2);
 					case Upgrades.BLACK_HOLE_UPGRADE_INCREASED_DURATION_1:
 						blackHoleUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)blackHoleUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(blackHoleUpgradeButton1);
 						break;
 					}
 				}
@@ -523,7 +570,14 @@ public class UpgradesMenu extends Activity {
     	bumperUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bumperUpgrade, Upgrades.BUMPER_UPGRADE_INCREASED_SIZE, R.id.upgradesMenuBumperUpgrade4Button));
     	
     	bumperButton = (Button)findViewById(R.id.upgradesMenuBumperButton);
-		bumperButton.setOnClickListener(new OnClickListener() {
+    	
+    	if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+    		toggleButtonColor(bumperButton);
+    	} else {
+    		bumperButton.setText(bumperButton.getText() + " - " + Upgrades.POINTS_BUMPER_POWERUP);
+    	}
+    	
+    	bumperButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -561,15 +615,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.BUMPER_UPGRADE_INCREASED_SIZE:
 						bumperUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)bumperUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bumperUpgradeButton4);
 					case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_3:
 						bumperUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)bumperUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bumperUpgradeButton3);
 					case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_2:
 						bumperUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)bumperUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bumperUpgradeButton2);
 					case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_1:
 						bumperUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)bumperUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bumperUpgradeButton1);
 						break;
 					}
 				}
@@ -597,7 +655,14 @@ public class UpgradesMenu extends Activity {
     	bombUpgradeButton4.setOnClickListener(new UpgradeOnClickListener(Upgrades.bombUpgrade, Upgrades.BOMB_UPGRADE_CAUSE_DROPS, R.id.upgradesMenuBombUpgrade4Button));
     	
     	bombButton = (Button)findViewById(R.id.upgradesMenuBombButton);
-		bombButton.setOnClickListener(new OnClickListener() {
+		
+    	if (Upgrades.bombUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+    		toggleButtonColor(bombButton);
+    	} else {
+    		bombButton.setText(bombButton.getText() + " - " + Upgrades.POINTS_BOMB_POWERUP);
+    	}
+    	
+    	bombButton.setOnClickListener(new OnClickListener() {
 			
 			// true when details are shown
 			private boolean showDetails = false;
@@ -635,15 +700,19 @@ public class UpgradesMenu extends Activity {
 					case Upgrades.BOMB_UPGRADE_CAUSE_DROPS:
 						bombUpgradeButton4.setTextColor(Color.BLACK);
 						((TableRow)bombUpgradeButton4.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bombUpgradeButton4);
 					case Upgrades.BOMB_UPGRADE_CAUSE_DROP:
 						bombUpgradeButton3.setTextColor(Color.BLACK);
 						((TableRow)bombUpgradeButton3.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bombUpgradeButton3);
 					case Upgrades.BOMB_UPGRADE_NO_EFFECT_POWERUPS:
 						bombUpgradeButton2.setTextColor(Color.BLACK);
 						((TableRow)bombUpgradeButton2.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bombUpgradeButton2);
 					case Upgrades.BOMB_UPGRADE_NO_EFFECT_DROPS:
 						bombUpgradeButton1.setTextColor(Color.BLACK);
 						((TableRow)bombUpgradeButton1.getParent()).setBackgroundColor(Color.WHITE);
+						toggleButtonText(bombUpgradeButton1);
 						break;
 					}
 				}
@@ -748,6 +817,7 @@ public class UpgradesMenu extends Activity {
 						// update background color
 						Button button = (Button)findViewById(buttonID);
 						toggleButtonColor(button);
+						toggleButtonText(button);
 						
 						// update points
 						Points.update(-points);
@@ -799,6 +869,7 @@ public class UpgradesMenu extends Activity {
 						Button button = (Button)findViewById(powerupUnlockButtonID);
 						button.setText(button.getText().toString().replaceAll("-.*", ""));
 						toggleButtonColor(button);
+						toggleButtonText(button);
 						
 						// update points
 						Points.update(-powerupUnlockPoints);
@@ -828,6 +899,17 @@ public class UpgradesMenu extends Activity {
 	public void toggleButtonColor(Button button) {
 		button.setTextColor(Color.BLACK);
 		((TableRow)button.getParent()).setBackgroundColor(Color.WHITE);
+	}
+	
+	/**
+	 * Modifies button text to remove cost of powerup
+	 * @param button button to toggle
+	 */
+	public void toggleButtonText(Button button) {
+		String text = button.getText().toString();
+		
+		text = text.replaceAll(" -.*", "");
+		button.setText(text);
 	}
 	
 	/**
