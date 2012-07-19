@@ -63,11 +63,9 @@ public class LocalStatisticsMenu extends Activity {
 		asteroidsDestroyedBumper.setText("" + localStatistics.asteroidsDestroyedByBumper);
 		asteroidsDestroyedBomb.setText("" + localStatistics.asteroidsDestroyedByBomb);
 	
-		// add time played
-		TextView localTimePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
-		localTimePlayed.setText(localStatistics.getTimePlayedString());
-		
-		// hide average time played, times played, completion percentage
+
+		// hide time played, average time played, times played, completion percentage
+		((TableRow)findViewById(R.id.statisticsMenuTimePlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuAverageTimePlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuTimesPlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuCompletionPercentageRow)).setVisibility(View.GONE);
