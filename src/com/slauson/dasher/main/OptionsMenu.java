@@ -7,6 +7,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 public class OptionsMenu extends PreferenceActivity {
 	@Override
@@ -15,6 +18,17 @@ public class OptionsMenu extends PreferenceActivity {
 		
 		//add the prefernces.xml layout
 		addPreferencesFromResource(R.xml.configuration);
+		
+		setContentView(R.layout.options_menu);
+		
+		// reset data button
+		Button resetData = (Button)findViewById(R.id.optionsMenuResetDataButton);
+		
+		resetData.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO
+			}
+		});
 	}
 	
 	@Override
