@@ -71,6 +71,7 @@ public class Asteroid extends DrawObject {
 	 * @param horizontalMovement whether or not the asteroid has horizontal movement
 	 */
 	public void reset(int radius, float speed, boolean horizontalMovement) {
+		
 		this.radius = radius;
 		this.speed = speed;
 		
@@ -197,6 +198,7 @@ public class Asteroid extends DrawObject {
 				lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			}
 			
+			speed = 0;
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
@@ -238,24 +240,15 @@ public class Asteroid extends DrawObject {
 	 */
 	public void splitUp() {
 		if (status == STATUS_NORMAL) {
-			status = STATUS_SPLITTING_UP;
-			timeCounter = SPLITTING_UP_DURATION;
-			
-			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
-			
-			// left half points (4 extra for perfect split)
-			//altPoints = new float[leftPoints*4 + 4];
 			
 			int indexRight = 2, indexLeft = 0;
 			boolean leftSwitch = false, rightSwitch = false;
 			
 			// start at 2 so we get each pair of points (same values) for each corresponding angle
 			for (int i = 2; i < points.length-2; i+=4) {
-				//System.out.println("i: " + i + " (" + points[i] + ", " + points[i+1] + ", " + angles[(i+2)/4] + ")");
 				
 				// right points
 				if (angles[(i+2)/4] < Math.PI/2.0 || angles[(i+2)/4] > 3.0*Math.PI/2.0) {
-					//System.out.println("right: " + indexRight);
 
 					// add one right point to left side
 					if (leftSwitch && !rightSwitch) {
@@ -281,7 +274,6 @@ public class Asteroid extends DrawObject {
 				}
 				// left points
 				else {
-					//System.out.println("left: " + indexLeft);
 					
 					// add one left point to right side
 					if (!leftSwitch) {
@@ -305,9 +297,7 @@ public class Asteroid extends DrawObject {
 					if (indexLeft == 0) {
 						indexLeft += 2;
 					} else { 
-						// ArrayIndexOutOfBoundsException here
 						altPoints[indexLeft+2] = points[i+2];
-						// ArrayIndexOutOfBoundsException here
 						altPoints[indexLeft+3] = points[i+3];
 						indexLeft += 4;
 					}
@@ -321,6 +311,12 @@ public class Asteroid extends DrawObject {
 			// close left points
 			altPoints[indexLeft] = altPoints[0];
 			altPoints[indexLeft+1] = altPoints[1];
+			
+			speed = 0;
+			status = STATUS_SPLITTING_UP;
+			timeCounter = SPLITTING_UP_DURATION;
+			
+			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 		}
 	}
 
@@ -363,7 +359,7 @@ public class Asteroid extends DrawObject {
 			// broken up asteroid
 			else if (status == STATUS_BREAKING_UP){
 				int savedAlpha = paint.getAlpha();
-				paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
+				paint.setAlpha((int)(255 * (1.f*timeCounter/BREAKING_UP_DURATION)));
 				
 				for (LineSegment lineSegment : lineSegments) {
 					lineSegment.draw(canvas, paint);
@@ -537,7 +533,6 @@ public class Asteroid extends DrawObject {
 				break;
 			}
 		}
-		//System.out.println("getClosestPoints(): " + i + " out of " + angles.length);
 		
 		// handle special cases
 		if (i == 0 || i == angles.length) {

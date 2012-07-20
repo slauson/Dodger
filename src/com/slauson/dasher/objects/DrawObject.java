@@ -29,9 +29,9 @@ public abstract class DrawObject extends Item {
 	public static final int STATUS_NEEDS_RESET = 8;
 
 	// used by MyGameView to schedule game over message
-	public static final int BREAKING_UP_DURATION = 2500;
+	public static final int BREAKING_UP_DURATION = 5000;
 	
-	protected static final float BREAKING_UP_MOVE = 20;
+	protected static final float BREAKING_UP_MOVE = 40;
 	protected static final float DISAPPEARING_FACTOR = 0.25f;
 	protected static final int FADING_OUT_DURATION = 1000;
 	protected static final int SPLITTING_UP_DURATION = 2000;

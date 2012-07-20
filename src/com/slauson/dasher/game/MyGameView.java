@@ -97,7 +97,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private Statistics localStatistics = null;
 	
 	private long pauseTime;
-
+	
 	
 	/**
 	 * Constants - private
@@ -463,7 +463,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 				
-				// only check collision with player is asteroid is in normal status
+				// only check collision with player when asteroid is in normal status
 				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
 					
 					// check collision with player
@@ -475,6 +475,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 							// game over if player isn't invulnerable
 							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
 								temp.breakup();
+								
 								player.breakup();
 								Timer timer = new Timer();
 								timer.schedule(new TimerTask() {
