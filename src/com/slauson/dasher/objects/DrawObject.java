@@ -2,6 +2,8 @@ package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
 
+import com.slauson.dasher.game.MyGameView;
+
 /**
  * Object to be drawn on the screen
  * @author Josh Slauson
@@ -55,5 +57,23 @@ public abstract class DrawObject extends Item {
 	 */
 	public int getStatus() {
 		return status;
+	}
+	
+	/**
+	 * Returns relative size according to screen width
+	 * @param factor percentage of screen size
+	 * @return relative size according to screen width
+	 */
+	public int getRelativeWidthSize(float factor) {
+		return (int)(MyGameView.canvasWidth*factor);
+	}
+	
+	/**
+	 * Returns relative size according to screen height
+	 * @param factor percentage of screen size
+	 * @return relative size according to screen height
+	 */
+	public int getRelativeHeightSize(float factor) {
+		return (int)(MyGameView.canvasHeight*factor);
 	}
 }

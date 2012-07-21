@@ -34,6 +34,9 @@ public class Configuration {
 	private static final int FRAME_RATE_NORMAL = 30;
 	private static final int FRAME_RATE_HIGH = 60;
 	
+	// offset height default setting
+	private static final float OFFSET_HEIGHT_DEFAULT = 0.125f;
+	
 	// these correspond to the configuration.xml file used in the OptionsMenu
 	private static final String FRAME_RATE_STRING = "configuration_frame_rate";
 	private static final String FRAME_RATE_LOW_STRING = "Low";
@@ -49,6 +52,9 @@ public class Configuration {
 	
 	// frame rate
 	public static int frameRate = FRAME_RATE_NORMAL;
+	
+	// offset height
+	public static float offsetHeight = OFFSET_HEIGHT_DEFAULT;
 	
 	/**
 	 * Loads configuration from the given preferences

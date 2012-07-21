@@ -45,8 +45,9 @@ public class Asteroid extends DrawObject {
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
 	
-	public Asteroid(int radius, float speed, boolean horizontalMovement) {
-		super(0, 0, radius, radius);
+	public Asteroid(float sizeFactor, float speedFactor, boolean horizontalMovement) {
+		// do width/height later
+		super(0, 0, 0, 0);
 		
 		this.random = new Random();
 		
@@ -57,26 +58,30 @@ public class Asteroid extends DrawObject {
 		angles = new double[numPoints];
 		lineSegments = new ArrayList<LineSegment>();
 		
+		radius = 0;
+		
 		for (int i = 0; i < numPoints; i++) {
 			lineSegments.add(new LineSegment(0, 0, 0, 0));
 		}
 
-		reset(radius, speed, horizontalMovement);
+		reset(sizeFactor, speedFactor, horizontalMovement);
 	}
 	
 	/**
 	 * Resets asteroid
-	 * @param radius radius of asteroid
-	 * @param speed speed of asteroid
+	 * @param radiusFactor radius factor of asteroid relative to screen width
+	 * @param speedFactor speed factor of asteroid relative to screen height
 	 * @param horizontalMovement whether or not the asteroid has horizontal movement
 	 */
-	public void reset(int radius, float speed, boolean horizontalMovement) {
+	public void reset(float sizeFactor, float speedFactor, boolean horizontalMovement) {
 		
-		this.radius = radius;
-		this.speed = speed;
+		// calculate speed
+		speed = getRelativeHeightSize(speedFactor);
 		
-		this.width = radius*2;
-		this.height = radius*2;
+		// calculate radius
+		radius = getRelativeWidthSize(sizeFactor);
+		width = radius*2;
+		height = radius*2;
 
 		if (horizontalMovement) {
 			dirX = -HORIZONTAL_MOVEMENT_OFFSET + (2*HORIZONTAL_MOVEMENT_OFFSET*random.nextFloat());

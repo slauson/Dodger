@@ -30,6 +30,7 @@ public class Player extends DrawObject {
 	private int move;
 	private boolean inPosition;
 	private int direction;
+	private float maxSpeed;
 	
 	private RectF dashPercentRect;
 	private RectF dashPercentRectSmall;
@@ -42,33 +43,27 @@ public class Player extends DrawObject {
 	// dash upgrades
 	private int dashRechargeDuration;
 	private boolean dashMultipleDrops;
+	
+	private float yBottom, yTop;
+	private int size;
+	private int rotationDegrees;
 
-	/**
-	 * Public constants
-	 */
-	
-	public static final int MAX_SPEED = 250;
-	
-	
 	/**
 	 * Private constants
 	 */
 	
+	// button movement stuff
 	private static final int MOVE_NONE = 0;
 	private static final int MOVE_LEFT = 1;
 	private static final int MOVE_RIGHT = 2;
-	
 	private static final float BUTTON_MOVE_FACTOR = 4f;
 	private static final float BUTTON_MIN_SPEED = 2f;
+	private static final float MAX_SPEED_FACTOR = 0.5f;
 	
-	private static final float Y_BOTTOM = MyGameView.canvasHeight - 100;
-	private static final float Y_TOP = 32;
-	
-	private static final float ROTATION_DEGREES = 900f;
-	
-	private static final int PLAYER_WIDTH = 32;
-	private static final int PLAYER_HEIGHT = 32;
-	private static final int REAR_OFFSET = -6;
+	// size stuff
+	private static final float SIZE_FACTOR = 0.067f;
+	private static final float REAR_OFFSET_FACTOR = 0.25f;
+	private static final float DASH_PERCENT_FACTOR = 0.5f;
 	
 	private static final int INVULNERABLE_DURATION = 5000;
 	
@@ -79,8 +74,22 @@ public class Player extends DrawObject {
 	private static final int DASH_RECHARGE_DURATION_3 = 10000;
 	
 	public Player() {
-		super(MyGameView.canvasWidth/2, Y_BOTTOM, PLAYER_WIDTH, PLAYER_HEIGHT);
+		// set y, width, height later 
+		super(MyGameView.canvasWidth/2, 0, 0, 0);
 
+		// set y offset
+		yBottom = MyGameView.canvasHeight - MyGameView.canvasHeight*Configuration.offsetHeight;
+		y = yBottom;
+		
+		// set height/width
+		size = getRelativeWidthSize(SIZE_FACTOR);
+		width = size;
+		height = size;
+		yTop = size;
+		
+		// set speed
+		maxSpeed = getRelativeWidthSize(MAX_SPEED_FACTOR);
+		
 		goX = x;
 		
 		speedX = 0;
@@ -91,30 +100,30 @@ public class Player extends DrawObject {
 		direction = MyGameView.DIRECTION_NORMAL;
 		
 		points = new float[] {
-				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
-				0, -PLAYER_HEIGHT/2,
-				0, -PLAYER_HEIGHT/2,
-				PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
-				PLAYER_WIDTH/2, PLAYER_HEIGHT/2,
-				0, PLAYER_HEIGHT/2+REAR_OFFSET,
-				0, PLAYER_HEIGHT/2+REAR_OFFSET,
-				-PLAYER_WIDTH/2, PLAYER_HEIGHT/2
+				-width/2, height/2,
+				0, -height/2,
+				0, -height/2,
+				width/2, height/2,
+				width/2, height/2,
+				0, height/2-height*REAR_OFFSET_FACTOR,
+				0, height/2-height*REAR_OFFSET_FACTOR,
+				-width/2, height/2
 		};
 		
 		altPoints = new float[] {
-				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				0, -PLAYER_HEIGHT/4,
-				0, -PLAYER_HEIGHT/4,
-				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				PLAYER_WIDTH/4, PLAYER_HEIGHT/4,
-				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-				0, PLAYER_HEIGHT/4+REAR_OFFSET/2,
-				-PLAYER_WIDTH/4, PLAYER_HEIGHT/4
+				-width/4, height/4,
+				0, -height/4,
+				0, -height/4,
+				width/4, height/4,
+				width/4, height/4,
+				0, height/4-height*REAR_OFFSET_FACTOR/2,
+				0, height/4-height*REAR_OFFSET_FACTOR/2,
+				-width/4, height/4
 		};
-		dashPercentRectSmall = new RectF(-2, 0, 2, 4);
 			
 		dashTimeout = 0;
-		dashPercentRect = new RectF(-4, -2, 4, 6);
+		dashPercentRect = new RectF(-width/8, -height/16, width/8, 3*height/16);
+		dashPercentRectSmall = new RectF(-width/16, -height/32, width/16, 3*height/32);
 		dashNumAffectedAsteroids = 0;
 		dashNumAffectedAsteroidsHeldInPlace = 0;
 		
@@ -123,6 +132,9 @@ public class Player extends DrawObject {
 		for(int i = 0; i < points.length; i+=4) {
 			lineSegments.add(new LineSegment(0, 0, 0, 0));
 		}
+		
+		// calculate rotation degrees (use 180 +- 360 of twice the canvas height) 
+		rotationDegrees = MyGameView.canvasHeight*2 - ((MyGameView.canvasHeight*2-180)%360);
 		
 		startTime = System.currentTimeMillis();
 		
@@ -170,7 +182,7 @@ public class Player extends DrawObject {
 			// check if we need to rotate
 			if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
 				
-				float degrees = ROTATION_DEGREES * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);			
+				float degrees = rotationDegrees * (yBottom - y) / (yBottom - yTop);			
 				canvas.rotate(degrees);
 			}
 
@@ -228,7 +240,7 @@ public class Player extends DrawObject {
 			if (Configuration.controlType == Configuration.CONTROL_TOUCH) {
 				// damn floating point arithmetic
 				if (Math.abs(goX - x) > 1) {
-					speedX = MAX_SPEED;
+					speedX = maxSpeed;
 	
 					// need to move right
 					if (goX > x) {
@@ -245,11 +257,11 @@ public class Player extends DrawObject {
 			// key based controls
 			else if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
 				if (move != MOVE_NONE) {
-					if (speedX < MAX_SPEED) {
+					if (speedX < maxSpeed) {
 						speedX += BUTTON_MOVE_FACTOR;
 						
-						if (speedX > MAX_SPEED) {
-							speedX = MAX_SPEED;
+						if (speedX > maxSpeed) {
+							speedX = maxSpeed;
 						}
 					}
 				}
@@ -267,25 +279,25 @@ public class Player extends DrawObject {
 			
 			// move from bottom to top
 			if (!inPosition) {
-				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - Y_TOP) > 0) {
+				if (direction == MyGameView.DIRECTION_REVERSE && Math.abs(y - yTop) > 0) {
 					dirY = -1;
-					speedY = MAX_SPEED;
+					speedY = maxSpeed;
 				}
 				// move from top to bottom
-				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - Y_BOTTOM) > 0) {
+				else if (direction == MyGameView.DIRECTION_NORMAL && Math.abs(y - yBottom) > 0) {
 					dirY = 1;	
-					speedY = MAX_SPEED;
+					speedY = maxSpeed;
 				}
 				
 				y = y + (dirY*speedY*timeModifier);
 				
 				// autocorrect position if we overshoot
-				if (dirY > 0 && y >= Y_BOTTOM) {
-					y = Y_BOTTOM;
+				if (dirY > 0 && y >= yBottom) {
+					y = yBottom;
 					inPosition = true;
 					checkAchievements();
-				} else if (dirY < 0 && y <= Y_TOP) {
-					y = Y_TOP;
+				} else if (dirY < 0 && y <= yTop) {
+					y = yTop;
 					inPosition = true;
 					checkAchievements();
 				}
@@ -626,7 +638,7 @@ public class Player extends DrawObject {
 	 * @return gravity
 	 */
 	public float getGravity() {
-		return 1 - 2 * (Y_BOTTOM - y) / (Y_BOTTOM - Y_TOP);
+		return 1 - 2 * (yBottom - y) / (yBottom - yTop);
 	}
 	
 	/**
@@ -674,6 +686,14 @@ public class Player extends DrawObject {
 	 */
 	public boolean getDashMultipleDrops() {
 		return dashMultipleDrops;
+	}
+
+	/**
+	 * Returns maximum speed of player
+	 * @return maximum speed of player
+	 */
+	public float getMaxSpeed() {
+		return maxSpeed;
 	}
 	
 }

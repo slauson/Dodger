@@ -10,15 +10,15 @@ public class Level {
 	private static final int NUM_ASTEROIDS_INCREMENT = 4;
 	private static final int NUM_ASTEROIDS_MAX = 50;
 	
-	private static final int ASTEROID_RADIUS_MIN = 10;
-	private static final int ASTEROID_RADIUS_INCREMENT = 2;
-	private static final int ASTEROID_RADIUS_MAX = 30;
+	private static final float ASTEROID_RADIUS_FACTOR_MIN = 0.02f;
+	private static final float ASTEROID_RADIUS_FACTOR_INCREMENT = 0.004f;
+	private static final float ASTEROID_RADIUS_FACTOR_MAX = 0.1f;
 	
-	private static final float ASTEROID_SPEED_MIN = 100;
-	private static final float ASTEROID_SPEED_MIN_INCREMENT = 5;
-	private static final float ASTEROID_SPEED_MAX = 100;
-	private static final float ASTEROID_SPEED_MAX_INCREMENT = 10;
-	private static final float ASTEROID_SPEED_LIMIT = 250;
+	private static final float ASTEROID_SPEED_FACTOR_MIN = 0.1f;
+	private static final float ASTEROID_SPEED_FACTOR_MIN_INCREMENT = 0.005f;
+	private static final float ASTEROID_SPEED_FACTOR_MAX = 0.1f;
+	private static final float ASTEROID_SPEED_FACTOR_MAX_INCREMENT = 0.01f;
+	private static final float ASTEROID_SPEED_FACTOR_LIMIT = 0.3f;
 	
 	private static final int ASTEROID_HORIZONTAL_MOVEMENT_LEVEL = 4;
 	
@@ -65,35 +65,35 @@ public class Level {
 		return num;
 	}
 	
-	public int getAsteroidRadiusMin() {
-		return ASTEROID_RADIUS_MIN;
+	public float getAsteroidRadiusFactorMin() {
+		return ASTEROID_RADIUS_FACTOR_MIN;
 	}
 	
-	public int getAsteroidRadiusOffset() {
-		int num = level*ASTEROID_RADIUS_INCREMENT;
+	public float getAsteroidRadiusFactorOffset() {
+		float num = level*ASTEROID_RADIUS_FACTOR_INCREMENT;
 		
-		if (ASTEROID_RADIUS_MIN + num > ASTEROID_RADIUS_MAX) {
-			return ASTEROID_RADIUS_MAX - ASTEROID_RADIUS_MIN;
+		if (ASTEROID_RADIUS_FACTOR_MIN + num > ASTEROID_RADIUS_FACTOR_MAX) {
+			return ASTEROID_RADIUS_FACTOR_MAX - ASTEROID_RADIUS_FACTOR_MIN;
 		}
 		
 		return num;
 	}
 	
-	public float getAsteroidSpeedMin() {
-		float num = ASTEROID_SPEED_MIN + level*ASTEROID_SPEED_MIN_INCREMENT;
+	public float getAsteroidSpeedFactorMin() {
+		float num = ASTEROID_SPEED_FACTOR_MIN + level*ASTEROID_SPEED_FACTOR_MIN_INCREMENT;
 		
-		if (num > ASTEROID_SPEED_LIMIT) {
-			return ASTEROID_SPEED_LIMIT;
+		if (num > ASTEROID_SPEED_FACTOR_LIMIT) {
+			return ASTEROID_SPEED_FACTOR_LIMIT;
 		}
 		
 		return num;
 	}
 	
-	public float getAsteroidSpeedOffset() {
-		float num = ASTEROID_SPEED_MAX + level*ASTEROID_SPEED_MAX_INCREMENT;
+	public float getAsteroidSpeedFactorOffset() {
+		float num = ASTEROID_SPEED_FACTOR_MAX + level*ASTEROID_SPEED_FACTOR_MAX_INCREMENT;
 		
-		if (num > ASTEROID_SPEED_LIMIT) {
-			return ASTEROID_SPEED_LIMIT;
+		if (num > ASTEROID_SPEED_FACTOR_LIMIT) {
+			return ASTEROID_SPEED_FACTOR_LIMIT;
 		}
 		
 		return num;
