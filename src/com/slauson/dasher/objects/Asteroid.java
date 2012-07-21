@@ -41,6 +41,7 @@ public class Asteroid extends DrawObject {
 	private static final float SPEED_INVISIBLE = 100;
 	
 	private static final int HELD_IN_PLACE_DURATION = 10000;
+	private static final int DISAPPEAR_DURATION = 10000;
 	private static final int INVISIBLE_DURATION = 2000;
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
@@ -217,6 +218,7 @@ public class Asteroid extends DrawObject {
 	public void disappear() {
 		if (status == STATUS_NORMAL) {
 			status = STATUS_DISAPPEARING;
+			timeCounter = DISAPPEAR_DURATION;
 			
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
@@ -363,26 +365,31 @@ public class Asteroid extends DrawObject {
 			}
 			// broken up asteroid
 			else if (status == STATUS_BREAKING_UP){
-				int savedAlpha = paint.getAlpha();
 				paint.setAlpha((int)(255 * (1.f*timeCounter/BREAKING_UP_DURATION)));
 				
 				for (LineSegment lineSegment : lineSegments) {
 					lineSegment.draw(canvas, paint);
 				}
 				
-				paint.setAlpha(savedAlpha);	
+				paint.setAlpha(255);	
 			}
 			// disappearing asteroid
 			else if (status == STATUS_DISAPPEARING) {
+				int alpha = (int)(2*255*(factor*(1-DISAPPEARING_FACTOR)));
+				
+				if (alpha > 255) {
+					alpha = 255;
+				}
+				paint.setAlpha(alpha);
 				canvas.save();
 				canvas.translate(x, y);
 				
 				canvas.drawLines(altPoints, paint);
 				canvas.restore();
+				paint.setAlpha(255);
 			}
 			// fading out asteroid
 			else if (status == STATUS_FADING_OUT) {
-				int savedAlpha = paint.getAlpha();
 				paint.setAlpha((int)(255 * (1.0*timeCounter/FADING_OUT_DURATION)));
 				canvas.save();
 				canvas.translate(x,  y);
@@ -390,11 +397,10 @@ public class Asteroid extends DrawObject {
 				canvas.drawLines(points, paint);
 				
 				canvas.restore();
-				paint.setAlpha(savedAlpha);	
+				paint.setAlpha(255);	
 			}
 			// splitting up
 			else if (status == STATUS_SPLITTING_UP) {
-				int savedAlpha = paint.getAlpha();
 				paint.setAlpha((int)(255 * (1.0*timeCounter/SPLITTING_UP_DURATION)));
 				
 				canvas.save();
@@ -410,12 +416,11 @@ public class Asteroid extends DrawObject {
 				canvas.drawLines(altPoints, 0, leftPoints*4+4, paint);
 				
 				canvas.restore();
-				paint.setAlpha(savedAlpha);
+				paint.setAlpha(255);
 			}
 			// held in place
 			else if (status == STATUS_HELD_IN_PLACE) {
 				
-				int savedAlpha = paint.getAlpha();
 				paint.setAlpha((int)(255 * (1.0*timeCounter/HELD_IN_PLACE_DURATION)));
 
 				canvas.save();
@@ -424,7 +429,7 @@ public class Asteroid extends DrawObject {
 				canvas.drawLines(points, paint);
 				canvas.restore();
 				
-				paint.setAlpha(savedAlpha);
+				paint.setAlpha(255);
 			}
 		}
 	}
@@ -467,7 +472,7 @@ public class Asteroid extends DrawObject {
 				altPoints[i] = factor*points[i];
 			}
 			
-			if (factor < DISAPPEARING_FACTOR) {
+			if (factor < DISAPPEARING_FACTOR || timeCounter <= 0) {
 				setInvisible();
 			}
 		}

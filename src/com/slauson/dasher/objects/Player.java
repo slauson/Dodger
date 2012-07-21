@@ -208,14 +208,13 @@ public class Player extends DrawObject {
 			}
 			// breaking up
 			else if (status == STATUS_BREAKING_UP) {
-				int savedAlpha = paint.getAlpha();
 				paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
 				
 				for (LineSegment lineSegment : lineSegments) {
 					lineSegment.draw(canvas, paint);
 				}
 				
-				paint.setAlpha(savedAlpha);	
+				paint.setAlpha(255);	
 			}
 			
 			canvas.restore();
