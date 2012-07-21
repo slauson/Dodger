@@ -19,7 +19,7 @@ public class Drop extends Sprite {
 	private int invisibleTime;
 	
 	// constants
-	private static final int DROP_SPEED = 100;
+	private static final float DROP_SPEED_FACTOR = 0.125f;
 	private static final int INVISIBLE_TIME = 1000;
 	
 	public Drop(Bitmap bitmap, float x, float y, int type) {
@@ -27,7 +27,7 @@ public class Drop extends Sprite {
 		
 		this.type = type;
 		this.dirY = 1;
-		this.speed = DROP_SPEED;
+		this.speed = MyGameView.canvasHeight*DROP_SPEED_FACTOR;
 		this.invisibleTime = INVISIBLE_TIME;
 	}
 	

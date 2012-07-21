@@ -17,8 +17,8 @@ import android.graphics.Paint;
 public class PowerupBlackHole extends ActivePowerup {
 
 	// constants
-	private static final int MAX_RANGE = 100;
-	private static final int SUCK_RANGE = 50;
+	private static final float RANGE_PULL_FACTOR = 0.25f;
+	private static final float RANGE_SUCK_FACTOR = 0.125f;
 	private static final int ROTATION_SPEED = 10;
 	private static final int ASTEROID_SPEED = 100;
 	
@@ -27,6 +27,10 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 10000;
 
+	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
+	private static float rangePull = -1;
+	private static float rangeSuck = -1;
+
 	private int rotation;
 	private boolean hasQuasar;
 	
@@ -34,6 +38,12 @@ public class PowerupBlackHole extends ActivePowerup {
 		super(bitmap, x, y);
 		
 		rotation = 0;
+		
+		// init ranges if not already initialized
+		if (rangePull < 0 || rangeSuck < 0) {
+			rangePull = MyGameView.canvasWidth*RANGE_PULL_FACTOR;
+			rangeSuck = MyGameView.canvasWidth*RANGE_SUCK_FACTOR;
+		}
 		
 		// get duration
 		switch(level) {
@@ -75,12 +85,10 @@ public class PowerupBlackHole extends ActivePowerup {
 
 		int distance = (int)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
 		
-		if (distance < MAX_RANGE) {
-			
-			//System.out.println("Asteroid " + asteroid + "(" + distance + ") in max range of " + this);
+		if (distance < rangePull) {
 			
 			// suck asteroid into black hole
-			if (distance < SUCK_RANGE) {
+			if (distance < rangeSuck) {
 				
 				//System.out.println("Asteroid " + asteroid + "(" + distance + ") in suck range of " + this);
 				
@@ -89,7 +97,7 @@ public class PowerupBlackHole extends ActivePowerup {
 				}
 				
 				// update factor
-				asteroid.setFactor(1.0f * distance / SUCK_RANGE);
+				asteroid.setFactor(1.0f * distance / rangeSuck);
 				
 				// direction from asteroid to black hole
 				float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
@@ -120,7 +128,7 @@ public class PowerupBlackHole extends ActivePowerup {
 					dirY *= -1;
 				}
 				
-				float pullFactor = 1.0f*distance/MAX_RANGE;
+				float pullFactor = 1.0f*distance/rangePull;
 				
 				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;

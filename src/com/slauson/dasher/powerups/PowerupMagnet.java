@@ -24,7 +24,10 @@ public class PowerupMagnet extends ActivePowerup {
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 30000;
 	
-	private static final int MAX_RANGE = 100;
+	private static final float RANGE_PULL_FACTOR = 0.25f;
+	
+	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
+	private static float rangePull = -1;
 	
 	private int direction;
 	private boolean hasSpin;
@@ -33,6 +36,10 @@ public class PowerupMagnet extends ActivePowerup {
 		super(bitmap, x, y);
 		
 		this.direction = direction;
+		
+		if (rangePull < 0) {
+			rangePull = MyGameView.canvasWidth*RANGE_PULL_FACTOR;
+		}
 		
 		// get duration
 		switch(level) {
@@ -92,7 +99,7 @@ public class PowerupMagnet extends ActivePowerup {
 		float distance = FloatMath.sqrt((float)Math.pow(distanceX, 2) + (float)Math.pow(distanceY, 2));
 
 		// pull in asteroid
-		if (distance < MAX_RANGE) {
+		if (distance < rangePull) {
 			
 			float holdRange = height/2 + asteroid.getHeight()/2;
 			
@@ -109,7 +116,7 @@ public class PowerupMagnet extends ActivePowerup {
 			// otherwise pull in
 			else {
 			
-				float pullFactor = 0.5f - (0.5f*distance/MAX_RANGE);
+				float pullFactor = 0.5f - (0.5f*distance/rangePull);
 				
 				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;

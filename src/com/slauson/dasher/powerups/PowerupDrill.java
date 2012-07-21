@@ -19,7 +19,7 @@ import android.util.FloatMath;
 public class PowerupDrill extends ActivePowerup {
 
 	// constants
-	private static final int SPEED = 200;
+	private static final float SPEED_FACTOR = 0.25f;
 	private static final float WEIGHTED_DISTANCE_X_FACTOR = 2;
 	private static final float CONE_CHECK_X_FACTOR = 1.5f;
 	private static final int TELEPORT_DURATION = 500;
@@ -53,7 +53,9 @@ public class PowerupDrill extends ActivePowerup {
 
 		dirY = 1;
 		dirX = 0;
-		
+
+		speed = MyGameView.canvasHeight*SPEED_FACTOR;
+
 		rectDest = new RectF(-width/2, -height/2, width/2, height/2);
 		
 		// calculate maximum direction change
@@ -178,12 +180,12 @@ public class PowerupDrill extends ActivePowerup {
 		}
 		
 		if (direction == MyGameView.DIRECTION_NORMAL) {
-			y -= dirY*SPEED*timeModifier*speedModifier;
+			y -= dirY*speed*timeModifier*speedModifier;
 		} else {
-			y += dirY*SPEED*timeModifier*speedModifier;
+			y += dirY*speed*timeModifier*speedModifier;
 		}
 		
-		x += dirX*SPEED*timeModifier*speedModifier;
+		x += dirX*speed*timeModifier*speedModifier;
 	}
 	
 	@Override
