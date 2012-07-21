@@ -1012,7 +1012,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	private int dropPowerup(float x, float y) {
 		// create powerup
-		int powerup = random.nextInt(NUM_POWERUPS);
+		int powerup = 1 + random.nextInt(NUM_POWERUPS);
 		
 		// debug mode
 		if (Debugging.dropType != POWERUP_NONE) {
@@ -1022,11 +1022,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		int r_powerup = 0;
 		
 		switch(powerup) {
-		case POWERUP_DRILL:
-			r_powerup = R_POWERUP_DRILL;
+		case POWERUP_SMALL:
+			r_powerup = R_POWERUP_SMALL;
 			break;
 		case POWERUP_SLOW:
 			r_powerup = R_POWERUP_SLOW;
+			break;
+		case POWERUP_INVULNERABLE:
+			r_powerup = R_POWERUP_INVULNERABLE;
+			break;
+		case POWERUP_DRILL:
+			r_powerup = R_POWERUP_DRILL;
 			break;
 		case POWERUP_MAGNET:
 			r_powerup = R_POWERUP_MAGNET;
@@ -1039,12 +1045,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			break;
 		case POWERUP_BOMB:
 			r_powerup = R_POWERUP_BOMB;
-			break;
-		case POWERUP_SMALL:
-			r_powerup = R_POWERUP_SMALL;
-			break;
-		case POWERUP_INVULNERABLE:
-			r_powerup = R_POWERUP_INVULNERABLE;
 			break;
 		}
 		
