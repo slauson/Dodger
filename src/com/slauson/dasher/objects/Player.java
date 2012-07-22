@@ -63,8 +63,6 @@ public class Player extends DrawObject {
 	// size stuff
 	private static final float SIZE_FACTOR = 0.067f;
 	private static final float REAR_OFFSET_FACTOR = 0.25f;
-	private static final float DASH_PERCENT_FACTOR = 0.5f;
-	
 	private static final int INVULNERABLE_DURATION = 5000;
 	
 	// dash recharge
@@ -72,6 +70,9 @@ public class Player extends DrawObject {
 	private static final int DASH_RECHARGE_DURATION_1 = 17500;
 	private static final int DASH_RECHARGE_DURATION_2 = 15000;
 	private static final int DASH_RECHARGE_DURATION_3 = 10000;
+	
+	// breakup duration
+	private static final int BREAKING_UP_DURATION = 3000;
 	
 	public Player() {
 		// set y, width, height later 
@@ -693,6 +694,14 @@ public class Player extends DrawObject {
 	 */
 	public float getMaxSpeed() {
 		return maxSpeed;
+	}
+
+	/**
+	 * Returns duration of breakup animation
+	 * @return duration of breakup animation
+	 */
+	public int getBreakupDuration() {
+		return BREAKING_UP_DURATION;
 	}
 	
 }

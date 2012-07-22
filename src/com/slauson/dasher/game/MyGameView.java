@@ -490,7 +490,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 										    }
 										});
 									}
-								}, Player.BREAKING_UP_DURATION-500);
+								}, player.getBreakupDuration()-500);
 							} else {
 								// increment pass through counter
 								powerupInvulnerability.passThrough();
