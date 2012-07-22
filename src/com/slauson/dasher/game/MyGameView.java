@@ -117,9 +117,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int MODE_PAUSED = 0;
 	private static final int MODE_RUNNING = 1;
 	
-	// drops
-	private static final float DROP_CHANCE = 1f;
-	
 	// powerup stuff
 	private static final int BOMB_COUNTER_MAX = 10;
 	private static final int QUASAR_COUNTER_MAX = 20;
@@ -465,8 +462,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 				}
 				
-				// only check collision with player when asteroid is in normal status
-				if (temp.getStatus() == Asteroid.STATUS_NORMAL) {
+				// only check collision with player when asteroid is in normal or held in place status
+				if (temp.getStatus() == Asteroid.STATUS_NORMAL || temp.getStatus() == Asteroid.STATUS_HELD_IN_PLACE) {
 					
 					// check collision with player
 					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(temp)) {
@@ -1074,7 +1071,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut(true);
+			asteroid.fadeOut(Asteroid.FADE_OUT_FROM_BOMB);
 			numAffectedAsteroids++;
 			
 			// cause drop if upgraded
@@ -1128,7 +1125,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private void activateQuasar() {
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut(false);
+			asteroid.fadeOut(Asteroid.FADE_OUT_FROM_QUASAR);
 		}
 	}
 	

@@ -40,11 +40,21 @@ public class Asteroid extends DrawObject {
 	private static final float HORIZONTAL_MOVEMENT_OFFSET = 0.25f;
 	private static final float SPEED_INVISIBLE = 100;
 	
+	// durations
 	private static final int HELD_IN_PLACE_DURATION = 10000;
 	private static final int DISAPPEAR_DURATION = 10000;
 	private static final int INVISIBLE_DURATION = 2000;
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
+
+	/**
+	 * Public constants
+	 */
+	public static final int FADE_OUT_FROM_BOMB = 0;
+	public static final int FADE_OUT_FROM_QUASAR = 1;
+	public static final int FADE_OUT_FROM_MAGNET = 2;
+		
+		
 	
 	public Asteroid(float sizeFactor, float speedFactor, boolean horizontalMovement) {
 		// do width/height later
@@ -171,7 +181,7 @@ public class Asteroid extends DrawObject {
 	 * Make asteroid break up into line segments, caused by dash
 	 */
 	public void breakup() {
-		if (status == STATUS_NORMAL) {
+		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			
 			LineSegment lineSegment;
 			
@@ -229,15 +239,17 @@ public class Asteroid extends DrawObject {
 	
 	/**
 	 * Fade out asteroid
-	 * @param causedByBomb true if this was caused by a bomb
+	 * @param cause cause of the fadeout
 	 */
-	public void fadeOut(boolean causedByBomb) {
-		if (status == STATUS_NORMAL) {
+	public void fadeOut(int cause) {
+		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			status = STATUS_FADING_OUT;
 			timeCounter = FADING_OUT_DURATION;
 			
-			if (causedByBomb) {
+			if (cause == FADE_OUT_FROM_BOMB) {
 				LocalStatistics.getInstance().asteroidsDestroyedByBomb++;
+			} else if (cause == FADE_OUT_FROM_QUASAR) {
+				LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			}
 		}
 	}
@@ -246,7 +258,7 @@ public class Asteroid extends DrawObject {
 	 * Split up asteroid, caused by drill
 	 */
 	public void splitUp() {
-		if (status == STATUS_NORMAL) {
+		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			
 			int indexRight = 2, indexLeft = 0;
 			boolean leftSwitch = false, rightSwitch = false;
@@ -337,20 +349,6 @@ public class Asteroid extends DrawObject {
 		}
 	}
 	
-	/**
-	 * Checks asteroid collision with other asteroid
-	 * @param other asteroid to check collision with
-	 * @return true if asteroids collided
-	 */
-	public boolean checkCollision(Asteroid other) {
-		
-		if (status == STATUS_NORMAL && other.status == STATUS_NORMAL && checkBoxCollision(other)) {
-			return true;
-		}
-		
-		return false;
-	}
-	
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		if (status != STATUS_INVISIBLE && onScreen()) {
@@ -421,15 +419,11 @@ public class Asteroid extends DrawObject {
 			// held in place
 			else if (status == STATUS_HELD_IN_PLACE) {
 				
-				paint.setAlpha((int)(255 * (1.0*timeCounter/HELD_IN_PLACE_DURATION)));
-
 				canvas.save();
 				canvas.translate(x, y);
 				
 				canvas.drawLines(points, paint);
 				canvas.restore();
-				
-				paint.setAlpha(255);
 			}
 		}
 	}
@@ -499,7 +493,7 @@ public class Asteroid extends DrawObject {
 			}
 			
 			if (timeCounter <= 0) {
-				setInvisible();
+				fadeOut(FADE_OUT_FROM_MAGNET);
 			}
 		}
 		// invisible asteroid
