@@ -84,58 +84,60 @@ public class PowerupBlackHole extends ActivePowerup {
 		float absDistanceY = Math.abs(distanceY);
 
 		int distance = (int)Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
-		
+
+		// in pull range
 		if (distance < rangePull) {
 			
-			// suck asteroid into black hole
+			// direction from asteroid to black hole
+			float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
+			float dirY = 1.0f*distanceY/(absDistanceX + absDistanceY);
+			
+			if (MyGameView.direction == MyGameView.DIRECTION_REVERSE) {
+				dirY *= -1;
+			}
+			
+			
+			/**
+			 * We want to blend the normal, pull, and suck movement here
+			 * 0: 0 pull, 0 normal, 1 suck
+			 * suck range: .5 pull, 0 normal, .5 suck
+			 * pull range: 0 pull, 1 normal, 0 suck
+			 */
+			float normalFactor, pullFactor, suckFactor;
+			
+			suckFactor = (rangePull-distance)/rangePull;
+			
+			
+			// in suck range
 			if (distance < rangeSuck) {
 				
-				//System.out.println("Asteroid " + asteroid + "(" + distance + ") in suck range of " + this);
-				
-				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
-					asteroid.disappear();
-				}
+				normalFactor = 0;
+				pullFactor = 0.5f*(distance/rangeSuck);
 				
 				// update factor
 				asteroid.setFactor(1.0f * distance / rangeSuck);
 				
-				// direction from asteroid to black hole
-				float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
-				float dirY = 1.0f*distanceY/(absDistanceX + absDistanceY);
-				
-				if (MyGameView.direction == MyGameView.DIRECTION_REVERSE) {
-					dirY *= -1;
+				// suck asteroid into black hole
+				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
+					asteroid.disappear();
+					
+					asteroid.setSpeed(ASTEROID_SPEED);
 				}
-				
-				// get perpendicular to direction
-				float asteroidDirX = 0.25f*dirX + 0.75f*dirY;
-				float asteroidDirY = 0.25f*dirY - 0.75f*dirX;
-								
-				asteroid.setDirX(asteroidDirX);
-				asteroid.setDirY(asteroidDirY);
-				asteroid.setSpeed(ASTEROID_SPEED);
-				
-				numAffectedAsteroids++;
-			} 
-			// pull asteroid towards black hole
-			else if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
-			
-				// direction from asteroid to black hole
-				float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
-				float dirY = 1.0f*distanceY/(absDistanceX + absDistanceY);
-				
-				if (MyGameView.direction == MyGameView.DIRECTION_REVERSE) {
-					dirY *= -1;
-				}
-				
-				float pullFactor = 1.0f*distance/rangePull;
-				
-				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
-				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;
-							
-				asteroid.setDirX(asteroidDirX);
-				asteroid.setDirY(asteroidDirY);
 			}
+			// not in suck range
+			else {
+				float factor = (((rangePull - rangeSuck) - (rangePull - distance))/(rangePull - rangeSuck));
+				normalFactor = 1.0f*factor;
+				pullFactor = 0.5f - 0.5f*factor;
+			}
+
+			float asteroidDirX = normalFactor*asteroid.getDirX() + pullFactor*dirX + suckFactor*(0.25f*dirX + 0.75f*dirY);
+			float asteroidDirY = normalFactor*asteroid.getDirY() + pullFactor*dirY + suckFactor*(0.25f*dirY - 0.75f*dirX);
+				
+			numAffectedAsteroids++;
+			
+			asteroid.setDirX(asteroidDirX);
+			asteroid.setDirY(asteroidDirY);
 		}
 	}
 	
