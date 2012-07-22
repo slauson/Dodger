@@ -502,7 +502,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 							temp.breakup();
 
 							// causes drop depending on upgrade
-							if (player.getDashNumAffectedAsteroids() == 0 || player.getDashMultipleDrops()) {
+							if (player.getDashNumAffectedAsteroids() == 0 ||
+									(player.getDashNumAffectedAsteroids() == 1 && player.getDashMultipleDrops()))
+							{
 								dropPowerup(temp.getX(), temp.getY());
 							}
 							player.dashAffectedAsteroid(temp);
