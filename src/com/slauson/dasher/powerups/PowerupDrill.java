@@ -20,14 +20,14 @@ public class PowerupDrill extends ActivePowerup {
 
 	// constants
 	private static final float SPEED_FACTOR = 0.25f;
-	private static final float WEIGHTED_DISTANCE_X_FACTOR = 2;
-	private static final float CONE_CHECK_X_FACTOR = 1.5f;
+	private static final float WEIGHTED_DISTANCE_X_FACTOR = 4.0f;
+	private static final float CONE_CHECK_X_FACTOR = 2.0f;
+	private static final float MAX_DIR_CHANGE = 0.1f;
 	private static final int TELEPORT_DURATION = 500;
 	
-	private static final float MAX_DIR_CHANGE_0 = 0.05f;
-	private static final float MAX_DIR_CHANGE_1 = 0.10f;
-	private static final float MAX_DIR_CHANGE_2 = 0.15f;
-	private static final float MAX_DIR_CHANGE_3 = 0.25f;
+	private static final float MAX_X_DIR_1 = 0.05f;
+	private static final float MAX_X_DIR_2 = 0.1f;
+	private static final float MAX_X_DIR_3 = 0.25f;
 	
 	private static final int DURATION = 10000;
 	
@@ -40,7 +40,8 @@ public class PowerupDrill extends ActivePowerup {
 	private int teleportDuration;
 
 	// upgrades
-	private float maxDirChange;
+	private boolean hasSeek;
+	private float maxXDir;
 	private boolean hasTeleport;
 		
 	public PowerupDrill(Bitmap bitmap, float x, float y, int direction, int level) {
@@ -61,20 +62,21 @@ public class PowerupDrill extends ActivePowerup {
 		// calculate maximum direction change
 		switch(level) {
 		case Upgrades.DRILL_UPGRADE_SEEK_1:
-			maxDirChange = MAX_DIR_CHANGE_1;
+			maxXDir = MAX_X_DIR_1;
 			break;
 		case Upgrades.DRILL_UPGRADE_SEEK_2:
-			maxDirChange = MAX_DIR_CHANGE_2;
+			maxXDir = MAX_X_DIR_2;
 			break;
 		case Upgrades.DRILL_UPGRADE_SEEK_3:
 		case Upgrades.DRILL_UPGRADE_TELEPORT:
-			maxDirChange = MAX_DIR_CHANGE_3;
+			maxXDir = MAX_X_DIR_3;
 			break;
 		default:
-			maxDirChange = MAX_DIR_CHANGE_0;
+			maxXDir = 0;
 			break;
 		}
 		
+		hasSeek = level >= Upgrades.DRILL_UPGRADE_SEEK_1;
 		hasTeleport = level >= Upgrades.DRILL_UPGRADE_TELEPORT;
 		teleportDuration = 0;
 		
@@ -98,17 +100,23 @@ public class PowerupDrill extends ActivePowerup {
 			return;
 		}
 		
+		// check if drill split up asteroid
 		if (checkBoxCollision(asteroid)) {
 			asteroid.splitUp();
 			numAffectedAsteroids++;
 			nextAsteroid = null;
 		}
 		
+		// check if drill can seek
+		if (!hasSeek) {
+			return;
+		}
+		
 		// get weighted distance
 		float distanceX = Math.abs(x - asteroid.getX());
 		float distanceY = Math.abs(y - asteroid.getY());
 		
-		// cone check
+		// cone check ( we only want to look at asteroids in narrow cone above asteroid)
 		if (CONE_CHECK_X_FACTOR*distanceX > distanceY) {
 			return;
 		}
@@ -148,8 +156,6 @@ public class PowerupDrill extends ActivePowerup {
 					y = height/2;
 				}
 				
-				System.out.println("RESET drill to " + (int)x + ", " + (int)y);
-				
 				hasTeleport = false;
 			}
 			return;
@@ -163,17 +169,24 @@ public class PowerupDrill extends ActivePowerup {
 			float distanceY = nextAsteroid.getY() - y;
 			
 			float distanceAbsoluteValue = Math.abs(distanceX) + Math.abs(distanceY);
-			
 			float actualDirX = distanceX/(distanceAbsoluteValue)/2;
-			//float actualDirY = 0.5f + distanceY/(distanceAbsoluteValue)/2;
 			
+			// slowly change direction
 			float dirChangeX = actualDirX - dirX;
-			if (Math.abs(dirChangeX) < maxDirChange) {
+			if (Math.abs(dirChangeX) < MAX_DIR_CHANGE) {
 				dirX = actualDirX;
 			} else if (dirChangeX > 0) {
-				dirX += maxDirChange;
+				dirX += MAX_DIR_CHANGE;
 			} else {
-				dirX -= maxDirChange;
+				dirX -= MAX_DIR_CHANGE;
+			}
+			
+			// check bounds
+			if (dirX > maxXDir) {
+				dirX = maxXDir;
+			}
+			if (dirX < -maxXDir) {
+				dirX = -maxXDir;
 			}
 			
 			dirY = 1.0f - Math.abs(dirX);
@@ -222,8 +235,6 @@ public class PowerupDrill extends ActivePowerup {
 		if (teleportDuration > 0) {
 			
 			float factor = Math.abs(TELEPORT_DURATION/2 - teleportDuration)/(1.f*TELEPORT_DURATION/2);
-			
-			System.out.println("Draw teleport: " + factor);
 			
 			rectDest.set(-width/2*factor, -height/2*factor, width/2*factor, height/2*factor);
 			
@@ -288,8 +299,6 @@ public class PowerupDrill extends ActivePowerup {
 	 * Teleports drill to other side of screen at random x position
 	 */
 	public void teleport() {
-		
-		System.out.println("TELEPORT");
 		
 		nextAsteroid = null;
 		nextDistance = 0;
