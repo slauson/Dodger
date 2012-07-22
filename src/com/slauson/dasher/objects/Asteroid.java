@@ -331,7 +331,7 @@ public class Asteroid extends DrawObject {
 			altPoints[indexLeft] = altPoints[0];
 			altPoints[indexLeft+1] = altPoints[1];
 			
-			speed = 0;
+			// NOTE: don't reset speed here so that the split up animation looks smoother
 			status = STATUS_SPLITTING_UP;
 			timeCounter = SPLITTING_UP_DURATION;
 			
