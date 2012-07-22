@@ -221,7 +221,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	public void MyGameSurfaceView_OnResume() {
@@ -370,7 +369,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			System.out.println("MyGameView init()");
 			
-			level = new Level(Debugging.level);
+			level = new Level(Debugging.level, Debugging.levelProgression);
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			random = new Random();		
@@ -414,6 +413,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Sets activity of this view
+	 * @param gameActivity activity
+	 */
 	public void setActivity(MyGameActivity gameActivity) {
 		this.gameActivity = gameActivity;
 	}
@@ -756,7 +759,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		debugText = "" + player.getSpeed() + " - level " + level.getLevel();
 		
 		// add more asteroids if needed
-		if (level.update() && Debugging.levelProgression) {
+		if (level.update()) {
 			// add more asteroids if necessary
 			int numAsteroidsToAdd = level.getNumAsteroids() - asteroids.size();
 			
@@ -939,8 +942,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	/**
 	 * Handle accelerometer, this is called from game activity
-	 * @param tx
-	 * @param ty
+	 * @param tx x factor
+	 * @param ty y factor
 	 */
 	void updateAccelerometer(float tx, float ty) {
 		
@@ -984,6 +987,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		lastMoveTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Toggles pause state of game
+	 * @param paused true if game should be paused
+	 */
 	public void togglePause(boolean paused) {
 		if (paused) {
 			gameMode = MODE_PAUSED;
@@ -1123,6 +1130,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Resets given asteroid
+	 * @param asteroid asteroid to reset
+	 */
 	private void resetAsteroid(Asteroid asteroid) {
 		float radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 		float speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
@@ -1130,6 +1141,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		asteroid.reset(radius, speed, level.hasAsteroidHorizontalMovement());
 	}
 	
+	/**
+	 * Resets game state
+	 */
 	public void reset() {
 		level.reset();
 		resetAsteroids();
@@ -1139,6 +1153,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		drops.clear();
 	}
 	
+	/**
+	 * Resets all asteroids
+	 */
 	private void resetAsteroids() {
 		int numAsteroids = level.getNumAsteroids();
 		
@@ -1151,6 +1168,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Resets update times for player, asteroids, drops, and powerup
+	 */
 	private void resetUpdateTimes() {
 		player.resetUpdateTime();
 		

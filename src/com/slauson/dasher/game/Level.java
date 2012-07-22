@@ -5,6 +5,8 @@ public class Level {
 	private int level;
 	private long levelStartTime;
 	
+	private boolean progression;
+	
 	// constants
 	private static final int NUM_ASTEROIDS_BASE = 10;
 	private static final int NUM_ASTEROIDS_INCREMENT = 4;
@@ -24,13 +26,17 @@ public class Level {
 	
 	private static final long LEVEL_TIME = 15000;
 	
-	public Level(int level) {
-		this.level = 0;
-		levelStartTime = System.currentTimeMillis();
+	public Level() {
+		this(0, true);
 	}
 	
-	public Level() {
-		level = 0;
+	public Level(int level) {
+		this(level, true);
+	}
+	
+	public Level(int level, boolean progression) {
+		this.level = level;
+		this.progression = progression;
 		levelStartTime = System.currentTimeMillis();
 	}
 	
@@ -45,7 +51,7 @@ public class Level {
 	
 	public boolean update() {
 		
-		if (System.currentTimeMillis() - levelStartTime > LEVEL_TIME) {
+		if (progression && System.currentTimeMillis() - levelStartTime > LEVEL_TIME) {
 			levelStartTime = System.currentTimeMillis();
 			level++;
 			return true;
