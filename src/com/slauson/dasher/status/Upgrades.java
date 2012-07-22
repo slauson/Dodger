@@ -13,6 +13,15 @@ import android.content.res.Resources;
  */
 public class Upgrades {
 	
+	// constant for upgrade key
+	public static final String UPGRADE_KEY = "upgrade_key";
+	
+	// constants for upgrades (general)
+	public static final int UPGRADE_1 = 1;
+	public static final int UPGRADE_2 = 2;
+	public static final int UPGRADE_3 = 3;
+	public static final int UPGRADE_4 = 4;
+	
 	// constants for upgrade costs
 	public static final int POINTS_UPGRADE_1 = 1000;
 	public static final int POINTS_UPGRADE_2 = 2500;
@@ -78,15 +87,15 @@ public class Upgrades {
 	public static final int NUM_UPGRADES = 4;
 	
 	// actual upgrades
-	public static Upgrade dashUpgrade = new Upgrade("upgrade_dash");
-	public static Upgrade smallUpgrade = new Upgrade("upgrade_small");
-	public static Upgrade slowUpgrade = new Upgrade("upgrade_slow");
-	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability");
-	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill");
-	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet", 0);
-	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", 0);
-	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", 0);
-	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", 0);
+	public static Upgrade dashUpgrade = new Upgrade("upgrade_dash", "Dash");
+	public static Upgrade smallUpgrade = new Upgrade("upgrade_small", "Small");
+	public static Upgrade slowUpgrade = new Upgrade("upgrade_slow", "Slow");
+	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability", "Invulnerability");
+	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill", "Drill");
+	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet", 0, "Magnet");
+	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", 0, "Black Hole");
+	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", 0, "Bumper");
+	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", 0, "Bomb");
 	
 	private static boolean initialized = false;
 	

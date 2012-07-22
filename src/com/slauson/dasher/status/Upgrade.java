@@ -10,6 +10,7 @@ import android.content.res.Resources;
  */
 public class Upgrade {
 	
+	// private constants
 	private static int NUM_LEVELS = 5;
 	
 	private String key;
@@ -25,15 +26,18 @@ public class Upgrade {
 	 */
 	private int level;
 	
+	private String description;
+	
 	private int[] titles;
 	
-	public Upgrade(String key) {
-		this(key, 0);
+	public Upgrade(String key, String description) {
+		this(key, 0, description);
 	}
 	
-	public Upgrade(String key, int level) {
+	public Upgrade(String key, int level, String description) {
 		this.key = key;
 		this.level = level;
+		this.description = description;
 		
 		// setup title resource ids
 		titles = new int[NUM_LEVELS];
@@ -81,7 +85,7 @@ public class Upgrade {
 	public void loadResources(Resources resources, String packageName) {
 
 		// load resource ids titles
-		for (int i = 0; i < NUM_LEVELS; i++) {
+		for (int i = 1; i < NUM_LEVELS; i++) {
 			titles[i] = resources.getIdentifier(key + "_" + i, "string", packageName);
 			
 			if (titles[i] == 0) {
@@ -106,5 +110,21 @@ public class Upgrade {
 	@Override
 	public String toString() { 
 		return key + ": " + level;
+	}
+	
+	/**
+	 * Returns upgrade key
+	 * @return upgrade key
+	 */
+	public String getKey() {
+		return key;
+	}
+	
+	/**
+	 * Returns upgrade description
+	 * @return upgrade description
+	 */
+	public String getDescription() {
+		return description;
 	}
 }
