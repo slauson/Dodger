@@ -375,7 +375,7 @@ public class Asteroid extends DrawObject {
 			}
 			// disappearing asteroid
 			else if (status == STATUS_DISAPPEARING) {
-				int alpha = (int)(2*255*(factor*(1-DISAPPEARING_FACTOR)));
+				int alpha = (int)(4*255*(factor*(1-DISAPPEARING_FACTOR)));
 				
 				if (alpha > 255) {
 					alpha = 255;

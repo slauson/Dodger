@@ -34,7 +34,7 @@ public abstract class DrawObject extends Item {
 	public static final int BREAKING_UP_DURATION = 5000;
 	
 	protected static final float BREAKING_UP_MOVE = 40;
-	protected static final float DISAPPEARING_FACTOR = 0.25f;
+	protected static final float DISAPPEARING_FACTOR = 0.125f;
 	protected static final int FADING_OUT_DURATION = 1000;
 	protected static final int SPLITTING_UP_DURATION = 2000;
 	protected static final float SPLITTING_UP_OFFSET = 50;
