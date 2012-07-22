@@ -25,7 +25,7 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final int DURATION_0 = 10000;
 	private static final int DURATION_1 = 15000;
 	private static final int DURATION_2 = 20000;
-	private static final int DURATION_3 = 10000;
+	private static final int DURATION_3 = 30000;
 
 	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
 	private static float rangePull = -1;
