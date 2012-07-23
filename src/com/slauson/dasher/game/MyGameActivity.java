@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 /**
  * Game activity
@@ -26,9 +27,9 @@ public class MyGameActivity extends Activity {
 	private MyGameView myGameView;
 
 	private MyAccelerometer myAccelerometer;
-
-	private Button pauseMenuResumeButton, pauseMenuInstructionsButton, pauseMenuOptionsButton, pauseMenuQuitButton;
 	
+	private LinearLayout pauseMenu;
+
 	private boolean quitting, paused;
 	
 	/** Called when the activity is first created. */
@@ -57,18 +58,20 @@ public class MyGameActivity extends Activity {
 		 * Setup pause menu
 		 */
 		
+		pauseMenu = (LinearLayout)findViewById(R.id.gamePauseMenu);
+		pauseMenu.setVisibility(View.GONE);
+		
 		// resume button
-		pauseMenuResumeButton = (Button)findViewById(R.id.gamePauseMenuResumeButton);
+		Button pauseMenuResumeButton = (Button)findViewById(R.id.gamePauseMenuResumeButton);
 		pauseMenuResumeButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				unpauseGame();
 			}
 		});
-		pauseMenuResumeButton.setVisibility(View.GONE);
 		
 		// instructions button
-		pauseMenuInstructionsButton = (Button)findViewById(R.id.gamePauseMenuInstructionsButton);
+		Button pauseMenuInstructionsButton = (Button)findViewById(R.id.gamePauseMenuInstructionsButton);
 		pauseMenuInstructionsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -76,10 +79,9 @@ public class MyGameActivity extends Activity {
 				startActivity(intent);
 			}
 		});
-		pauseMenuInstructionsButton.setVisibility(View.GONE);
 
 		// options button
-		pauseMenuOptionsButton = (Button)findViewById(R.id.gamePauseMenuOptionsButton);
+		Button pauseMenuOptionsButton = (Button)findViewById(R.id.gamePauseMenuOptionsButton);
 		pauseMenuOptionsButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -87,10 +89,9 @@ public class MyGameActivity extends Activity {
 				startActivity(intent);
 			}
 		});
-		pauseMenuOptionsButton.setVisibility(View.GONE);
 
 		// quit button
-		pauseMenuQuitButton = (Button)findViewById(R.id.gamePauseMenuQuitButton);
+		Button pauseMenuQuitButton = (Button)findViewById(R.id.gamePauseMenuQuitButton);
 		pauseMenuQuitButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
@@ -101,7 +102,6 @@ public class MyGameActivity extends Activity {
 				startActivity(intent);
 			}
 		});
-		pauseMenuQuitButton.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -151,6 +151,7 @@ public class MyGameActivity extends Activity {
 		case KeyEvent.KEYCODE_BACK:
 			if (paused) {
 				unpauseGame();
+				break;
 			}
 			// no break here so that we have the ability to pause game too
 		case KeyEvent.KEYCODE_MENU:
@@ -177,21 +178,13 @@ public class MyGameActivity extends Activity {
 	}
 
 	private void pauseGame() {
-		pauseMenuResumeButton.setVisibility(View.VISIBLE);
-		pauseMenuInstructionsButton.setVisibility(View.VISIBLE);
-		pauseMenuOptionsButton.setVisibility(View.VISIBLE);
-		pauseMenuQuitButton.setVisibility(View.VISIBLE);
-		
+		pauseMenu.setVisibility(View.VISIBLE);
 		paused = true;
 		myGameView.togglePause(true);
 	}
 
 	private void unpauseGame() {
-		pauseMenuResumeButton.setVisibility(View.GONE);
-		pauseMenuInstructionsButton.setVisibility(View.GONE);
-		pauseMenuOptionsButton.setVisibility(View.GONE);
-		pauseMenuQuitButton.setVisibility(View.GONE);
-		
+		pauseMenu.setVisibility(View.GONE);
 		paused = false;
 		myGameView.togglePause(false);
 	}

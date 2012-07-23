@@ -448,6 +448,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				// reset asteroid that needs reset
 				if (temp.getStatus() == Asteroid.STATUS_NEEDS_RESET) {
 					resetAsteroid(temp);
+					continue;
 				}
 				
 				// don't do anything for asteroids not on screen
@@ -496,16 +497,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						// player is dashing (only destroy asteroids when invulnerability has upgrade)
 						else if (!powerupInvulnerability.isActive() || powerupInvulnerability.isDasher()) {
 
-							temp.breakup();
-
-							// causes drop depending on upgrade
+														// causes drop depending on upgrade
 							if (player.getDashNumAffectedAsteroids() == 0 ||
 									(player.getDashNumAffectedAsteroids() == 1 && player.getDashMultipleDrops()))
 							{
 								dropPowerup(temp.getX(), temp.getY());
 							}
+
+							// we handle normal vs held in place asteroids in the method
 							player.dashAffectedAsteroid(temp);
 							
+							temp.breakup();
+
 							// check small dash destroy achievement
 							if (powerupSmall.isActive()) {
 								Achievements.unlockLocalAchievement(Achievements.localSmallDashDestroy);

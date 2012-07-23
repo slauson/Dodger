@@ -64,10 +64,11 @@ public class Statistics {
 	
 	/**
 	 * Returns string representation of time played
+	 * @param hours true if hours should be displayed
 	 * @return string representation of time played
 	 */
-	public String getTimePlayedString() {
-		return Util.getTimeString(timePlayed);
+	public String getTimePlayedString(boolean hours) {
+		return Util.getTimeString(timePlayed, hours);
 	}
 	
 	/**

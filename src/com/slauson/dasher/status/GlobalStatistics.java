@@ -225,9 +225,9 @@ public class GlobalStatistics {
 	
 	public static String getAverageTimePerPlayString() {
 		if (statistics.timesPlayed != 0) {
-			return Util.getTimeString(statistics.timePlayed/statistics.timesPlayed);
+			return Util.getTimeString(statistics.timePlayed/statistics.timesPlayed, false);
 		}
 		
-		return Util.getTimeString(0);
+		return Util.getTimeString(0, false);
 	}
 }

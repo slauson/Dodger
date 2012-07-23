@@ -645,10 +645,10 @@ public class Player extends DrawObject {
 	 * Increments dash number of affected asteroids
 	 */
 	public void dashAffectedAsteroid(Asteroid asteroid) {
-		dashNumAffectedAsteroids++;
-		
 		if (asteroid.getStatus() == STATUS_HELD_IN_PLACE) {
 			dashNumAffectedAsteroidsHeldInPlace++;
+		} else {
+			dashNumAffectedAsteroids++;
 		}
 	}
 	

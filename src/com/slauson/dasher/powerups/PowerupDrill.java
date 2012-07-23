@@ -86,8 +86,8 @@ public class PowerupDrill extends ActivePowerup {
 	@Override
 	public void alterAsteroid(Asteroid asteroid) {
 
-		// ignore asteroids past drill, off screen, or non normal
-		if (asteroid.getStatus() != Asteroid.STATUS_NORMAL ||
+		// ignore asteroids past drill, off screen, or non normal/held in place
+		if ((asteroid.getStatus() != Asteroid.STATUS_NORMAL && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) ||
 				!asteroid.onScreen() ||
 				direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 <= y - height/2 ||
 				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 >= y + height/2)
@@ -103,8 +103,11 @@ public class PowerupDrill extends ActivePowerup {
 		// check if drill split up asteroid
 		if (checkBoxCollision(asteroid)) {
 			asteroid.splitUp();
-			numAffectedAsteroids++;
 			nextAsteroid = null;
+			
+			if (asteroid.getStatus() == Asteroid.STATUS_NORMAL) {
+				numAffectedAsteroids++;
+			}
 		}
 		
 		// check if drill can seek

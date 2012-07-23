@@ -15,14 +15,35 @@ public class Util {
 	 * @param seconds number of seconds
 	 * @return time string for given number of seconds
 	 */
-	public static String getTimeString(int seconds) {
-		int m = seconds/60;
-		int s = seconds%60;
+	public static String getTimeString(int seconds, boolean hours) {
 		
-		if (s < 10) {
-			return "" + m + ":0" + s;
+		if (hours) {
+			int h = seconds/3600;
+			int m = (seconds%3600)/60;
+			int s = seconds%60;
+			
+			String timeString = "" + h + ":";
+			
+			if (m < 10) {
+				timeString += "0";
+			}
+			timeString += m;
+			
+			if (s < 10) {
+				timeString += "0";
+			}
+			timeString += s;
+			
+			return timeString;
 		} else {
-			return "" + m + ":" + s;
+			int m = seconds/60;
+			int s = seconds%60;
+			
+			if (s < 10) {
+				return "" + m + ":0" + s;
+			} else {
+				return "" + m + ":" + s;
+			}			
 		}
 	}
 	

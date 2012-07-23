@@ -65,7 +65,7 @@ public class StatisticsMenu extends Activity {
 
     	// add time played
     	TextView timePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
-    	timePlayed.setText(globalStatistics.getTimePlayedString());
+    	timePlayed.setText(globalStatistics.getTimePlayedString(true));
     	
     	// add average time played
     	TextView averageTimePerPlay = (TextView)findViewById(R.id.statisticsMenuAverageTimePlayed);

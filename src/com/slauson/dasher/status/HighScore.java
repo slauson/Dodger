@@ -57,7 +57,7 @@ public class HighScore {
 	
 	public String getScoreString() {
 		
-		return Util.getTimeString(score);
+		return Util.getTimeString(score, false);
 	}
 	
 	public String getDateString() {
