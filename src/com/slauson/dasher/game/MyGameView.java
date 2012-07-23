@@ -788,8 +788,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return false;
 		}
 		
-		// only move player ship when its in normal or invulnerable status
-		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+		// only move when touch controls are being used and when ship in normal or invulnerable status
+		if (Configuration.controlType != Configuration.CONTROL_TOUCH || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
 			return false;
 		}
 		
@@ -866,8 +866,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 
-		// only move player ship when its in normal or invulnerable status
-		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+		// only move when keyboard controls are being used and when ship in normal or invulnerable status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
 			return;
 		}
 
@@ -875,30 +875,26 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// left
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_S:
-			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
-				player.moveLeft();
-				System.out.println("PLAYER MOVE LEFT");
+			player.moveLeft();
+			System.out.println("PLAYER MOVE LEFT");
 				
-				// check stay in place achievement
-				if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-					Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-				}
-				lastMoveTime = System.currentTimeMillis();
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
+			lastMoveTime = System.currentTimeMillis();
 			break;			
 		// right
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 		case KeyEvent.KEYCODE_L:
-			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
-				player.moveRight();
-				System.out.println("PLAYER MOVE RIGHT");
+			player.moveRight();
+			System.out.println("PLAYER MOVE RIGHT");
 				
-				// check stay in place achievement
-				if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-					Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-				}
-				lastMoveTime = System.currentTimeMillis();
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
+			lastMoveTime = System.currentTimeMillis();
 			break;
 		}
 	}
@@ -916,7 +912,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		// only move player ship when its in normal or invulnerable status
-		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
 			return;
 		}
 
@@ -934,7 +930,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// dpad center
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_SPACE:
-			player.dash();
+			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+				player.dash();
+			}
 			break;
 		}
 	}
@@ -951,8 +949,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 		
-		// only move player ship when its in normal or invulnerable status
-		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE) {
+		// only move when accelerometer controls are being used or when ship in normal or invulnerable status
+		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
 			return;
 		}
 		
@@ -997,6 +995,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			pauseTime = System.currentTimeMillis();
 		} else {
 			gameMode = MODE_RUNNING;
+			
+			// reset frame rate
+			myGameThread.reset();
 			
 			// update player start time to get accurate time
 			if (pauseTime > 0) {

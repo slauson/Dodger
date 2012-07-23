@@ -21,8 +21,19 @@ public class MyGameThread extends Thread {
 		maxSleepTime = 1000/Configuration.frameRate;
 	}
 	
-	public void setRunning(boolean r) {
-		running = r;
+	/**
+	 * Sets thread running state
+	 * @param running true if thread should be running 
+	 */
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	
+	/**
+	 * Resets maximum sleep time for thread
+	 */
+	public void reset() {
+		maxSleepTime = 1000/Configuration.frameRate;
 	}
 	
 	@Override
