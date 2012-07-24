@@ -2,6 +2,7 @@ package com.slauson.dasher.powerups;
 
 import java.util.LinkedList;
 
+import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Item;
 import com.slauson.dasher.objects.Player;
@@ -165,7 +166,7 @@ public class PowerupBumper extends ActivePowerup {
 	public void draw(Canvas canvas, Paint paint) {
 		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -181,7 +182,7 @@ public class PowerupBumper extends ActivePowerup {
 		}
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
 			paint.setAlpha(255);
 		}
 	}

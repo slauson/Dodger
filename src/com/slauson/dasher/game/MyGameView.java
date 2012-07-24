@@ -112,10 +112,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
 	private static final int R_POWERUP_INVULNERABLE = R.drawable.powerup_invulnerable;
 	
-	// mode
-	private static final int MODE_PAUSED = 0;
-	private static final int MODE_RUNNING = 1;
-	
 	// powerup stuff
 	private static final int BOMB_COUNTER_MAX = 10;
 	private static final int QUASAR_COUNTER_MAX = 20;
@@ -151,8 +147,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_BUMPER = 7;
 	public static final int POWERUP_BOMB = 8;
 	
-	// powerup stuff
-	
+	// mode
+	public static final int MODE_PAUSED = 0;
+	public static final int MODE_RUNNING = 1;
+		
 	// direction
 	public static final int DIRECTION_NORMAL = 0;
 	public static final int DIRECTION_REVERSE = 1;
@@ -1007,9 +1005,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// reset frame rate
 			myGameThread.reset();
 			
-			// update player start time to get accurate time
 			if (pauseTime > 0) {
-				player.addToStartTime(System.currentTimeMillis() - pauseTime);
+				
+				long timeDifference = System.currentTimeMillis() - pauseTime;
+
+				// update player start time to get accurate time
+				player.addToStartTime(timeDifference);
+				
+				// update powerup times
+				for (ActivePowerup activePowerup : activePowerups) {
+					activePowerup.addTime(timeDifference);
+				}
 			}
 			
 			pauseTime = -1;

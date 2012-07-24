@@ -131,7 +131,7 @@ public class PowerupMagnet extends ActivePowerup {
 	public void draw(Canvas canvas, Paint paint) {
 		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -164,7 +164,7 @@ public class PowerupMagnet extends ActivePowerup {
 		}
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
 			paint.setAlpha(255);
 		}
 	}

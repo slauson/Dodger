@@ -67,6 +67,14 @@ public abstract class ActivePowerup extends Sprite {
 	public boolean isFadingOut() {
 		return remainingDuration() < FADE_OUT_DURATION;
 	}
+
+	/**
+	 * Adds the given amount of time to the ending time for the powerup
+	 * @param timeDifference amount of time to add
+	 */
+	public void addTime(long timeDifference) {
+		endingTime += timeDifference;
+	}
 	
 	// abstract methods to be defined in subclasses
 	/**
