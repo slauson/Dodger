@@ -22,12 +22,16 @@ public class Util {
 			int m = (seconds%3600)/60;
 			int s = seconds%60;
 			
-			String timeString = "" + h + ":";
+			String timeString = "";
+			
+			if (h > 0) {
+				timeString += h + ":";
+			}
 			
 			if (m < 10) {
 				timeString += "0";
 			}
-			timeString += m;
+			timeString += m + ":";
 			
 			if (s < 10) {
 				timeString += "0";
