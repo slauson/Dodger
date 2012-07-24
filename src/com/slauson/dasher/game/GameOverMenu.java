@@ -48,6 +48,15 @@ public class GameOverMenu extends Activity {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
 		
+		// update statistics
+		updateStatistics(sharedPreferencesEditor);
+
+		// update high scores
+		updateHighScores(sharedPreferencesEditor);
+				
+		// check/update achievements
+		updateAchievements(sharedPreferencesEditor);
+				
 		// calculate points
 		Statistics localStatistics = LocalStatistics.getInstance();
 		int points = 0;
@@ -57,23 +66,20 @@ public class GameOverMenu extends Activity {
 
 		// points achievements
 		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
-			Achievements.unlockLocalAchievement(Achievements.localOtherPoints1);
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints1)) {
+				points += Points.POINTS_ACHIEVEMENT;
+			}
 		}
 		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
-			Achievements.unlockLocalAchievement(Achievements.localOtherPoints2);
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints2)) {
+				points += Points.POINTS_ACHIEVEMENT;
+			}
 		}
 		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
-			Achievements.unlockLocalAchievement(Achievements.localOtherPoints3);
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints3)) {
+				points += Points.POINTS_ACHIEVEMENT;
+			}
 		}
-		
-		// update statistics
-		updateStatistics(sharedPreferencesEditor);
-
-		// check/update achievements
-		updateAchievements(sharedPreferencesEditor);
-		
-		// update high scores
-		updateHighScores(sharedPreferencesEditor);
 		
 		// update points
 		updatePoints(sharedPreferencesEditor, points);

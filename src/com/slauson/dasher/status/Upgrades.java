@@ -211,7 +211,7 @@ public class Upgrades {
 			}
 		}
 		if (i == upgrades.size()) {
-			Achievements.globalPurchaseAllUpgrades.unlock();
+			Achievements.unlockLocalAchievement(Achievements.globalPurchaseAllUpgrades);
 		}
 	}
 	

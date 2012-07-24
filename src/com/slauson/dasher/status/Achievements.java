@@ -266,68 +266,68 @@ public class Achievements {
 		
 		// destroy asteroids - dash
 		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithDash1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDash1);
 		}
 		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithDash2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDash2);
 		}
 		if (globalStatistics.asteroidsDestroyedByDash >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithDash3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDash3);
 		}
 		
 		// destroy asteroids - drill
 		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithDrill1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDrill1);
 		}
 		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithDrill2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDrill2);
 		}
 		if (globalStatistics.asteroidsDestroyedByDrill >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithDrill3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithDrill3);
 		}
 
 		// destroy asteroids - magnet
 		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithMagnet1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithMagnet1);
 		}
 		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithMagnet2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithMagnet2);
 		}
 		if (globalStatistics.asteroidsDestroyedByMagnet >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithMagnet3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithMagnet3);
 		}
 
 		// destroy asteroids - black hole
 		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithBlackHole1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBlackHole1);
 		}
 		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithBlackHole2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBlackHole2);
 		}
 		if (globalStatistics.asteroidsDestroyedByBlackHole >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithBlackHole3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBlackHole3);
 		}
 
 		// destroy asteroids - bumper
 		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithBumper1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBumper1);
 		}
 		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithBumper2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBumper2);
 		}
 		if (globalStatistics.asteroidsDestroyedByBumper >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithBumper3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBumper3);
 		}
 
 		// destroy asteroids - bomb
 		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_1) {
-			globalDestroyAsteroidsWithBomb1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBomb1);
 		}
 		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_2) {
-			globalDestroyAsteroidsWithBomb2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBomb2);
 		}
 		if (globalStatistics.asteroidsDestroyedByBomb >= GLOBAL_DESTROY_ASTEROIDS_NUM_3) {
-			globalDestroyAsteroidsWithBomb3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsWithBomb3);
 		}
 		
 		// calculate total number of asteroids destroyed
@@ -340,29 +340,29 @@ public class Achievements {
 
 		// destroy asteroids - total
 		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1) {
-			globalDestroyAsteroidsTotal1.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsTotal1);
 		}
 		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2) {
-			globalDestroyAsteroidsTotal2.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsTotal2);
 		}
 		if (asteroidsDestroyedTotal >= GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3) {
-			globalDestroyAsteroidsTotal3.unlock();
+			unlockLocalAchievement(globalDestroyAsteroidsTotal3);
 		}
 		
 		//  playtime
 		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_1) {
-			globalPlaytime1.unlock();
+			unlockLocalAchievement(globalPlaytime1);
 		}
 		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_2) {
-			globalPlaytime2.unlock();
+			unlockLocalAchievement(globalPlaytime2);
 		}
 		if (globalStatistics.timePlayed >= GLOBAL_PLAYTIME_3) {
-			globalPlaytime3.unlock();
+			unlockLocalAchievement(globalPlaytime3);
 		}
 		
 		// playcount
 		if (globalStatistics.timesPlayed > GLOBAL_PLAY_COUNT_NUM) {
-			globalPlayCount.unlock();
+			unlockLocalAchievement(globalPlayCount);
 		}
 		
 		// unlock all powerups/upgrades
@@ -376,7 +376,7 @@ public class Achievements {
 			}
 		}
 		if (i == achievements.size()) {
-			globalUnlockAllAchievements.unlock();
+			unlockLocalAchievement(globalUnlockAllAchievements);
 		}
 	}
 	
@@ -414,14 +414,18 @@ public class Achievements {
 	/**
 	 * Adds achievement to list of local achievements if its not already unlocked
 	 * @param achievement achievement to add
+	 * @return true if achievement is newly unlocked
 	 */
-	public static void unlockLocalAchievement(Achievement achievement) {
+	public static boolean unlockLocalAchievement(Achievement achievement) {
 		
 		// make sure its not already unlocked
 		if (!achievement.getValue()) {
 			achievement.unlock();
 			localAchievements.add(achievement);
+			return true;
 		}
+		
+		return false;
 	}
 
 	/**
