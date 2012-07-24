@@ -675,7 +675,7 @@ public class Player extends DrawObject {
 	 * Returns number of affected asteroids with dash ability
 	 */
 	public int getDashNumAffectedAsteroids() {
-		return dashNumAffectedAsteroids;
+		return dashNumAffectedAsteroids + dashNumAffectedAsteroidsHeldInPlace;
 	}
 	
 	/**
