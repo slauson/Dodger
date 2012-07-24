@@ -608,21 +608,19 @@ public class Player extends DrawObject {
 	
 	public void dash() {
 		
-		if (dashTimeout <= 0) {
-			inPosition = false;
-			dashNumAffectedAsteroids = 0;
-			dashNumAffectedAsteroidsHeldInPlace = 0;
-		
-			if (direction == MyGameView.DIRECTION_NORMAL) {
-				direction = MyGameView.DIRECTION_REVERSE;
-			} else {
-				direction = MyGameView.DIRECTION_NORMAL;
-			}
-			
-			dashTimeout = dashRechargeDuration;
-			
-			LocalStatistics.getInstance().usesDash++;
+		inPosition = false;
+		dashNumAffectedAsteroids = 0;
+		dashNumAffectedAsteroidsHeldInPlace = 0;
+	
+		if (direction == MyGameView.DIRECTION_NORMAL) {
+			direction = MyGameView.DIRECTION_REVERSE;
+		} else {
+			direction = MyGameView.DIRECTION_NORMAL;
 		}
+		
+		dashTimeout = dashRechargeDuration;
+		
+		LocalStatistics.getInstance().usesDash++;
 	}
 	
 	public boolean inPosition() {
@@ -702,6 +700,14 @@ public class Player extends DrawObject {
 	 */
 	public int getBreakupDuration() {
 		return BREAKING_UP_DURATION;
+	}
+	
+	/**
+	 * Returns true if player can dash
+	 * @return true if player can dash
+	 */
+	public boolean canDash() {
+		return dashTimeout <= 0;
 	}
 	
 }

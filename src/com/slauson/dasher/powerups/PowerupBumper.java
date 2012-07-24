@@ -1,5 +1,7 @@
 package com.slauson.dasher.powerups;
 
+import java.util.LinkedList;
+
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Item;
 import com.slauson.dasher.objects.Player;
@@ -26,11 +28,18 @@ public class PowerupBumper extends ActivePowerup {
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 30000;
 	
+	private static final long BUMPED_ITEM_COOLDOWN = 1000;
+	
 	private int counter;
 	private int cooldown;
 	
 	private Bitmap bitmapAlt;
 	private RectF rectDest;
+	
+	// list of items, times for preventing items getting stuck in bumper
+	// make sure these are always the same size
+	private LinkedList<Item> bumpedItems;
+	private LinkedList<Long> bumpedItemTimes;
 	
 	// constants
 	private static final int COUNTER_MAX = 20;
@@ -44,6 +53,9 @@ public class PowerupBumper extends ActivePowerup {
 		counter = 0;
 		cooldown = COOLDOWN_MAX;
 		rectDest = new RectF(x - width/2, y - height/2, x + width/2, y + height/2);
+		
+		bumpedItems = new LinkedList<Item>();
+		bumpedItemTimes = new LinkedList<Long>();
 		
 		switch(level) {
 		case Upgrades.BUMPER_UPGRADE_INCREASED_DURATION_1:
@@ -65,31 +77,51 @@ public class PowerupBumper extends ActivePowerup {
 	@Override
 	public void alterAsteroid(Asteroid asteroid) {
 		if (asteroid.getStatus() == Asteroid.STATUS_NORMAL) {
-			if (checkBoxCollision(asteroid)) {
+			if (checkBoxCollision(asteroid) && !bumpedItems.contains(asteroid)) {
+				
 				asteroid.setDirY(-1*asteroid.getDirY());
 				activateBumper();
 				
 				LocalStatistics.getInstance().asteroidsDestroyedByBumper++;
 				numAffectedAsteroids++;
+				
+				bumpedItems.add(asteroid);
+				bumpedItemTimes.add(System.currentTimeMillis() + BUMPED_ITEM_COOLDOWN);
 			}
 		}
 	}
 
-	public void alterSprite(Item item) {
-		if (checkBoxCollision(item)) {
+	public void alterItem(Item item) {
+		if (checkBoxCollision(item) && !bumpedItems.contains(item)) {
+			
 			item.setDirY(-1*item.getDirY());
 			activateBumper();
+			
+			bumpedItems.add(item);
+			bumpedItemTimes.add(System.currentTimeMillis() + BUMPED_ITEM_COOLDOWN);
 		}
 	}
 	
-	public void alterPlayer(Player player) {
-		if (!player.inPosition() && cooldown == 0 && Math.abs(x - player.getX()) <= width/2 + player.getWidth()/2 && Math.abs(y - player.getY()) <= height/2 + player.getHeight()/2) {
+	public boolean alterPlayer(Player player) {
+		if (!player.inPosition() && cooldown == 0 && 
+				Math.abs(x - player.getX()) <= width/2 + player.getWidth()/2 &&
+				Math.abs(y - player.getY()) <= height/2 + player.getHeight()/2 &&
+				!bumpedItems.contains(player))
+		{
+			
 			player.dash();
 			activateBumper();
 			
 			// bumper between achievement
 			Achievements.unlockLocalAchievement(Achievements.localBumperBetween);
+			
+			bumpedItems.add(player);
+			bumpedItemTimes.add(System.currentTimeMillis() + BUMPED_ITEM_COOLDOWN);
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	public void alterDrill(PowerupDrill drill) {
@@ -112,8 +144,20 @@ public class PowerupBumper extends ActivePowerup {
 			rectDest.set((int)(x - width/2), (int)(y - factor*height/2), (int)(x + width/2), (int)(y + factor*height/2));
 		}
 		
+		// update cooldown
 		if (cooldown > 0) {
 			cooldown--;
+		}
+		
+		// update bumpedItems
+		long currentTime = System.currentTimeMillis();
+
+		for (int i = 0; i < bumpedItems.size(); i++) {
+			if (currentTime > bumpedItemTimes.get(i)) {
+				bumpedItems.remove(i);
+				bumpedItemTimes.remove(i);
+				i--;
+			}
 		}
 	}
 	

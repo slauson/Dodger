@@ -441,7 +441,18 @@ public class Asteroid extends DrawObject {
 		float timeModifier = 1.f*timeElapsed/1000;
 		
 		x = x + (dirX*speed*timeModifier*speedModifier);
-		y = y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
+		
+		// only use gravity when direction is positive
+		if (dirY > 0) {
+			y = y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
+		} else {
+			// otherwise use direction
+			if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+				y = y + (1*dirY*speed*timeModifier*speedModifier);
+			} else {
+				y = y + (-1*dirY*speed*timeModifier*speedModifier);
+			}
+		}
 		
 		if (timeCounter > 0) {
 			timeCounter -= timeElapsed;

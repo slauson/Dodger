@@ -98,7 +98,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	private long pauseTime;
 	
-	
 	/**
 	 * Constants - private
 	 */
@@ -602,7 +601,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						for (ActivePowerup activePowerup : activePowerups) {
 							// TODO: use something better here
 							if (activePowerup instanceof PowerupBumper) {
-								((PowerupBumper)activePowerup).alterSprite(temp);
+								((PowerupBumper)activePowerup).alterItem(temp);
 							}
 						}
 					}
@@ -711,9 +710,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// update gravity
 			gravity = player.getGravity();
-			
+
+			// dash completed
 			if (player.inPosition()) {
 				direction = player.getDirection();
+				
+				updatesForGravityChange();
 			}
 		}
 		
@@ -723,7 +725,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				for (ActivePowerup activePowerup : activePowerups) {
 					// TODO: use something better here
 					if (activePowerup instanceof PowerupBumper) {
-						((PowerupBumper)activePowerup).alterPlayer(player);
+						if (((PowerupBumper)activePowerup).alterPlayer(player)) {
+							updatesForGravityChange();
+						}
 					}
 				}
 			}
@@ -807,7 +811,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// check if pressed on player's position, then dash
 			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
-					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2)
+					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2 &&
+					player.canDash())
 			{
 				player.dash();
 				break;
@@ -834,7 +839,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// TODO: use touch history here (need to make sure y changed quick enough)
 			// dash based on a swipe motion event
-			if (player.getStatus() == Player.STATUS_NORMAL) {
+			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
 				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
 					player.dash();
 				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
@@ -843,7 +848,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			}
 			
 			// dash based on double tap
-			if (player.getStatus() == Player.STATUS_NORMAL) {
+			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
 				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
 					player.dash();
 				}
@@ -933,7 +938,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// dpad center
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_SPACE:
-			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD && player.canDash()) {
 				player.dash();
 			}
 			break;
@@ -1187,6 +1192,31 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		for (ActivePowerup activePowerup: activePowerups) {
 			activePowerup.resetUpdateTime();
+		}
+	}
+	
+	/**
+	 * Updates asteroids, drops, and powerups that are going in opposite direction
+	 * Used at the end of a dash for a smooth transition for stuff already going in new direction
+	 */
+	private void updatesForGravityChange() {
+		// update any asteroids, drops, powerups that are going in opposite direction
+		for (Asteroid asteroid : asteroids) {
+			if (asteroid.getDirY() < 0) {
+				asteroid.setDirY(-1*asteroid.getDirY());
+			}
+		}
+		
+		for (Drop drop : drops) {
+			if (drop.getDirY() < 0) {
+				drop.setDirY(-1*drop.getDirY());
+			}
+		}
+		
+		for (ActivePowerup activePowerup : activePowerups) {
+			if (activePowerup instanceof PowerupDrill && activePowerup.getDirY() < 0) {
+				((PowerupDrill)activePowerup).switchDirection();
+			}
 		}
 	}
 }
