@@ -996,8 +996,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Toggles pause state of game
 	 * @param paused true if game should be paused
+	 * @return true if game is actually paused
 	 */
-	public void togglePause(boolean paused) {
+	public boolean togglePause(boolean paused) {
+		
+		// no pausing when player ship is breaking up
+		if (player.getStatus() == Player.STATUS_BREAKING_UP) {
+			return false;
+		}
+		
 		if (paused) {
 			gameMode = MODE_PAUSED;
 			
@@ -1015,6 +1022,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			pauseTime = -1;
 		}
+		
+		return true;
 	}
 	
 	/**

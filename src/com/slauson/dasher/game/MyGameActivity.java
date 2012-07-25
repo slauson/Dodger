@@ -178,14 +178,18 @@ public class MyGameActivity extends Activity {
 	}
 
 	private void pauseGame() {
-		pauseMenu.setVisibility(View.VISIBLE);
-		paused = true;
-		myGameView.togglePause(true);
+		
+		if (myGameView.togglePause(true)) {
+			pauseMenu.setVisibility(View.VISIBLE);
+			paused = true;
+		}
 	}
 
 	private void unpauseGame() {
-		pauseMenu.setVisibility(View.GONE);
-		paused = false;
-		myGameView.togglePause(false);
+		
+		if (myGameView.togglePause(false)) {
+			pauseMenu.setVisibility(View.GONE);
+			paused = false;
+		}
 	}
 }
