@@ -73,6 +73,8 @@ public class Player extends DrawObject {
 	
 	// breakup duration
 	private static final int BREAKING_UP_DURATION = 3000;
+	private static final float BREAKING_UP_MOVE = 20;
+	
 	
 	public Player() {
 		// set y, width, height later 
