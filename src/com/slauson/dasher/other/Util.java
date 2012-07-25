@@ -70,5 +70,31 @@ public class Util {
 		
 	}
 
+	/**
+	 * Returns nice points string for given points
+	 * @param points points
+	 * @return nice points string for given points
+	 */
+	public static String getPointsString(int points) {
+		
+		// add comma if over 999
+		if (points > 999) {
+			
+			int tempPoints = points%1000;
+			String pointsString = "" + ((points - tempPoints)/1000) + "," + tempPoints;
+			
+			if (tempPoints < 100) {
+				pointsString += "0";
+			}
+			if (tempPoints < 10) {
+				pointsString += "0";
+			}
+			
+			return pointsString;
+		}
+		
+		return "" + points;
+	}
+
 	
 }

@@ -1,6 +1,7 @@
 package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Points;
@@ -25,10 +26,10 @@ public class PointDetailsMenu extends Activity {
     	TextView pointsAddedAchievements = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsAchievements);
     	TextView pointsAddedTotal = (TextView)findViewById(R.id.pointDetailsMenuTotalPoints);
     	
-    	pointsAddedTime.setText("+" + Points.POINTS_TIME_PLAYED*localStatistics.timePlayed);
-    	pointsAddedAsteroidsDestroyed.setText("+" + Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed());
-    	pointsAddedAchievements.setText("+" + Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size());
-    	pointsAddedTotal.setText("+" + (Points.POINTS_TIME_PLAYED*localStatistics.timePlayed + Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed() + Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size()));
+    	pointsAddedTime.setText("+" + Util.getPointsString(Points.POINTS_TIME_PLAYED*localStatistics.timePlayed));
+    	pointsAddedAsteroidsDestroyed.setText("+" + Util.getPointsString(Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed()));
+    	pointsAddedAchievements.setText("+" + Util.getPointsString(Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size()));
+    	pointsAddedTotal.setText("+" + Util.getPointsString(Points.POINTS_TIME_PLAYED*localStatistics.timePlayed + Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed() + Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size()));
     	
     	// add details
     	TextView pointsAddedTimeDescription = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsTimeDescription);

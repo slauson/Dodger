@@ -19,6 +19,7 @@ import com.slauson.dasher.main.LocalStatisticsMenu;
 import com.slauson.dasher.main.MainMenu;
 import com.slauson.dasher.main.PointDetailsMenu;
 import com.slauson.dasher.main.UpgradesMenu;
+import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
@@ -109,7 +110,7 @@ public class GameOverMenu extends Activity {
 				startActivity(intent);
 			}
 		});
-		gameOverSummaryPoints.setText(points + " points earned");
+		gameOverSummaryPoints.setText(Util.getPointsString(points) + " points earned");
 		
 		// achievements unlocked
 		TextView gameOverSummaryAchievements = (TextView)findViewById(R.id.gameOverSummaryAchievements);
