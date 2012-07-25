@@ -97,6 +97,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private Statistics localStatistics = null;
 	
 	private long pauseTime;
+	private ArrayList<Integer> availableDrops;
 	
 	/**
 	 * Constants - private
@@ -135,7 +136,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Constants - public
 	 */
 	
-	// powerups
+	// powerups (these must match indices in Upgrades.upgrades)
 	public static final int NUM_POWERUPS = 8;
 	public static final int POWERUP_NONE = 0;
 	public static final int POWERUP_SMALL = 1;
@@ -377,6 +378,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
 			quasarCounter = 0;
+			
+			// populate available drops
+			availableDrops = new ArrayList<Integer>();
+			for (int i = 1; i <= NUM_POWERUPS; i++) {
+				if (Upgrades.getUpgrade(i).getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+					availableDrops.add(i);
+				}
+			}
 			
 			// make sure we don't think the first single tap is a double tap
 			lastTouchDownTime1 = 0;
@@ -1034,7 +1043,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	private int dropPowerup(float x, float y) {
 		// create powerup
-		int powerup = 1 + random.nextInt(NUM_POWERUPS);
+		int index = random.nextInt(availableDrops.size());
+		
+		int powerup = availableDrops.get(index);
 		
 		// debug mode
 		if (Debugging.dropType != POWERUP_NONE) {
