@@ -166,7 +166,27 @@ public abstract class Item {
 		return y + height/2 > 0 && y - height/2 < MyGameView.canvasHeight;
 	}
 	
+	/**
+	 * Resets last update time to current time (useful for pause menu)
+	 */
 	public void resetUpdateTime() {
 		lastUpdateTime = System.currentTimeMillis();
+	}
+	
+	/**
+	 * Returns elapsed time since last update
+	 * Also updates lastUpdateTime
+	 * @return elapsed time since last update
+	 */
+	public long getElapsedTime() {
+		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
+		lastUpdateTime = System.currentTimeMillis();
+		
+		// we don't want to drop more than 1 frame
+		if (timeElapsed > 2*MyGameView.maxSleepTime) {
+			timeElapsed = 2*MyGameView.maxSleepTime;
+		}
+		
+		return timeElapsed;
 	}
 }

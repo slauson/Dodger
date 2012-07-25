@@ -435,9 +435,7 @@ public class Asteroid extends DrawObject {
 	
 	public void update(float speedModifier) {
 		
-		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
-		lastUpdateTime = System.currentTimeMillis();
-		
+		long timeElapsed = getElapsedTime();
 		float timeModifier = 1.f*timeElapsed/1000;
 		
 		x = x + (dirX*speed*timeModifier*speedModifier);

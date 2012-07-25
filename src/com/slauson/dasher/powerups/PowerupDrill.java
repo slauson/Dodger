@@ -140,8 +140,8 @@ public class PowerupDrill extends ActivePowerup {
 	@Override
 	public void update(float speedModifier) {
 		
-		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
-		lastUpdateTime = System.currentTimeMillis();
+		long timeElapsed = getElapsedTime();
+		float timeModifier = 1.f*timeElapsed/1000;
 
 		if (teleportDuration > 0) {
 			teleportDuration -= timeElapsed;
@@ -163,8 +163,6 @@ public class PowerupDrill extends ActivePowerup {
 			}
 			return;
 		}
-		
-		float timeModifier = 1.f*timeElapsed/1000;
 		
 		// update direction based on next asteroid
 		if (nextAsteroid != null) {

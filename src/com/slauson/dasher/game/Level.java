@@ -3,7 +3,7 @@ package com.slauson.dasher.game;
 public class Level {
 	
 	private int level;
-	private long levelStartTime;
+	private long startTime;
 	
 	private boolean progression;
 	
@@ -37,22 +37,33 @@ public class Level {
 	public Level(int level, boolean progression) {
 		this.level = level;
 		this.progression = progression;
-		levelStartTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Returns current level
+	 * @return current level
+	 */
 	public int getLevel() {
 		return level;
 	}
 	
+	/**
+	 * Resets level
+	 */
 	public void reset() {
 		level = 0;
-		levelStartTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Updates level
+	 * @return true if level changed
+	 */
 	public boolean update() {
 		
-		if (progression && System.currentTimeMillis() - levelStartTime > LEVEL_TIME) {
-			levelStartTime = System.currentTimeMillis();
+		if (progression && System.currentTimeMillis() - startTime > LEVEL_TIME) {
+			startTime = System.currentTimeMillis();
 			level++;
 			return true;
 		}
@@ -60,6 +71,10 @@ public class Level {
 		return false;
 	}
 	
+	/**
+	 * Returns number of asteroids in level
+	 * @return number of asteroids in level
+	 */
 	public int getNumAsteroids() {
 		
 		int num = NUM_ASTEROIDS_BASE + level*NUM_ASTEROIDS_INCREMENT;
@@ -71,10 +86,18 @@ public class Level {
 		return num;
 	}
 	
+	/**
+	 * Returns asteroid radius factor minimum
+	 * @return asteroid radius factor minimum
+	 */
 	public float getAsteroidRadiusFactorMin() {
 		return ASTEROID_RADIUS_FACTOR_MIN;
 	}
 	
+	/**
+	 * Returns asteroid radius factor offset
+	 * @return asteroid radius factor offset
+	 */
 	public float getAsteroidRadiusFactorOffset() {
 		float num = level*ASTEROID_RADIUS_FACTOR_INCREMENT;
 		
@@ -85,6 +108,10 @@ public class Level {
 		return num;
 	}
 	
+	/**
+	 * Returns asteroid speed factor minimum
+	 * @return asteroid speed factor minimum
+	 */
 	public float getAsteroidSpeedFactorMin() {
 		float num = ASTEROID_SPEED_FACTOR_MIN + level*ASTEROID_SPEED_FACTOR_MIN_INCREMENT;
 		
@@ -95,6 +122,10 @@ public class Level {
 		return num;
 	}
 	
+	/**
+	 * Returns asteroid speed factor offset
+	 * @return asteroid speed factor offset
+	 */
 	public float getAsteroidSpeedFactorOffset() {
 		float num = ASTEROID_SPEED_FACTOR_MAX + level*ASTEROID_SPEED_FACTOR_MAX_INCREMENT;
 		
@@ -105,7 +136,19 @@ public class Level {
 		return num;
 	}
 	
+	/**
+	 * Returns true if asteroids have horizontal movement
+	 * @return true if asteroids have horizontal movement
+	 */
 	public boolean hasAsteroidHorizontalMovement() {
 		return level >= ASTEROID_HORIZONTAL_MOVEMENT_LEVEL;
+	}
+	
+	/**
+	 * Adds the given duration to the level start time
+	 * @param milliseconds time to add to the level start time
+	 */
+	public void addToStartTime(long milliseconds) {
+		this.startTime += milliseconds;
 	}
 }

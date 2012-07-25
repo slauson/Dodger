@@ -1,7 +1,5 @@
 package com.slauson.dasher.game;
 
-import com.slauson.dasher.status.Configuration;
-
 /**
  * Game thread
  * @author Josh Slauson
@@ -10,15 +8,12 @@ import com.slauson.dasher.status.Configuration;
 public class MyGameThread extends Thread {
 
 	private volatile boolean running = false;
-	private long maxSleepTime;
 	
 	MyGameView parent;
 	
-	MyGameThread(MyGameView sv) {
+	MyGameThread(MyGameView gameView) {
 		super();
-		parent = sv;
-		
-		maxSleepTime = 1000/Configuration.frameRate;
+		parent = gameView;
 	}
 	
 	/**
@@ -29,18 +24,11 @@ public class MyGameThread extends Thread {
 		this.running = running;
 	}
 	
-	/**
-	 * Resets maximum sleep time for thread
-	 */
-	public void reset() {
-		maxSleepTime = 1000/Configuration.frameRate;
-	}
-	
 	@Override
 	public void run() {
 		
 		long lastUpdateTime = System.currentTimeMillis();
-		long sleepTime = maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+		long sleepTime = parent.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 		
 		// TODO Auto-generated method stub
 		while (running) {
@@ -48,7 +36,7 @@ public class MyGameThread extends Thread {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
 				parent.updateSurfaceView();
-				sleepTime = maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+				sleepTime = parent.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {
 					System.out.println("Slowdown: " + sleepTime);

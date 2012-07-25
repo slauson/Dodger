@@ -31,10 +31,7 @@ public abstract class Sprite extends Item {
 	 */
 	public void update(float speedModifier) {
 		
-		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
-		lastUpdateTime = System.currentTimeMillis();
-		
-		float timeModifier = 1.f*timeElapsed/1000;
+		float timeModifier = 1.f*getElapsedTime()/1000;
 		
 		x = x + (dirX*speed*timeModifier*speedModifier);
 		y = y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);

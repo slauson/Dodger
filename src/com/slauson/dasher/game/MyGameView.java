@@ -169,7 +169,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	
 	// canvas
-	public static int canvasWidth, canvasHeight;
+	public static int canvasWidth = 0, canvasHeight = 0;
 	
 	// powerups
 	public static PowerupSlow powerupSlow;
@@ -182,7 +182,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static float gravity = 1f;
 	
 	// random
-	public static Random random;
+	public static Random random = new Random();
+	
+	// maximum sleep time
+	public static int maxSleepTime = 1000/30;
 
 	
 	public MyGameView(Context context) {
@@ -366,7 +369,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			level = new Level(Debugging.level, Debugging.levelProgression);
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-			random = new Random();		
 			
 			asteroids = new ArrayList<Asteroid>();
 			drops = new LinkedList<Drop>();
@@ -381,8 +383,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			lastTouchDownTime2 = -2*DASH_DOUBLE_TAP_MIN_DURATION;
 			
 			lastMoveTime = 0;
-			
 			pauseTime = -1;
+			
+			maxSleepTime = 1000/Configuration.frameRate;
 						
 			player = new Player();
 			
@@ -1002,26 +1005,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		} else {
 			gameMode = MODE_RUNNING;
 			
-			// reset frame rate
-			myGameThread.reset();
+			// reset max sleep time
+			maxSleepTime = 1000/Configuration.frameRate;
 			
 			if (pauseTime > 0) {
-				
-				long timeDifference = System.currentTimeMillis() - pauseTime;
-
-				// update player start time to get accurate time
-				player.addToStartTime(timeDifference);
-				
-				// update powerup times
-				for (ActivePowerup activePowerup : activePowerups) {
-					activePowerup.addTime(timeDifference);
-				}
+				// reset all update times
+				resetUpdateTimes();
 			}
 			
 			pauseTime = -1;
-			
-			// reset all update times
-			resetUpdateTimes();
 		}
 	}
 	
@@ -1186,6 +1178,21 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Resets update times for player, asteroids, drops, and powerup
 	 */
 	private void resetUpdateTimes() {
+		
+		long timeDifference = System.currentTimeMillis() - pauseTime;
+
+		// update player start time to get accurate time
+		player.addToStartTime(timeDifference);
+
+		// update powerup times
+		for (ActivePowerup activePowerup : activePowerups) {
+			activePowerup.addTime(timeDifference);
+		}
+		
+		// update level start time
+		level.addToStartTime(timeDifference);
+		
+		// reset update times
 		player.resetUpdateTime();
 		
 		for (Asteroid asteroid : asteroids) {

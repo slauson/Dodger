@@ -225,9 +225,7 @@ public class Player extends DrawObject {
 	@Override
 	public void update() {
 		
-		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
-		lastUpdateTime = System.currentTimeMillis();
-		
+		long timeElapsed = getElapsedTime();
 		float timeModifier = 1.f*timeElapsed/1000;
 
 		if (timeCounter > 0) {
