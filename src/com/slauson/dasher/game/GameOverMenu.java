@@ -30,8 +30,10 @@ import com.slauson.dasher.status.Statistics;
 
 public class GameOverMenu extends Activity {
 	
+	/** Length of toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
 	
+	/** Time the back button has to be hit again by to quit **/
 	private long backButtonQuitEndTime;
 	
 	@Override
@@ -39,12 +41,36 @@ public class GameOverMenu extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_over_menu);
 
-		setupButtons();
+		setup();
 	
 		backButtonQuitEndTime = 0;
 	}
 	
-	private void setupButtons() {
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// override back button so that user cannot go back to game
+		switch(keyCode) {
+		case KeyEvent.KEYCODE_BACK:
+			if (System.currentTimeMillis() < backButtonQuitEndTime) {
+				Intent intent = new Intent(GameOverMenu.this, MainMenu.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			} else {
+				Toast.makeText(this, "Press again to quit", Toast.LENGTH_SHORT).show();
+				backButtonQuitEndTime = System.currentTimeMillis() + TOAST_LENGTH_SHORT;
+			}
+			return true;
+		}
+		
+		// let other buttons go through
+		super.onKeyUp(keyCode, event);
+		return true;
+	}
+	
+	/**
+	 * Sets up game over menu
+	 */
+	private void setup() {
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -167,29 +193,6 @@ public class GameOverMenu extends Activity {
 				startActivity(intent);
 			}
 		});
-	}
-	
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		
-		// TODO: do something better 
-		// override back button so that user cannot go back to game
-		switch(keyCode) {
-		case KeyEvent.KEYCODE_BACK:
-			if (System.currentTimeMillis() < backButtonQuitEndTime) {
-				Intent intent = new Intent(GameOverMenu.this, MainMenu.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
-			} else {
-				Toast.makeText(this, "Press again to quit", Toast.LENGTH_SHORT).show();
-				backButtonQuitEndTime = System.currentTimeMillis() + TOAST_LENGTH_SHORT;
-			}
-			return true;
-		}
-		
-		// let other buttons go through
-		super.onKeyUp(keyCode, event);
-		return true;
 	}
 	
 	/**

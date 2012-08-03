@@ -32,12 +32,24 @@ import android.widget.Toast;
  */
 public class MainMenu extends Activity {
 	
+	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
 	
-	private Button startHighScoresButton, instructionsAchievementsButton, optionsStatisticsButton, moreUpgradesButton, quitBackButton;
+	/** Button for starting game or high scores **/
+	private Button startHighScoresButton;
+	/** Button for instructions or achievements **/
+	private Button instructionsAchievementsButton;
+	/** Button for options or statistics **/
+	private Button optionsStatisticsButton;
+	/** Button for more or upgrades **/
+	private Button moreUpgradesButton;
+	/** Button for quit or back **/
+	private Button quitBackButton;
 	
+	/** True when more options are being shown **/
 	private boolean showingMore;
 	
+	/** Time back button must be pressed again by to quit game **/
 	private long backButtonQuitEndTime;
 	
 	@Override
@@ -208,10 +220,17 @@ public class MainMenu extends Activity {
 		return true;
 	}
 
+	/**
+	 * Loads configuration
+	 * @param sharedPreferences shared preferences to load from
+	 */
 	private void loadConfiguration(SharedPreferences sharedPreferences) {
 		Configuration.load(sharedPreferences);
 	}
 	
+	/**
+	 * Toggles more options
+	 */
 	private void toggleShowMore() {
 		if (showingMore) {
 			

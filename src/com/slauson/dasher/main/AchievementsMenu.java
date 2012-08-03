@@ -18,12 +18,13 @@ import com.slauson.dasher.status.Achievements;
 
 public class AchievementsMenu extends Activity {
 
-	// table to add achievements to
+	/** Table layout to add achievements to **/
 	private TableLayout table;
 	
-	// row of table
+	/** Table row **/
 	private int row = 0;
-	
+
+	/** True when achievements have been loaded from application preferences **/
 	protected boolean achievementsLoaded = false;
 	
 	@Override
@@ -47,6 +48,9 @@ public class AchievementsMenu extends Activity {
 		super.onDestroy();
 	}
 	
+	/**
+	 * Loads achievements
+	 */
 	private void loadAchievements() {
     	List<Achievement> achievements = Achievements.getAchievements();
 
@@ -117,5 +121,4 @@ public class AchievementsMenu extends Activity {
 			}
 		}		
 	}
-
 }

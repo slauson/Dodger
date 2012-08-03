@@ -6,8 +6,11 @@ import java.util.Random;
 import com.slauson.dasher.game.MyGameView;
 import com.slauson.dasher.status.LocalStatistics;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 /**
  * Asteroid that player ship has to avoid
@@ -29,6 +32,8 @@ public class Asteroid extends DrawObject {
 	private int leftPoints, rightPoints;
 	
 	private int radius;
+	
+	private Rect rectDest;
 	
 	/**
 	 * Private constants
@@ -56,7 +61,7 @@ public class Asteroid extends DrawObject {
 		
 		
 	
-	public Asteroid(float sizeFactor, float speedFactor, boolean horizontalMovement) {
+	public Asteroid(float sizeFactor, float speedFactor, float sizeFactorMax, boolean horizontalMovement) {
 		// do width/height later
 		super(0, 0, 0, 0);
 		
@@ -68,6 +73,15 @@ public class Asteroid extends DrawObject {
 		altPoints = new float[numPoints*4];
 		angles = new double[numPoints];
 		lineSegments = new ArrayList<LineSegment>();
+		
+		int bitmapRadius = getRelativeWidthSize(sizeFactorMax/2);
+		int bitmapSize = (int)(2.5 * bitmapRadius);
+		
+		bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
+		
+		createRandomPoints(bitmapRadius);
+		
+		drawPointsToBitmap();
 		
 		radius = 0;
 		
@@ -93,18 +107,12 @@ public class Asteroid extends DrawObject {
 		radius = getRelativeWidthSize(sizeFactor);
 		width = radius*2;
 		height = radius*2;
+		
+		rectDest = new Rect(0, 0, radius*2, radius*2);
 
 		if (horizontalMovement) {
 			dirX = -HORIZONTAL_MOVEMENT_OFFSET + (2*HORIZONTAL_MOVEMENT_OFFSET*random.nextFloat());
 		}
-		
-		// clear out arrays of points
-		for (int i = 0; i < points.length; i++) {
-			points[i] = 0;
-			altPoints[i] = 0;
-		}
-		
-		resetRandomPoints();
 		
 		reset();
 	}
@@ -130,10 +138,9 @@ public class Asteroid extends DrawObject {
 	}
 	
 	/**
-	 * Resets random points for asteroid
+	 * Creates random points 
 	 */
-	private void resetRandomPoints() {
-		
+	private void createRandomPoints(float bitmapRadius) {
 		int numPoints = points.length/4;
 		double pointAngle = 2*Math.PI/numPoints;
 		
@@ -153,7 +160,7 @@ public class Asteroid extends DrawObject {
 			}
 			
 			// calculate radius
-			float pointRadius = radius - (radius*RADIUS_OFFSET) + (2*RADIUS_OFFSET*random.nextFloat()); 
+			float pointRadius = bitmapRadius - (bitmapRadius*RADIUS_OFFSET) + (2*RADIUS_OFFSET*random.nextFloat()); 
 			
 			// get cos/sin values
 			double cos = Math.cos(angle);
@@ -175,6 +182,19 @@ public class Asteroid extends DrawObject {
 		
 		points[4*numPoints-2] = points[0];
 		points[4*numPoints-1] = points[1];
+	}
+
+	/**
+	 * Draws points to bitmap
+	 */
+	public void drawPointsToBitmap() {
+		Canvas bitmapCanvas = new Canvas(bitmap);
+		Paint bitmapPaint = new Paint();
+		bitmapPaint.setColor(Color.WHITE);
+		
+		bitmapCanvas.translate(bitmap.getWidth()/2, bitmap.getHeight()/2);
+		
+		bitmapCanvas.drawLines(points, bitmapPaint);
 	}
 	
 	/**
@@ -356,9 +376,9 @@ public class Asteroid extends DrawObject {
 			// intact asteroid
 			if (status == STATUS_NORMAL) {
 				canvas.save();
-				canvas.translate(x, y);
-				
-				canvas.drawLines(points, paint);
+				canvas.translate(x - bitmap.getWidth()/2, y - bitmap.getHeight()/2);
+				canvas.drawBitmap(bitmap, 0, 0, paint);
+				//canvas.drawBitmap(bitmap, null, rectDest, paint);
 				canvas.restore();
 			}
 			// broken up asteroid

@@ -7,23 +7,35 @@ public class Level {
 	
 	private boolean progression;
 	
-	// constants
+	/** Starting number of asteroids **/
 	private static final int NUM_ASTEROIDS_BASE = 10;
+	/** Number of asteroids to add each level **/
 	private static final int NUM_ASTEROIDS_INCREMENT = 4;
+	/** Maximum number of asteroids **/
 	private static final int NUM_ASTEROIDS_MAX = 50;
 	
+	/** Starting radius of asteroids in comparison to canvas width **/
 	private static final float ASTEROID_RADIUS_FACTOR_MIN = 0.02f;
+	/** Asteroid radius increase each level **/
 	private static final float ASTEROID_RADIUS_FACTOR_INCREMENT = 0.004f;
+	/** Maximum radius of asteroids in comparison to canvas width **/
 	private static final float ASTEROID_RADIUS_FACTOR_MAX = 0.1f;
 	
+	/** Minimum possible speed of asteroids in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_MIN = 0.1f;
+	/** Minimum asteroid speed increase each level **/
 	private static final float ASTEROID_SPEED_FACTOR_MIN_INCREMENT = 0.005f;
+	/** Maximum possible speed of asteroids in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_MAX = 0.1f;
+	/** Maximum asteroid speed increase each level **/
 	private static final float ASTEROID_SPEED_FACTOR_MAX_INCREMENT = 0.01f;
+	/** Limit for asteroid speed in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_LIMIT = 0.3f;
 	
+	/** Level in which asteroids begin having horizontal movement **/
 	private static final int ASTEROID_HORIZONTAL_MOVEMENT_LEVEL = 4;
 	
+	/** Duration of each level **/
 	private static final long LEVEL_TIME = 15000;
 	
 	public Level() {
@@ -106,6 +118,14 @@ public class Level {
 		}
 		
 		return num;
+	}
+	
+	/**
+	 * Returns asteroid radius factor maximum
+	 * @return asteroid radius factor maximum
+	 */
+	public float getAsteroidRadiusFactorMax() {
+		return ASTEROID_RADIUS_FACTOR_MAX;
 	}
 	
 	/**

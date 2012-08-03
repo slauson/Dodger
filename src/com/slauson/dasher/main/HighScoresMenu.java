@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 public class HighScoresMenu extends Activity {
 	
-	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);

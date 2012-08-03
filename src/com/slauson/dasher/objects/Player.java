@@ -190,7 +190,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerable blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 4 < 2)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {

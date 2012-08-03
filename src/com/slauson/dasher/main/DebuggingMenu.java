@@ -30,10 +30,13 @@ import android.widget.Toast;
 
 public class DebuggingMenu extends Activity {
 
+	/** Shared preferences **/
 	private SharedPreferences sharedPreferences;
+	/** Shared preferences editor **/
 	private SharedPreferences.Editor sharedPreferencesEditor;
 	
-	EditText points;
+	/** Edit text for inputting points **/
+	private EditText points;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {

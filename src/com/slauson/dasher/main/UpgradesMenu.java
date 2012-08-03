@@ -22,29 +22,43 @@ import android.widget.TextView;
 
 public class UpgradesMenu extends Activity {
 	
-	// dialog box constants
+	/** Dialog box id for when player doesn't have enough **/
 	private final static int DIALOG_NOT_ENOUGH_POINTS = 0;
+	/** Dialog box id for confirming unlocking of powerups **/
 	private final static int DIALOG_CONFIRM_POWERUP_UNLOCK = 1;
 
+	/** Dialog box bundle argument for title **/
 	private final static String DIALOG_TITLE = "title";
+	/** Dialog box bundle argument for points **/
 	private final static String DIALOG_POINTS = "points";
+	/** Dialog box bundle argument for upgrade id **/
 	private final static String DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID = "upgradeID";
+	/** Dialog box bundle argument for button id **/
 	private final static String DIALOG_CONFIRM_POWERUP_BUTTON_ID = "buttonID";
 	
+	/** Shared preferences editor **/
 	private SharedPreferences.Editor sharedPreferencesEditor;
 	
-	// points textview
+	/** Points text view **/
 	private TextView pointsView;
 	
-	// upgrade buttons
+	/** Dash upgrade button **/
 	private Button dashButton;
+	/** Small upgrade button **/
 	private Button smallButton;
+	/** Slow upgrade button **/
 	private Button slowButton;
-	private Button invulnerabilityButton;
+	/** Invulnerable upgrade button **/
+	private Button invulnerableButton;
+	/** Drill upgrade button **/
 	private Button drillButton;
+	/** Magnet upgrade button **/
 	private Button magnetButton;
+	/** Black hole upgrade button **/
 	private Button blackHoleButton;
+	/** Bumper upgrade button **/
 	private Button bumperButton;
+	/** Bomb upgrade button **/
 	private Button bombButton;
 
 	@Override
@@ -94,9 +108,9 @@ public class UpgradesMenu extends Activity {
 		});
 
     	// invulnerability powerup
-    	invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
-    	toggleButtonColor(invulnerabilityButton);
-		invulnerabilityButton.setOnClickListener(new OnClickListener() {
+    	invulnerableButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
+    	toggleButtonColor(invulnerableButton);
+		invulnerableButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
 				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.invulnerabilityUpgrade));

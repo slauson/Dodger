@@ -1,5 +1,7 @@
 package com.slauson.dasher.game;
 
+import android.util.Log;
+
 /**
  * Game thread
  * @author Josh Slauson
@@ -7,11 +9,13 @@ package com.slauson.dasher.game;
  */
 public class MyGameThread extends Thread {
 
+	/** True when the game thread is running **/
 	private volatile boolean running = false;
 	
-	MyGameView parent;
+	/** Game view **/
+	private MyGameView parent;
 	
-	MyGameThread(MyGameView gameView) {
+	public MyGameThread(MyGameView gameView) {
 		super();
 		parent = gameView;
 	}

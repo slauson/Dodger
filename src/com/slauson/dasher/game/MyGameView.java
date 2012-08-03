@@ -49,143 +49,165 @@ import android.view.SurfaceView;
 public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 	/**
-	 * Debugging stuff
-	 */
-	
-	private String debugText = "";
-
-	
-	/**
 	 * Private stuff
 	 */
 	
+	/** Debugging text for displaying messages **/
+	private String debugText = "";
+	
+	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
-	// main thread
+	/** Game thread **/
 	private MyGameThread myGameThread;
 	
-	// Canvas stuff
+	/** Paint for drawing on canvas **/
 	private Paint paint;
 	
-	// Stuff on screen
+	/** Player ship **/
 	private Player player;
+	
+	/** List of active asteroids **/
 	private ArrayList<Asteroid> asteroids;
+	
+	/** List of active drops **/
 	private LinkedList<Drop> drops;
 
-	// powerups
-	private LinkedList<ActivePowerup> activePowerups;	
+	/** List of active powerups **/
+	private LinkedList<ActivePowerup> activePowerups;
+	
+	/** List of available drops **/
+	private ArrayList<Integer> availableDrops;
+	
+	/** Counter for bomb animation **/
 	private int bombCounter;
+	/** Counter for quasar animation **/
 	private int quasarCounter;
 	
-	// Initialization flags
+	/** Initialization flag for when surface is created **/
 	private boolean surfaceCreated = false;
+	/** Initialization flag for when game is initialized **/
 	private boolean initialized = false;
 	
-	// for swipe-based dodging
+	/** Y coordinate of last touch down event, for swipe-based dodging **/
 	private float touchDownY;
 	
-	// for double-tap based dodging
+	/** Time of last touch down event, for double-tap based dashing **/
 	private long lastTouchDownTime1;
+	/** Time of second last touch down event, for double-tap based dashing **/
 	private long lastTouchDownTime2;
 	
-	// for stay in place achievement
+	// TODO: move to player object?
+	/** Time of last player movement **/
 	private long lastMoveTime;
-	
+
+	/** Current level of game **/
 	private Level level;
 	
+	/** Game activity, used for transitioning to other activities **/
 	private MyGameActivity gameActivity = null;
+	
+	/** Local statistics, so we don't have to keep calling getInstance() **/
 	private Statistics localStatistics = null;
 	
+	/** Time game was paused, used for updating times on game resume **/
 	private long pauseTime;
-	private ArrayList<Integer> availableDrops;
+
 	
 	/**
 	 * Constants - private
 	 */
-	
-	// powerup sprites
-	private static final int R_POWERUP_DRILL = R.drawable.powerup_drill;
-	private static final int R_POWERUP_MAGNET = R.drawable.powerup_magnet;
-	private static final int R_POWERUP_SLOW = R.drawable.powerup_slow;
-	private static final int R_POWERUP_BLACK_HOLE = R.drawable.powerup_white_hole;
-	private static final int R_POWERUP_BUMPER = R.drawable.powerup_bumper;
-	private static final int R_POWERUP_BOMB = R.drawable.powerup_bomb;
-	private static final int R_POWERUP_SMALL = R.drawable.powerup_ship;
-	private static final int R_POWERUP_INVULNERABLE = R.drawable.powerup_invulnerable;
-	
-	// powerup stuff
+
+	/** Maximum value for bomb counter **/
 	private static final int BOMB_COUNTER_MAX = 10;
+	
+	/** Maximum value for quasar counter **/
 	private static final int QUASAR_COUNTER_MAX = 20;
 
-	// paint stuff
+	/** Paint width for drawing player ship **/
 	private static final int PLAYER_PAINT_STROKE_WIDTH = 2;
+	/** Paint color for drawing player ship **/
 	private static final int PLAYER_PAINT_COLOR = Color.WHITE;
+	/** Paint width for drawing asteroids **/
 	private static final int ASTEROID_PAINT_STROKE_WIDTH = 1;
+	/** Paint color for drawing asteroids **/
 	private static final int ASTEROID_PAINT_COLOR = Color.WHITE;
 	
-	// touch
+	/** Factor for touching the ship to dash **/
 	private static final float DASH_TOUCH_FACTOR = 1.5f;
+	/** Minimum distance for swiping to dash **/
 	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
+	/** Minimum duration for double tapping to dash **/
 	private static final int DASH_DOUBLE_TAP_MIN_DURATION = 500;
 
-	// accelerometer
+	/** Deadzone for accelerometer **/
 	private static final float ACCELEROMETER_DEADZONE = 0.05f;
+	/** Maximum value for accelerometer **/
 	private static final float ACCELEROMETER_MAX = 0.3f;
 
 	/**
 	 * Constants - public
 	 */
 	
-	// powerups (these must match indices in Upgrades.upgrades)
+	// NOTE: these values must match indices in Upgrades.upgrades
+	/** Number of total powerups **/
 	public static final int NUM_POWERUPS = 8;
+	/** No powerup id **/
 	public static final int POWERUP_NONE = 0;
+	/** Small powerup id **/
 	public static final int POWERUP_SMALL = 1;
+	/** Slow powerup id **/
 	public static final int POWERUP_SLOW = 2;
+	/** Invulnerable powerup id **/
 	public static final int POWERUP_INVULNERABLE = 3;
+	/** Drill powerup id **/
 	public static final int POWERUP_DRILL = 4;
+	/** Magnet powerup id **/
 	public static final int POWERUP_MAGNET = 5;
+	/** Black hole powerup id **/
 	public static final int POWERUP_BLACK_HOLE = 6;
+	/** Bumper powerup id **/
 	public static final int POWERUP_BUMPER = 7;
+	/** Bomb powerup id **/
 	public static final int POWERUP_BOMB = 8;
 	
-	// mode
+	/** Game mode id for game being paused **/
 	public static final int MODE_PAUSED = 0;
+	/** Game mode id for game running **/
 	public static final int MODE_RUNNING = 1;
-		
-	// direction
+
+	/** Asteroids are going in normal direction (down) **/
 	public static final int DIRECTION_NORMAL = 0;
+	/** Asteroids are going in reverse direction (up) **/
 	public static final int DIRECTION_REVERSE = 1;
 	
-	// stationary powerups to draw
-	public static final int R_MAGNET = R.drawable.magnet;
-	public static final int R_BLACK_HOLE = R.drawable.black_hole;
-	public static final int R_DRILL = R.drawable.drill;
-	public static final int R_BUMPER_LARGE = R.drawable.bumper_large;
-	public static final int R_BUMPER_LARGE_ALT = R.drawable.bumper_large_alt;
-	public static final int R_BUMPER = R.drawable.bumper;
-	public static final int R_BUMPER_ALT = R.drawable.bumper_alt;
-
 	/**
 	 * Shared stuff
 	 */
 	
-	// canvas
-	public static int canvasWidth = 0, canvasHeight = 0;
+	/** Canvas width **/
+	public static int canvasWidth = 0;
+	/** Canvas height **/
+	public static int canvasHeight = 0;
 	
-	// powerups
+	/** Slow powerup **/
 	public static PowerupSlow powerupSlow;
-	public static PowerupInvulnerable powerupInvulnerability;
+	/** Invulnerable powerup **/
+	public static PowerupInvulnerable powerupInvulnerable;
+	/** Small powerup **/
 	public static PowerupSmall powerupSmall;
 	
-	// current state
+	/** Current game mode **/
 	public static int gameMode = MODE_RUNNING;
+	/** Current direction **/
 	public static int direction = DIRECTION_NORMAL;
+	/** Current gravity **/
 	public static float gravity = 1f;
 	
-	// random
+	/** Random **/
 	public static Random random = new Random();
 	
-	// maximum sleep time
+	/** Maximum sleep duration **/
 	public static int maxSleepTime = 1000/30;
 
 	
@@ -221,6 +243,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		// TODO Auto-generated method stub
 	}
 	
+	/**
+	 * Sets up surface view and game thread
+	 */
 	public void MyGameSurfaceView_OnResume() {
 		
 		surfaceHolder = getHolder();
@@ -233,6 +258,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 	}
 	
+	/**
+	 * Pauses game thread
+	 */
 	public void MyGameSurfaceView_OnPause() {
 		// Kill the background thread
 		boolean retry = true;
@@ -345,8 +373,22 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			canvas = surfaceHolder.lockCanvas();
 			
 			synchronized (surfaceHolder) {
+				
+				long updateTimeBefore = System.currentTimeMillis();
+				
 				updateStates();
+				
+				long updateTimeAfter = System.currentTimeMillis();
+				long drawTimeBefore = System.currentTimeMillis();
+				
 				onDraw(canvas);
+				
+				long drawTimeAfter = System.currentTimeMillis();
+				
+				long updateTime = updateTimeAfter - updateTimeBefore;
+				long drawTime = drawTimeAfter - drawTimeBefore;
+				
+				System.out.println(updateTime + "-" + drawTime);
 			}
 		} finally {
 			if (canvas != null) {
@@ -399,7 +441,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			player = new Player();
 			
 			powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
-			powerupInvulnerability = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
+			powerupInvulnerable = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
 			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
 
 			
@@ -410,7 +452,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 				
-				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
+				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.hasAsteroidHorizontalMovement()));
 			}
 			
 			localStatistics = LocalStatistics.getInstance();
@@ -482,7 +524,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						if (player.inPosition()) {
 							
 							// game over if player isn't invulnerable
-							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
+							if (!powerupInvulnerable.isActive() && !Debugging.godMode) {
 								temp.breakup();
 								
 								player.breakup();
@@ -500,11 +542,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 								}, player.getBreakupDuration()-500);
 							} else {
 								// increment pass through counter
-								powerupInvulnerability.passThrough();
+								powerupInvulnerable.passThrough();
 							}
 						}
 						// player is dashing (only destroy asteroids when invulnerability has upgrade)
-						else if (!powerupInvulnerability.isActive() || powerupInvulnerability.isDasher()) {
+						else if (!powerupInvulnerable.isActive() || powerupInvulnerable.isDasher()) {
 
 														// causes drop depending on upgrade
 							if (player.getDashNumAffectedAsteroids() == 0 ||
@@ -560,27 +602,27 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R_MAGNET), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(getResources(), R.drawable.magnet), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_BLACK_HOLE:
-						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(getResources(), R_BLACK_HOLE), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(getResources(), R.drawable.black_hole), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
 						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R_DRILL), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(getResources(), R.drawable.drill), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						localStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
 						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER_LARGE), BitmapFactory.decodeResource(getResources(), R_BUMPER_LARGE_ALT), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R.drawable.bumper_large), BitmapFactory.decodeResource(getResources(), R.drawable.bumper_large_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						} else {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R_BUMPER), BitmapFactory.decodeResource(getResources(), R_BUMPER_ALT), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(getResources(), R.drawable.bumper), BitmapFactory.decodeResource(getResources(), R.drawable.bumper_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						}
 						localStatistics.usesBumper++;
 						break;
 					case POWERUP_INVULNERABLE:
-						powerupInvulnerability.activate();
+						powerupInvulnerable.activate();
 						localStatistics.usesInvulnerability++;
 						break;
 					case POWERUP_BOMB:
@@ -626,7 +668,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void updatePowerups() {
 		
 		// update inactive powerups
-		powerupInvulnerability.update();
+		powerupInvulnerable.update();
 		powerupSlow.update();
 		powerupSmall.update();
 		
@@ -634,8 +676,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		if (powerupSlow.isActive()) {
 			powerupSlow.checkAchievements();
 		}
-		if (powerupInvulnerability.isActive()) {
-			powerupInvulnerability.checkAchievements();
+		if (powerupInvulnerable.isActive()) {
+			powerupInvulnerable.checkAchievements();
 		}
 		
 		synchronized (activePowerups) {
@@ -730,7 +772,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// alter player for each active powerup
-		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerability.isActive()) {
+		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive()) {
 			synchronized (activePowerups) {
 				for (ActivePowerup activePowerup : activePowerups) {
 					// TODO: use something better here
@@ -786,7 +828,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 				
-				asteroids.add(new Asteroid(radius, speed, level.hasAsteroidHorizontalMovement()));
+				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.hasAsteroidHorizontalMovement()));
 			}
 		}
 
@@ -877,7 +919,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * @param keyCode
 	 * @param event
 	 */
-	void keyDown(int keyCode, KeyEvent event) {
+	public void keyDown(int keyCode, KeyEvent event) {
 		
 		if (!initialized) {
 			init();
@@ -922,7 +964,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * @param keyCode
 	 * @param event
 	 */
-	void keyUp(int keyCode, KeyEvent event) {
+	public void keyUp(int keyCode, KeyEvent event) {
 		
 		if (!initialized) {
 			init();
@@ -960,7 +1002,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * @param tx x factor
 	 * @param ty y factor
 	 */
-	void updateAccelerometer(float tx, float ty) {
+	public void updateAccelerometer(float tx, float ty) {
 		
 		if (!initialized) {
 			init();
@@ -1022,7 +1064,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			gameMode = MODE_RUNNING;
 			
 			// reset max sleep time
-			maxSleepTime = 1000/Configuration.frameRate;
+			maxSleepTime = 2*1000/Configuration.frameRate;
 			
 			if (pauseTime > 0) {
 				// reset all update times
@@ -1056,28 +1098,28 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		switch(powerup) {
 		case POWERUP_SMALL:
-			r_powerup = R_POWERUP_SMALL;
+			r_powerup = R.drawable.powerup_ship;
 			break;
 		case POWERUP_SLOW:
-			r_powerup = R_POWERUP_SLOW;
+			r_powerup = R.drawable.powerup_ship;
 			break;
 		case POWERUP_INVULNERABLE:
-			r_powerup = R_POWERUP_INVULNERABLE;
+			r_powerup = R.drawable.powerup_invulnerable;
 			break;
 		case POWERUP_DRILL:
-			r_powerup = R_POWERUP_DRILL;
+			r_powerup = R.drawable.powerup_drill;
 			break;
 		case POWERUP_MAGNET:
-			r_powerup = R_POWERUP_MAGNET;
+			r_powerup = R.drawable.powerup_magnet;
 			break;
 		case POWERUP_BLACK_HOLE:
-			r_powerup = R_POWERUP_BLACK_HOLE;
+			r_powerup = R.drawable.powerup_black_hole;
 			break;
 		case POWERUP_BUMPER:
-			r_powerup = R_POWERUP_BUMPER;
+			r_powerup = R.drawable.powerup_bumper;
 			break;
 		case POWERUP_BOMB:
-			r_powerup = R_POWERUP_BOMB;
+			r_powerup = R.drawable.powerup_bomb;
 			break;
 		}
 		

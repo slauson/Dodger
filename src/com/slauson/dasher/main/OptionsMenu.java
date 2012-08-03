@@ -22,10 +22,12 @@ import android.widget.Toast;
 
 public class OptionsMenu extends PreferenceActivity {
 	
-	// dialog box constants
+	/** Dialog box id to confirm resetting data **/
 	private final static int DIALOG_CONFIRM_RESET_DATA = 0;
-	
+
+	/** Shared preferences **/
 	private SharedPreferences sharedPreferences;
+	/** Shared preferences editor **/
 	private SharedPreferences.Editor sharedPreferencesEditor;
 	
 	@Override

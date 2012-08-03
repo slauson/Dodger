@@ -22,9 +22,13 @@ import android.widget.TextView;
 public class UpgradesSubMenu extends Activity {
 
 	// dialog box constants
+	/** Dialog box id for purchasing previous upgrade **/
 	private final static int DIALOG_PURCHASE_PREVIOUS_UPGRADE = 0;
+	/** Dialog box id for not having enough points **/
 	private final static int DIALOG_NOT_ENOUGH_POINTS = 1;
+	/** Dialog box id for confirming an upgrade purchase **/
 	private final static int DIALOG_CONFIRM_UPGRADE = 2;
+	/** Dialog box id for an upgrade already being purchased **/
 	private final static int DIALOG_UPGRADE_ALREADY_PURCHASED = 3;
 
 	private final static String DIALOG_TITLE = "title";

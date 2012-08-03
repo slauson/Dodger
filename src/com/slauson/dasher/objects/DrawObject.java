@@ -2,6 +2,8 @@ package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
 
+import android.graphics.Bitmap;
+
 import com.slauson.dasher.game.MyGameView;
 
 /**
@@ -11,10 +13,13 @@ import com.slauson.dasher.game.MyGameView;
  */
 public abstract class DrawObject extends Item {
 
+	// TODO: remove this
 	protected float[] points;
 	protected float[] altPoints;
 	
 	protected ArrayList<LineSegment> lineSegments;
+	
+	protected Bitmap bitmap;
 	
 	protected int status;
 	protected long timeCounter;

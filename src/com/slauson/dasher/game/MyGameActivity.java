@@ -24,13 +24,19 @@ import android.widget.LinearLayout;
  */
 public class MyGameActivity extends Activity {
 
+	/** Game view **/
 	private MyGameView myGameView;
 
+	/** Accelerometer **/
 	private MyAccelerometer myAccelerometer;
 	
+	/** Pause menu **/
 	private LinearLayout pauseMenu;
 
-	private boolean quitting, paused;
+	/** True if game is being quit out of **/
+	private boolean quitting;
+	/** True if game is paused **/
+	private boolean paused;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -106,7 +112,6 @@ public class MyGameActivity extends Activity {
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		myGameView.MyGameSurfaceView_OnResume();
 		
@@ -125,7 +130,6 @@ public class MyGameActivity extends Activity {
 		myGameView.MyGameSurfaceView_OnPause();
 		
 		System.out.println("MyGameActivity onPause()");
-
 		
 		if (!quitting) {
 			pauseGame();
@@ -166,17 +170,28 @@ public class MyGameActivity extends Activity {
 
 		return true;
 	}
-	
+
+	/**
+	 * Transitions to game over menu
+	 */
 	public void gameOver() {
 		quitting = true;
 		Intent intent = new Intent(MyGameActivity.this, GameOverMenu.class);
 		startActivity(intent);
 	}
 
+	/**
+	 * Updates accelerometer
+	 * @param tx
+	 * @param ty
+	 */
 	public void updateAccelerometer(float tx, float ty) {
 		myGameView.updateAccelerometer(tx, ty);
 	}
 
+	/**
+	 * Pauses game
+	 */
 	private void pauseGame() {
 		
 		if (myGameView.togglePause(true)) {
@@ -185,6 +200,9 @@ public class MyGameActivity extends Activity {
 		}
 	}
 
+	/**
+	 * Unpauses game
+	 */
 	private void unpauseGame() {
 		
 		if (myGameView.togglePause(false)) {

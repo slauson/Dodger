@@ -15,16 +15,23 @@ import android.hardware.SensorManager;
  */
 public class MyAccelerometer implements SensorEventListener {
 
+	/** Sensor manager **/
 	private SensorManager sensorManager;
+	/** Accelerometer sensor **/
 	private Sensor sensorAccelerometer;
+	/** Game activity for passing accelerometer info to **/
 	private MyGameActivity parent;
 	
+	/** Maximum range of accelerometer **/
 	private float maximumRange;
 	
 	public MyAccelerometer(Context c) {
 		parent = (MyGameActivity)c;
 	}
 	
+	/**
+	 * Registers listener for accelerometer
+	 */
 	void registerListener() {
 		sensorManager = (SensorManager)parent.getSystemService(Context.SENSOR_SERVICE);
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -34,6 +41,9 @@ public class MyAccelerometer implements SensorEventListener {
 		sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 	
+	/**
+	 * Unregisters listener for accelerometer
+	 */
 	void unregisterListener() {
 		sensorManager.unregisterListener(this);
 	}
@@ -42,6 +52,9 @@ public class MyAccelerometer implements SensorEventListener {
 		// TODO Auto-generated method stub
 	}
 
+	/**
+	 * Called when accelerometer sensor changes
+	 */
 	public void onSensorChanged(SensorEvent event) {
 		/*
 		 * event.values[0]: azimuth, rotation around the z-axis
