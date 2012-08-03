@@ -113,7 +113,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Time game was paused, used for updating times on game resume **/
 	private long pauseTime;
 
-	
+
 	/**
 	 * Constants - private
 	 */
@@ -145,6 +145,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Maximum value for accelerometer **/
 	private static final float ACCELEROMETER_MAX = 0.3f;
 
+	
 	/**
 	 * Constants - public
 	 */
@@ -374,21 +375,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			synchronized (surfaceHolder) {
 				
-				long updateTimeBefore = System.currentTimeMillis();
-				
 				updateStates();
 				
-				long updateTimeAfter = System.currentTimeMillis();
-				long drawTimeBefore = System.currentTimeMillis();
-				
 				onDraw(canvas);
-				
-				long drawTimeAfter = System.currentTimeMillis();
-				
-				long updateTime = updateTimeAfter - updateTimeBefore;
-				long drawTime = drawTimeAfter - drawTimeBefore;
-				
-				System.out.println(updateTime + "-" + drawTime);
 			}
 		} finally {
 			if (canvas != null) {
