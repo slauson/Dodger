@@ -10,9 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 /**
  * Asteroid that player ship has to avoid
@@ -34,6 +34,9 @@ public class Asteroid extends DrawObject {
 	private int leftPoints, rightPoints;
 	
 	private int radius;
+	
+	private RectF rectDest;
+	private Rect rectSrc;
 
 	/**
 	 * Private constants
@@ -74,6 +77,9 @@ public class Asteroid extends DrawObject {
 		altPoints = new float[numPoints*4];
 		angles = new double[numPoints];
 		lineSegments = new ArrayList<LineSegment>();
+		
+		rectDest = new RectF();
+		rectSrc = new Rect();
 		
 		int bitmapRadius = getRelativeWidthSize(sizeFactorMax/2);
 		int bitmapSize = (int)(2.5 * bitmapRadius);
@@ -203,38 +209,6 @@ public class Asteroid extends DrawObject {
 	public void breakup() {
 		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			
-			LineSegment lineSegment;
-			
-			for (int i = 0; i < points.length; i+=4) {
-			
-				lineSegment = lineSegments.get(i/4);
-				
-				lineSegment.x1 = x + points[i];
-				lineSegment.y1 = y + points[i+1];
-				lineSegment.x2 = x + points[i+2];
-				lineSegment.y2 = y + points[i+3];
-				
-				// need to get perpendicular (these are opposite on purpose)
-				float yDiff = Math.abs(points[i] - points[i+2]);
-				float xDiff = Math.abs(points[i+1] - points[i+3]);
-				
-				yDiff += Math.abs(dirY)*speed;
-				xDiff += Math.abs(dirX)*speed;
-				
-				lineSegment.move = BREAKING_UP_MOVE;
-				
-				// x direction is sometimes positive
-				if (points[i] < 0) {
-					lineSegment.dirX = (-xDiff/(xDiff + yDiff));
-				} else {
-					lineSegment.dirX = (xDiff/(xDiff + yDiff));
-				}
-				
-				// y direction is always positive
-				lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
-			}
-			
-			speed = 0;
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
@@ -378,12 +352,40 @@ public class Asteroid extends DrawObject {
 				canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
 			}
 			// broken up asteroid
-			else if (status == STATUS_BREAKING_UP){
-				paint.setAlpha((int)(255 * (1.f*timeCounter/BREAKING_UP_DURATION)));
+			else if (status == STATUS_BREAKING_UP) {
 				
-				for (LineSegment lineSegment : lineSegments) {
-					lineSegment.draw(canvas, paint);
-				}
+				float factor = 1.f*timeCounter/BREAKING_UP_DURATION;
+				paint.setAlpha((int)(255 * factor));
+				
+//				for (LineSegment lineSegment : lineSegments) {
+//					lineSegment.draw(canvas, paint);
+//				}
+				
+				factor = 1 - factor;
+				
+				float offsetX = factor*BREAKING_UP_FACTOR*width;
+				float offsetY = factor*BREAKING_UP_FACTOR*height;
+
+				// top left corner
+				rectDest.set(x - offsetX - bitmap.getWidth()/2, y - offsetY - bitmap.getHeight()/2, x - offsetX, y - offsetY);
+				rectSrc.set(0, 0, bitmap.getWidth()/2, bitmap.getHeight()/2);
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
+				// top right corner
+				rectDest.set(x + offsetX, y - offsetY - bitmap.getHeight()/2, x + offsetX + bitmap.getWidth()/2, y - offsetY);
+				rectSrc.set(bitmap.getWidth()/2, 0, bitmap.getWidth(), bitmap.getHeight()/2);
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
+				// bottom left corner
+				rectDest.set(x - offsetX - bitmap.getWidth()/2, y + offsetY, x - offsetX, y + offsetY + bitmap.getHeight()/2);
+				rectSrc.set(0, bitmap.getHeight()/2, bitmap.getWidth()/2, bitmap.getHeight());
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
+				// bottom right corner
+				rectDest.set(x + offsetX, y + offsetY, x + offsetX + bitmap.getWidth()/2, y + offsetY + bitmap.getHeight()/2);
+				rectSrc.set(bitmap.getWidth()/2, bitmap.getHeight()/2, bitmap.getWidth(), bitmap.getHeight());
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
 				
 				paint.setAlpha(255);	
 			}
