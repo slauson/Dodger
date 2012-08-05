@@ -31,8 +31,6 @@ public class Asteroid extends DrawObject {
 	
 	private double[] angles;
 	
-	private int leftPoints, rightPoints;
-	
 	private int radius;
 	
 	private RectF rectDest;
@@ -74,7 +72,6 @@ public class Asteroid extends DrawObject {
 		int numPoints = NUM_POINTS_MIN + random.nextInt(NUM_POINTS_MAX - NUM_POINTS_MIN - 1);
 		
 		points = new float[numPoints*4];
-		altPoints = new float[numPoints*4];
 		angles = new double[numPoints];
 		lineSegments = new ArrayList<LineSegment>();
 		
@@ -147,20 +144,11 @@ public class Asteroid extends DrawObject {
 		int numPoints = points.length/4;
 		double pointAngle = 2*Math.PI/numPoints;
 		
-		rightPoints = 0;
-		leftPoints = 0;
-		
 		// for each point
 		for(int i = 0; i < numPoints; i++) {
 			
 			// calculate angle based on point number and random offset
 			double angle = 2*Math.PI*i/numPoints - pointAngle/2 + random.nextFloat()*pointAngle;
-			
-			if (angle < Math.PI/2 || angle > 3*Math.PI/2) {
-				rightPoints++;
-			} else {
-				leftPoints++;
-			}
 			
 			// calculate radius
 			float pointRadius = radius - (radius*RADIUS_OFFSET) + (2*RADIUS_OFFSET*random.nextFloat()); 
@@ -209,6 +197,38 @@ public class Asteroid extends DrawObject {
 	public void breakup() {
 		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			
+			LineSegment lineSegment;
+
+			for (int i = 0; i < points.length; i+=4) {
+
+				lineSegment = lineSegments.get(i/4);
+
+				lineSegment.x1 = x + points[i];
+				lineSegment.y1 = y + points[i+1];
+				lineSegment.x2 = x + points[i+2];
+				lineSegment.y2 = y + points[i+3];
+
+				// need to get perpendicular (these are opposite on purpose)
+				float yDiff = Math.abs(points[i] - points[i+2]);
+				float xDiff = Math.abs(points[i+1] - points[i+3]);
+
+				yDiff += Math.abs(dirY)*speed;
+				xDiff += Math.abs(dirX)*speed;
+
+				lineSegment.move = BREAKING_UP_MOVE;
+
+				// x direction is sometimes positive
+				if (points[i] < 0) {
+					lineSegment.dirX = (-xDiff/(xDiff + yDiff));
+				} else {
+					lineSegment.dirX = (xDiff/(xDiff + yDiff));
+				}
+
+				// y direction is always positive
+				lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
+			}
+
+			speed = 0;
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
@@ -225,9 +245,6 @@ public class Asteroid extends DrawObject {
 			timeCounter = DISAPPEAR_DURATION;
 			
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
-			
-			// create temporary array of points so we can shrink the asteroid
-			System.arraycopy(points, 0, altPoints, 0, points.length);
 		}
 	}
 	
@@ -253,77 +270,6 @@ public class Asteroid extends DrawObject {
 	 */
 	public void splitUp() {
 		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
-			
-			int indexRight = 2, indexLeft = 0;
-			boolean leftSwitch = false, rightSwitch = false;
-			
-			// start at 2 so we get each pair of points (same values) for each corresponding angle
-			for (int i = 2; i < points.length-2; i+=4) {
-				
-				// right points
-				if (angles[(i+2)/4] < Math.PI/2.0 || angles[(i+2)/4] > 3.0*Math.PI/2.0) {
-
-					// add one right point to left side
-					if (leftSwitch && !rightSwitch) {
-						// perfect split
-						points[i] = 0;
-						points[i+2] = 0;
-						
-						altPoints[indexLeft] = points[i];
-						altPoints[indexLeft+1] = points[i+1];
-						altPoints[indexLeft+2] = points[i+2];
-						altPoints[indexLeft+3] = points[i+3];
-
-						indexLeft += 4;
-						rightSwitch = true;
-					}
-					
-					points[indexRight] = points[i];
-					points[indexRight+1] = points[i+1];
-					points[indexRight+2] = points[i+2];
-					points[indexRight+3] = points[i+3];
-					
-					indexRight += 4;
-				}
-				// left points
-				else {
-					
-					// add one left point to right side
-					if (!leftSwitch) {
-						// perfect split
-						points[i] = 0;
-						points[i+2] = 0;
-						
-						points[indexRight] = points[i];
-						points[indexRight+1] = points[i+1];
-						points[indexRight+2] = points[i+2];
-						points[indexRight+3] = points[i+3];
-
-						indexRight += 4;
-						leftSwitch = true;
-					}
-					
-					altPoints[indexLeft] = points[i];
-					altPoints[indexLeft+1] = points[i+1];
-					
-					// only add first point once on left side
-					if (indexLeft == 0) {
-						indexLeft += 2;
-					} else { 
-						altPoints[indexLeft+2] = points[i+2];
-						altPoints[indexLeft+3] = points[i+3];
-						indexLeft += 4;
-					}
-				}
-			}
-			
-			// close right points
-			points[indexRight] = points[points.length-2];
-			points[indexRight+1] = points[points.length-1];
-			
-			// close left points
-			altPoints[indexLeft] = altPoints[0];
-			altPoints[indexLeft+1] = altPoints[1];
 			
 			// NOTE: don't reset speed here so that the split up animation looks smoother
 			status = STATUS_SPLITTING_UP;
@@ -357,35 +303,9 @@ public class Asteroid extends DrawObject {
 				float factor = 1.f*timeCounter/BREAKING_UP_DURATION;
 				paint.setAlpha((int)(255 * factor));
 				
-//				for (LineSegment lineSegment : lineSegments) {
-//					lineSegment.draw(canvas, paint);
-//				}
-				
-				factor = 1 - factor;
-				
-				float offsetX = factor*BREAKING_UP_FACTOR*width;
-				float offsetY = factor*BREAKING_UP_FACTOR*height;
-
-				// top left corner
-				rectDest.set(x - offsetX - bitmap.getWidth()/2, y - offsetY - bitmap.getHeight()/2, x - offsetX, y - offsetY);
-				rectSrc.set(0, 0, bitmap.getWidth()/2, bitmap.getHeight()/2);
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
-				// top right corner
-				rectDest.set(x + offsetX, y - offsetY - bitmap.getHeight()/2, x + offsetX + bitmap.getWidth()/2, y - offsetY);
-				rectSrc.set(bitmap.getWidth()/2, 0, bitmap.getWidth(), bitmap.getHeight()/2);
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
-				// bottom left corner
-				rectDest.set(x - offsetX - bitmap.getWidth()/2, y + offsetY, x - offsetX, y + offsetY + bitmap.getHeight()/2);
-				rectSrc.set(0, bitmap.getHeight()/2, bitmap.getWidth()/2, bitmap.getHeight());
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
-				// bottom right corner
-				rectDest.set(x + offsetX, y + offsetY, x + offsetX + bitmap.getWidth()/2, y + offsetY + bitmap.getHeight()/2);
-				rectSrc.set(bitmap.getWidth()/2, bitmap.getHeight()/2, bitmap.getWidth(), bitmap.getHeight());
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
+				for (LineSegment lineSegment : lineSegments) {
+					lineSegment.draw(canvas, paint);
+				}
 				
 				paint.setAlpha(255);	
 			}
@@ -397,7 +317,10 @@ public class Asteroid extends DrawObject {
 					alpha = 255;
 				}
 				paint.setAlpha(alpha);
-				canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
+				
+				rectDest.set(x - factor*bitmap.getWidth()/2, y - factor*bitmap.getHeight()/2, x + factor*bitmap.getWidth()/2, y + factor*bitmap.getHeight()/2);
+				canvas.drawBitmap(bitmap, null, rectDest, paint);
+				
 				paint.setAlpha(255);
 			}
 			// fading out asteroid
@@ -408,21 +331,30 @@ public class Asteroid extends DrawObject {
 			}
 			// splitting up
 			else if (status == STATUS_SPLITTING_UP) {
-				paint.setAlpha((int)(255 * (1.0*timeCounter/SPLITTING_UP_DURATION)));
 				
-				canvas.save();
-				canvas.translate(x + ((1.f*SPLITTING_UP_DURATION - timeCounter)/SPLITTING_UP_DURATION)*SPLITTING_UP_OFFSET,  y);
+				float factor = 1.f*timeCounter/SPLITTING_UP_DURATION;
+				paint.setAlpha((int)(255*factor));
+				
+				factor = 1 - factor;
+				
+				float offset = factor*SPLITTING_UP_OFFSET;
+				
+				// draw left half
+				rectDest.set(x - offset - bitmap.getWidth()/2, y - bitmap.getHeight()/2, x - offset, y + bitmap.getHeight()/2);
+				rectSrc.set(0, 0, bitmap.getWidth()/2, bitmap.getHeight());
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
+				// draw left line
+				canvas.drawLine(x - offset, y - radius, x - offset, y + radius, paint);
+				
+				// draw right half
+				rectDest.set(x + offset, y - bitmap.getHeight()/2, x + offset + bitmap.getWidth()/2, y + bitmap.getHeight()/2);
+				rectSrc.set(bitmap.getWidth()/2, 0, bitmap.getWidth(), bitmap.getHeight());
+				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+				
+				// draw right line
+				canvas.drawLine(x + offset, y - radius, x + offset, y + radius, paint);
 
-				canvas.drawLines(points, 0, rightPoints*4+4, paint);
-				
-				canvas.restore();
-				
-				canvas.save();
-				canvas.translate(x - ((1.f*SPLITTING_UP_DURATION - timeCounter)/SPLITTING_UP_DURATION)*SPLITTING_UP_OFFSET,  y);
-
-				canvas.drawLines(altPoints, 0, leftPoints*4+4, paint);
-				
-				canvas.restore();
 				paint.setAlpha(255);
 			}
 			// held in place
@@ -473,11 +405,6 @@ public class Asteroid extends DrawObject {
 		}
 		// disappearing asteroid
 		else if (status == STATUS_DISAPPEARING) {
-			
-			// update all points
-			for (int i =  0; i < points.length; i++) {
-				altPoints[i] = factor*points[i];
-			}
 			
 			if (factor < DISAPPEARING_FACTOR || timeCounter <= 0) {
 				setInvisible();

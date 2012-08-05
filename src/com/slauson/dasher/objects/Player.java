@@ -47,6 +47,8 @@ public class Player extends DrawObject {
 	private float yBottom, yTop;
 	private int size;
 	private int rotationDegrees;
+	
+	private float[] altPoints;
 
 	/**
 	 * Private constants

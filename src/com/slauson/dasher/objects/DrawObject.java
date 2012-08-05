@@ -15,7 +15,7 @@ public abstract class DrawObject extends Item {
 
 	// TODO: remove this
 	protected float[] points;
-	protected float[] altPoints;
+	//protected float[] altPoints;
 	
 	protected ArrayList<LineSegment> lineSegments;
 	
@@ -38,7 +38,8 @@ public abstract class DrawObject extends Item {
 	// used by MyGameView to schedule game over message
 	protected static final int BREAKING_UP_DURATION = 5000;
 	
-	protected static final float BREAKING_UP_FACTOR = 1.5f;
+	protected static final float BREAKING_UP_FACTOR = 0.5f;
+	protected static final float BREAKING_UP_MOVE = 40;
 	protected static final float DISAPPEARING_FACTOR = 0.125f;
 	protected static final int FADING_OUT_DURATION = 1000;
 	protected static final int SPLITTING_UP_DURATION = 2000;
