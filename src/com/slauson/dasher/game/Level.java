@@ -32,6 +32,13 @@ public class Level {
 	/** Limit for asteroid speed in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_LIMIT = 0.3f;
 	
+	/** Minimum asteroid horizontal movement (0 - 1) **/
+	private static final float ASTEROID_HORIZONTAL_MOVEMENT_MIN = 0.0f;
+	/** Asteroid horizontal movement increase each level **/
+	private static final float ASTEROID_HORIZONTAL_MOVEMENT_INCREMENT = 0.01f;
+	/** Maximum asteroid horizontal movement (0 - 1) **/
+	private static final float ASTEROID_HORIZONTAL_MOVEMENT_MAX = 0.25f;
+	
 	/** Level in which asteroids begin having horizontal movement **/
 	private static final int ASTEROID_HORIZONTAL_MOVEMENT_LEVEL = 4;
 	
@@ -162,6 +169,20 @@ public class Level {
 	 */
 	public boolean hasAsteroidHorizontalMovement() {
 		return level >= ASTEROID_HORIZONTAL_MOVEMENT_LEVEL;
+	}
+	
+	/**
+	 * Returns asteroid horizontal movement offset (0 - 1)
+	 * @return asteroid horizontal movement offset (0 - 1)
+	 */
+	public float getAsteroidHorizontalMovementOffset() {
+		float num = (level - ASTEROID_HORIZONTAL_MOVEMENT_LEVEL)*ASTEROID_HORIZONTAL_MOVEMENT_INCREMENT;
+		
+		if (ASTEROID_HORIZONTAL_MOVEMENT_MIN + num > ASTEROID_HORIZONTAL_MOVEMENT_MAX) {
+			return ASTEROID_HORIZONTAL_MOVEMENT_MAX - ASTEROID_HORIZONTAL_MOVEMENT_MIN;
+		}
+		
+		return num;
 	}
 	
 	/**

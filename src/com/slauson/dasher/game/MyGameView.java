@@ -441,7 +441,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 				
-				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.hasAsteroidHorizontalMovement()));
+				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
 			}
 			
 			localStatistics = LocalStatistics.getInstance();
@@ -479,9 +479,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 				
 				// reset asteroid off screen (include non-visible, non-intact asteroids here)
-				if (direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
+				if (direction == DIRECTION_NORMAL && temp.getStatus() == Asteroid.STATUS_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
 					resetAsteroid(temp);
-				} else if (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0) {
+				} else if (direction == DIRECTION_REVERSE && temp.getStatus() == Asteroid.STATUS_NORMAL && temp.getY() + temp.getHeight()/2 < 0) {
 					resetAsteroid(temp);
 				}
 				
@@ -817,7 +817,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 				
-				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.hasAsteroidHorizontalMovement()));
+				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
 			}
 		}
 
@@ -1195,7 +1195,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		float radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 		float speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 		
-		asteroid.reset(radius, speed, level.hasAsteroidHorizontalMovement());
+		asteroid.reset(radius, speed, level.getAsteroidHorizontalMovementOffset());
 	}
 	
 	/**

@@ -35,7 +35,7 @@ public class Asteroid extends DrawObject {
 	
 	private RectF rectDest;
 	private Rect rectSrc;
-
+	
 	/**
 	 * Private constants
 	 */
@@ -43,7 +43,6 @@ public class Asteroid extends DrawObject {
 	private static final int NUM_POINTS_MAX = 12;
 	
 	private static final float RADIUS_OFFSET = 0.25f;
-	private static final float HORIZONTAL_MOVEMENT_OFFSET = 0.25f;
 	private static final float SPEED_INVISIBLE = 100;
 	
 	// durations
@@ -63,7 +62,7 @@ public class Asteroid extends DrawObject {
 	public static final int FADE_OUT_FROM_MAGNET = 2;
 
 	
-	public Asteroid(float sizeFactor, float speedFactor, float sizeFactorMax, boolean horizontalMovement) {
+	public Asteroid(float sizeFactor, float speedFactor, float sizeFactorMax, float horizontalMovementMax) {
 		// do width/height later
 		super(0, 0, 0, 0);
 		
@@ -78,7 +77,7 @@ public class Asteroid extends DrawObject {
 		rectDest = new RectF();
 		rectSrc = new Rect();
 		
-		int bitmapRadius = getRelativeWidthSize(sizeFactorMax/2);
+		int bitmapRadius = getRelativeWidthSize(sizeFactorMax);
 		int bitmapSize = (int)(2.5 * bitmapRadius);
 		
 		bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
@@ -87,16 +86,16 @@ public class Asteroid extends DrawObject {
 			lineSegments.add(new LineSegment(0, 0, 0, 0));
 		}
 
-		reset(sizeFactor, speedFactor, horizontalMovement);
+		reset(sizeFactor, speedFactor, horizontalMovementMax);
 	}
 	
 	/**
 	 * Resets asteroid
 	 * @param radiusFactor radius factor of asteroid relative to screen width
 	 * @param speedFactor speed factor of asteroid relative to screen height
-	 * @param horizontalMovement whether or not the asteroid has horizontal movement
+	 * @param horizontalMovementMax maximum amount of horizontal movement
 	 */
-	public void reset(float sizeFactor, float speedFactor, boolean horizontalMovement) {
+	public void reset(float sizeFactor, float speedFactor, float horizontalMovementMax) {
 		
 		// calculate speed
 		speed = getRelativeHeightSize(speedFactor);
@@ -110,8 +109,9 @@ public class Asteroid extends DrawObject {
 		createRandomPoints();
 		drawPointsToBitmap();
 		
-		if (horizontalMovement) {
-			dirX = -HORIZONTAL_MOVEMENT_OFFSET + (2*HORIZONTAL_MOVEMENT_OFFSET*random.nextFloat());
+		// horizontal movement
+		if (horizontalMovementMax > 0.01) {
+			dirX = -horizontalMovementMax + (2*horizontalMovementMax*random.nextFloat());
 		}
 		
 		reset();
@@ -228,7 +228,6 @@ public class Asteroid extends DrawObject {
 				lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			}
 
-			speed = 0;
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
 			
@@ -387,7 +386,8 @@ public class Asteroid extends DrawObject {
 				y = y + (-1*dirY*speed*timeModifier*speedModifier);
 			}
 		}
-		
+
+		// time counter
 		if (timeCounter > 0) {
 			timeCounter -= timeElapsed;
 		}
