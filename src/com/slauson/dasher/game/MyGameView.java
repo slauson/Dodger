@@ -16,7 +16,7 @@ import com.slauson.dasher.powerups.PowerupDrill;
 import com.slauson.dasher.powerups.PowerupMagnet;
 import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
-import com.slauson.dasher.powerups.PowerupInvulnerable;
+import com.slauson.dasher.powerups.PowerupInvulnerability;
 import com.slauson.dasher.powerups.PowerupBlackHole;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
@@ -159,8 +159,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int POWERUP_SMALL = 1;
 	/** Slow powerup id **/
 	public static final int POWERUP_SLOW = 2;
-	/** Invulnerable powerup id **/
-	public static final int POWERUP_INVULNERABLE = 3;
+	/** Invulnerability powerup id **/
+	public static final int POWERUP_INVULNERABILITY = 3;
 	/** Drill powerup id **/
 	public static final int POWERUP_DRILL = 4;
 	/** Magnet powerup id **/
@@ -193,8 +193,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	/** Slow powerup **/
 	public static PowerupSlow powerupSlow;
-	/** Invulnerable powerup **/
-	public static PowerupInvulnerable powerupInvulnerable;
+	/** Invulnerability powerup **/
+	public static PowerupInvulnerability powerupInvulnerability;
 	/** Small powerup **/
 	public static PowerupSmall powerupSmall;
 	
@@ -430,7 +430,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			player = new Player();
 			
 			powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
-			powerupInvulnerable = new PowerupInvulnerable(Upgrades.invulnerabilityUpgrade.getLevel());
+			powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
 			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
 
 			
@@ -512,8 +512,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						// player is on top or bottom
 						if (player.inPosition()) {
 							
-							// game over if player isn't invulnerable
-							if (!powerupInvulnerable.isActive() && !Debugging.godMode) {
+							// game over if player isn't invulnerability
+							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
 								temp.breakup();
 								
 								player.breakup();
@@ -531,11 +531,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 								}, player.getBreakupDuration()-500);
 							} else {
 								// increment pass through counter
-								powerupInvulnerable.passThrough();
+								powerupInvulnerability.passThrough();
 							}
 						}
 						// player is dashing (only destroy asteroids when invulnerability has upgrade)
-						else if (!powerupInvulnerable.isActive() || powerupInvulnerable.isDasher()) {
+						else if (!powerupInvulnerability.isActive() || powerupInvulnerability.isDasher()) {
 
 														// causes drop depending on upgrade
 							if (player.getDashNumAffectedAsteroids() == 0 ||
@@ -610,8 +610,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						}
 						localStatistics.usesBumper++;
 						break;
-					case POWERUP_INVULNERABLE:
-						powerupInvulnerable.activate();
+					case POWERUP_INVULNERABILITY:
+						powerupInvulnerability.activate();
 						localStatistics.usesInvulnerability++;
 						break;
 					case POWERUP_BOMB:
@@ -657,7 +657,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void updatePowerups() {
 		
 		// update inactive powerups
-		powerupInvulnerable.update();
+		powerupInvulnerability.update();
 		powerupSlow.update();
 		powerupSmall.update();
 		
@@ -665,8 +665,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		if (powerupSlow.isActive()) {
 			powerupSlow.checkAchievements();
 		}
-		if (powerupInvulnerable.isActive()) {
-			powerupInvulnerable.checkAchievements();
+		if (powerupInvulnerability.isActive()) {
+			powerupInvulnerability.checkAchievements();
 		}
 		
 		synchronized (activePowerups) {
@@ -761,7 +761,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// alter player for each active powerup
-		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerable.isActive()) {
+		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerability.isActive()) {
 			synchronized (activePowerups) {
 				for (ActivePowerup activePowerup : activePowerups) {
 					// TODO: use something better here
@@ -836,8 +836,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return false;
 		}
 		
-		// only move when touch controls are being used and when ship in normal or invulnerable status
-		if (Configuration.controlType != Configuration.CONTROL_TOUCH || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
+		// only move when touch controls are being used and when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_TOUCH || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
 			return false;
 		}
 		
@@ -915,8 +915,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 
-		// only move when keyboard controls are being used and when ship in normal or invulnerable status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
+		// only move when keyboard controls are being used and when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
 			return;
 		}
 
@@ -960,8 +960,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 
-		// only move player ship when its in normal or invulnerable status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
+		// only move player ship when its in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
 			return;
 		}
 
@@ -998,8 +998,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			return;
 		}
 		
-		// only move when accelerometer controls are being used or when ship in normal or invulnerable status
-		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABLE)) {
+		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
 			return;
 		}
 		
@@ -1092,8 +1092,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		case POWERUP_SLOW:
 			r_powerup = R.drawable.powerup_ship;
 			break;
-		case POWERUP_INVULNERABLE:
-			r_powerup = R.drawable.powerup_invulnerable;
+		case POWERUP_INVULNERABILITY:
+			r_powerup = R.drawable.powerup_invulnerability;
 			break;
 		case POWERUP_DRILL:
 			r_powerup = R.drawable.powerup_drill;

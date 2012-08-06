@@ -59,7 +59,7 @@ public class DebuggingMenu extends Activity {
     	dropList.add("None");
     	dropList.add("Small");
     	dropList.add("Slow");
-    	dropList.add("Invulnerable");
+    	dropList.add("Invulnerability");
     	dropList.add("Drill");
     	dropList.add("Magnet");
     	dropList.add("Black Hole");
@@ -90,7 +90,7 @@ public class DebuggingMenu extends Activity {
 					Debugging.dropType = MyGameView.POWERUP_SLOW;
 					break;
 				case 3:
-					Debugging.dropType = MyGameView.POWERUP_INVULNERABLE;
+					Debugging.dropType = MyGameView.POWERUP_INVULNERABILITY;
 					break;
 				case 4:
 					Debugging.dropType = MyGameView.POWERUP_DRILL;

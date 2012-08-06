@@ -31,7 +31,7 @@ public abstract class DrawObject extends Item {
 	public static final int STATUS_DISAPPEARING = 3;
 	public static final int STATUS_FADING_OUT = 4;
 	public static final int STATUS_SPLITTING_UP = 5;
-	public static final int STATUS_INVULNERABLE = 6;
+	public static final int STATUS_INVULNERABILITY = 6;
 	public static final int STATUS_HELD_IN_PLACE = 7;
 	public static final int STATUS_NEEDS_RESET = 8;
 

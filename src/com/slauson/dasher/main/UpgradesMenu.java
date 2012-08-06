@@ -49,7 +49,7 @@ public class UpgradesMenu extends Activity {
 	/** Slow upgrade button **/
 	private Button slowButton;
 	/** Invulnerable upgrade button **/
-	private Button invulnerableButton;
+	private Button invulnerabilityButton;
 	/** Drill upgrade button **/
 	private Button drillButton;
 	/** Magnet upgrade button **/
@@ -108,9 +108,9 @@ public class UpgradesMenu extends Activity {
 		});
 
     	// invulnerability powerup
-    	invulnerableButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
-    	toggleButtonColor(invulnerableButton);
-		invulnerableButton.setOnClickListener(new OnClickListener() {
+    	invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
+    	toggleButtonColor(invulnerabilityButton);
+		invulnerabilityButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
 				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.invulnerabilityUpgrade));

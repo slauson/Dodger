@@ -89,7 +89,7 @@ public class Achievements {
 	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.powerup_ship, LOCAL_DASH_ACTIVATE_DROPS_NUM);
 	public static Achievement localSmallDashDestroy = new Achievement("achievement_local_small_dash_destroy", R.drawable.powerup_ship, LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM);
 	public static Achievement localSlowLongTime = new Achievement("achievement_local_slow_long_time", R.drawable.powerup_slow, LOCAL_SLOW_LONG_TIME);
-	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerable, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
+	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerability, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
 	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
 	public static Achievement localBlackHoleTrifecta = new Achievement("achievement_local_black_hole_trifecta", R.drawable.powerup_black_hole, LOCAL_BLACK_HOLE_TRIFECTA_NUM);
 	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);

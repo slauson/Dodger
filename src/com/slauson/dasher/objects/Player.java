@@ -65,7 +65,7 @@ public class Player extends DrawObject {
 	// size stuff
 	private static final float SIZE_FACTOR = 0.067f;
 	private static final float REAR_OFFSET_FACTOR = 0.25f;
-	private static final int INVULNERABLE_DURATION = 5000;
+	private static final int INVULNERABILITY_DURATION = 5000;
 	
 	// dash recharge
 	private static final int DASH_RECHARGE_DURATION_0 = 20000;
@@ -144,8 +144,8 @@ public class Player extends DrawObject {
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
-		status = STATUS_INVULNERABLE;
-		timeCounter = INVULNERABLE_DURATION;
+		status = STATUS_INVULNERABILITY;
+		timeCounter = INVULNERABILITY_DURATION;
 		
 		// calculate dash recharge duration
 		switch (Upgrades.dashUpgrade.getLevel()) {
@@ -191,8 +191,8 @@ public class Player extends DrawObject {
 				canvas.rotate(degrees);
 			}
 
-			// normal or invulnerable blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerable.isActive()) || (status == STATUS_INVULNERABLE && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerable.isActive() && MyGameView.powerupInvulnerable.getCounter() % 4 < 2)) {
+			// normal or invulnerability blink
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
@@ -236,7 +236,7 @@ public class Player extends DrawObject {
 			timeCounter -= timeElapsed;
 		}
 		
-		if (status == STATUS_NORMAL || status == STATUS_INVULNERABLE) {
+		if (status == STATUS_NORMAL || status == STATUS_INVULNERABILITY) {
 		
 			// touch based controls
 			if (Configuration.controlType == Configuration.CONTROL_TOUCH) {
@@ -310,11 +310,11 @@ public class Player extends DrawObject {
 				dashTimeout-=timeElapsed;
 			}
 
-			// update invulnerable timer
-			if (status == STATUS_INVULNERABLE) {
+			// update invulnerability timer
+			if (status == STATUS_INVULNERABILITY) {
 				invulnerabilityCounter++;
 
-				// make ship invulnerable for short period
+				// make ship invulnerability for short period
 				if (timeCounter <= 0) {
 					status = STATUS_NORMAL;
 				}
@@ -327,11 +327,11 @@ public class Player extends DrawObject {
 				lineSegment.update(timeModifier);
 			}
 			
-			// make ship invulnerable for short period
+			// make ship invulnerability for short period
 			if (timeCounter <= 0) {
-				//System.out.println("INVULNERABLE");
-				status = STATUS_INVULNERABLE;
-				timeCounter = INVULNERABLE_DURATION;
+				//System.out.println("INVULNERABILITY");
+				status = STATUS_INVULNERABILITY;
+				timeCounter = INVULNERABILITY_DURATION;
 			}
 		} 
 	}
