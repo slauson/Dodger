@@ -27,6 +27,7 @@ import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -112,7 +113,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	/** Time game was paused, used for updating times on game resume **/
 	private long pauseTime;
-
 
 	/**
 	 * Constants - private
@@ -344,6 +344,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
+		// draw time stars
+		//level.draw(canvas, paint);
+		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
 		
@@ -354,7 +357,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		String durationText = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(duration), TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
 		paint.setStrokeWidth(1);
 		paint.setColor(Color.WHITE);
-		canvas.drawText(durationText + "    " + debugText, 0, canvasHeight, paint);
+		canvas.drawText(durationText + "    " + debugText, 0, 25, paint);
 	}
 	
 	/**
@@ -398,7 +401,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			System.out.println("MyGameView init()");
 			
-			level = new Level(Debugging.level, Debugging.levelProgression);
+			level = new Level(Debugging.level, Debugging.levelProgression, BitmapFactory.decodeResource(getResources(), R.drawable.sparkle));
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			

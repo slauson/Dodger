@@ -70,8 +70,6 @@ public abstract class DrawObject extends Item {
 		paint.setColor(Color.WHITE);
 		paint.setStrokeWidth(STROKE_WIDTH);
 		
-		System.out.println("bitmap: " + bitmap.getWidth() + ", " + bitmap.getHeight());
-		
 		// clear canvas
 		canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
 		canvas.translate(bitmap.getWidth()/2, bitmap.getHeight()/2);
