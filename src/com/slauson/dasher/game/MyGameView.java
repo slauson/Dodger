@@ -27,7 +27,6 @@ import com.slauson.dasher.status.Upgrades;
 import com.slauson.dasher.R;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -344,9 +343,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
-		// draw time stars
-		//level.draw(canvas, paint);
-		
 		// draw debug text
 		long duration = System.currentTimeMillis() - player.getStartTime();
 		
@@ -401,7 +397,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			System.out.println("MyGameView init()");
 			
-			level = new Level(Debugging.level, Debugging.levelProgression, BitmapFactory.decodeResource(getResources(), R.drawable.sparkle));
+			level = new Level(Debugging.level, Debugging.levelProgression);
 			
 			paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			

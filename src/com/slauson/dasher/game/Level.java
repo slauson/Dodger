@@ -1,18 +1,12 @@
 package com.slauson.dasher.game;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 
 public class Level {
 	
 	private int level;
-	private long startTime;
 	private long levelStartTime;
 	
 	private boolean progression;
-	
-	private Bitmap star;
 	
 	/** Starting number of asteroids **/
 	private static final int NUM_ASTEROIDS_BASE = 10;
@@ -52,11 +46,9 @@ public class Level {
 	/** Duration of each level **/
 	private static final long LEVEL_TIME = 15000;
 	
-	public Level(int level, boolean progression, Bitmap star) {
+	public Level(int level, boolean progression) {
 		this.level = level;
 		this.progression = progression;
-		this.star = star;
-		startTime = System.currentTimeMillis();
 		levelStartTime = System.currentTimeMillis();
 	}
 	
@@ -73,7 +65,6 @@ public class Level {
 	 */
 	public void reset() {
 		level = 0;
-		startTime = System.currentTimeMillis();
 		levelStartTime = System.currentTimeMillis();
 	}
 	
@@ -90,21 +81,6 @@ public class Level {
 		}
 		
 		return false;
-	}
-	
-	
-	/**
-	 * Draws stars in lower left of canvas according to minutes survived
-	 * @param canvas canvas to draw on
-	 * @param paint paint to draw with
-	 */
-	public void draw(Canvas canvas, Paint paint) {
-		long duration = System.currentTimeMillis() - startTime;
-		int minutes = (int)(duration/6000);
-		
-		for (int i = 0; i < minutes; i++) {
-			canvas.drawBitmap(star, 0 + i*star.getWidth(), canvas.getHeight() - star.getHeight(), paint);
-		}
 	}
 	
 	/**
@@ -207,7 +183,6 @@ public class Level {
 	 * @param milliseconds time to add to the level start time
 	 */
 	public void addToStartTime(long milliseconds) {
-		this.startTime += milliseconds;
 		this.levelStartTime += milliseconds;
 	}
 }
