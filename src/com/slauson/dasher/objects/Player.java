@@ -8,8 +8,10 @@ import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Upgrades;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 
@@ -48,8 +50,6 @@ public class Player extends DrawObject {
 	private int size;
 	private int rotationDegrees;
 	
-	private float[] altPoints;
-
 	/**
 	 * Private constants
 	 */
@@ -115,17 +115,9 @@ public class Player extends DrawObject {
 				-width/2, height/2
 		};
 		
-		altPoints = new float[] {
-				-width/4, height/4,
-				0, -height/4,
-				0, -height/4,
-				width/4, height/4,
-				width/4, height/4,
-				0, height/4-height*REAR_OFFSET_FACTOR/2,
-				0, height/4-height*REAR_OFFSET_FACTOR/2,
-				-width/4, height/4
-		};
-			
+		rectDest = new RectF(-size/4, -size/4, size/4, size/4);
+		rectSrc = new Rect(0, 0, size, size);
+		
 		dashTimeout = 0;
 		dashPercentRect = new RectF(-width/8, -height/16, width/8, 3*height/16);
 		dashPercentRectSmall = new RectF(-width/16, -height/32, width/16, 3*height/32);
@@ -166,6 +158,9 @@ public class Player extends DrawObject {
 		
 		// determine if multiple drops are enabled for dash
 		dashMultipleDrops = Upgrades.dashUpgrade.getLevel() >= Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS;
+		
+		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+		drawPointsToBitmap();
 	}
 	
 	/**
@@ -182,44 +177,49 @@ public class Player extends DrawObject {
 			
 			canvas.save();
 			
-			canvas.translate(x, y);
-			
 			// check if we need to rotate
 			if (speedY > 1 || direction == MyGameView.DIRECTION_REVERSE) {
-				
 				float degrees = rotationDegrees * (yBottom - y) / (yBottom - yTop);			
-				canvas.rotate(degrees);
+				canvas.rotate(degrees, x, y);
 			}
 
 			// normal or invulnerability blink
 			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
 				
+				canvas.translate(x - width/2, y - height/2);
+				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
-					canvas.drawLines(altPoints, paint);
+					canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
 				}
 				// draw normal bitmap
 				else {
-					canvas.drawLines(points, paint);
+					canvas.drawBitmap(bitmap, 0, 0, paint);
 				}
 				
 				// draw dash timeout percentage
 				paint.setStyle(Style.FILL_AND_STROKE);
+				canvas.translate(width/2, height/2);
+				
+				float dashPercentage = 1.f - 1.f*dashTimeout/dashRechargeDuration;
+				dashPercentage = (float)(dashPercentage - (dashPercentage % .25));
+				
 				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
-					canvas.drawArc(dashPercentRectSmall, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
+					canvas.drawArc(dashPercentRectSmall, -90, 360*dashPercentage, true, paint);
 				} else {
-					canvas.drawArc(dashPercentRect, -90, 360 - 360*(1f*dashTimeout/dashRechargeDuration), true, paint);
+					canvas.drawArc(dashPercentRect, -90, 360*dashPercentage, true, paint);
 				}
 			}
 			// breaking up
 			else if (status == STATUS_BREAKING_UP) {
 				paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
+				canvas.translate(x, y);
 				
 				for (LineSegment lineSegment : lineSegments) {
 					lineSegment.draw(canvas, paint);
 				}
 				
-				paint.setAlpha(255);	
+				paint.setAlpha(255);
 			}
 			
 			canvas.restore();
@@ -573,6 +573,7 @@ public class Player extends DrawObject {
 		return false;
 			
 	}
+	
 	
 	/**
 	 * Set player's x value

@@ -3,6 +3,12 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.PorterDuff.Mode;
 
 import com.slauson.dasher.game.MyGameView;
 
@@ -13,9 +19,7 @@ import com.slauson.dasher.game.MyGameView;
  */
 public abstract class DrawObject extends Item {
 
-	// TODO: remove this
 	protected float[] points;
-	//protected float[] altPoints;
 	
 	protected ArrayList<LineSegment> lineSegments;
 	
@@ -23,6 +27,9 @@ public abstract class DrawObject extends Item {
 	
 	protected int status;
 	protected long timeCounter;
+	
+	protected RectF rectDest;
+	protected Rect rectSrc;
 
 	// constants
 	public static final int STATUS_NORMAL = 0;
@@ -45,6 +52,8 @@ public abstract class DrawObject extends Item {
 	protected static final int SPLITTING_UP_DURATION = 2000;
 	protected static final float SPLITTING_UP_OFFSET = 50;
 	
+	protected static final float STROKE_WIDTH = 2;
+
 	public DrawObject(float x, float y, int width, int height) {
 		super(x, y, width, height);
 		
@@ -52,6 +61,23 @@ public abstract class DrawObject extends Item {
 		timeCounter = 0;
 	}
 	
+	/**
+	 * Draws points to bitmap
+	 */
+	protected void drawPointsToBitmap() {
+		Canvas canvas = new Canvas(bitmap);
+		Paint paint = new Paint();
+		paint.setColor(Color.WHITE);
+		paint.setStrokeWidth(STROKE_WIDTH);
+		
+		System.out.println("bitmap: " + bitmap.getWidth() + ", " + bitmap.getHeight());
+		
+		// clear canvas
+		canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
+		canvas.translate(bitmap.getWidth()/2, bitmap.getHeight()/2);
+		
+		canvas.drawLines(points, paint);
+	}
 
 	// abstract methods to be defined in subclasses
 	public abstract void reset();

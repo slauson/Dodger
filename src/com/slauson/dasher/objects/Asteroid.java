@@ -8,9 +8,7 @@ import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -33,9 +31,6 @@ public class Asteroid extends DrawObject {
 	
 	private int radius;
 	
-	private RectF rectDest;
-	private Rect rectSrc;
-	
 	/**
 	 * Private constants
 	 */
@@ -52,8 +47,6 @@ public class Asteroid extends DrawObject {
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
 	
-	private static final float STROKE_WIDTH = 2;
-
 	/**
 	 * Public constants
 	 */
@@ -175,22 +168,6 @@ public class Asteroid extends DrawObject {
 		points[4*numPoints-1] = points[1];
 	}
 
-	/**
-	 * Draws points to bitmap
-	 */
-	public void drawPointsToBitmap() {
-		Canvas bitmapCanvas = new Canvas(bitmap);
-		Paint bitmapPaint = new Paint();
-		bitmapPaint.setColor(Color.WHITE);
-		bitmapPaint.setStrokeWidth(STROKE_WIDTH);
-		
-		// clear canvas
-		bitmapCanvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);
-		bitmapCanvas.translate(bitmap.getWidth()/2, bitmap.getHeight()/2);
-		
-		bitmapCanvas.drawLines(points, bitmapPaint);
-	}
-	
 	/**
 	 * Make asteroid break up into line segments, caused by dash
 	 */
