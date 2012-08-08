@@ -426,7 +426,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			maxSleepTime = 1000/Configuration.frameRate;
 						
-			player = new Player();
+			player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH);
 			
 			powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 			powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
@@ -924,19 +924,17 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		case KeyEvent.KEYCODE_DPAD_LEFT:
 		case KeyEvent.KEYCODE_S:
 			player.moveLeft();
-			System.out.println("PLAYER MOVE LEFT");
 				
 			// check stay in place achievement
 			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
 			lastMoveTime = System.currentTimeMillis();
-			break;			
+			break;		
 		// right
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 		case KeyEvent.KEYCODE_L:
 			player.moveRight();
-			System.out.println("PLAYER MOVE RIGHT");
 				
 			// check stay in place achievement
 			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
@@ -970,15 +968,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		case KeyEvent.KEYCODE_DPAD_RIGHT:
 		case KeyEvent.KEYCODE_S:
 		case KeyEvent.KEYCODE_L:
-			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
-				player.moveStop();
-				System.out.println("PLAYER NO MOVE");
-			}
+			player.moveStop();
 			break;
 		// dpad center
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_SPACE:
-			if (Configuration.controlType == Configuration.CONTROL_KEYBOARD && player.canDash()) {
+			if (player.canDash()) {
 				player.dash();
 			}
 			break;
@@ -1053,6 +1048,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// reset max sleep time
 			maxSleepTime = 2*1000/Configuration.frameRate;
+			
+			// reset player control type
+			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
 			
 			if (pauseTime > 0) {
 				// reset all update times

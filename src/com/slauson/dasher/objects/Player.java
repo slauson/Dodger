@@ -50,6 +50,8 @@ public class Player extends DrawObject {
 	private int size;
 	private int rotationDegrees;
 	
+	private boolean moveByTouch;
+	
 	/**
 	 * Private constants
 	 */
@@ -58,8 +60,8 @@ public class Player extends DrawObject {
 	private static final int MOVE_NONE = 0;
 	private static final int MOVE_LEFT = 1;
 	private static final int MOVE_RIGHT = 2;
-	private static final float BUTTON_MOVE_FACTOR = 4f;
-	private static final float BUTTON_MIN_SPEED = 2f;
+	private static final float BUTTON_SPEED_INCREASE_FACTOR = 0.05f;
+	private static final float BUTTON_MIN_SPEED_FACTOR = 0.25f;
 	private static final float MAX_SPEED_FACTOR = 0.5f;
 	
 	// size stuff
@@ -76,12 +78,14 @@ public class Player extends DrawObject {
 	// breakup duration
 	private static final int BREAKING_UP_DURATION = 3000;
 	private static final float BREAKING_UP_MOVE = 20;
+
 	
-	
-	public Player() {
+	public Player(boolean moveByTouch) {
 		// set y, width, height later 
 		super(MyGameView.canvasWidth/2, 0, 0, 0);
 
+		this.moveByTouch = moveByTouch;
+		
 		// set y offset
 		yBottom = MyGameView.canvasHeight - MyGameView.canvasHeight*Configuration.offsetHeight;
 		y = yBottom;
@@ -163,6 +167,10 @@ public class Player extends DrawObject {
 		drawPointsToBitmap();
 	}
 	
+	public void setMoveByTouch(boolean moveByTouch) {
+		this.moveByTouch = moveByTouch;
+	}
+	
 	/**
 	 * Resets start time
 	 */
@@ -239,7 +247,7 @@ public class Player extends DrawObject {
 		if (status == STATUS_NORMAL || status == STATUS_INVULNERABILITY) {
 		
 			// touch based controls
-			if (Configuration.controlType == Configuration.CONTROL_TOUCH) {
+			if (moveByTouch) {
 				// damn floating point arithmetic
 				if (Math.abs(goX - x) > 1) {
 					speedX = maxSpeed;
@@ -256,23 +264,25 @@ public class Player extends DrawObject {
 					speedX = 0;
 				}
 			}
-			// key based controls
-			else if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+			// key/accelerometer based controls
+			else {
 				if (move != MOVE_NONE) {
 					if (speedX < maxSpeed) {
-						speedX += BUTTON_MOVE_FACTOR;
+						speedX += BUTTON_SPEED_INCREASE_FACTOR*maxSpeed;
 						
 						if (speedX > maxSpeed) {
 							speedX = maxSpeed;
 						}
 					}
+					
+					System.out.println(dirX + ", " + speedX + ", " + timeModifier);
 				}
 			}
 			
 			x = x + (dirX*speedX*timeModifier);
 			
 			// autocorrect position if we overshoot
-			if ((dirX > 0 && x > goX) || (dirX < 0 && x < goX)) {
+			if (moveByTouch && ((dirX > 0 && x > goX) || (dirX < 0 && x < goX))) {
 				x = goX;
 			}
 			
@@ -586,7 +596,7 @@ public class Player extends DrawObject {
 	public void moveLeft() {
 		
 		if (speedX == 0 || move != MOVE_LEFT) {
-			speedX = BUTTON_MIN_SPEED;
+			speedX = BUTTON_MIN_SPEED_FACTOR*maxSpeed;
 		}
 		
 		dirX = -1;
@@ -596,7 +606,7 @@ public class Player extends DrawObject {
 	
 	public void moveRight() {
 		if (speedX == 0 || move != MOVE_RIGHT) {
-			speedX = BUTTON_MIN_SPEED;
+			speedX = BUTTON_MIN_SPEED_FACTOR*maxSpeed;
 		}
 		
 		dirX = 1;
