@@ -60,6 +60,7 @@ public class Player extends DrawObject {
 	private static final int MOVE_NONE = 0;
 	private static final int MOVE_LEFT = 1;
 	private static final int MOVE_RIGHT = 2;
+	private static final int MOVE_ANY = 3;
 	private static final float BUTTON_SPEED_INCREASE_FACTOR = 0.05f;
 	private static final float BUTTON_MIN_SPEED_FACTOR = 0.25f;
 	private static final float MAX_SPEED_FACTOR = 0.5f;
@@ -274,8 +275,6 @@ public class Player extends DrawObject {
 							speedX = maxSpeed;
 						}
 					}
-					
-					System.out.println(dirX + ", " + speedX + ", " + timeModifier);
 				}
 			}
 			
@@ -612,6 +611,10 @@ public class Player extends DrawObject {
 		dirX = 1;
 		
 		move = MOVE_RIGHT;
+	}
+	
+	public void moveStart() {
+		move = MOVE_ANY;
 	}
 	
 	public void moveStop() {

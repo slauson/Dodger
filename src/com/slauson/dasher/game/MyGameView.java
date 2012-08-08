@@ -52,9 +52,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * Private stuff
 	 */
 	
-	/** Debugging text for displaying messages **/
-	private String debugText = "";
-	
 	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
@@ -140,6 +137,8 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private static final float ACCELEROMETER_DEADZONE = 0.05f;
 	/** Maximum value for accelerometer **/
 	private static final float ACCELEROMETER_MAX = 0.3f;
+	/** Threshold for activating dash with accelerometer **/
+	private static final float ACCELEROMETER_DASH_THRESHOLD = 0.2f;
 
 	
 	/**
@@ -177,7 +176,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	public static final int DIRECTION_NORMAL = 0;
 	/** Asteroids are going in reverse direction (up) **/
 	public static final int DIRECTION_REVERSE = 1;
-	
+
 	/**
 	 * Shared stuff
 	 */
@@ -339,18 +338,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 			paint.setAlpha(255);
 		}
-		
-		// draw debug text
-		long duration = System.currentTimeMillis() - player.getStartTime();
-		
-		if (pauseTime > 0) {
-			duration = pauseTime - player.getStartTime();
-		}
-		
-		String durationText = String.format("%d min, %d sec", TimeUnit.MILLISECONDS.toMinutes(duration), TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
-		paint.setStrokeWidth(1);
-		paint.setColor(Color.WHITE);
-		canvas.drawText(durationText + "    " + debugText, 0, 25, paint);
 	}
 	
 	/**
@@ -799,8 +786,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			quasarCounter--;
 		}
 		
-		debugText = "" + player.getSpeed() + " - level " + level.getLevel();
-		
 		// add more asteroids if needed
 		if (level.update()) {
 			// add more asteroids if necessary
@@ -899,7 +884,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
 			return;
 		}
 
@@ -942,7 +930,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 
 		// only move player ship when its in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
 			return;
 		}
 
@@ -977,12 +968,28 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
+		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
 			return;
 		}
 		
-		float moveX = 0f;
-		
+		// check for dash
+		if (((player.getDirection() == DIRECTION_NORMAL && ty > ACCELEROMETER_DASH_THRESHOLD) ||
+				(player.getDirection() == DIRECTION_REVERSE && ty < -ACCELEROMETER_DASH_THRESHOLD)) &&
+				player.canDash())
+		{
+			player.dash();
+		}
+
+		// check if tx is not passed deadzone
+		if (Math.abs(tx) < ACCELEROMETER_DEADZONE) {
+			player.moveStop();
+			return;
+		}
+
+		// set player direction
 		if (tx > 0) {
 			player.setDirX(-1);
 		} else {
@@ -990,19 +997,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			player.setDirX(1);
 		}
 		
-		if (tx < ACCELEROMETER_DEADZONE) {
-			player.setDirX(0);
-			return;
-		}
-
+		// limit tx
 		if (tx > ACCELEROMETER_MAX) {
 			tx = ACCELEROMETER_MAX;
 		}
-		
-		moveX = ((tx - ACCELEROMETER_DEADZONE)/ACCELEROMETER_MAX)*player.getMaxSpeed();
+
+		// set player movement
+		float moveX = ((tx - ACCELEROMETER_DEADZONE)/ACCELEROMETER_MAX)*player.getMaxSpeed();
+		player.moveStart();
 		player.setSpeed(moveX);
-		//player.setSpeed(move);
-    	//debugText = debugText + tx;
 		
 		// check stay in place achievement
 		if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
