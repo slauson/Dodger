@@ -89,9 +89,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Initialization flag for when game is initialized **/
 	private boolean initialized = false;
 	
-	/** Y coordinate of last touch down event, for swipe-based dodging **/
-	private float touchDownY;
-	
 	/** Time of last touch down event, for double-tap based dashing **/
 	private long lastTouchDownTime1;
 	/** Time of second last touch down event, for double-tap based dashing **/
@@ -848,7 +845,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		switch(action) {
 		case MotionEvent.ACTION_DOWN:
-			
 			// check if pressed on player's position, then dash
 			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
 					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2 &&
@@ -857,7 +853,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				player.dash();
 				break;
 			}
-			touchDownY = y;
+			
 			lastTouchDownTime2 = lastTouchDownTime1;
 			lastTouchDownTime1 = System.currentTimeMillis();
 			
@@ -868,7 +864,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// don't break here so that player still moves
 		case MotionEvent.ACTION_MOVE:
-			
 			// only move horizontally when player is in position
 			if (player.inPosition()) {
 				player.setGoX(x);
@@ -876,17 +871,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			break;
 		case MotionEvent.ACTION_UP:
-			
-			// TODO: use touch history here (need to make sure y changed quick enough)
-			// dash based on a swipe motion event
-			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
-				if (direction == DIRECTION_NORMAL && touchDownY - y > DASH_SWIPE_MIN_DISTANCE) {
-					player.dash();
-				} else if (direction == DIRECTION_REVERSE && y - touchDownY > DASH_SWIPE_MIN_DISTANCE) {
-					player.dash();
-				}
-			}
-			
 			// dash based on double tap
 			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
 				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
