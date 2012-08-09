@@ -195,7 +195,7 @@ public class Player extends DrawObject {
 			// normal or invulnerability blink
 			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
 				
-				canvas.translate(x - width/2, y - height/2);
+				canvas.translate(x, y);
 				
 				// if small powerup is active, draw resized bitmap
 				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
@@ -203,20 +203,21 @@ public class Player extends DrawObject {
 				}
 				// draw normal bitmap
 				else {
-					canvas.drawBitmap(bitmap, 0, 0, paint);
+					canvas.drawBitmap(bitmap, -width/2, -height/2, paint);
 				}
 				
 				// draw dash timeout percentage
 				paint.setStyle(Style.FILL_AND_STROKE);
-				canvas.translate(width/2, height/2);
 				
 				float dashPercentage = 1.f - 1.f*dashTimeout/dashRechargeDuration;
 				dashPercentage = (float)(dashPercentage - (dashPercentage % .25));
 				
-				if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
-					canvas.drawArc(dashPercentRectSmall, -90, 360*dashPercentage, true, paint);
-				} else {
-					canvas.drawArc(dashPercentRect, -90, 360*dashPercentage, true, paint);
+				if (dashPercentage > 0) {
+					if (MyGameView.powerupSmall.isActive() && !(!inPosition && MyGameView.powerupSmall.isBigDash())) {
+						canvas.drawArc(dashPercentRectSmall, -90, 360*dashPercentage, true, paint);
+					} else {
+						canvas.drawArc(dashPercentRect, -90, 360*dashPercentage, true, paint);
+					}
 				}
 			}
 			// breaking up
