@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Drop;
@@ -107,6 +106,14 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Time game was paused, used for updating times on game resume **/
 	private long pauseTime;
 
+	/** Threshold for accelerometer dash **/
+	float accelerometerDashThreshold;
+	/** Deadzone for accelerometer movement **/
+	float accelerometerDeadzone;
+	/** Max value for accelerometer **/
+	float accelerometerMax;
+	
+	
 	/**
 	 * Constants - private
 	 */
@@ -128,17 +135,29 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	
 	/** Factor for touching the ship to dash **/
 	private static final float DASH_TOUCH_FACTOR = 1.5f;
-	/** Minimum distance for swiping to dash **/
-	private static final float DASH_SWIPE_MIN_DISTANCE = 50;
 	/** Minimum duration for double tapping to dash **/
 	private static final int DASH_DOUBLE_TAP_MIN_DURATION = 500;
 
-	/** Deadzone for accelerometer **/
-	private static final float ACCELEROMETER_DEADZONE = 0.05f;
-	/** Maximum value for accelerometer **/
-	private static final float ACCELEROMETER_MAX = 0.3f;
-	/** Threshold for activating dash with accelerometer **/
-	private static final float ACCELEROMETER_DASH_THRESHOLD = 0.2f;
+	/** Deadzone for low sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DEADZONE_LOW = 0.10f;
+	/** Deadzone for medium sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DEADZONE_MEDIUM = 0.05f;
+	/** Deadzone for high sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DEADZONE_HIGH = 0.02f;
+	
+	/** Maximum value for low sensitivity accelerometer **/
+	private static final float ACCELEROMETER_MAX_LOW = 0.4f;
+	/** Maximum value for medium sensitivity accelerometer **/
+	private static final float ACCELEROMETER_MAX_MEDIUM = 0.3f;
+	/** Maximum value for high sensitivity accelerometer **/
+	private static final float ACCELEROMETER_MAX_HIGH = 0.2f;
+	
+	/** Threshold for activating dash with low sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DASH_THRESHOLD_LOW = 0.25f;
+	/** Threshold for activating dash with low sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DASH_THRESHOLD_MEDIUM = 0.2f;
+	/** Threshold for activating dash with low sensitivity accelerometer **/
+	private static final float ACCELEROMETER_DASH_THRESHOLD_HIGH = 0.15f;
 
 	
 	/**
@@ -416,6 +435,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
 			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
 
+			updateAccelerometerValues();
 			
 			float radius, speed;
 			
@@ -976,15 +996,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// check for dash
-		if (((player.getDirection() == DIRECTION_NORMAL && ty > ACCELEROMETER_DASH_THRESHOLD) ||
-				(player.getDirection() == DIRECTION_REVERSE && ty < -ACCELEROMETER_DASH_THRESHOLD)) &&
+		if (((player.getDirection() == DIRECTION_NORMAL && ty > accelerometerDashThreshold) ||
+				(player.getDirection() == DIRECTION_REVERSE && ty < -accelerometerDashThreshold)) &&
 				player.canDash())
 		{
 			player.dash();
 		}
 
 		// check if tx is not passed deadzone
-		if (Math.abs(tx) < ACCELEROMETER_DEADZONE) {
+		if (Math.abs(tx) < accelerometerDeadzone) {
 			player.moveStop();
 			return;
 		}
@@ -998,12 +1018,12 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		// limit tx
-		if (tx > ACCELEROMETER_MAX) {
-			tx = ACCELEROMETER_MAX;
+		if (tx > accelerometerMax) {
+			tx = accelerometerMax;
 		}
 
 		// set player movement
-		float moveX = ((tx - ACCELEROMETER_DEADZONE)/ACCELEROMETER_MAX)*player.getMaxSpeed();
+		float moveX = ((tx - accelerometerDeadzone)/accelerometerMax)*player.getMaxSpeed();
 		player.moveStart();
 		player.setSpeed(moveX);
 		
@@ -1038,6 +1058,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			// reset player control type
 			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
+			
+			if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+				updateAccelerometerValues();
+			}
 			
 			if (pauseTime > 0) {
 				// reset all update times
@@ -1265,6 +1289,29 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (activePowerup instanceof PowerupDrill && activePowerup.getDirY() < 0) {
 				((PowerupDrill)activePowerup).switchDirection();
 			}
+		}
+	}
+	
+	/**
+	 * Updates accelerometer values for accelerometer movement
+	 */
+	private void updateAccelerometerValues() {
+		switch (Configuration.accelerometerSensitivity) {
+		case Configuration.ACCELEROMETER_SENSITIVITY_LOW:
+			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_LOW;
+			accelerometerDeadzone = ACCELEROMETER_DEADZONE_LOW;
+			accelerometerMax = ACCELEROMETER_MAX_LOW;
+			break;
+		case Configuration.ACCELEROMETER_SENSITIVITY_MEDIUM:
+			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_MEDIUM;
+			accelerometerDeadzone = ACCELEROMETER_DEADZONE_MEDIUM;
+			accelerometerMax = ACCELEROMETER_MAX_MEDIUM;
+			break;
+		default:
+			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_HIGH;
+			accelerometerDeadzone = ACCELEROMETER_DEADZONE_HIGH;
+			accelerometerMax = ACCELEROMETER_MAX_HIGH;
+			break;
 		}
 	}
 }

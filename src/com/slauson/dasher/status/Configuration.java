@@ -17,8 +17,19 @@ public class Configuration {
 	// these correspond to the configuration.xml file used in the OptionsMenu
 	private static final String CONTROL_STRING = "configuration_controls"; 
 	private static final String CONTROL_TOUCH_STRING = "Touch";
-	private static final String CONTROL_KEYBOARD_STRING = "Keyboard";
 	private static final String CONTROL_ACCELEROMETER_STRING = "Accelerometer";
+	//private static final String CONTROL_KEYBOARD_STRING = "Keyboard";
+	
+	// accelerometer sensitivity
+	public static final int ACCELEROMETER_SENSITIVITY_LOW = 0;
+	public static final int ACCELEROMETER_SENSITIVITY_MEDIUM = 1;
+	public static final int ACCELEROMETER_SENSITIVITY_HIGH = 2;
+	
+	// these correspond to the configuration.xml file used in the OptionsMenu
+	private static final String ACCELEROMETER_SENSITIVITY_STRING = "accelerometer_sensitivity"; 
+	private static final String ACCELEROMETER_SENSITIVITY_LOW_STRING = "Low";
+	private static final String ACCELEROMETER_SENSITIVITY_MEDIUM_STRING = "Medium";
+	//private static final String ACCELEROMETER_SENSITIVITY_HIGH_STRING = "High";
 
 	// graphics settings
 	public static final int GRAPHICS_LOW = 0;
@@ -26,8 +37,8 @@ public class Configuration {
 	
 	// these correspond to the configuration.xml file used in the OptionsMenu
 	private static final String GRAPHICS_STRING = "configuration_graphics";
-	private static final String GRAPHICS_LOW_STRING = "Low";
 	private static final String GRAPHICS_NORMAL_STRING = "Normal";
+	//private static final String GRAPHICS_LOW_STRING = "Low";
 	
 	// frame rate settings
 	private static final int FRAME_RATE_LOW = 15;
@@ -41,11 +52,14 @@ public class Configuration {
 	private static final String FRAME_RATE_STRING = "configuration_frame_rate";
 	private static final String FRAME_RATE_LOW_STRING = "Low";
 	private static final String FRAME_RATE_NORMAL_STRING = "Normal";
-	private static final String FRAME_RATE_HIGH_STRING = "High";
+	//private static final String FRAME_RATE_HIGH_STRING = "High";
 
 
 	// controls
 	public static int controlType = CONTROL_TOUCH;
+	
+	// accelerometer sensitivity
+	public static int accelerometerSensitivity = ACCELEROMETER_SENSITIVITY_MEDIUM;
 	
 	// graphics
 	public static int graphicsType = GRAPHICS_NORMAL;
@@ -71,6 +85,17 @@ public class Configuration {
 			controlType = CONTROL_ACCELEROMETER;
 		} else {
 			controlType = CONTROL_KEYBOARD;
+		}
+		
+		// load accelerometer sensitivities
+		String accelerometerSensitivityString = preferences.getString(ACCELEROMETER_SENSITIVITY_STRING, ACCELEROMETER_SENSITIVITY_MEDIUM_STRING);
+		
+		if (accelerometerSensitivityString.equals(ACCELEROMETER_SENSITIVITY_LOW_STRING)) {
+			accelerometerSensitivity = ACCELEROMETER_SENSITIVITY_LOW;
+		} else if (accelerometerSensitivityString.equals(ACCELEROMETER_SENSITIVITY_MEDIUM_STRING)) {
+			accelerometerSensitivity = ACCELEROMETER_SENSITIVITY_MEDIUM;
+		} else {
+			accelerometerSensitivity = ACCELEROMETER_SENSITIVITY_HIGH;
 		}
 		
 		// load graphics

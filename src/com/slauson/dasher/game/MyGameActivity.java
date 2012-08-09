@@ -119,7 +119,7 @@ public class MyGameActivity extends Activity {
 		
 		quitting = false;
 		
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER && myAccelerometer != null) {
+		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
 			myAccelerometer.registerListener();
 		}
 	}
@@ -135,7 +135,7 @@ public class MyGameActivity extends Activity {
 			pauseGame();
 		}
 
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER && myAccelerometer != null) {
+		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
 			myAccelerometer.unregisterListener();
 		}
 	}
