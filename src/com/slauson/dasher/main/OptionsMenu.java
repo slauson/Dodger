@@ -54,11 +54,11 @@ public class OptionsMenu extends PreferenceActivity {
 	}
 	
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		
+	public void onPause() {
+		super.onPause();
+
+		// do this in onPause instead of onDestroy because onDestroy gets called after the previous activity's onResume
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-			
 		Configuration.load(preferences);
 	}
 	

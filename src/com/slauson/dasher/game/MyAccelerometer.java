@@ -25,8 +25,13 @@ public class MyAccelerometer implements SensorEventListener {
 	/** Maximum range of accelerometer **/
 	private float maximumRange;
 	
+	/** Set to true if listener was successfully registered **/
+	boolean listenerRegistered;
+	
 	public MyAccelerometer(Context c) {
 		parent = (MyGameActivity)c;
+		
+		listenerRegistered = false;
 	}
 	
 	/**
@@ -36,20 +41,28 @@ public class MyAccelerometer implements SensorEventListener {
 		sensorManager = (SensorManager)parent.getSystemService(Context.SENSOR_SERVICE);
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		
-		maximumRange = sensorAccelerometer.getMaximumRange();
+		// return if sensorAccelerometer is null (this happens when there isn't an accelerometer)
+		if (sensorAccelerometer == null) {
+			return;
+		}
 		
+		maximumRange = sensorAccelerometer.getMaximumRange();
 		sensorManager.registerListener(this, sensorAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+		listenerRegistered = true;
 	}
 	
 	/**
 	 * Unregisters listener for accelerometer
 	 */
 	void unregisterListener() {
-		sensorManager.unregisterListener(this);
+		if (listenerRegistered) {
+			sensorManager.unregisterListener(this);
+			listenerRegistered = false;
+		}
 	}
 	
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
+		// ignore
 	}
 
 	/**

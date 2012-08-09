@@ -115,11 +115,11 @@ public class MyGameActivity extends Activity {
 		super.onResume();
 		myGameView.MyGameSurfaceView_OnResume();
 		
+		System.out.println("MyGameActivity::onResume()");
+		
 		quitting = false;
 		
-		System.out.println("MyGameActivity onResume()");
-
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER && myAccelerometer != null) {
 			myAccelerometer.registerListener();
 		}
 	}
@@ -129,13 +129,13 @@ public class MyGameActivity extends Activity {
 		super.onPause();
 		myGameView.MyGameSurfaceView_OnPause();
 		
-		System.out.println("MyGameActivity onPause()");
+		System.out.println("MyGameActivity::onPause()");
 		
 		if (!quitting) {
 			pauseGame();
 		}
 
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER && myAccelerometer != null) {
 			myAccelerometer.unregisterListener();
 		}
 	}
