@@ -25,6 +25,7 @@ public class PowerupMagnet extends ActivePowerup {
 	private static final int DURATION_3 = 30000;
 	
 	private static final float RANGE_PULL_FACTOR = 0.25f;
+	private static final float HOLD_RANGE_FACTOR = 1.5f;
 	
 	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
 	private static float rangePull = -1;
@@ -101,7 +102,7 @@ public class PowerupMagnet extends ActivePowerup {
 		// pull in asteroid
 		if (distance < rangePull) {
 			
-			float holdRange = height/2 + asteroid.getHeight()/2;
+			float holdRange = HOLD_RANGE_FACTOR*height/2 + asteroid.getHeight()/2;
 			
 			// direction directly to asteroid
 			float dirX = distanceX/(absDistanceX + absDistanceY);
@@ -116,7 +117,7 @@ public class PowerupMagnet extends ActivePowerup {
 			// otherwise pull in
 			else {
 			
-				float pullFactor = 0.5f - (0.5f*distance/rangePull);
+				float pullFactor = 1.f - (1.f*distance/rangePull);
 				
 				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;
