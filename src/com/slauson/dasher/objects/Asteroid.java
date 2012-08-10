@@ -351,18 +351,7 @@ public class Asteroid extends DrawObject {
 		float timeModifier = 1.f*timeElapsed/1000;
 		
 		x = x + (dirX*speed*timeModifier*speedModifier);
-		
-		// only use gravity when direction is positive
-		if (dirY > 0) {
-			y = y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
-		} else {
-			// otherwise use direction
-			if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
-				y = y + (1*dirY*speed*timeModifier*speedModifier);
-			} else {
-				y = y + (-1*dirY*speed*timeModifier*speedModifier);
-			}
-		}
+		y = getNextY(speedModifier, timeModifier);
 
 		// time counter
 		if (timeCounter > 0) {
@@ -417,6 +406,27 @@ public class Asteroid extends DrawObject {
 		else if (status == STATUS_INVISIBLE) {
 			if (timeCounter <= 0) {
 				status = STATUS_NEEDS_RESET;
+			}
+		}
+	}
+	
+	/**
+	 * Returns next y position of asteroid
+	 * @param speedModifier
+	 * @param timeModifier
+	 * @return next y position
+	 */
+	public float getNextY(float speedModifier, float timeModifier) {
+
+		// only use gravity when direction is positive
+		if (dirY > 0) {
+			return y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
+		} else {
+			// otherwise use direction
+			if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+				return y + (1*dirY*speed*timeModifier*speedModifier);
+			} else {
+				return y + (-1*dirY*speed*timeModifier*speedModifier);
 			}
 		}
 	}

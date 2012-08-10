@@ -20,14 +20,13 @@ public class PowerupDrill extends ActivePowerup {
 
 	// constants
 	private static final float SPEED_FACTOR = 0.25f;
-	private static final float WEIGHTED_DISTANCE_X_FACTOR = 4.0f;
-	private static final float CONE_CHECK_X_FACTOR = 2.0f;
-	private static final float MAX_DIR_CHANGE = 0.1f;
+	private static final float MAX_DIR_CHANGE = 0.05f;
 	private static final int TELEPORT_DURATION = 500;
+	private static final int NUM_FRAMES_LOOK_AHEAD = 10;
 	
-	private static final float MAX_X_DIR_1 = 0.05f;
-	private static final float MAX_X_DIR_2 = 0.1f;
-	private static final float MAX_X_DIR_3 = 0.25f;
+	private static final float MAX_X_DIR_1 = 0.2f;
+	private static final float MAX_X_DIR_2 = 0.3f;
+	private static final float MAX_X_DIR_3 = 0.5f;
 	
 	private static final int DURATION = 10000;
 	
@@ -86,11 +85,16 @@ public class PowerupDrill extends ActivePowerup {
 	@Override
 	public void alterAsteroid(Asteroid asteroid) {
 
+		// check if drill can seek
+		if (!hasSeek) {
+			return;
+		}
+		
 		// ignore asteroids past drill, off screen, or non normal/held in place
 		if ((asteroid.getStatus() != Asteroid.STATUS_NORMAL && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) ||
 				!asteroid.onScreen() ||
-				direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 <= y - height/2 ||
-				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 >= y + height/2)
+				direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() - asteroid.getHeight()/2 >= y + height/2 ||
+				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() + asteroid.getHeight()/2 <= y - height/2)
 		{
 			// reset next asteroid
 			if (asteroid.equals(nextAsteroid)) {
@@ -110,29 +114,24 @@ public class PowerupDrill extends ActivePowerup {
 			}
 		}
 		
-		// check if drill can seek
-		if (!hasSeek) {
-			return;
-		}
-		
 		// get weighted distance
 		float distanceX = Math.abs(x - asteroid.getX());
 		float distanceY = Math.abs(y - asteroid.getY());
 		
-		// cone check ( we only want to look at asteroids in narrow cone above asteroid)
-		if (CONE_CHECK_X_FACTOR*distanceX > distanceY) {
+		// cone check (we only want to look at asteroids in narrow cone above asteroid based on maximum x direction)
+		if ((1.5f/maxXDir)*distanceX > distanceY) {
 			return;
 		}
 		
-		float weightedDistance = FloatMath.sqrt((float)Math.pow(WEIGHTED_DISTANCE_X_FACTOR*distanceX, 2) + (float)Math.pow(distanceY, 2));
-
+		float distance = FloatMath.sqrt((float)Math.pow(distanceX, 2) + (float)Math.pow(distanceY, 2));
+		
 		// update distance for next asteroid
 		if (asteroid.equals(nextAsteroid)) {
-			nextDistance = weightedDistance;
+			nextDistance = distance;
 		}
 		// otherwise check if its closer
-		else if (weightedDistance < nextDistance || nextAsteroid == null) {
-			nextDistance = weightedDistance;
+		else if (distance < nextDistance || nextAsteroid == null) {
+			nextDistance = distance;
 			nextAsteroid = asteroid;
 		}
 	}
@@ -167,7 +166,7 @@ public class PowerupDrill extends ActivePowerup {
 		// update direction based on next asteroid
 		if (nextAsteroid != null) {
 			float distanceX = nextAsteroid.getX() - x;
-			float distanceY = nextAsteroid.getY() - y;
+			float distanceY = nextAsteroid.getNextY(speedModifier, timeModifier*NUM_FRAMES_LOOK_AHEAD) - y;
 			
 			float distanceAbsoluteValue = Math.abs(distanceX) + Math.abs(distanceY);
 			float actualDirX = distanceX/(distanceAbsoluteValue)/2;

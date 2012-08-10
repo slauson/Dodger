@@ -1,7 +1,5 @@
 package com.slauson.dasher.game;
 
-import android.util.Log;
-
 /**
  * Game thread
  * @author Josh Slauson
@@ -32,7 +30,7 @@ public class MyGameThread extends Thread {
 	public void run() {
 		
 		long lastUpdateTime = System.currentTimeMillis();
-		long sleepTime = parent.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+		long sleepTime = MyGameView.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 		
 		// TODO Auto-generated method stub
 		while (running) {
@@ -40,7 +38,7 @@ public class MyGameThread extends Thread {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
 				parent.updateSurfaceView();
-				sleepTime = parent.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+				sleepTime = MyGameView.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {
 					System.out.println("Slowdown: " + sleepTime);
