@@ -72,7 +72,6 @@ public class PowerupBlackHole extends ActivePowerup {
 	public void alterAsteroid(Asteroid asteroid) {
 		
 		if (asteroid.getStatus() != Asteroid.STATUS_NORMAL && asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
-			//System.out.println("Asteroid " + asteroid + " not being altered");
 			return;
 		}
 	
@@ -114,7 +113,7 @@ public class PowerupBlackHole extends ActivePowerup {
 				normalFactor = 0;
 				pullFactor = 0.5f*(distance/rangeSuck);
 				
-				// update factor
+				// Asteroid will only update factor if its smaller
 				asteroid.setFactor(1.0f * distance / rangeSuck);
 				
 				// suck asteroid into black hole

@@ -448,7 +448,9 @@ public class Asteroid extends DrawObject {
 	 * @param factor factor
 	 */
 	public void setFactor(float factor) {
-		this.factor = factor;
+		if (factor < this.factor) {
+			this.factor = factor;
+		}
 	}
 	
 	/**
