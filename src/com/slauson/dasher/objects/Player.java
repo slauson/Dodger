@@ -634,6 +634,10 @@ public class Player extends DrawObject {
 		} else {
 			direction = MyGameView.DIRECTION_NORMAL;
 		}
+
+		// make sure player isn't still moving when we dash
+		goX = x;
+		dirX = 0;
 		
 		dashTimeout = dashRechargeDuration;
 		
