@@ -85,11 +85,6 @@ public class PowerupDrill extends ActivePowerup {
 	@Override
 	public void alterAsteroid(Asteroid asteroid) {
 
-		// check if drill can seek
-		if (!hasSeek) {
-			return;
-		}
-		
 		// ignore asteroids past drill, off screen, or non normal/held in place
 		if ((asteroid.getStatus() != Asteroid.STATUS_NORMAL && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) ||
 				!asteroid.onScreen() ||
@@ -112,6 +107,11 @@ public class PowerupDrill extends ActivePowerup {
 			if (asteroid.getStatus() == Asteroid.STATUS_NORMAL) {
 				numAffectedAsteroids++;
 			}
+		}
+		
+		// check if drill can seek
+		if (!hasSeek) {
+			return;
 		}
 		
 		// get weighted distance

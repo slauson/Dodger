@@ -47,7 +47,8 @@ public class Asteroid extends DrawObject {
 	private static final int INVISIBLE_DURATION = 2000;
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
-	
+	private static final float SPLIT_UP_RADIUS_FACTOR = 0.75f;
+
 	/**
 	 * Public constants
 	 */
@@ -341,7 +342,7 @@ public class Asteroid extends DrawObject {
 				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
 				
 				// draw left line
-				canvas.drawLine(x - offset, y - radius, x - offset, y + radius, paint);
+				canvas.drawLine(x - offset, y - radius*SPLIT_UP_RADIUS_FACTOR, x - offset, y + radius*SPLIT_UP_RADIUS_FACTOR, paint);
 				
 				// draw right half
 				rectDest.set(x + offset, y - bitmap.getHeight()/2, x + offset + bitmap.getWidth()/2, y + bitmap.getHeight()/2);
@@ -349,7 +350,7 @@ public class Asteroid extends DrawObject {
 				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
 				
 				// draw right line
-				canvas.drawLine(x + offset, y - radius, x + offset, y + radius, paint);
+				canvas.drawLine(x + offset, y - radius*SPLIT_UP_RADIUS_FACTOR, x + offset, y + radius, paint);
 
 				paint.setAlpha(255);
 			}
