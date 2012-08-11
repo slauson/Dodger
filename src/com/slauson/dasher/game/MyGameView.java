@@ -347,7 +347,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			paint.setAlpha(255);
 		}
 		
-		// overlay bomb animation 
+		// overlay quasar animation 
 		if (quasarCounter > 0) {
 			float factor = Math.abs(1f*QUASAR_COUNTER_MAX/2 - quasarCounter)/QUASAR_COUNTER_MAX*2;
 			
@@ -598,7 +598,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_BLACK_HOLE:
-						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(getResources(), R.drawable.black_hole), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(getResources(), R.drawable.black_hole), BitmapFactory.decodeResource(getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
 						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
@@ -1137,18 +1137,21 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut(Asteroid.FADE_OUT_FROM_BOMB);
-			numAffectedAsteroids++;
 			
-			// cause drop if upgraded
-			if (Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROP) {
-				if (numDrops == 0 || (numDrops == 1 && Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROPS)) {
-					int powerupType = dropPowerup(asteroid.getX(), asteroid.getY());
-					numDrops++;
-					
-					// check bomb drop bomb achievement
-					if (powerupType == POWERUP_BOMB) {
-						Achievements.unlockLocalAchievement(Achievements.localBombDropBomb);
+			if (asteroid.onScreen()) {
+				asteroid.fadeOut(Asteroid.FADE_OUT_FROM_BOMB);
+				numAffectedAsteroids++;
+				
+				// cause drop if upgraded
+				if (Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROP) {
+					if (numDrops == 0 || (numDrops == 1 && Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROPS)) {
+						int powerupType = dropPowerup(asteroid.getX(), asteroid.getY());
+						numDrops++;
+						
+						// check bomb drop bomb achievement
+						if (powerupType == POWERUP_BOMB) {
+							Achievements.unlockLocalAchievement(Achievements.localBombDropBomb);
+						}
 					}
 				}
 			}
@@ -1191,7 +1194,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private void activateQuasar() {
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
-			asteroid.fadeOut(Asteroid.FADE_OUT_FROM_QUASAR);
+			if (asteroid.onScreen()) {
+				asteroid.fadeOut(Asteroid.FADE_OUT_FROM_QUASAR);
+			}
 		}
 	}
 	

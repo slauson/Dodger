@@ -26,7 +26,7 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final int DURATION_1 = 15000;
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 30000;
-
+	
 	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
 	private static float rangePull = -1;
 	private static float rangeSuck = -1;
@@ -34,7 +34,9 @@ public class PowerupBlackHole extends ActivePowerup {
 	private int rotation;
 	private boolean hasQuasar;
 	
-	public PowerupBlackHole(Bitmap bitmap, float x, float y, int level) {
+	private Bitmap twinkle;
+	
+	public PowerupBlackHole(Bitmap bitmap, Bitmap twinkle, float x, float y, int level) {
 		super(bitmap, x, y);
 		
 		rotation = 0;
@@ -63,6 +65,12 @@ public class PowerupBlackHole extends ActivePowerup {
 		}
 		
 		hasQuasar = level >= Upgrades.BLACK_HOLE_UPGRADE_QUASAR;
+		
+		if (hasQuasar) {
+			this.twinkle = twinkle;
+		} else {
+			this.twinkle = null;
+		}
 	}
 	
 	/**
@@ -152,14 +160,17 @@ public class PowerupBlackHole extends ActivePowerup {
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		
+		long remainingDuration = remainingDuration();
+		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
-			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
+		if (remainingDuration < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+			int alpha = (int)(255*(1.f*remainingDuration/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
 				alpha = 0;
 			}
 			paint.setAlpha(alpha);
+			
 		}
 		
 		// rotate
@@ -178,7 +189,13 @@ public class PowerupBlackHole extends ActivePowerup {
 		canvas.restore();
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+		if (remainingDuration < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+
+			if (twinkle != null) {
+				paint.setAlpha(255 - paint.getAlpha());
+				canvas.drawBitmap(twinkle, x - twinkle.getWidth()/2, y - twinkle.getHeight()/2, paint);
+			}
+			
 			paint.setAlpha(255);
 		}
 	}
