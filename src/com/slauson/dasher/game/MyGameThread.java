@@ -32,7 +32,6 @@ public class MyGameThread extends Thread {
 		long lastUpdateTime = System.currentTimeMillis();
 		long sleepTime = MyGameView.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 		
-		// TODO Auto-generated method stub
 		while (running) {
 			try {
 				sleep(sleepTime);

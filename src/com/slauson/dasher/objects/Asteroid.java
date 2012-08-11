@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
@@ -50,6 +51,7 @@ public class Asteroid extends DrawObject {
 	/**
 	 * Public constants
 	 */
+	public static final int FADE_OUT_GRAPHICS_LOW = -1;
 	public static final int FADE_OUT_FROM_BOMB = 0;
 	public static final int FADE_OUT_FROM_QUASAR = 1;
 	public static final int FADE_OUT_FROM_MAGNET = 2;
@@ -174,6 +176,14 @@ public class Asteroid extends DrawObject {
 	public void breakup() {
 		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
 			
+			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
+			
+			// if low graphics, use fade out instead
+			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+				fadeOut(FADE_OUT_GRAPHICS_LOW);
+				return;
+			}
+			
 			LineSegment lineSegment;
 
 			for (int i = 0; i < points.length; i+=4) {
@@ -207,8 +217,6 @@ public class Asteroid extends DrawObject {
 
 			status = STATUS_BREAKING_UP;
 			timeCounter = BREAKING_UP_DURATION;
-			
-			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
 		}
 	}
 	
@@ -217,10 +225,16 @@ public class Asteroid extends DrawObject {
 	 */
 	public void disappear() {
 		if (status == STATUS_NORMAL) {
-			status = STATUS_DISAPPEARING;
-			timeCounter = DISAPPEAR_DURATION;
-			
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
+			
+			// if low graphics, use fade out instead
+			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+				fadeOut(FADE_OUT_GRAPHICS_LOW);
+				return;
+			}
+
+			status = STATUS_DISAPPEARING;
+			timeCounter = DISAPPEAR_DURATION;			
 		}
 	}
 	
@@ -246,12 +260,18 @@ public class Asteroid extends DrawObject {
 	 */
 	public void splitUp() {
 		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
+			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 			
+			// if low graphics, use fade out instead
+			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+				fadeOut(FADE_OUT_GRAPHICS_LOW);
+				return;
+			}
+
 			// NOTE: don't reset speed here so that the split up animation looks smoother
 			status = STATUS_SPLITTING_UP;
 			timeCounter = SPLITTING_UP_DURATION;
 			
-			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 		}
 	}
 
