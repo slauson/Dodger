@@ -1138,7 +1138,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			r_powerup = R.drawable.powerup_ship;
 			break;
 		case POWERUP_SLOW:
-			r_powerup = R.drawable.powerup_ship;
+			r_powerup = R.drawable.powerup_slow;
 			break;
 		case POWERUP_INVULNERABILITY:
 			r_powerup = R.drawable.powerup_invulnerability;
