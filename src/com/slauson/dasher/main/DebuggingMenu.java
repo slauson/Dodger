@@ -194,6 +194,22 @@ public class DebuggingMenu extends Activity {
 			}
     	});
     	
+    	// god mode
+    	CheckBox runtimeAnalysis = (CheckBox)findViewById(R.id.debuggingMenuRuntimeAnalysis);
+    	runtimeAnalysis.setText("Runtime Analysis");
+    	
+    	// set previous selection
+    	runtimeAnalysis.setChecked(Debugging.runtimeAnalysis);
+    	
+    	runtimeAnalysis.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			public void onCheckedChanged(CompoundButton button, boolean value) {
+				Debugging.runtimeAnalysis = value;
+				
+				Toast.makeText(button.getContext(), "Runtime analysis set to " + Debugging.runtimeAnalysis, Toast.LENGTH_SHORT).show();
+			}
+    	});
+    	
     	// points
     	points = (EditText)findViewById(R.id.debuggingMenuPoints);
 

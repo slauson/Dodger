@@ -36,6 +36,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 /**
  * Main game view
@@ -113,6 +114,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Max value for accelerometer **/
 	float accelerometerMax;
 	
+	
+	// runtime analysis stuff
+	private static long runtimeAnalysisUpdateTime = 0;
+	private static long runtimeAnalysisDrawTime = 0;
+	private static long runtimeAnalysisNumUpdates = 0;
 	
 	/**
 	 * Constants - private
@@ -371,15 +377,27 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 		
 		Canvas canvas = null;
-		
+
 		try {
 			canvas = surfaceHolder.lockCanvas();
 			
 			synchronized (surfaceHolder) {
 				
-				updateStates();
+				if (Debugging.runtimeAnalysis) {
+					long time1 = System.currentTimeMillis();
+					updateStates();
+					long time2 = System.currentTimeMillis();
+					onDraw(canvas);
+					long time3 = System.currentTimeMillis();
+					
+					runtimeAnalysisUpdateTime += (time2 - time1);
+					runtimeAnalysisDrawTime += (time3 - time2);
+					runtimeAnalysisNumUpdates++;
 				
-				onDraw(canvas);
+				} else {
+					updateStates();
+					onDraw(canvas);
+				}
 			}
 		} finally {
 			if (canvas != null) {
@@ -1049,6 +1067,16 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		if (paused) {
 			gameMode = MODE_PAUSED;
 			
+			// output runtime analysis
+			if (Debugging.runtimeAnalysis) {
+				
+				float averageUpdateTime = (1.f*runtimeAnalysisUpdateTime/runtimeAnalysisNumUpdates);
+				float averageDrawTime = (1.f*runtimeAnalysisDrawTime/runtimeAnalysisNumUpdates);
+				
+				Toast.makeText(getContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
+				System.out.println(String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw");
+			}
+			
 			pauseTime = System.currentTimeMillis();
 		} else {
 			gameMode = MODE_RUNNING;
@@ -1066,6 +1094,13 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			if (pauseTime > 0) {
 				// reset all update times
 				resetUpdateTimes();
+			}
+			
+			// reset runtime analysis
+			if (Debugging.runtimeAnalysis) {
+				runtimeAnalysisUpdateTime = 0;
+				runtimeAnalysisDrawTime = 0;
+				runtimeAnalysisNumUpdates = 0;
 			}
 			
 			pauseTime = -1;
