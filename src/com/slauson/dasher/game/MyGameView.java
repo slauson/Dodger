@@ -108,12 +108,18 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	private long pauseTime;
 
 	/** Threshold for accelerometer dash **/
-	float accelerometerDashThreshold;
+	private float accelerometerDashThreshold;
 	/** Deadzone for accelerometer movement **/
-	float accelerometerDeadzone;
+	private float accelerometerDeadzone;
 	/** Max value for accelerometer **/
-	float accelerometerMax;
+	private float accelerometerMax;
 	
+	/** Maximum value for bomb counter **/
+	private int bombFrames;
+	
+	/** Maximum value for quasar counter **/
+	private int quasarFrames;
+
 	
 	// runtime analysis stuff
 	private static long runtimeAnalysisUpdateTime = 0;
@@ -123,12 +129,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Constants - private
 	 */
-
-	/** Maximum value for bomb counter **/
-	private static final int BOMB_COUNTER_MAX = 10;
-	
-	/** Maximum value for quasar counter **/
-	private static final int QUASAR_COUNTER_MAX = 20;
 
 	/** Paint width for drawing player ship **/
 	private static final int PLAYER_PAINT_STROKE_WIDTH = 2;
@@ -344,7 +344,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 
 		// overlay bomb animation 
 		if (bombCounter > 0) {
-			float factor = Math.abs(1f*BOMB_COUNTER_MAX/2 - bombCounter)/BOMB_COUNTER_MAX*2;
+			float factor = Math.abs(1f*bombFrames/2 - bombCounter)/bombFrames*2;
 			
 			paint.setAlpha((int)(255 - 255*factor));
 			paint.setStyle(Style.FILL);
@@ -355,7 +355,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		// overlay quasar animation 
 		if (quasarCounter > 0) {
-			float factor = Math.abs(1f*QUASAR_COUNTER_MAX/2 - quasarCounter)/QUASAR_COUNTER_MAX*2;
+			float factor = Math.abs(1f*quasarFrames/2 - quasarCounter)/quasarFrames*2;
 			
 			paint.setAlpha((int)(255 - 255*factor));
 			paint.setStyle(Style.FILL);
@@ -454,6 +454,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
 
 			updateAccelerometerValues();
+			updateFrameCounters();
 			
 			float radius, speed;
 			
@@ -636,7 +637,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 						localStatistics.usesInvulnerability++;
 						break;
 					case POWERUP_BOMB:
-						bombCounter = BOMB_COUNTER_MAX;
+						bombCounter = bombFrames;
 						localStatistics.usesBomb++;
 						break;
 					case POWERUP_SMALL:
@@ -714,7 +715,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 					
 					// check if we need to activate the quasar for the black hole
 					if (powerup.isFadingOut() && ((PowerupBlackHole)powerup).hasQuasar()) {
-						quasarCounter = QUASAR_COUNTER_MAX;
+						quasarCounter = quasarFrames;
 						activateQuasar();
 						((PowerupBlackHole)powerup).activateQuasar();
 					}
@@ -814,7 +815,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		if (bombCounter > 0) {
 			bombCounter--;
 			
-			if (bombCounter == BOMB_COUNTER_MAX/2) {
+			if (bombCounter == bombFrames/2) {
 				activateBomb();
 			}
 		}
@@ -1087,6 +1088,10 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			// reset player control type
 			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
 			
+			// update all frame based animations
+			updateFrameCounters();
+			
+			// update acceleromater values if using accelerometer controls
 			if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
 				updateAccelerometerValues();
 			}
@@ -1353,5 +1358,25 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			accelerometerMax = ACCELEROMETER_MAX_HIGH;
 			break;
 		}
+	}
+	
+	private void updateFrameCounters() {
+		switch(Configuration.frameRate) {
+		case Configuration.FRAME_RATE_LOW:
+			bombFrames = 4;
+			quasarFrames = 8;
+			break;
+		case Configuration.FRAME_RATE_NORMAL:
+			bombFrames = 8;
+			quasarFrames = 16;
+			break;
+		case Configuration.FRAME_RATE_HIGH:
+		default:
+			bombFrames = 16;
+			quasarFrames = 32;
+			break;
+		}
+		
+		player.updateInvulnerabilityFrames();
 	}
 }

@@ -41,9 +41,9 @@ public class Configuration {
 	//private static final String GRAPHICS_LOW_STRING = "Low";
 	
 	// frame rate settings
-	private static final int FRAME_RATE_LOW = 15;
-	private static final int FRAME_RATE_NORMAL = 30;
-	private static final int FRAME_RATE_HIGH = 60;
+	public static final int FRAME_RATE_LOW = 15;
+	public static final int FRAME_RATE_NORMAL = 30;
+	public static final int FRAME_RATE_HIGH = 60;
 	
 	// offset height default setting
 	private static final float OFFSET_HEIGHT_DEFAULT = 0.125f;

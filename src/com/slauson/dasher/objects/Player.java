@@ -51,6 +51,8 @@ public class Player extends DrawObject {
 	private int rotationDegrees;
 	
 	private boolean moveByTouch;
+
+	private int invulnerabilityFrames;
 	
 	/**
 	 * Private constants
@@ -144,6 +146,8 @@ public class Player extends DrawObject {
 		status = STATUS_INVULNERABILITY;
 		timeCounter = INVULNERABILITY_DURATION;
 		
+		updateInvulnerabilityFrames();
+		
 		// calculate dash recharge duration
 		switch (Upgrades.dashUpgrade.getLevel()) {
 		case Upgrades.DASH_UPGRADE_REDUCED_RECHARGE_1:
@@ -193,7 +197,7 @@ public class Player extends DrawObject {
 			}
 
 			// normal or invulnerability blink
-			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % 4 < 2) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % 4 < 2)) {
+			if ((status == STATUS_NORMAL && !MyGameView.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % (invulnerabilityFrames*2) < invulnerabilityFrames) || (MyGameView.powerupInvulnerability.isActive() && MyGameView.powerupInvulnerability.getCounter() % (invulnerabilityFrames*2) < invulnerabilityFrames)) {
 				
 				canvas.translate(x, y);
 				
@@ -731,4 +735,21 @@ public class Player extends DrawObject {
 		return dashTimeout <= 0;
 	}
 	
+	/**
+	 * Updates invulnerability frames
+	 */
+	public void updateInvulnerabilityFrames() {
+		switch(Configuration.frameRate) {
+		case Configuration.FRAME_RATE_LOW:
+			invulnerabilityFrames = 1;
+			break;
+		case Configuration.FRAME_RATE_NORMAL:
+			invulnerabilityFrames = 2;
+			break;
+		case Configuration.FRAME_RATE_HIGH:
+		default:
+			invulnerabilityFrames = 4;
+			break;
+		}
+	}	
 }
