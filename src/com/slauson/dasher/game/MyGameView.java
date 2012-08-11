@@ -91,7 +91,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Time of second last touch down event, for double-tap based dashing **/
 	private long lastTouchDownTime2;
 	
-	// TODO: move to player object?
 	/** Time of last player movement **/
 	private long lastMoveTime;
 
@@ -120,10 +119,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Maximum value for quasar counter **/
 	private int quasarFrames;
 
-	
-	// runtime analysis stuff
+	/** Runtime for updates **/
 	private static long runtimeAnalysisUpdateTime = 0;
+	/** Runtime for drawing **/
 	private static long runtimeAnalysisDrawTime = 0;
+	/** Number of updates/draws **/
 	private static long runtimeAnalysisNumUpdates = 0;
 	
 	/**
@@ -165,7 +165,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Threshold for activating dash with low sensitivity accelerometer **/
 	private static final float ACCELEROMETER_DASH_THRESHOLD_HIGH = 0.15f;
 
-	
 	/**
 	 * Constants - public
 	 */
@@ -298,7 +297,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	@Override
-	protected void onDraw(Canvas canvas) {
+	public void onDraw(Canvas canvas) {
 		
 		// TODO: come up with a better way of doing this
 		if (!initialized) {
@@ -409,6 +408,331 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
+	 * Sets activity of this view
+	 * @param gameActivity activity
+	 */
+	public void setActivity(MyGameActivity gameActivity) {
+		this.gameActivity = gameActivity;
+	}
+	
+	/**
+	 * Update game state
+	 */
+	public void updateStates() {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+		
+		if (gameMode == MODE_PAUSED) {
+			return;
+		}
+		
+		// update bomb counter
+		if (bombCounter > 0) {
+			bombCounter--;
+			
+			if (bombCounter == bombFrames/2) {
+				activateBomb();
+			}
+		}
+		
+		// update quasar counter
+		if (quasarCounter > 0) {
+			quasarCounter--;
+		}
+		
+		// add more asteroids if needed
+		if (level.update()) {
+			// add more asteroids if necessary
+			int numAsteroidsToAdd = level.getNumAsteroids() - asteroids.size();
+			
+			float radius, speed;
+			
+			for (int i = 0; i < numAsteroidsToAdd; i++) {
+				
+				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
+				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
+				
+				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
+			}
+		}
+	
+		// update everything
+		updateAsteroids();
+		updateDrops();
+		updatePowerups();
+		updatePlayer();
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		
+		if (!initialized) {
+			init();
+			return false;
+		}
+		
+		// only move when touch controls are being used and when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_TOUCH || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
+			return false;
+		}
+		
+		// get event position
+		float x = event.getX();
+		float y = event.getY();
+		
+		int action = event.getAction();
+		
+		switch(action) {
+		case MotionEvent.ACTION_DOWN:
+			// check if pressed on player's position, then dash
+			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
+					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2 &&
+					player.canDash())
+			{
+				player.dash();
+				break;
+			}
+			
+			lastTouchDownTime2 = lastTouchDownTime1;
+			lastTouchDownTime1 = System.currentTimeMillis();
+			
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+			}
+			
+			// don't break here so that player still moves
+		case MotionEvent.ACTION_MOVE:
+			// only move horizontally when player is in position
+			if (player.inPosition()) {
+				player.setGoX(x);
+			}
+			
+			break;
+		case MotionEvent.ACTION_UP:
+			// dash based on double tap
+			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
+				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
+					player.dash();
+				}
+			}
+			
+			lastMoveTime = System.currentTimeMillis();
+		default:
+			break;
+		}
+		
+		return true;
+	}
+
+	/**
+	 * Handle key down events, this is called from game activity
+	 * @param keyCode
+	 * @param event
+	 */
+	public void keyDown(int keyCode, KeyEvent event) {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+	
+		// only move when keyboard controls are being used and when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
+			return;
+		}
+	
+		switch(keyCode) {
+		// left
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+		case KeyEvent.KEYCODE_S:
+			player.moveLeft();
+				
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+			}
+			lastMoveTime = System.currentTimeMillis();
+			break;		
+		// right
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+		case KeyEvent.KEYCODE_L:
+			player.moveRight();
+				
+			// check stay in place achievement
+			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+			}
+			lastMoveTime = System.currentTimeMillis();
+			break;
+		}
+	}
+
+	/**
+	 * Handle key down events, this is called from game activity
+	 * @param keyCode
+	 * @param event
+	 */
+	public void keyUp(int keyCode, KeyEvent event) {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+	
+		// only move player ship when its in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
+			return;
+		}
+	
+		switch(keyCode) {
+		// left/right
+		case KeyEvent.KEYCODE_DPAD_LEFT:
+		case KeyEvent.KEYCODE_DPAD_RIGHT:
+		case KeyEvent.KEYCODE_S:
+		case KeyEvent.KEYCODE_L:
+			player.moveStop();
+			break;
+		// dpad center
+		case KeyEvent.KEYCODE_DPAD_CENTER:
+		case KeyEvent.KEYCODE_SPACE:
+			if (player.canDash()) {
+				player.dash();
+			}
+			break;
+		}
+	}
+
+	/**
+	 * Handle accelerometer, this is called from game activity
+	 * @param tx x factor
+	 * @param ty y factor
+	 */
+	public void updateAccelerometer(float tx, float ty) {
+		
+		if (!initialized) {
+			init();
+			return;
+		}
+		
+		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER ||
+				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
+				!player.inPosition())
+		{
+			return;
+		}
+		
+		// check for dash
+		if (((player.getDirection() == DIRECTION_NORMAL && ty > accelerometerDashThreshold) ||
+				(player.getDirection() == DIRECTION_REVERSE && ty < -accelerometerDashThreshold)) &&
+				player.canDash())
+		{
+			player.dash();
+		}
+	
+		// check if tx is not passed deadzone
+		if (Math.abs(tx) < accelerometerDeadzone) {
+			player.moveStop();
+			return;
+		}
+	
+		// set player direction
+		if (tx > 0) {
+			player.setDirX(-1);
+		} else {
+			tx = Math.abs(tx);
+			player.setDirX(1);
+		}
+		
+		// limit tx
+		if (tx > accelerometerMax) {
+			tx = accelerometerMax;
+		}
+	
+		// set player movement
+		float moveX = ((tx - accelerometerDeadzone)/accelerometerMax)*player.getMaxSpeed();
+		player.moveStart();
+		player.setSpeed(moveX);
+		
+		// check stay in place achievement
+		if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+		}
+		lastMoveTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Toggles pause state of game
+	 * @param paused true if game should be paused
+	 * @return true if game is actually paused
+	 */
+	public boolean togglePause(boolean paused) {
+		
+		// no pausing when player ship is breaking up
+		if (player.getStatus() == Player.STATUS_BREAKING_UP) {
+			return false;
+		}
+		
+		if (paused) {
+			gameMode = MODE_PAUSED;
+			
+			// output runtime analysis
+			if (Debugging.runtimeAnalysis) {
+				
+				float averageUpdateTime = (1.f*runtimeAnalysisUpdateTime/runtimeAnalysisNumUpdates);
+				float averageDrawTime = (1.f*runtimeAnalysisDrawTime/runtimeAnalysisNumUpdates);
+				
+				Toast.makeText(getContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
+				System.out.println(String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw");
+			}
+			
+			pauseTime = System.currentTimeMillis();
+		} else {
+			gameMode = MODE_RUNNING;
+			
+			// reset max sleep time
+			maxSleepTime = 2*1000/Configuration.frameRate;
+			
+			// reset player control type
+			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
+			
+			// update all frame based animations
+			updateFrameCounters();
+			
+			// update acceleromater values if using accelerometer controls
+			if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+				updateAccelerometerValues();
+			}
+			
+			if (pauseTime > 0) {
+				// reset all update times
+				resetUpdateTimes();
+			}
+			
+			// reset runtime analysis
+			if (Debugging.runtimeAnalysis) {
+				runtimeAnalysisUpdateTime = 0;
+				runtimeAnalysisDrawTime = 0;
+				runtimeAnalysisNumUpdates = 0;
+			}
+			
+			pauseTime = -1;
+		}
+		
+		return true;
+	}
+
+	/**
 	 * Initialize game view
 	 */
 	private void init() {
@@ -424,7 +748,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			
 			asteroids = new ArrayList<Asteroid>();
 			drops = new LinkedList<Drop>();
-
+	
 			// powerups
 			activePowerups = new LinkedList<ActivePowerup>();	
 			bombCounter = 0;
@@ -452,7 +776,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 			powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
 			powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
-
+	
 			updateAccelerometerValues();
 			updateFrameCounters();
 			
@@ -471,19 +795,11 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			initialized = true;
 		}
 	}
-	
-	/**
-	 * Sets activity of this view
-	 * @param gameActivity activity
-	 */
-	public void setActivity(MyGameActivity gameActivity) {
-		this.gameActivity = gameActivity;
-	}
-	
+
 	/**
 	 * Update asteroids
 	 */
-	public void updateAsteroids() {
+	private void updateAsteroids() {
 		
 		synchronized (asteroids) {
 		
@@ -585,7 +901,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Updates drops
 	 */
-	public void updateDrops() {
+	private void updateDrops() {
 		
 		synchronized (drops) {
 			
@@ -676,7 +992,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Update powerups
 	 */
-	public void updatePowerups() {
+	private void updatePowerups() {
 		
 		// update inactive powerups
 		powerupInvulnerability.update();
@@ -754,7 +1070,7 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Update player
 	 */
-	public void updatePlayer() {
+	private void updatePlayer() {
 		player.update();
 		
 		//System.out.println("updatePlayer(): " + direction + " - " + player.getDirection() + ", " + gravity + " - " + player.getGravity());
@@ -795,323 +1111,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Update game state
-	 */
-	public void updateStates() {
-		
-		if (!initialized) {
-			init();
-			return;
-		}
-		
-		if (gameMode == MODE_PAUSED) {
-			return;
-		}
-		
-		// update bomb counter
-		if (bombCounter > 0) {
-			bombCounter--;
-			
-			if (bombCounter == bombFrames/2) {
-				activateBomb();
-			}
-		}
-		
-		// update quasar counter
-		if (quasarCounter > 0) {
-			quasarCounter--;
-		}
-		
-		// add more asteroids if needed
-		if (level.update()) {
-			// add more asteroids if necessary
-			int numAsteroidsToAdd = level.getNumAsteroids() - asteroids.size();
-			
-			float radius, speed;
-			
-			for (int i = 0; i < numAsteroidsToAdd; i++) {
-				
-				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
-				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
-				
-				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
-			}
-		}
-
-		// update everything
-		updateAsteroids();
-		updateDrops();
-		updatePowerups();
-		updatePlayer();
-	}
-	
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		
-		if (!initialized) {
-			init();
-			return false;
-		}
-		
-		// only move when touch controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_TOUCH || (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY)) {
-			return false;
-		}
-		
-		// get event position
-		float x = event.getX();
-		float y = event.getY();
-		
-		int action = event.getAction();
-		
-		switch(action) {
-		case MotionEvent.ACTION_DOWN:
-			// check if pressed on player's position, then dash
-			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
-					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2 &&
-					player.canDash())
-			{
-				player.dash();
-				break;
-			}
-			
-			lastTouchDownTime2 = lastTouchDownTime1;
-			lastTouchDownTime1 = System.currentTimeMillis();
-			
-			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-			}
-			
-			// don't break here so that player still moves
-		case MotionEvent.ACTION_MOVE:
-			// only move horizontally when player is in position
-			if (player.inPosition()) {
-				player.setGoX(x);
-			}
-			
-			break;
-		case MotionEvent.ACTION_UP:
-			// dash based on double tap
-			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
-				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
-					player.dash();
-				}
-			}
-			
-			lastMoveTime = System.currentTimeMillis();
-		default:
-			break;
-		}
-		
-		return true;
-	}
-
-	/**
-	 * Handle key down events, this is called from game activity
-	 * @param keyCode
-	 * @param event
-	 */
-	public void keyDown(int keyCode, KeyEvent event) {
-		
-		if (!initialized) {
-			init();
-			return;
-		}
-
-		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
-				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
-				!player.inPosition())
-		{
-			return;
-		}
-
-		switch(keyCode) {
-		// left
-		case KeyEvent.KEYCODE_DPAD_LEFT:
-		case KeyEvent.KEYCODE_S:
-			player.moveLeft();
-				
-			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-			}
-			lastMoveTime = System.currentTimeMillis();
-			break;		
-		// right
-		case KeyEvent.KEYCODE_DPAD_RIGHT:
-		case KeyEvent.KEYCODE_L:
-			player.moveRight();
-				
-			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-			}
-			lastMoveTime = System.currentTimeMillis();
-			break;
-		}
-	}
-	
-	/**
-	 * Handle key down events, this is called from game activity
-	 * @param keyCode
-	 * @param event
-	 */
-	public void keyUp(int keyCode, KeyEvent event) {
-		
-		if (!initialized) {
-			init();
-			return;
-		}
-
-		// only move player ship when its in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD ||
-				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
-				!player.inPosition())
-		{
-			return;
-		}
-
-		switch(keyCode) {
-		// left/right
-		case KeyEvent.KEYCODE_DPAD_LEFT:
-		case KeyEvent.KEYCODE_DPAD_RIGHT:
-		case KeyEvent.KEYCODE_S:
-		case KeyEvent.KEYCODE_L:
-			player.moveStop();
-			break;
-		// dpad center
-		case KeyEvent.KEYCODE_DPAD_CENTER:
-		case KeyEvent.KEYCODE_SPACE:
-			if (player.canDash()) {
-				player.dash();
-			}
-			break;
-		}
-	}
-	
-	/**
-	 * Handle accelerometer, this is called from game activity
-	 * @param tx x factor
-	 * @param ty y factor
-	 */
-	public void updateAccelerometer(float tx, float ty) {
-		
-		if (!initialized) {
-			init();
-			return;
-		}
-		
-		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER ||
-				(player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
-				!player.inPosition())
-		{
-			return;
-		}
-		
-		// check for dash
-		if (((player.getDirection() == DIRECTION_NORMAL && ty > accelerometerDashThreshold) ||
-				(player.getDirection() == DIRECTION_REVERSE && ty < -accelerometerDashThreshold)) &&
-				player.canDash())
-		{
-			player.dash();
-		}
-
-		// check if tx is not passed deadzone
-		if (Math.abs(tx) < accelerometerDeadzone) {
-			player.moveStop();
-			return;
-		}
-
-		// set player direction
-		if (tx > 0) {
-			player.setDirX(-1);
-		} else {
-			tx = Math.abs(tx);
-			player.setDirX(1);
-		}
-		
-		// limit tx
-		if (tx > accelerometerMax) {
-			tx = accelerometerMax;
-		}
-
-		// set player movement
-		float moveX = ((tx - accelerometerDeadzone)/accelerometerMax)*player.getMaxSpeed();
-		player.moveStart();
-		player.setSpeed(moveX);
-		
-		// check stay in place achievement
-		if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
-			Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
-		}
-		lastMoveTime = System.currentTimeMillis();
-	}
-	
-	/**
-	 * Toggles pause state of game
-	 * @param paused true if game should be paused
-	 * @return true if game is actually paused
-	 */
-	public boolean togglePause(boolean paused) {
-		
-		// no pausing when player ship is breaking up
-		if (player.getStatus() == Player.STATUS_BREAKING_UP) {
-			return false;
-		}
-		
-		if (paused) {
-			gameMode = MODE_PAUSED;
-			
-			// output runtime analysis
-			if (Debugging.runtimeAnalysis) {
-				
-				float averageUpdateTime = (1.f*runtimeAnalysisUpdateTime/runtimeAnalysisNumUpdates);
-				float averageDrawTime = (1.f*runtimeAnalysisDrawTime/runtimeAnalysisNumUpdates);
-				
-				Toast.makeText(getContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
-				System.out.println(String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw");
-			}
-			
-			pauseTime = System.currentTimeMillis();
-		} else {
-			gameMode = MODE_RUNNING;
-			
-			// reset max sleep time
-			maxSleepTime = 2*1000/Configuration.frameRate;
-			
-			// reset player control type
-			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
-			
-			// update all frame based animations
-			updateFrameCounters();
-			
-			// update acceleromater values if using accelerometer controls
-			if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
-				updateAccelerometerValues();
-			}
-			
-			if (pauseTime > 0) {
-				// reset all update times
-				resetUpdateTimes();
-			}
-			
-			// reset runtime analysis
-			if (Debugging.runtimeAnalysis) {
-				runtimeAnalysisUpdateTime = 0;
-				runtimeAnalysisDrawTime = 0;
-				runtimeAnalysisNumUpdates = 0;
-			}
-			
-			pauseTime = -1;
-		}
-		
-		return true;
 	}
 	
 	/**
@@ -1252,33 +1251,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
-	 * Resets game state
-	 */
-	public void reset() {
-		level.reset();
-		resetAsteroids();
-		resetUpdateTimes();
-		
-		activePowerups.clear();
-		drops.clear();
-	}
-	
-	/**
-	 * Resets all asteroids
-	 */
-	private void resetAsteroids() {
-		int numAsteroids = level.getNumAsteroids();
-		
-		while (asteroids.size() > numAsteroids) {
-			asteroids.remove(asteroids.size()-1);
-		}
-		
-		for (Asteroid asteroid : asteroids) {
-			resetAsteroid(asteroid);
-		}
-	}
-	
-	/**
 	 * Resets update times for player, asteroids, drops, and powerup
 	 */
 	private void resetUpdateTimes() {
@@ -1360,6 +1332,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		}
 	}
 	
+	/**
+	 * Updates all frame-based counters based on frame rate configuration
+	 */
 	private void updateFrameCounters() {
 		switch(Configuration.frameRate) {
 		case Configuration.FRAME_RATE_LOW:
