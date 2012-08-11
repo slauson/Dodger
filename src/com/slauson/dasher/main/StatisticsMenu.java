@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.Statistics;
@@ -29,7 +30,8 @@ public class StatisticsMenu extends Activity {
     	TextView usesBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleUses);
     	TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
     	TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
-    	
+    	TextView usesTotal = (TextView)findViewById(R.id.statisticsMenuTotalUses);
+		
     	usesDash.setText("" + globalStatistics.usesDash);
     	usesSmall.setText("" + globalStatistics.usesSmall);
     	usesSlow.setText("" + globalStatistics.usesSlow);
@@ -40,6 +42,9 @@ public class StatisticsMenu extends Activity {
     	usesBumper.setText("" + globalStatistics.usesBumper);
     	usesBomb.setText("" + globalStatistics.usesBomb);
     	
+    	// total
+		usesTotal.setText("" + globalStatistics.getTotalUses());
+		
     	// add asteroids destroyed statistics
     	TextView asteroidsDestroyedDash = (TextView)findViewById(R.id.statisticsMenuDashAsteroidsDestroyed);
     	TextView asteroidsDestroyedSmall = (TextView)findViewById(R.id.statisticsMenuSmallAsteroidsDestroyed);
@@ -50,7 +55,8 @@ public class StatisticsMenu extends Activity {
     	TextView asteroidsDestroyedBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleAsteroidsDestroyed);
     	TextView asteroidsDestroyedBumper = (TextView)findViewById(R.id.statisticsMenuBumperAsteroidsDestroyed);
     	TextView asteroidsDestroyedBomb = (TextView)findViewById(R.id.statisticsMenuBombAsteroidsDestroyed);
-    	
+		TextView asteroidsDestroyedTotal = (TextView)findViewById(R.id.statisticsMenuTotalAsteroidsDestroyed);
+   	
     	// these are always 0
     	asteroidsDestroyedSmall.setText("0");
     	asteroidsDestroyedSlow.setText("0");
@@ -62,6 +68,9 @@ public class StatisticsMenu extends Activity {
     	asteroidsDestroyedBlackHole.setText("" + globalStatistics.asteroidsDestroyedByBlackHole);
     	asteroidsDestroyedBumper.setText("" + globalStatistics.asteroidsDestroyedByBumper);
     	asteroidsDestroyedBomb.setText("" + globalStatistics.asteroidsDestroyedByBomb);
+
+		// total
+		asteroidsDestroyedTotal.setText("" + globalStatistics.getTotalNumAsteroidsDestroyed());
 
     	// add time played
     	TextView timePlayed = (TextView)findViewById(R.id.statisticsMenuTimePlayed);
@@ -75,6 +84,14 @@ public class StatisticsMenu extends Activity {
     	TextView timesPlayed = (TextView)findViewById(R.id.statisticsMenuTimesPlayed);
     	timesPlayed.setText("" + globalStatistics.timesPlayed);
     	
+    	// add total points earned
+    	TextView pointsEarned = (TextView)findViewById(R.id.statisticsMenuPointsEarned);
+    	pointsEarned.setText("" + Util.getPointsString(globalStatistics.pointsEarned));
+
+    	// add total points spent
+    	TextView pointsSpent = (TextView)findViewById(R.id.statisticsMenuPointsSpent);
+    	pointsSpent.setText("" + Util.getPointsString(globalStatistics.pointsSpent));
+
     	// completion percentage
     	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
     	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);

@@ -29,6 +29,7 @@ public class LocalStatisticsMenu extends Activity {
 		TextView usesBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleUses);
 		TextView usesBumper = (TextView)findViewById(R.id.statisticsMenuBumperUses);
 		TextView usesBomb = (TextView)findViewById(R.id.statisticsMenuBombUses);
+		TextView usesTotal = (TextView)findViewById(R.id.statisticsMenuTotalUses);
 		
 		usesDash.setText("" + localStatistics.usesDash);
 		usesSmall.setText("" + localStatistics.usesSmall);
@@ -40,6 +41,18 @@ public class LocalStatisticsMenu extends Activity {
 		usesBumper.setText("" + localStatistics.usesBumper);
 		usesBomb.setText("" + localStatistics.usesBomb);
 		
+		// total
+		usesTotal.setText("" + 
+				(localStatistics.usesDash +
+				localStatistics.usesSmall +
+				localStatistics.usesSlow +
+				localStatistics.usesInvulnerability +
+				localStatistics.usesDrill +
+				localStatistics.usesMagnet +
+				localStatistics.usesBlackHole +
+				localStatistics.usesBumper +
+				localStatistics.usesBomb));
+				
 		// add asteroids destroyed statistics
 		TextView asteroidsDestroyedDash = (TextView)findViewById(R.id.statisticsMenuDashAsteroidsDestroyed);
 		TextView asteroidsDestroyedSmall = (TextView)findViewById(R.id.statisticsMenuSmallAsteroidsDestroyed);
@@ -50,6 +63,7 @@ public class LocalStatisticsMenu extends Activity {
 		TextView asteroidsDestroyedBlackHole = (TextView)findViewById(R.id.statisticsMenuBlackHoleAsteroidsDestroyed);
 		TextView asteroidsDestroyedBumper = (TextView)findViewById(R.id.statisticsMenuBumperAsteroidsDestroyed);
 		TextView asteroidsDestroyedBomb = (TextView)findViewById(R.id.statisticsMenuBombAsteroidsDestroyed);
+		TextView asteroidsDestroyedTotal = (TextView)findViewById(R.id.statisticsMenuTotalAsteroidsDestroyed);
 		
 		// these are always 0
 		asteroidsDestroyedSmall.setText("0");
@@ -63,11 +77,21 @@ public class LocalStatisticsMenu extends Activity {
 		asteroidsDestroyedBumper.setText("" + localStatistics.asteroidsDestroyedByBumper);
 		asteroidsDestroyedBomb.setText("" + localStatistics.asteroidsDestroyedByBomb);
 	
+		// total
+		asteroidsDestroyedTotal.setText("" + 
+				(localStatistics.asteroidsDestroyedByDash +
+				localStatistics.asteroidsDestroyedByDrill +
+				localStatistics.asteroidsDestroyedByMagnet +
+				localStatistics.asteroidsDestroyedByBlackHole +
+				localStatistics.asteroidsDestroyedByBumper +
+				localStatistics.asteroidsDestroyedByBomb));
 
-		// hide time played, average time played, times played, completion percentage
+		// hide time played, average time played, times played, points earned, points spent, completion percentage
 		((TableRow)findViewById(R.id.statisticsMenuTimePlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuAverageTimePlayedRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuTimesPlayedRow)).setVisibility(View.GONE);
+		((TableRow)findViewById(R.id.statisticsMenuPointsEarnedRow)).setVisibility(View.GONE);
+		((TableRow)findViewById(R.id.statisticsMenuPointsSpentRow)).setVisibility(View.GONE);
 		((TableRow)findViewById(R.id.statisticsMenuCompletionPercentageRow)).setVisibility(View.GONE);
 	}
 }

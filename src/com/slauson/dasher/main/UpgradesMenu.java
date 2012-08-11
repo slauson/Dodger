@@ -1,6 +1,7 @@
 package com.slauson.dasher.main;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrade;
 import com.slauson.dasher.status.Upgrades;
@@ -355,12 +356,16 @@ public class UpgradesMenu extends Activity {
 						// update points
 						Points.update(-points);
 						
+						// update points spent
+						GlobalStatistics.getInstance().pointsSpent += points;
+						
 						// update points textview
 				    	pointsView.setText("You have " + Points.getNumPoints() + " points");
 				    	
 				    	// save state
 				    	upgrade.save(sharedPreferencesEditor);
 				    	Points.save(sharedPreferencesEditor);
+				    	GlobalStatistics.save(sharedPreferencesEditor);
 				    	sharedPreferencesEditor.commit();
 				    	
 				    	// remove dialog so that we can change message/title

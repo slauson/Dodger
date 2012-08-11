@@ -36,6 +36,9 @@ public class GlobalStatistics {
 	public static final int ID_USES_BUMPER = 16;
 	public static final int ID_USES_BOMB = 17;
 	
+	public static final int ID_POINTS_EARNED = 18;
+	public static final int ID_POINTS_SPENT = 19;
+	
 	// private constants
 	private static final String TIME_PLAYED = "statistics_time_played";
 	private static final String TIMES_PLAYED = "statistics_times_played";
@@ -56,6 +59,9 @@ public class GlobalStatistics {
 	private static final String USES_BLACK_HOLE = "statistics_uses_black_hole";
 	private static final String USES_BUMPER = "statistics_uses_bumper";
 	private static final String USES_BOMB = "statistics_uses_bomb";
+	
+	private static final String POINTS_EARNED = "statistics_points_earned";
+	private static final String POINTS_SPENT = "statistics_points_spent";
 	
 	private static boolean initialized = false;
 	private static Statistics statistics = new Statistics();
@@ -95,6 +101,9 @@ public class GlobalStatistics {
 		statistics.usesBlackHole = sharedPreferences.getInt(USES_BLACK_HOLE, 0);
 		statistics.usesBumper = sharedPreferences.getInt(USES_BUMPER, 0);
 		statistics.usesBomb = sharedPreferences.getInt(USES_BOMB, 0);
+		
+		statistics.pointsEarned = sharedPreferences.getInt(POINTS_EARNED, 0);
+		statistics.pointsSpent = sharedPreferences.getInt(POINTS_SPENT, 0);
 	}
 	
 	/**
@@ -121,6 +130,9 @@ public class GlobalStatistics {
 		sharedPreferencesEditor.putInt(USES_BLACK_HOLE, statistics.usesBlackHole);
 		sharedPreferencesEditor.putInt(USES_BUMPER, statistics.usesBumper);
 		sharedPreferencesEditor.putInt(USES_BOMB, statistics.usesBomb);
+		
+		sharedPreferencesEditor.putInt(POINTS_EARNED, statistics.pointsEarned);
+		sharedPreferencesEditor.putInt(POINTS_SPENT, statistics.pointsSpent);
 	}
 	
 	/**
@@ -208,6 +220,10 @@ public class GlobalStatistics {
 			return statistics.usesBumper;
 		case ID_USES_BOMB:
 			return statistics.usesBomb;
+		case ID_POINTS_EARNED:
+			return statistics.pointsEarned;
+		case ID_POINTS_SPENT:
+			return statistics.pointsSpent;
 		default:
 			return -1;
 		}

@@ -9,23 +9,26 @@ public class Statistics {
 	public int timesPlayed = 0;
 	
 	// asteroids destroyed
-	public int asteroidsDestroyedByDash = 0;
-	public int asteroidsDestroyedByDrill = 0;
-	public int asteroidsDestroyedByMagnet = 0;
-	public int asteroidsDestroyedByBlackHole = 0;
-	public int asteroidsDestroyedByBumper = 0;
-	public int asteroidsDestroyedByBomb = 0;
+	public int asteroidsDestroyedByDash;
+	public int asteroidsDestroyedByDrill;
+	public int asteroidsDestroyedByMagnet;
+	public int asteroidsDestroyedByBlackHole;
+	public int asteroidsDestroyedByBumper;
+	public int asteroidsDestroyedByBomb;
 	
 	// powerup uses
-	public int usesDash = 0;
-	public int usesSmall = 0;
-	public int usesSlow = 0;
-	public int usesInvulnerability = 0;
-	public int usesDrill = 0;
-	public int usesMagnet = 0;
-	public int usesBlackHole = 0;
-	public int usesBumper = 0;
-	public int usesBomb = 0;
+	public int usesDash;
+	public int usesSmall;
+	public int usesSlow;
+	public int usesInvulnerability;
+	public int usesDrill;
+	public int usesMagnet;
+	public int usesBlackHole;
+	public int usesBumper;
+	public int usesBomb;
+	
+	public int pointsEarned;
+	public int pointsSpent;
 	
 	public Statistics() {
 		timePlayed = 0;
@@ -47,6 +50,9 @@ public class Statistics {
 		usesBlackHole = 0;
 		usesBumper = 0;
 		usesBomb = 0;
+		
+		pointsEarned = 0;
+		pointsSpent = 0;
 	}
 	
 	/**
@@ -60,6 +66,21 @@ public class Statistics {
 				asteroidsDestroyedByBlackHole +
 				asteroidsDestroyedByBumper +
 				asteroidsDestroyedByBomb;
+	}
+	
+	/**
+	 * Returns total number of powerup/ability uses
+	 * @return total number of powerup/ability uses
+	 */
+	public int getTotalUses() {
+		return usesDash +
+				usesSmall +
+				usesInvulnerability +
+				usesDrill +
+				usesMagnet +
+				usesBlackHole +
+				usesBumper +
+				usesBomb;
 	}
 	
 	/**
@@ -94,5 +115,8 @@ public class Statistics {
 		usesBlackHole = 0;
 		usesBumper = 0;
 		usesBomb = 0;
+		
+		pointsEarned = 0;
+		pointsSpent = 0;
 	}
 }

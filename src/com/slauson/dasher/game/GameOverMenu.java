@@ -75,15 +75,6 @@ public class GameOverMenu extends Activity {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
 		
-		// update statistics
-		updateStatistics(sharedPreferencesEditor);
-
-		// update high scores
-		updateHighScores(sharedPreferencesEditor);
-				
-		// check/update achievements
-		updateAchievements(sharedPreferencesEditor);
-				
 		// calculate points
 		Statistics localStatistics = LocalStatistics.getInstance();
 		int points = 0;
@@ -107,7 +98,16 @@ public class GameOverMenu extends Activity {
 				points += Points.POINTS_ACHIEVEMENT;
 			}
 		}
-		
+				
+		// update statistics
+		updateStatistics(sharedPreferencesEditor, points);
+
+		// update high scores
+		updateHighScores(sharedPreferencesEditor);
+				
+		// check/update achievements
+		updateAchievements(sharedPreferencesEditor);
+				
 		// update points
 		updatePoints(sharedPreferencesEditor, points);
 		
@@ -198,7 +198,8 @@ public class GameOverMenu extends Activity {
 	/**
 	 * Updates statistics
 	 */
-	private void updateStatistics(SharedPreferences.Editor sharedPreferencesEditor) {
+	private void updateStatistics(SharedPreferences.Editor sharedPreferencesEditor, int points) {
+		GlobalStatistics.getInstance().pointsEarned += points;
 		GlobalStatistics.update();
 		GlobalStatistics.save(sharedPreferencesEditor);
 	}
