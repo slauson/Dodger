@@ -60,102 +60,93 @@ public class Achievements {
 	
 	
 	// local achievments - destroy asteroids
-	public static Achievement localDestroyAsteroidsWithDash1 = new Achievement("achievement_local_destroy_asteroids_with_dash_1", R.drawable.powerup_ship, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_1);
-	public static Achievement localDestroyAsteroidsWithDash2 = new Achievement("achievement_local_destroy_asteroids_with_dash_2", R.drawable.powerup_ship, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2);
-	public static Achievement localDestroyAsteroidsWithDash3 = new Achievement("achievement_local_destroy_asteroids_with_dash_3", R.drawable.powerup_ship, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3);
+	public static Achievement localDestroyAsteroidsWithDash1 = new Achievement("achievement_local_destroy_asteroids_with_dash_1", R.drawable.icon_dash, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_1);
+	public static Achievement localDestroyAsteroidsWithDash2 = new Achievement("achievement_local_destroy_asteroids_with_dash_2", R.drawable.icon_dash, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2);
+	public static Achievement localDestroyAsteroidsWithDash3 = new Achievement("achievement_local_destroy_asteroids_with_dash_3", R.drawable.icon_dash, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithDrill1 = new Achievement("achievement_local_destroy_asteroids_with_drill_1", R.drawable.powerup_drill, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithDrill2 = new Achievement("achievement_local_destroy_asteroids_with_drill_2", R.drawable.powerup_drill, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithDrill3 = new Achievement("achievement_local_destroy_asteroids_with_drill_3", R.drawable.powerup_drill, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithDrill1 = new Achievement("achievement_local_destroy_asteroids_with_drill_1", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithDrill2 = new Achievement("achievement_local_destroy_asteroids_with_drill_2", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithDrill3 = new Achievement("achievement_local_destroy_asteroids_with_drill_3", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithMagnet1 = new Achievement("achievement_local_destroy_asteroids_with_magnet_1", R.drawable.powerup_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithMagnet2 = new Achievement("achievement_local_destroy_asteroids_with_magnet_2", R.drawable.powerup_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithMagnet3 = new Achievement("achievement_local_destroy_asteroids_with_magnet_3", R.drawable.powerup_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithMagnet1 = new Achievement("achievement_local_destroy_asteroids_with_magnet_1", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithMagnet2 = new Achievement("achievement_local_destroy_asteroids_with_magnet_2", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithMagnet3 = new Achievement("achievement_local_destroy_asteroids_with_magnet_3", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_1", R.drawable.powerup_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_2", R.drawable.powerup_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_3", R.drawable.powerup_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_1", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_2", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_3", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBumper1 = new Achievement("achievement_local_destroy_asteroids_with_bumper_1", R.drawable.powerup_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBumper2 = new Achievement("achievement_local_destroy_asteroids_with_bumper_2", R.drawable.powerup_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBumper3 = new Achievement("achievement_local_destroy_asteroids_with_bumper_3", R.drawable.powerup_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBumper1 = new Achievement("achievement_local_destroy_asteroids_with_bumper_1", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBumper2 = new Achievement("achievement_local_destroy_asteroids_with_bumper_2", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBumper3 = new Achievement("achievement_local_destroy_asteroids_with_bumper_3", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBomb1 = new Achievement("achievement_local_destroy_asteroids_with_bomb_1", R.drawable.powerup_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBomb2 = new Achievement("achievement_local_destroy_asteroids_with_bomb_2", R.drawable.powerup_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("achievement_local_destroy_asteroids_with_bomb_3", R.drawable.powerup_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBomb1 = new Achievement("achievement_local_destroy_asteroids_with_bomb_1", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBomb2 = new Achievement("achievement_local_destroy_asteroids_with_bomb_2", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("achievement_local_destroy_asteroids_with_bomb_3", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_3);
 
 	// local achievements - powerups
-	// TODO: implement these
-	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.powerup_ship, LOCAL_DASH_ACTIVATE_DROPS_NUM);
-	public static Achievement localSmallDashDestroy = new Achievement("achievement_local_small_dash_destroy", R.drawable.powerup_ship, LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM);
-	public static Achievement localSlowLongTime = new Achievement("achievement_local_slow_long_time", R.drawable.powerup_slow, LOCAL_SLOW_LONG_TIME);
-	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.powerup_invulnerability, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
-	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.powerup_drill);
-	public static Achievement localBlackHoleTrifecta = new Achievement("achievement_local_black_hole_trifecta", R.drawable.powerup_black_hole, LOCAL_BLACK_HOLE_TRIFECTA_NUM);
-	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.powerup_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);
-	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.powerup_bumper);
-	public static Achievement localBombDropBomb = new Achievement("achievement_local_bomb_activate_bomb", R.drawable.powerup_bomb);
+	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.icon_dash, LOCAL_DASH_ACTIVATE_DROPS_NUM);
+	public static Achievement localSmallDashDestroy = new Achievement("achievement_local_small_dash_destroy", R.drawable.icon_small, LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM);
+	public static Achievement localSlowLongTime = new Achievement("achievement_local_slow_long_time", R.drawable.icon_slow, LOCAL_SLOW_LONG_TIME);
+	public static Achievement localInvulnerabilityPassThrough = new Achievement("achievement_local_invulnerability_pass_through", R.drawable.icon_invulnerability, LOCAL_INVULNERABILITY_PASS_THROUGH_NUM);
+	public static Achievement localDrillUseMaximumTime = new Achievement("achievement_local_drill_use_maximum_time", R.drawable.icon_drill);
+	public static Achievement localBlackHoleTrifecta = new Achievement("achievement_local_black_hole_trifecta", R.drawable.icon_black_hole, LOCAL_BLACK_HOLE_TRIFECTA_NUM);
+	public static Achievement localMagnetHoldInPlace = new Achievement("achievement_local_magnet_hold_in_place", R.drawable.icon_magnet, LOCAL_MAGNET_HOLD_IN_PLACE_NUM);
+	public static Achievement localBumperBetween = new Achievement("achievement_local_bumper_between", R.drawable.icon_bumper);
+	public static Achievement localBombDropBomb = new Achievement("achievement_local_bomb_activate_bomb", R.drawable.icon_bomb);
 
 	// local achievements - other
-	public static Achievement localOtherStayInPlace = new Achievement("achievement_local_other_stay_in_place", R.drawable.powerup_ship, LOCAL_OTHER_STAY_IN_PLACE_TIME);
-	public static Achievement localOtherPoints1 = new Achievement("achievement_local_other_points_1", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_1);
-	public static Achievement localOtherPoints2 = new Achievement("achievement_local_other_points_2", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_2);
-	public static Achievement localOtherPoints3 = new Achievement("achievement_local_other_points_3", R.drawable.powerup_ship, LOCAL_OTHER_POINTS_NUM_3);
+	public static Achievement localOtherStayInPlace = new Achievement("achievement_local_other_stay_in_place", R.drawable.icon_general, LOCAL_OTHER_STAY_IN_PLACE_TIME);
+	public static Achievement localOtherPoints1 = new Achievement("achievement_local_other_points_1", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_1);
+	public static Achievement localOtherPoints2 = new Achievement("achievement_local_other_points_2", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_2);
+	public static Achievement localOtherPoints3 = new Achievement("achievement_local_other_points_3", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_3);
 	
 	// local achievements - playtime
-	public static Achievement localPlaytime1 = new Achievement("achievement_local_playtime_1", R.drawable.powerup_slow, LOCAL_PLAYTIME_1/60);
-	public static Achievement localPlaytime2 = new Achievement("achievement_local_playtime_2", R.drawable.powerup_slow, LOCAL_PLAYTIME_2/60);
-	public static Achievement localPlaytime3 = new Achievement("achievement_local_playtime_3", R.drawable.powerup_slow, LOCAL_PLAYTIME_3/60);
+	public static Achievement localPlaytime1 = new Achievement("achievement_local_playtime_1", R.drawable.icon_slow, LOCAL_PLAYTIME_1/60);
+	public static Achievement localPlaytime2 = new Achievement("achievement_local_playtime_2", R.drawable.icon_slow, LOCAL_PLAYTIME_2/60);
+	public static Achievement localPlaytime3 = new Achievement("achievement_local_playtime_3", R.drawable.icon_slow, LOCAL_PLAYTIME_3/60);
 
 	// global achievements - destroy asteroids
-	public static Achievement globalDestroyAsteroidsWithDash1 = new Achievement("achievement_global_destroy_asteroids_with_dash_1", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
-	public static Achievement globalDestroyAsteroidsWithDash2 = new Achievement("achievement_global_destroy_asteroids_with_dash_2", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
-	public static Achievement globalDestroyAsteroidsWithDash3 = new Achievement("achievement_global_destroy_asteroids_with_dash_3", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
+	public static Achievement globalDestroyAsteroidsWithDash1 = new Achievement("achievement_global_destroy_asteroids_with_dash_1", R.drawable.icon_dash, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
+	public static Achievement globalDestroyAsteroidsWithDash2 = new Achievement("achievement_global_destroy_asteroids_with_dash_2", R.drawable.icon_dash, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
+	public static Achievement globalDestroyAsteroidsWithDash3 = new Achievement("achievement_global_destroy_asteroids_with_dash_3", R.drawable.icon_dash, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DASH);
 	
-	public static Achievement globalDestroyAsteroidsWithDrill1 = new Achievement("achievement_global_destroy_asteroids_with_drill_1", R.drawable.powerup_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
-	public static Achievement globalDestroyAsteroidsWithDrill2 = new Achievement("achievement_global_destroy_asteroids_with_drill_2", R.drawable.powerup_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
-	public static Achievement globalDestroyAsteroidsWithDrill3 = new Achievement("achievement_global_destroy_asteroids_with_drill_3", R.drawable.powerup_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
+	public static Achievement globalDestroyAsteroidsWithDrill1 = new Achievement("achievement_global_destroy_asteroids_with_drill_1", R.drawable.icon_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
+	public static Achievement globalDestroyAsteroidsWithDrill2 = new Achievement("achievement_global_destroy_asteroids_with_drill_2", R.drawable.icon_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
+	public static Achievement globalDestroyAsteroidsWithDrill3 = new Achievement("achievement_global_destroy_asteroids_with_drill_3", R.drawable.icon_drill, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_DRILL);
 	
-	public static Achievement globalDestroyAsteroidsWithMagnet1 = new Achievement("achievement_global_destroy_asteroids_with_magnet_1", R.drawable.powerup_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
-	public static Achievement globalDestroyAsteroidsWithMagnet2 = new Achievement("achievement_global_destroy_asteroids_with_magnet_2", R.drawable.powerup_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
-	public static Achievement globalDestroyAsteroidsWithMagnet3 = new Achievement("achievement_global_destroy_asteroids_with_magnet_3", R.drawable.powerup_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
+	public static Achievement globalDestroyAsteroidsWithMagnet1 = new Achievement("achievement_global_destroy_asteroids_with_magnet_1", R.drawable.icon_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
+	public static Achievement globalDestroyAsteroidsWithMagnet2 = new Achievement("achievement_global_destroy_asteroids_with_magnet_2", R.drawable.icon_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
+	public static Achievement globalDestroyAsteroidsWithMagnet3 = new Achievement("achievement_global_destroy_asteroids_with_magnet_3", R.drawable.icon_magnet, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_MAGNET);
 	
-	public static Achievement globalDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_1", R.drawable.powerup_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
-	public static Achievement globalDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_2", R.drawable.powerup_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
-	public static Achievement globalDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_3", R.drawable.powerup_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_1", R.drawable.icon_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_2", R.drawable.icon_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
+	public static Achievement globalDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_global_destroy_asteroids_with_black_hole_3", R.drawable.icon_black_hole, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BLACK_HOLE);
 	
-	public static Achievement globalDestroyAsteroidsWithBumper1 = new Achievement("achievement_global_destroy_asteroids_with_bumper_1", R.drawable.powerup_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
-	public static Achievement globalDestroyAsteroidsWithBumper2 = new Achievement("achievement_global_destroy_asteroids_with_bumper_2", R.drawable.powerup_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
-	public static Achievement globalDestroyAsteroidsWithBumper3 = new Achievement("achievement_global_destroy_asteroids_with_bumper_3", R.drawable.powerup_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
+	public static Achievement globalDestroyAsteroidsWithBumper1 = new Achievement("achievement_global_destroy_asteroids_with_bumper_1", R.drawable.icon_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
+	public static Achievement globalDestroyAsteroidsWithBumper2 = new Achievement("achievement_global_destroy_asteroids_with_bumper_2", R.drawable.icon_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
+	public static Achievement globalDestroyAsteroidsWithBumper3 = new Achievement("achievement_global_destroy_asteroids_with_bumper_3", R.drawable.icon_bumper, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BUMPER);
 	
-	public static Achievement globalDestroyAsteroidsWithBomb1 = new Achievement("achievement_global_destroy_asteroids_with_bomb_1", R.drawable.powerup_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
-	public static Achievement globalDestroyAsteroidsWithBomb2 = new Achievement("achievement_global_destroy_asteroids_with_bomb_2", R.drawable.powerup_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
-	public static Achievement globalDestroyAsteroidsWithBomb3 = new Achievement("achievement_global_destroy_asteroids_with_bomb_3", R.drawable.powerup_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
+	public static Achievement globalDestroyAsteroidsWithBomb1 = new Achievement("achievement_global_destroy_asteroids_with_bomb_1", R.drawable.icon_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
+	public static Achievement globalDestroyAsteroidsWithBomb2 = new Achievement("achievement_global_destroy_asteroids_with_bomb_2", R.drawable.icon_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
+	public static Achievement globalDestroyAsteroidsWithBomb3 = new Achievement("achievement_global_destroy_asteroids_with_bomb_3", R.drawable.icon_bomb, GLOBAL_DESTROY_ASTEROIDS_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_BY_BOMB);
 	
-	public static Achievement globalDestroyAsteroidsTotal1 = new Achievement("achievement_global_destroy_asteroids_total_1", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
-	public static Achievement globalDestroyAsteroidsTotal2 = new Achievement("achievement_global_destroy_asteroids_total_2", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
-	public static Achievement globalDestroyAsteroidsTotal3 = new Achievement("achievement_global_destroy_asteroids_total_3", R.drawable.powerup_ship, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
+	public static Achievement globalDestroyAsteroidsTotal1 = new Achievement("achievement_global_destroy_asteroids_total_1", R.drawable.icon_general, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
+	public static Achievement globalDestroyAsteroidsTotal2 = new Achievement("achievement_global_destroy_asteroids_total_2", R.drawable.icon_general, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
+	public static Achievement globalDestroyAsteroidsTotal3 = new Achievement("achievement_global_destroy_asteroids_total_3", R.drawable.icon_general, GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3, GlobalStatistics.ID_ASTEROIDS_DESTROYED_TOTAL);
 
 	// global achievements - playtime/play count
-	public static Achievement globalPlaytime1 = new Achievement("achievement_global_playtime_1", R.drawable.powerup_slow, GLOBAL_PLAYTIME_1/60, GlobalStatistics.ID_TIME_PLAYED);
-	public static Achievement globalPlaytime2 = new Achievement("achievement_global_playtime_2", R.drawable.powerup_slow, GLOBAL_PLAYTIME_2/60, GlobalStatistics.ID_TIME_PLAYED);
-	public static Achievement globalPlaytime3 = new Achievement("achievement_global_playtime_3", R.drawable.powerup_slow, GLOBAL_PLAYTIME_3/60, GlobalStatistics.ID_TIME_PLAYED);
+	public static Achievement globalPlaytime1 = new Achievement("achievement_global_playtime_1", R.drawable.icon_slow, GLOBAL_PLAYTIME_1/60, GlobalStatistics.ID_TIME_PLAYED);
+	public static Achievement globalPlaytime2 = new Achievement("achievement_global_playtime_2", R.drawable.icon_slow, GLOBAL_PLAYTIME_2/60, GlobalStatistics.ID_TIME_PLAYED);
+	public static Achievement globalPlaytime3 = new Achievement("achievement_global_playtime_3", R.drawable.icon_slow, GLOBAL_PLAYTIME_3/60, GlobalStatistics.ID_TIME_PLAYED);
 	
-	public static Achievement globalPlayCount = new Achievement("achievement_global_play_count", R.drawable.powerup_ship, GLOBAL_PLAY_COUNT_NUM);
+	public static Achievement globalPlayCount = new Achievement("achievement_global_play_count", R.drawable.icon_dash, GLOBAL_PLAY_COUNT_NUM);
 	
 	// global achievements - unlocking/purchasing
-	public static Achievement globalUnlockAllPowerups = new Achievement("achievement_global_unlock_all_powerups", R.drawable.powerup_ship, GLOBAL_NUM_POWERUPS);
-	public static Achievement globalPurchaseAllUpgrades = new Achievement("achievement_global_purchase_all_upgrades", R.drawable.powerup_ship, GLOBAL_NUM_UPGRADES);
-	public static Achievement globalUnlockAllAchievements = new Achievement("achievement_global_unlock_all_achievements", R.drawable.powerup_ship, GLOBAL_NUM_ACHIEVEMENTS);
+	public static Achievement globalUnlockAllPowerups = new Achievement("achievement_global_unlock_all_powerups", R.drawable.icon_general, GLOBAL_NUM_POWERUPS);
+	public static Achievement globalPurchaseAllUpgrades = new Achievement("achievement_global_purchase_all_upgrades", R.drawable.icon_general, GLOBAL_NUM_UPGRADES);
+	public static Achievement globalUnlockAllAchievements = new Achievement("achievement_global_unlock_all_achievements", R.drawable.icon_general, GLOBAL_NUM_ACHIEVEMENTS);
 		
-	
-	/**
-	 * TODO: more achievements
-	 * - unlock all weapons
-	 * - purchase all upgrades
-	 * - get every achievement
-	 */
-
 	// list of local achievements unlocked during current playthrough
 	public static ArrayList<Achievement> localAchievements = new ArrayList<Achievement>();
 

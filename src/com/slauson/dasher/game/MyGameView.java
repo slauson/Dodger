@@ -1134,28 +1134,28 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		switch(powerup) {
 		case POWERUP_SMALL:
-			r_powerup = R.drawable.powerup_ship;
+			r_powerup = R.drawable.icon_small;
 			break;
 		case POWERUP_SLOW:
-			r_powerup = R.drawable.powerup_slow;
+			r_powerup = R.drawable.icon_slow;
 			break;
 		case POWERUP_INVULNERABILITY:
-			r_powerup = R.drawable.powerup_invulnerability;
+			r_powerup = R.drawable.icon_invulnerability;
 			break;
 		case POWERUP_DRILL:
-			r_powerup = R.drawable.powerup_drill;
+			r_powerup = R.drawable.icon_drill;
 			break;
 		case POWERUP_MAGNET:
-			r_powerup = R.drawable.powerup_magnet;
+			r_powerup = R.drawable.icon_magnet;
 			break;
 		case POWERUP_BLACK_HOLE:
-			r_powerup = R.drawable.powerup_black_hole;
+			r_powerup = R.drawable.icon_black_hole;
 			break;
 		case POWERUP_BUMPER:
-			r_powerup = R.drawable.powerup_bumper;
+			r_powerup = R.drawable.icon_bumper;
 			break;
 		case POWERUP_BOMB:
-			r_powerup = R.drawable.powerup_bomb;
+			r_powerup = R.drawable.icon_bomb;
 			break;
 		}
 		
