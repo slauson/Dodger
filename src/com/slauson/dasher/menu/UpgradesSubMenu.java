@@ -1,4 +1,4 @@
-package com.slauson.dasher.main;
+package com.slauson.dasher.menu;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.status.GlobalStatistics;
