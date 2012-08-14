@@ -1,6 +1,6 @@
 package com.slauson.dasher.powerups;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Upgrades;
@@ -27,7 +27,7 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 30000;
 	
-	// "constants" (want to make sure MyGameView.canvasWidth is initialized)
+	// "constants" (want to make sure MyGame.canvasWidth is initialized)
 	private static float rangePull = -1;
 	private static float rangeSuck = -1;
 
@@ -43,8 +43,8 @@ public class PowerupBlackHole extends ActivePowerup {
 		
 		// init ranges if not already initialized
 		if (rangePull < 0 || rangeSuck < 0) {
-			rangePull = MyGameView.canvasWidth*RANGE_PULL_FACTOR;
-			rangeSuck = MyGameView.canvasWidth*RANGE_SUCK_FACTOR;
+			rangePull = MyGame.canvasWidth*RANGE_PULL_FACTOR;
+			rangeSuck = MyGame.canvasWidth*RANGE_SUCK_FACTOR;
 		}
 		
 		// get duration
@@ -99,7 +99,7 @@ public class PowerupBlackHole extends ActivePowerup {
 			float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
 			float dirY = 1.0f*distanceY/(absDistanceX + absDistanceY);
 			
-			if (MyGameView.direction == MyGameView.DIRECTION_REVERSE) {
+			if (MyGame.direction == MyGame.DIRECTION_REVERSE) {
 				dirY *= -1;
 			}
 			
@@ -150,7 +150,7 @@ public class PowerupBlackHole extends ActivePowerup {
 	
 	@Override
 	public void update(float speedModifier) {
-		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+		if (MyGame.direction == MyGame.DIRECTION_NORMAL) {
 			rotation += ROTATION_SPEED*speedModifier;
 		} else {
 			rotation -= ROTATION_SPEED*speedModifier;
@@ -163,7 +163,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		long remainingDuration = remainingDuration();
 		
 		// fade out
-		if (remainingDuration < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+		if (remainingDuration < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -177,7 +177,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		canvas.save();
 		canvas.rotate(rotation, x, y);
 		
-		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+		if (MyGame.direction == MyGame.DIRECTION_NORMAL) {
 			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 		} else {
 			// flip vertically
@@ -189,7 +189,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		canvas.restore();
 		
 		// restore alpha
-		if (remainingDuration < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+		if (remainingDuration < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
 
 			if (twinkle != null) {
 				paint.setAlpha(255 - paint.getAlpha());

@@ -30,14 +30,14 @@ public class MyGameThread extends Thread {
 	public void run() {
 		
 		long lastUpdateTime = System.currentTimeMillis();
-		long sleepTime = MyGameView.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+		long sleepTime = MyGame.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 		
 		while (running) {
 			try {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
 				parent.updateSurfaceView();
-				sleepTime = MyGameView.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+				sleepTime = MyGame.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {
 					System.out.println("Slowdown: " + sleepTime);

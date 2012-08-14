@@ -10,7 +10,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.PorterDuff.Mode;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 
 /**
  * Object to be drawn on the screen
@@ -42,7 +42,7 @@ public abstract class DrawObject extends Item {
 	public static final int STATUS_HELD_IN_PLACE = 7;
 	public static final int STATUS_NEEDS_RESET = 8;
 
-	// used by MyGameView to schedule game over message
+	// used by MyGame to schedule game over message
 	protected static final int BREAKING_UP_DURATION = 5000;
 	
 	protected static final float BREAKING_UP_FACTOR = 0.5f;
@@ -95,7 +95,7 @@ public abstract class DrawObject extends Item {
 	 * @return relative size according to screen width
 	 */
 	public int getRelativeWidthSize(float factor) {
-		return (int)(MyGameView.canvasWidth*factor);
+		return (int)(MyGame.canvasWidth*factor);
 	}
 	
 	/**
@@ -104,6 +104,6 @@ public abstract class DrawObject extends Item {
 	 * @return relative size according to screen height
 	 */
 	public int getRelativeHeightSize(float factor) {
-		return (int)(MyGameView.canvasHeight*factor);
+		return (int)(MyGame.canvasHeight*factor);
 	}
 }

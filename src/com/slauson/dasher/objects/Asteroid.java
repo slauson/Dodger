@@ -3,7 +3,7 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
 
@@ -118,12 +118,12 @@ public class Asteroid extends DrawObject {
 	 */
 	public void reset() {
 		
-		x = random.nextInt(MyGameView.canvasWidth);
+		x = random.nextInt(MyGame.canvasWidth);
 		
-		if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
-			y = -random.nextInt(MyGameView.canvasHeight);
+		if (MyGame.direction == MyGame.DIRECTION_NORMAL) {
+			y = -random.nextInt(MyGame.canvasHeight);
 		} else {
-			y = MyGameView.canvasHeight + random.nextInt(MyGameView.canvasHeight);
+			y = MyGame.canvasHeight + random.nextInt(MyGame.canvasHeight);
 		}
 		
 		dirY = 1 - dirX;
@@ -441,10 +441,10 @@ public class Asteroid extends DrawObject {
 
 		// only use gravity when direction is positive
 		if (dirY > 0) {
-			return y + (MyGameView.gravity*dirY*speed*timeModifier*speedModifier);
+			return y + (MyGame.gravity*dirY*speed*timeModifier*speedModifier);
 		} else {
 			// otherwise use direction
-			if (MyGameView.direction == MyGameView.DIRECTION_NORMAL) {
+			if (MyGame.direction == MyGame.DIRECTION_NORMAL) {
 				return y + (1*dirY*speed*timeModifier*speedModifier);
 			} else {
 				return y + (-1*dirY*speed*timeModifier*speedModifier);

@@ -1,9 +1,10 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.main.InstructionsMenu;
-import com.slauson.dasher.main.MainMenu;
-import com.slauson.dasher.main.OptionsMenu;
+import com.slauson.dasher.menu.GameOverMenu;
+import com.slauson.dasher.menu.InstructionsMenu;
+import com.slauson.dasher.menu.MainMenu;
+import com.slauson.dasher.menu.OptionsMenu;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
@@ -23,6 +24,9 @@ import android.widget.LinearLayout;
  *
  */
 public class MyGameActivity extends Activity {
+
+	/** Game **/
+	private MyGame game;
 
 	/** Game view **/
 	private MyGameView myGameView;
@@ -46,8 +50,10 @@ public class MyGameActivity extends Activity {
 		
 		System.out.println("MyGameActivity onCreate()");
 		
+		game = new MyGame(this);
+		
 		myGameView = (MyGameView)findViewById(R.id.myGameView);
-		myGameView.setActivity(this);
+		myGameView.setGame(game);
 
 		myAccelerometer = new MyAccelerometer(this);
 
@@ -102,7 +108,7 @@ public class MyGameActivity extends Activity {
 
 			public void onClick(View v) {
 				quitting = true;
-				myGameView.togglePause(false);
+				game.togglePause(false);
 				Intent intent = new Intent(MyGameActivity.this, MainMenu.class);
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -143,7 +149,12 @@ public class MyGameActivity extends Activity {
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-		myGameView.keyDown(keyCode, event);
+		// only move when keyboard controls are being used and when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
+			return false;
+		}
+
+		game.keyDown(keyCode);
 		return true;
 	}
 
@@ -166,8 +177,13 @@ public class MyGameActivity extends Activity {
 			break;
 		}
 		
-		myGameView.keyUp(keyCode, event);
-
+		// only move player ship when its in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
+			return false;
+		}
+		
+		game.keyUp(keyCode);
+		
 		return true;
 	}
 
@@ -186,7 +202,13 @@ public class MyGameActivity extends Activity {
 	 * @param ty
 	 */
 	public void updateAccelerometer(float tx, float ty) {
-		myGameView.updateAccelerometer(tx, ty);
+		
+		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
+		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER) {
+			return;
+		}
+		
+		game.updateAccelerometer(tx, ty);
 	}
 
 	/**
@@ -194,7 +216,7 @@ public class MyGameActivity extends Activity {
 	 */
 	private void pauseGame() {
 		
-		if (myGameView.togglePause(true)) {
+		if (game.togglePause(true)) {
 			pauseMenu.setVisibility(View.VISIBLE);
 			paused = true;
 		}
@@ -205,7 +227,7 @@ public class MyGameActivity extends Activity {
 	 */
 	private void unpauseGame() {
 		
-		if (myGameView.togglePause(false)) {
+		if (game.togglePause(false)) {
 			pauseMenu.setVisibility(View.GONE);
 			paused = false;
 		}

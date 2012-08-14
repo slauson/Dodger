@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -33,21 +33,6 @@ public abstract class Item {
 		this.lastUpdateTime = System.currentTimeMillis();
 	}
 
-	/**
-	 * Abstract methods to be defined in subclasses 
-	 */
-	/**
-	 * Draws item on screen using the given canvas and paint
-	 * @param canvas canvas to draw item onto
-	 * @param paint paint to use to draw item
-	 */
-	public abstract void draw(Canvas canvas, Paint paint);
-	
-	/**
-	 * Update's item's state
-	 */
-	public abstract void update();
-	
 	/**
 	 * Returns true if sprite's bounding box contains given point
 	 * @param px point's x coordinate
@@ -163,7 +148,7 @@ public abstract class Item {
 	 * @return true if this item is currently on the screen
 	 */
 	public boolean onScreen() {
-		return y + height/2 > 0 && y - height/2 < MyGameView.canvasHeight;
+		return y + height/2 > 0 && y - height/2 < MyGame.canvasHeight;
 	}
 	
 	/**
@@ -183,10 +168,26 @@ public abstract class Item {
 		lastUpdateTime = System.currentTimeMillis();
 		
 		// we don't want to drop more than 1 frame
-		if (timeElapsed > 2*MyGameView.maxSleepTime) {
-			timeElapsed = 2*MyGameView.maxSleepTime;
+		if (timeElapsed > 2*MyGame.maxSleepTime) {
+			timeElapsed = 2*MyGame.maxSleepTime;
 		}
 		
 		return timeElapsed;
 	}
+
+	/**
+	 * Abstract methods to be defined in subclasses 
+	 */
+	/**
+	 * Draws item on screen using the given canvas and paint
+	 * @param canvas canvas to draw item onto
+	 * @param paint paint to use to draw item
+	 */
+	public abstract void draw(Canvas canvas, Paint paint);
+	
+	/**
+	 * Update's item's state
+	 */
+	public abstract void update();
+	
 }

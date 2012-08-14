@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -41,8 +41,8 @@ public class LineSegment {
 		x1 = x1 + (dirX*move*speedModifier);
 		x2 = x2 + (dirX*move*speedModifier);
 		
-		y1 = y1 + (MyGameView.gravity*dirY*move*speedModifier);
-		y2 = y2 + (MyGameView.gravity*dirY*move*speedModifier);
+		y1 = y1 + (MyGame.gravity*dirY*move*speedModifier);
+		y2 = y2 + (MyGame.gravity*dirY*move*speedModifier);
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.slauson.dasher.powerups;
 
-import com.slauson.dasher.game.MyGameView;
+import com.slauson.dasher.game.MyGame;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Upgrades;
@@ -54,7 +54,7 @@ public class PowerupDrill extends ActivePowerup {
 		dirY = 1;
 		dirX = 0;
 
-		speed = MyGameView.canvasHeight*SPEED_FACTOR;
+		speed = MyGame.canvasHeight*SPEED_FACTOR;
 
 		rectDest = new RectF(-width/2, -height/2, width/2, height/2);
 		
@@ -88,8 +88,8 @@ public class PowerupDrill extends ActivePowerup {
 		// ignore asteroids past drill, off screen, or non normal/held in place
 		if ((asteroid.getStatus() != Asteroid.STATUS_NORMAL && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) ||
 				!asteroid.onScreen() ||
-				direction == MyGameView.DIRECTION_NORMAL && asteroid.getY() - asteroid.getHeight()/2 >= y + height/2 ||
-				direction == MyGameView.DIRECTION_REVERSE && asteroid.getY() + asteroid.getHeight()/2 <= y - height/2)
+				direction == MyGame.DIRECTION_NORMAL && asteroid.getY() - asteroid.getHeight()/2 >= y + height/2 ||
+				direction == MyGame.DIRECTION_REVERSE && asteroid.getY() + asteroid.getHeight()/2 <= y - height/2)
 		{
 			// reset next asteroid
 			if (asteroid.equals(nextAsteroid)) {
@@ -149,11 +149,11 @@ public class PowerupDrill extends ActivePowerup {
 			if (hasTeleport && teleportDuration <= TELEPORT_DURATION/2) {
 
 				// pick random x coordinate
-				x = width/2 + (MyGameView.canvasWidth - width)*MyGameView.random.nextFloat();
+				x = width/2 + (MyGame.canvasWidth - width)*MyGame.random.nextFloat();
 				
 				// position drill back on opposite side
-				if (direction == MyGameView.DIRECTION_NORMAL) {
-					y = MyGameView.canvasHeight - height/2; 
+				if (direction == MyGame.DIRECTION_NORMAL) {
+					y = MyGame.canvasHeight - height/2; 
 				} else {
 					y = height/2;
 				}
@@ -192,7 +192,7 @@ public class PowerupDrill extends ActivePowerup {
 			dirY = 1.0f - Math.abs(dirX);
 		}
 		
-		if (direction == MyGameView.DIRECTION_NORMAL) {
+		if (direction == MyGame.DIRECTION_NORMAL) {
 			y -= dirY*speed*timeModifier*speedModifier;
 		} else {
 			y += dirY*speed*timeModifier*speedModifier;
@@ -205,7 +205,7 @@ public class PowerupDrill extends ActivePowerup {
 	public void draw(Canvas canvas, Paint paint) {
 		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -219,13 +219,13 @@ public class PowerupDrill extends ActivePowerup {
 		canvas.translate(x, y);
 
 		// rotate if needed
-		if (direction == MyGameView.DIRECTION_REVERSE) {
+		if (direction == MyGame.DIRECTION_REVERSE) {
 			canvas.save();
 			canvas.rotate(180, 0, 0);
 		}
 		
 		// rotate based on direction
-		if (direction == MyGameView.DIRECTION_NORMAL) {
+		if (direction == MyGame.DIRECTION_NORMAL) {
 			canvas.rotate(90*dirX, 0, 0);
 		} else {
 			canvas.rotate(-90*dirX, 0, 0);
@@ -244,23 +244,23 @@ public class PowerupDrill extends ActivePowerup {
 		}
 		
 		// unrotate
-		if (direction == MyGameView.DIRECTION_REVERSE) {
+		if (direction == MyGame.DIRECTION_REVERSE) {
 			canvas.restore();
 		}
 		
 		canvas.restore();
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION && MyGameView.gameMode == MyGameView.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
 			paint.setAlpha(255);
 		}
 	}
 	
 	public void switchDirection() {
-		if (direction == MyGameView.DIRECTION_NORMAL) {
-			direction = MyGameView.DIRECTION_REVERSE;
+		if (direction == MyGame.DIRECTION_NORMAL) {
+			direction = MyGame.DIRECTION_REVERSE;
 		} else {
-			direction = MyGameView.DIRECTION_NORMAL;
+			direction = MyGame.DIRECTION_NORMAL;
 		}
 	}
 	
@@ -280,7 +280,7 @@ public class PowerupDrill extends ActivePowerup {
 			return true;
 		}
 		
-		if (direction == MyGameView.DIRECTION_NORMAL) {
+		if (direction == MyGame.DIRECTION_NORMAL) {
 			if (hasTeleport) {
 				return y - height/2 > 0;
 			} else {
@@ -288,9 +288,9 @@ public class PowerupDrill extends ActivePowerup {
 			}
 		} else {
 			if (hasTeleport) {
-				return y + height/2 < MyGameView.canvasHeight;
+				return y + height/2 < MyGame.canvasHeight;
 			} else {
-				return y - height/2 < MyGameView.canvasHeight;
+				return y - height/2 < MyGame.canvasHeight;
 			}
 		}
 	}
