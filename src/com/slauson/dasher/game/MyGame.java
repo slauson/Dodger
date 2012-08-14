@@ -34,6 +34,11 @@ import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Statistics;
 import com.slauson.dasher.status.Upgrades;
 
+/**
+ * Main game class.
+ * @author Josh Slauson
+ *
+ */
 public class MyGame {
 
 	/**

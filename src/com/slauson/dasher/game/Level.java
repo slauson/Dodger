@@ -1,6 +1,10 @@
 package com.slauson.dasher.game;
 
-
+/**
+ * Level in the game.
+ * @author Josh Slauson
+ *
+ */
 public class Level {
 	
 	private int level;
