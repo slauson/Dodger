@@ -10,7 +10,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.PorterDuff.Mode;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 
 /**
  * Object to be drawn on the screen
@@ -95,7 +95,7 @@ public abstract class DrawObject extends Item {
 	 * @return relative size according to screen width
 	 */
 	public int getRelativeWidthSize(float factor) {
-		return (int)(MyGame.canvasWidth*factor);
+		return (int)(Game.canvasWidth*factor);
 	}
 	
 	/**
@@ -104,6 +104,6 @@ public abstract class DrawObject extends Item {
 	 * @return relative size according to screen height
 	 */
 	public int getRelativeHeightSize(float factor) {
-		return (int)(MyGame.canvasHeight*factor);
+		return (int)(Game.canvasHeight*factor);
 	}
 }

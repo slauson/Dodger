@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -27,7 +27,7 @@ public class Drop extends Sprite {
 		
 		this.type = type;
 		this.dirY = 1;
-		this.speed = MyGame.canvasHeight*DROP_SPEED_FACTOR;
+		this.speed = Game.canvasHeight*DROP_SPEED_FACTOR;
 		this.invisibleTime = INVISIBLE_TIME;
 	}
 	
@@ -58,10 +58,10 @@ public class Drop extends Sprite {
 		
 		// only use gravity when direction is positive
 		if (dirY > 0) {
-			y = y + (MyGame.gravity*dirY*speed*timeModifier*speedModifier);
+			y = y + (Game.gravity*dirY*speed*timeModifier*speedModifier);
 		} else {
 			// otherwise use direction
-			if (MyGame.direction == MyGame.DIRECTION_NORMAL) {
+			if (Game.direction == Game.DIRECTION_NORMAL) {
 				y = y + (1*dirY*speed*timeModifier*speedModifier);
 			} else {
 				y = y + (-1*dirY*speed*timeModifier*speedModifier);

@@ -3,7 +3,7 @@ package com.slauson.dasher.menu;
 import java.util.ArrayList;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.GlobalStatistics;
@@ -81,38 +81,38 @@ public class DebuggingMenu extends Activity {
 				// this must match above list
 				switch(pos) {
 				case 0:
-					Debugging.dropType = MyGame.POWERUP_NONE;
+					Debugging.dropType = Game.POWERUP_NONE;
 					break;
 				case 1:
-					Debugging.dropType = MyGame.POWERUP_SMALL;
+					Debugging.dropType = Game.POWERUP_SMALL;
 					break;
 				case 2:
-					Debugging.dropType = MyGame.POWERUP_SLOW;
+					Debugging.dropType = Game.POWERUP_SLOW;
 					break;
 				case 3:
-					Debugging.dropType = MyGame.POWERUP_INVULNERABILITY;
+					Debugging.dropType = Game.POWERUP_INVULNERABILITY;
 					break;
 				case 4:
-					Debugging.dropType = MyGame.POWERUP_DRILL;
+					Debugging.dropType = Game.POWERUP_DRILL;
 					break;
 				case 5:
-					Debugging.dropType = MyGame.POWERUP_MAGNET;
+					Debugging.dropType = Game.POWERUP_MAGNET;
 					break;
 				case 6:
-					Debugging.dropType = MyGame.POWERUP_BLACK_HOLE;
+					Debugging.dropType = Game.POWERUP_BLACK_HOLE;
 					break;
 				case 7:
-					Debugging.dropType = MyGame.POWERUP_BUMPER;
+					Debugging.dropType = Game.POWERUP_BUMPER;
 					break;
 				case 8:
-					Debugging.dropType = MyGame.POWERUP_BOMB;
+					Debugging.dropType = Game.POWERUP_BOMB;
 					break;
 				default:
-					Debugging.dropType = MyGame.POWERUP_NONE;
+					Debugging.dropType = Game.POWERUP_NONE;
 					break;
 				}
 				
-				if (Debugging.dropType != MyGame.POWERUP_NONE) {
+				if (Debugging.dropType != Game.POWERUP_NONE) {
 					Toast.makeText(parent.getContext(), "Drop type set to " + Debugging.dropType, Toast.LENGTH_SHORT).show();
 				}
 			}

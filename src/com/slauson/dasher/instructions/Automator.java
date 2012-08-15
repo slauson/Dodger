@@ -2,7 +2,7 @@ package com.slauson.dasher.instructions;
 
 import java.util.List;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.objects.Item;
 
 /**
@@ -55,8 +55,8 @@ public class Automator {
 		lastUpdateTime = System.currentTimeMillis();
 		
 		// we don't want to drop more than 1 frame
-		if (timeElapsed > 2*MyGame.maxSleepTime) {
-			timeElapsed = 2*MyGame.maxSleepTime;
+		if (timeElapsed > 2*Game.maxSleepTime) {
+			timeElapsed = 2*Game.maxSleepTime;
 		}
 		
 		remainingTime -= timeElapsed;

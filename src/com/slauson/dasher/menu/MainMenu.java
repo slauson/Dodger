@@ -1,7 +1,7 @@
 package com.slauson.dasher.menu;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.game.MyGameActivity;
+import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.Debugging;
@@ -76,7 +76,7 @@ public class MainMenu extends Activity {
 			
 			public void onClick(View v) {
 				if (!showingMore) {
-					Intent intent = new Intent(MainMenu.this, MyGameActivity.class);
+					Intent intent = new Intent(MainMenu.this, GameActivity.class);
 					startActivity(intent);
 				} else {
 					Intent intent = new Intent(MainMenu.this, HighScoresMenu.class);

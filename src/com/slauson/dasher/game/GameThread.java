@@ -1,23 +1,23 @@
 package com.slauson.dasher.game;
 
-import com.slauson.dasher.other.GameActivity;
+import com.slauson.dasher.other.GameThreadCallback;
 
 /**
  * Game thread
  * @author Josh Slauson
  *
  */
-public class MyGameThread extends Thread {
+public class GameThread extends Thread {
 
 	/** True when the game thread is running **/
 	private volatile boolean running = false;
 	
 	/** Game view **/
-	private GameActivity gameActivity;
+	private GameThreadCallback gameThreadCallback;
 	
-	public MyGameThread(GameActivity gameActivity) {
+	public GameThread(GameThreadCallback gameThreadCallback) {
 		super();
-		this.gameActivity = gameActivity;
+		this.gameThreadCallback = gameThreadCallback;
 	}
 	
 	/**
@@ -32,14 +32,14 @@ public class MyGameThread extends Thread {
 	public void run() {
 		
 		long lastUpdateTime = System.currentTimeMillis();
-		long sleepTime = MyGame.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+		long sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 		
 		while (running) {
 			try {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
-				gameActivity.update();
-				sleepTime = MyGame.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+				gameThreadCallback.update();
+				sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {
 					System.out.println("Slowdown: " + sleepTime);

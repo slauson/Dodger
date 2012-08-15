@@ -1,5 +1,7 @@
 package com.slauson.dasher.game;
 
+import com.slauson.dasher.other.GameBaseActivity;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,14 +15,14 @@ import android.hardware.SensorManager;
  * adapted from here: http://android-coding.blogspot.com/2012/03/surfaceview-game-step-by-step-react.html
  *
  */
-public class MyAccelerometer implements SensorEventListener {
+public class Accelerometer implements SensorEventListener {
 
 	/** Sensor manager **/
 	private SensorManager sensorManager;
 	/** Accelerometer sensor **/
 	private Sensor sensorAccelerometer;
-	/** Game activity for passing accelerometer info to **/
-	private MyGameActivity parent;
+	/** Callback for passing accelerometer info to **/
+	private GameBaseActivity gameBaseActivity;
 	
 	/** Maximum range of accelerometer **/
 	private float maximumRange;
@@ -28,8 +30,8 @@ public class MyAccelerometer implements SensorEventListener {
 	/** Set to true if listener was successfully registered **/
 	boolean listenerRegistered;
 	
-	public MyAccelerometer(Context c) {
-		parent = (MyGameActivity)c;
+	public Accelerometer(GameBaseActivity gameBaseActivity) {
+		this.gameBaseActivity = gameBaseActivity;
 		
 		listenerRegistered = false;
 	}
@@ -38,7 +40,7 @@ public class MyAccelerometer implements SensorEventListener {
 	 * Registers listener for accelerometer
 	 */
 	void registerListener() {
-		sensorManager = (SensorManager)parent.getSystemService(Context.SENSOR_SERVICE);
+		sensorManager = (SensorManager)gameBaseActivity.getSystemService(Context.SENSOR_SERVICE);
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		
 		// return if sensorAccelerometer is null (this happens when there isn't an accelerometer)
@@ -78,6 +80,6 @@ public class MyAccelerometer implements SensorEventListener {
 		float valueAzimuth = event.values[0];
 		float valuePitch = event.values[1];
 		
-		parent.updateAccelerometer(valueAzimuth/maximumRange, -valuePitch/maximumRange);
+		gameBaseActivity.updateAccelerometer(valueAzimuth/maximumRange, -valuePitch/maximumRange);
 	}
 }

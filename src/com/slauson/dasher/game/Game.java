@@ -19,6 +19,7 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.objects.Player;
+import com.slauson.dasher.other.GameBaseActivity;
 import com.slauson.dasher.powerups.ActivePowerup;
 import com.slauson.dasher.powerups.PowerupBlackHole;
 import com.slauson.dasher.powerups.PowerupBumper;
@@ -39,14 +40,14 @@ import com.slauson.dasher.status.Upgrades;
  * @author Josh Slauson
  *
  */
-public class MyGame {
+public class Game {
 
 	/**
 	 * Private stuff
 	 */
 	
-	/** Game activity, used for transitioning to other activities **/
-	private MyGameActivity activity;
+	/** Activity used for gameOver and transitioning to other activities **/
+	private GameBaseActivity gameActivity;
 	
 	/** Used to determine if game is initialized from surface view **/
 	private boolean initialized;
@@ -216,9 +217,9 @@ public class MyGame {
 	/** Maximum sleep duration **/
 	public static int maxSleepTime = 1000/30;
 	
-	public MyGame(MyGameActivity activity) {
+	public Game(GameBaseActivity gameActivity) {
 		
-		this.activity = activity;
+		this.gameActivity = gameActivity;
 		
 		initialized = false;
 	}
@@ -614,7 +615,7 @@ public class MyGame {
 				float averageUpdateTime = (1.f*runtimeAnalysisUpdateTime/runtimeAnalysisNumUpdates);
 				float averageDrawTime = (1.f*runtimeAnalysisDrawTime/runtimeAnalysisNumUpdates);
 				
-				Toast.makeText(activity.getApplicationContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
+				Toast.makeText(gameActivity.getApplicationContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
 				System.out.println(String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw");
 			}
 			
@@ -726,9 +727,9 @@ public class MyGame {
 									@Override
 									public void run() {
 										// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
-										activity.runOnUiThread(new Runnable() {
+										gameActivity.runOnUiThread(new Runnable() {
 										     public void run() {
-										    	 activity.gameOver();
+										    	 gameActivity.gameOver();
 										    }
 										});
 									}
@@ -795,22 +796,22 @@ public class MyGame {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(activity.getResources(), R.drawable.magnet), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.magnet), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_BLACK_HOLE:
-						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(activity.getResources(), R.drawable.black_hole), BitmapFactory.decodeResource(activity.getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.black_hole), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
 						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(activity.getResources(), R.drawable.drill), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.drill), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						localStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
 						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(activity.getResources(), R.drawable.bumper_large), BitmapFactory.decodeResource(activity.getResources(), R.drawable.bumper_large_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						} else {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(activity.getResources(), R.drawable.bumper), BitmapFactory.decodeResource(activity.getResources(), R.drawable.bumper_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						}
 						localStatistics.usesBumper++;
 						break;
@@ -1025,7 +1026,7 @@ public class MyGame {
 			break;
 		}
 		
-		Drop drop= new Drop(BitmapFactory.decodeResource(activity.getResources(), r_powerup), x, y, powerup);
+		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup), x, y, powerup);
 		
 		drops.add(drop);
 		

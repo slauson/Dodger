@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -148,7 +148,7 @@ public abstract class Item {
 	 * @return true if this item is currently on the screen
 	 */
 	public boolean onScreen() {
-		return y + height/2 > 0 && y - height/2 < MyGame.canvasHeight;
+		return y + height/2 > 0 && y - height/2 < Game.canvasHeight;
 	}
 	
 	/**
@@ -168,8 +168,8 @@ public abstract class Item {
 		lastUpdateTime = System.currentTimeMillis();
 		
 		// we don't want to drop more than 1 frame
-		if (timeElapsed > 2*MyGame.maxSleepTime) {
-			timeElapsed = 2*MyGame.maxSleepTime;
+		if (timeElapsed > 2*Game.maxSleepTime) {
+			timeElapsed = 2*Game.maxSleepTime;
 		}
 		
 		return timeElapsed;

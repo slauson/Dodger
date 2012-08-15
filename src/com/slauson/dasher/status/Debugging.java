@@ -3,11 +3,11 @@ package com.slauson.dasher.status;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 
 public class Debugging {
 
-	public static int dropType = MyGame.POWERUP_NONE;
+	public static int dropType = Game.POWERUP_NONE;
 	public static int level = 0;
 	public static boolean levelProgression = false;
 	public static boolean godMode = false;
@@ -19,7 +19,7 @@ public class Debugging {
 		
 		initialized = true;
 		
-		dropType = sharedPreferences.getInt("debugging_drop_type", MyGame.POWERUP_NONE);
+		dropType = sharedPreferences.getInt("debugging_drop_type", Game.POWERUP_NONE);
 		level = sharedPreferences.getInt("debugging_level", 0);
 		levelProgression = sharedPreferences.getBoolean("debugging_level_progression", false);
 		godMode = sharedPreferences.getBoolean("debugging_god_mode", false);

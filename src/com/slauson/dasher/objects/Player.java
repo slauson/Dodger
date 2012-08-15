@@ -2,7 +2,7 @@ package com.slauson.dasher.objects;
 
 import java.util.ArrayList;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
@@ -85,12 +85,12 @@ public class Player extends DrawObject {
 	
 	public Player(boolean moveByTouch) {
 		// set y, width, height later 
-		super(MyGame.canvasWidth/2, 0, 0, 0);
+		super(Game.canvasWidth/2, 0, 0, 0);
 
 		this.moveByTouch = moveByTouch;
 		
 		// set y offset
-		yBottom = MyGame.canvasHeight - MyGame.canvasHeight*Configuration.offsetHeight;
+		yBottom = Game.canvasHeight - Game.canvasHeight*Configuration.offsetHeight;
 		y = yBottom;
 		
 		// set height/width
@@ -109,7 +109,7 @@ public class Player extends DrawObject {
 		
 		move = MOVE_NONE;
 		inPosition = true;
-		direction = MyGame.DIRECTION_NORMAL;
+		direction = Game.DIRECTION_NORMAL;
 		
 		points = new float[] {
 				-width/2, height/2,
@@ -138,7 +138,7 @@ public class Player extends DrawObject {
 		}
 		
 		// calculate rotation degrees (use 180 +- 360 of twice the canvas height) 
-		rotationDegrees = MyGame.canvasHeight*2 - ((MyGame.canvasHeight*2-180)%360);
+		rotationDegrees = Game.canvasHeight*2 - ((Game.canvasHeight*2-180)%360);
 		
 		startTime = System.currentTimeMillis();
 		
@@ -191,18 +191,18 @@ public class Player extends DrawObject {
 			canvas.save();
 			
 			// check if we need to rotate
-			if (speedY > 1 || direction == MyGame.DIRECTION_REVERSE) {
+			if (speedY > 1 || direction == Game.DIRECTION_REVERSE) {
 				float degrees = rotationDegrees * (yBottom - y) / (yBottom - yTop);			
 				canvas.rotate(degrees, x, y);
 			}
 
 			// normal or invulnerability blink
-			if ((status == STATUS_NORMAL && !MyGame.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % (invulnerabilityFrames*2) < invulnerabilityFrames) || (MyGame.powerupInvulnerability.isActive() && MyGame.powerupInvulnerability.getCounter() % (invulnerabilityFrames*2) < invulnerabilityFrames)) {
+			if ((status == STATUS_NORMAL && !Game.powerupInvulnerability.isActive()) || (status == STATUS_INVULNERABILITY && invulnerabilityCounter % (invulnerabilityFrames*2) < invulnerabilityFrames) || (Game.powerupInvulnerability.isActive() && Game.powerupInvulnerability.getCounter() % (invulnerabilityFrames*2) < invulnerabilityFrames)) {
 				
 				canvas.translate(x, y);
 				
 				// if small powerup is active, draw resized bitmap
-				if (MyGame.powerupSmall.isActive() && !(!inPosition && MyGame.powerupSmall.isBigDash())) {
+				if (Game.powerupSmall.isActive() && !(!inPosition && Game.powerupSmall.isBigDash())) {
 					canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
 				}
 				// draw normal bitmap
@@ -217,7 +217,7 @@ public class Player extends DrawObject {
 				dashPercentage = (float)(dashPercentage - (dashPercentage % .25));
 				
 				if (dashPercentage > 0) {
-					if (MyGame.powerupSmall.isActive() && !(!inPosition && MyGame.powerupSmall.isBigDash())) {
+					if (Game.powerupSmall.isActive() && !(!inPosition && Game.powerupSmall.isBigDash())) {
 						canvas.drawArc(dashPercentRectSmall, -90, 360*dashPercentage, true, paint);
 					} else {
 						canvas.drawArc(dashPercentRect, -90, 360*dashPercentage, true, paint);
@@ -295,12 +295,12 @@ public class Player extends DrawObject {
 			
 			// move from bottom to top
 			if (!inPosition) {
-				if (direction == MyGame.DIRECTION_REVERSE && Math.abs(y - yTop) > 0) {
+				if (direction == Game.DIRECTION_REVERSE && Math.abs(y - yTop) > 0) {
 					dirY = -1;
 					speedY = maxSpeed;
 				}
 				// move from top to bottom
-				else if (direction == MyGame.DIRECTION_NORMAL && Math.abs(y - yBottom) > 0) {
+				else if (direction == Game.DIRECTION_NORMAL && Math.abs(y - yBottom) > 0) {
 					dirY = 1;	
 					speedY = maxSpeed;
 				}
@@ -357,7 +357,7 @@ public class Player extends DrawObject {
 		
 		float modifier = 1f;
 		
-		if (MyGame.powerupSmall.isActive()) {
+		if (Game.powerupSmall.isActive()) {
 			modifier = 0.5f;
 		}
 		
@@ -392,7 +392,7 @@ public class Player extends DrawObject {
 			lineSegment.dirY = (yDiff/(xDiff + yDiff)) + 1;
 			
 			// reverse direction
-			if (direction == MyGame.DIRECTION_REVERSE) {
+			if (direction == Game.DIRECTION_REVERSE) {
 				lineSegment.dirY *= -1;
 			}
 		}
@@ -432,7 +432,7 @@ public class Player extends DrawObject {
 	
 	@Override
 	public boolean checkBoxCollision(Item other) {
-		if (MyGame.powerupSmall.isActive() && !(!inPosition && MyGame.powerupSmall.isBigDash())) {
+		if (Game.powerupSmall.isActive() && !(!inPosition && Game.powerupSmall.isBigDash())) {
 			return Math.abs(x - other.x) <= width/8 + other.width/4 && Math.abs(y - other.y) <= width/8 + other.height/4;
 		} else {
 			return Math.abs(x - other.x) <= width/2 + other.height/2 && Math.abs(y - other.y) <= height/2 + other.height/2;
@@ -453,7 +453,7 @@ public class Player extends DrawObject {
 	public boolean checkAsteroidCollisionHelper(float widthFactor, float heightFactor, float yOffset, float checkX, float checkY) {
 		
 		// small ship
-		if (MyGame.powerupSmall.isActive()) {
+		if (Game.powerupSmall.isActive()) {
 			
 			yOffset /= 2;
 			return checkX >= x - width*widthFactor/4 && checkX < x + width*widthFactor/4 &&
@@ -527,7 +527,7 @@ public class Player extends DrawObject {
 			float heightFactor = 0.25f;
 			float yOffset = -16;
 			
-			if (direction == MyGame.DIRECTION_REVERSE) {
+			if (direction == Game.DIRECTION_REVERSE) {
 				yOffset = 16;
 			}
 			
@@ -539,7 +539,7 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			if (direction == MyGame.DIRECTION_NORMAL) {
+			if (direction == Game.DIRECTION_NORMAL) {
 				yOffset += 8;
 			} else {
 				yOffset -= 8;
@@ -553,7 +553,7 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			if (direction == MyGame.DIRECTION_NORMAL) {
+			if (direction == Game.DIRECTION_NORMAL) {
 				yOffset += 8;
 			} else {
 				yOffset -= 8;
@@ -567,7 +567,7 @@ public class Player extends DrawObject {
 			}
 			
 			widthFactor += 0.25f;
-			if (direction == MyGame.DIRECTION_NORMAL) {
+			if (direction == Game.DIRECTION_NORMAL) {
 				yOffset += 8;
 			} else {
 				yOffset -= 8;
@@ -633,10 +633,10 @@ public class Player extends DrawObject {
 		dashNumAffectedAsteroids = 0;
 		dashNumAffectedAsteroidsHeldInPlace = 0;
 	
-		if (direction == MyGame.DIRECTION_NORMAL) {
-			direction = MyGame.DIRECTION_REVERSE;
+		if (direction == Game.DIRECTION_NORMAL) {
+			direction = Game.DIRECTION_REVERSE;
 		} else {
-			direction = MyGame.DIRECTION_NORMAL;
+			direction = Game.DIRECTION_NORMAL;
 		}
 
 		// make sure player isn't still moving when we dash

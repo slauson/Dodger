@@ -1,6 +1,6 @@
 package com.slauson.dasher.objects;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 
 import android.graphics.Bitmap;
 
@@ -34,7 +34,7 @@ public abstract class Sprite extends Item {
 		float timeModifier = 1.f*getElapsedTime()/1000;
 		
 		x = x + (dirX*speed*timeModifier*speedModifier);
-		y = y + (MyGame.gravity*dirY*speed*timeModifier*speedModifier);
+		y = y + (Game.gravity*dirY*speed*timeModifier*speedModifier);
 	}
 
 }

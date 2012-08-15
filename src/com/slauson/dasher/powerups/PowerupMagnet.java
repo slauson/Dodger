@@ -1,6 +1,6 @@
 package com.slauson.dasher.powerups;
 
-import com.slauson.dasher.game.MyGame;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.LocalStatistics;
@@ -27,7 +27,7 @@ public class PowerupMagnet extends ActivePowerup {
 	private static final float RANGE_PULL_FACTOR = 0.25f;
 	private static final float HOLD_RANGE_FACTOR = 1.5f;
 	
-	// "constants" (want to make sure MyGame.canvasWidth is initialized)
+	// "constants" (want to make sure Game.canvasWidth is initialized)
 	private static float rangePull = -1;
 	
 	private int direction;
@@ -39,7 +39,7 @@ public class PowerupMagnet extends ActivePowerup {
 		this.direction = direction;
 		
 		if (rangePull < 0) {
-			rangePull = MyGame.canvasWidth*RANGE_PULL_FACTOR;
+			rangePull = Game.canvasWidth*RANGE_PULL_FACTOR;
 		}
 		
 		// get duration
@@ -81,7 +81,7 @@ public class PowerupMagnet extends ActivePowerup {
 		if (hasSpin) {
 			distanceY = y - asteroid.getY();
 		} else {
-			if (direction == MyGame.DIRECTION_NORMAL) {
+			if (direction == Game.DIRECTION_NORMAL) {
 				distanceY = (y - height/2) - (asteroid.getY() + asteroid.getHeight()/2);
 			} else {
 				distanceY = (y + height/2) - (asteroid.getY() - asteroid.getHeight()/2);
@@ -92,8 +92,8 @@ public class PowerupMagnet extends ActivePowerup {
 		float absDistanceY = Math.abs(distanceY);
 
 		// don't pull asteroids past magnet if not spinning
-		if (!hasSpin && (direction == MyGame.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 > y - height/2 ||
-				direction == MyGame.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 < y + height/2)) {
+		if (!hasSpin && (direction == Game.DIRECTION_NORMAL && asteroid.getY() + asteroid.getHeight()/2 > y - height/2 ||
+				direction == Game.DIRECTION_REVERSE && asteroid.getY() - asteroid.getHeight()/2 < y + height/2)) {
 			return;
 		}
 				
@@ -132,7 +132,7 @@ public class PowerupMagnet extends ActivePowerup {
 	public void draw(Canvas canvas, Paint paint) {
 		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -142,7 +142,7 @@ public class PowerupMagnet extends ActivePowerup {
 		}
 
 		// rotate if needed
-		if (direction == MyGame.DIRECTION_REVERSE) {
+		if (direction == Game.DIRECTION_REVERSE) {
 			canvas.save();
 			canvas.rotate(180, x, y);
 		}
@@ -156,7 +156,7 @@ public class PowerupMagnet extends ActivePowerup {
 		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 		
 		// unrotate
-		if (direction == MyGame.DIRECTION_REVERSE) {
+		if (direction == Game.DIRECTION_REVERSE) {
 			canvas.restore();
 		}
 
@@ -165,7 +165,7 @@ public class PowerupMagnet extends ActivePowerup {
 		}
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION && MyGame.gameMode == MyGame.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
 			paint.setAlpha(255);
 		}
 	}

@@ -8,7 +8,7 @@ package com.slauson.dasher.other;
  * @author Josh Slauson
  *
  */
-public interface GameActivity {
+public interface GameThreadCallback {
 
 	public void update();
 }

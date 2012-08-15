@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.game.MyGameActivity;
+import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.GlobalStatistics;
@@ -153,7 +153,7 @@ public class GameOverMenu extends Activity {
 		gameOverMenuRetryButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(GameOverMenu.this, MyGameActivity.class);
+				Intent intent = new Intent(GameOverMenu.this, GameActivity.class);
 				startActivity(intent);
 			}
 		});
