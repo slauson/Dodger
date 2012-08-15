@@ -10,6 +10,10 @@ import java.util.List;
  */
 public class InstructionScreen {
 
+	public static enum REQUIRED_EVENT_TYPE {
+		NONE, AVOID_ASTEROIDS, DASH_ASTEROIDS, ACTIVATE_POWERUPS, AVOID_AND_DASH_POWERUPS
+	}
+	
 	/** True if user interaction is required **/
 	private boolean userInteractionRequired;
 	/** True if previous button is enabled **/
@@ -22,15 +26,19 @@ public class InstructionScreen {
 	/** Instruction description **/
 	private String description;
 	
+	/** Required event type, if any **/
+	private REQUIRED_EVENT_TYPE eventType;
+	
 	public InstructionScreen(String description) {
-		this(description, false, true, false);
+		this(description, false, true, false, REQUIRED_EVENT_TYPE.NONE);
 	}
 	
-	public InstructionScreen(String description, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled) {
+	public InstructionScreen(String description, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
 		this.description = description;
 		this.userInteractionRequired = userInteractionRequired;
 		this.previousButtonEnabled = previousButtonEnabled;
 		this.finishButtonEnabled = finishButtonEnabled;
+		this.eventType = eventType;
 		
 		automators = new ArrayList<Automator>();
 	}
@@ -90,5 +98,13 @@ public class InstructionScreen {
 	 */
 	public String getDescription() {
 		return description;
+	}
+	
+	/**
+	 * Returns required event type 
+	 * @return required event type
+	 */
+	public REQUIRED_EVENT_TYPE getEventType() {
+		return eventType;
 	}
 }

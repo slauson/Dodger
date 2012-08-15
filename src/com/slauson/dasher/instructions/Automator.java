@@ -2,9 +2,6 @@ package com.slauson.dasher.instructions;
 
 import java.util.List;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-
 import com.slauson.dasher.game.MyGame;
 import com.slauson.dasher.objects.Item;
 
@@ -31,6 +28,9 @@ public class Automator {
 	/** Time of last update **/
 	private long lastUpdateTime;
 	
+	/** True if automator is enabled **/
+	private boolean enabled;
+	
 	public Automator(List<Position> positions, List<Integer> durations, Item item) {
 		this.positions = positions;
 		this.durations = durations;
@@ -39,9 +39,18 @@ public class Automator {
 		index = 0;
 		remainingTime = durations.get(index);
 		lastUpdateTime = System.currentTimeMillis();
+		enabled = true;
 	}
 	
+	/**
+	 * Updates automator
+	 */
 	public void update() {
+		
+		if (!enabled) {
+			return;
+		}
+		
 		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
 		lastUpdateTime = System.currentTimeMillis();
 		
@@ -53,10 +62,21 @@ public class Automator {
 		remainingTime -= timeElapsed;
 		
 		if (remainingTime < 0) {
-			if (nextPosition(-remainingTime)) {
-				// TODO: dash, other special cases
+			Position position = nextPosition(-remainingTime);
+			
+			if (position.getType() == Position.POSITION_TYPE.DASH) {
+				
+			} else if (position.getType() == Position.POSITION_TYPE.RESET) {
+				
 			}
 		}
+	}
+	
+	/**
+	 * Disables automator.
+	 */
+	public void disable() {
+		enabled = false;
 	}
 	
 	/**
@@ -64,7 +84,7 @@ public class Automator {
 	 * @param time duration to decrement from next duration
 	 * @return true if next position is a special, non-coordinate position
 	 */
-	private boolean nextPosition(int time) {
+	private Position nextPosition(int time) {
 
 		Position positionCurrent = positions.get(index);
 		
@@ -93,9 +113,8 @@ public class Automator {
 			// set speed
 			item.setSpeed(diffAbsTotal/remainingTime);
 			
-			return false;
-		} else {
-			return true;
 		}
+		
+		return positionNext;
 	}
 }

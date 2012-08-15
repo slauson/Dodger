@@ -3,7 +3,7 @@ package com.slauson.dasher.instructions;
 public class Position {
 
 	public static enum POSITION_TYPE {
-		COORDINATE, DASH
+		COORDINATE, DASH, RESET
 	}
 	
 	private POSITION_TYPE type;
