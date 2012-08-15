@@ -1,6 +1,7 @@
 package com.slauson.dasher.menu;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.game.GameView;
 import com.slauson.dasher.other.GameBaseActivity;
 
 import android.os.Bundle;
@@ -12,7 +13,12 @@ public class InstructionsMenu extends GameBaseActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
+    	
     	setContentView(R.layout.instructions_menu);
+    	
+		gameView = (GameView)findViewById(R.id.instructionsGameView);
+		gameView.setGame(game);
+
     	
     	// TODO: get bundle info to determine if from instructions menu vs tutorial
     	

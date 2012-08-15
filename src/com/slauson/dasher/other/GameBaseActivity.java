@@ -40,10 +40,6 @@ public abstract class GameBaseActivity extends Activity implements GameThreadCal
 		System.out.println("GameBaseActivity::onCreate()");
 		
 		game = new Game(this);
-		
-		gameView = (GameView)findViewById(R.id.gameView);
-		gameView.setGame(game);
-
 		accelerometer = new Accelerometer(this);
 	}
 	

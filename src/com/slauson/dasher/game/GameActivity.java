@@ -36,8 +36,12 @@ public class GameActivity extends GameBaseActivity  {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.game_menu);
 		
+		gameView = (GameView)findViewById(R.id.gameView);
+		gameView.setGame(game);
+
 		quitting = false;
 		paused = false;
 
