@@ -1,5 +1,7 @@
 package com.slauson.dasher.game;
 
+import com.slauson.dasher.other.GameActivity;
+
 /**
  * Game thread
  * @author Josh Slauson
@@ -11,11 +13,11 @@ public class MyGameThread extends Thread {
 	private volatile boolean running = false;
 	
 	/** Game view **/
-	private MyGameView parent;
+	private GameActivity gameActivity;
 	
-	public MyGameThread(MyGameView gameView) {
+	public MyGameThread(GameActivity gameActivity) {
 		super();
-		parent = gameView;
+		this.gameActivity = gameActivity;
 	}
 	
 	/**
@@ -36,7 +38,7 @@ public class MyGameThread extends Thread {
 			try {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
-				parent.updateSurfaceView();
+				gameActivity.update();
 				sleepTime = MyGame.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {

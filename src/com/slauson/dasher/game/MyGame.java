@@ -223,6 +223,11 @@ public class MyGame {
 		initialized = false;
 	}
 	
+	/**
+	 * Initializes all game state
+	 * @param width canvas width
+	 * @param height canvas height
+	 */
 	public void init(int width, int height) {
 		canvasWidth = width;
 		canvasHeight = height;
@@ -280,6 +285,10 @@ public class MyGame {
 		initialized = true;
 	}
 	
+	/**
+	 * Draws everything on given canvas
+	 * @param canvas canvas to draw on
+	 */
 	public void draw(Canvas canvas) {
 		
 		long startTime = 0;
@@ -410,6 +419,10 @@ public class MyGame {
 
 	}
 	
+	/**
+	 * Handles touch event
+	 * @param event touch event
+	 */
 	public void touchEvent(MotionEvent event) {
 		
 		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) {
@@ -463,6 +476,10 @@ public class MyGame {
 		}
 	}
 	
+	/**
+	 * Handles key down event
+	 * @param keyCode key code of key down
+	 */
 	public void keyDown(int keyCode) {
 		if ((player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
 				!player.inPosition())
@@ -496,6 +513,10 @@ public class MyGame {
 		}
 	}
 	
+	/**
+	 * Handles key up event
+	 * @param keyCode key code of key up
+	 */
 	public void keyUp(int keyCode) {
 		if ((player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
 				!player.inPosition())
@@ -521,6 +542,11 @@ public class MyGame {
 		}
 	}
 	
+	/**
+	 * Handles accelerometer updates
+	 * @param tx horizontal orientation
+	 * @param ty vertical orientation
+	 */
 	public void updateAccelerometer(float tx, float ty) {
 		
 		if ((player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
@@ -568,6 +594,11 @@ public class MyGame {
 		lastMoveTime = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Toggles pausing of game
+	 * @param paused true if the game should be paused
+	 * @return true if pause succeeded
+	 */
 	public boolean togglePause(boolean paused) {
 		// no pausing when player ship is breaking up
 		if (player.getStatus() == Player.STATUS_BREAKING_UP) {
@@ -621,6 +652,14 @@ public class MyGame {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Returns true if game has been initialized
+	 * @return true if game has been initialized
+	 */
+	public boolean isInitialized() {
+		return initialized;
 	}
 	
 	/**

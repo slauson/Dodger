@@ -5,6 +5,7 @@ import com.slauson.dasher.menu.GameOverMenu;
 import com.slauson.dasher.menu.InstructionsMenu;
 import com.slauson.dasher.menu.MainMenu;
 import com.slauson.dasher.menu.OptionsMenu;
+import com.slauson.dasher.other.GameActivity;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
@@ -23,16 +24,19 @@ import android.widget.LinearLayout;
  * @author Josh Slauson
  *
  */
-public class MyGameActivity extends Activity {
+public class MyGameActivity extends Activity implements GameActivity {
 
 	/** Game **/
 	private MyGame game;
 
 	/** Game view **/
-	private MyGameView myGameView;
+	private MyGameView gameView;
 
+	/** Game thread **/
+	private MyGameThread gameThread;
+	
 	/** Accelerometer **/
-	private MyAccelerometer myAccelerometer;
+	private MyAccelerometer accelerometer;
 	
 	/** Pause menu **/
 	private LinearLayout pauseMenu;
@@ -52,10 +56,10 @@ public class MyGameActivity extends Activity {
 		
 		game = new MyGame(this);
 		
-		myGameView = (MyGameView)findViewById(R.id.myGameView);
-		myGameView.setGame(game);
+		gameView = (MyGameView)findViewById(R.id.myGameView);
+		gameView.setGame(game);
 
-		myAccelerometer = new MyAccelerometer(this);
+		accelerometer = new MyAccelerometer(this);
 
 		quitting = false;
 		paused = false;
@@ -119,30 +123,47 @@ public class MyGameActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		myGameView.MyGameSurfaceView_OnResume();
+		gameView.MyGameSurfaceView_OnResume();
 		
 		System.out.println("MyGameActivity::onResume()");
+		
+		// Create and start background Thread
+		gameThread = new MyGameThread(this);
+		gameThread.setRunning(true);
+		gameThread.start();
 		
 		quitting = false;
 		
 		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
-			myAccelerometer.registerListener();
+			accelerometer.registerListener();
 		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		myGameView.MyGameSurfaceView_OnPause();
 		
 		System.out.println("MyGameActivity::onPause()");
+		
+		// Kill the background thread
+		boolean retry = true;
+		gameThread.setRunning(false);
+		
+		while (retry) {
+			try {
+				gameThread.join();
+				retry = false;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		if (!quitting) {
 			pauseGame();
 		}
 
 		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
-			myAccelerometer.unregisterListener();
+			accelerometer.unregisterListener();
 		}
 	}
 
@@ -185,6 +206,16 @@ public class MyGameActivity extends Activity {
 		game.keyUp(keyCode);
 		
 		return true;
+	}
+	
+	/**
+	 * Updates game state and draws everything to surface view
+	 */
+	public void update() {
+		if (game.isInitialized()) {
+			game.updateStates();
+			gameView.draw();
+		}
 	}
 
 	/**

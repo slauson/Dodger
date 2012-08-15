@@ -24,8 +24,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
-	/** Game thread **/
-	private MyGameThread myGameThread;
 	
 	public MyGameView(Context context) {
 		super(context);
@@ -58,38 +56,15 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 	
 	/**
-	 * Sets up surface view and game thread
+	 * Sets up surface view
 	 */
 	public void MyGameSurfaceView_OnResume() {
 		
 		surfaceHolder = getHolder();
 		getHolder().addCallback(this);
 		
-		// Create and start background Thread
-		myGameThread = new MyGameThread(this);
-		myGameThread.setRunning(true);
-		myGameThread.start();
-		
 	}
 	
-	/**
-	 * Pauses game thread
-	 */
-	public void MyGameSurfaceView_OnPause() {
-		// Kill the background thread
-		boolean retry = true;
-		myGameThread.setRunning(false);
-		
-		while (retry) {
-			try {
-				myGameThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		
@@ -103,10 +78,9 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	/**
-	 * Update surface view
-	 * @return true on success, false otherwise
+	 * Draw on surface view
 	 */
-	public boolean updateSurfaceView() {
+	public void draw() {
 		
 		Canvas canvas = null;
 
@@ -114,7 +88,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 			canvas = surfaceHolder.lockCanvas();
 			
 			synchronized (surfaceHolder) {
-				game.updateStates();
 				game.draw(canvas);
 			}
 		} finally {
@@ -122,8 +95,6 @@ public class MyGameView extends SurfaceView implements SurfaceHolder.Callback {
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		}
-		
-		return true;
 	}
 	
 	public void setGame(MyGame game) {
