@@ -39,7 +39,7 @@ public class Accelerometer implements SensorEventListener {
 	/**
 	 * Registers listener for accelerometer
 	 */
-	void registerListener() {
+	public void registerListener() {
 		sensorManager = (SensorManager)gameBaseActivity.getSystemService(Context.SENSOR_SERVICE);
 		sensorAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		
@@ -56,7 +56,7 @@ public class Accelerometer implements SensorEventListener {
 	/**
 	 * Unregisters listener for accelerometer
 	 */
-	void unregisterListener() {
+	public void unregisterListener() {
 		if (listenerRegistered) {
 			sensorManager.unregisterListener(this);
 			listenerRegistered = false;
@@ -64,7 +64,7 @@ public class Accelerometer implements SensorEventListener {
 	}
 	
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// ignore
+		// ignore for now
 	}
 
 	/**

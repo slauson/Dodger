@@ -56,7 +56,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Sets up surface view
 	 */
-	public void MyGameSurfaceView_OnResume() {
+	public void onResume() {
 		
 		surfaceHolder = getHolder();
 		getHolder().addCallback(this);

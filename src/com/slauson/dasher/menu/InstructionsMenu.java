@@ -1,60 +1,34 @@
 package com.slauson.dasher.menu;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.game.Game;
-import com.slauson.dasher.game.GameThread;
-import com.slauson.dasher.game.GameView;
-import com.slauson.dasher.game.Accelerometer;
 import com.slauson.dasher.other.GameBaseActivity;
-import com.slauson.dasher.other.GameThreadCallback;
 
 import android.os.Bundle;
 
-public class InstructionsMenu extends GameBaseActivity implements GameThreadCallback {
-	
-	/** Game **/
-	private Game game;
+public class InstructionsMenu extends GameBaseActivity {
 
-	/** Game view **/
-	private GameView gameView;
-
-	/** Game thread **/
-	private GameThread gameThread;
-	
-	/** Accelerometer **/
-	private Accelerometer accelerometer;
-
+	// TODO: add stuff
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
     	setContentView(R.layout.instructions_menu);
     	
-    	game = new Game(this);
-		
-		gameView = (GameView)findViewById(R.id.gameView);
-		gameView.setGame(game);
-
-		accelerometer = new Accelerometer(this);
+    	// TODO: get bundle info to determine if from instructions menu vs tutorial
+    	
+    	// TODO: set up screens, automators
 	}
 	
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
-	}
-
 	public void update() {
-		// TODO Auto-generated method stub
+		super.update();
+		
+		// TODO: update automators
+		
+		// TODO: check required user interaction
 	}
 
 	public void gameOver() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateAccelerometer(float tx, float ty) {
-		// TODO Auto-generated method stub
-		
+		// TODO: reset ship
 	}
 }

@@ -6,9 +6,7 @@ import com.slauson.dasher.menu.InstructionsMenu;
 import com.slauson.dasher.menu.MainMenu;
 import com.slauson.dasher.menu.OptionsMenu;
 import com.slauson.dasher.other.GameBaseActivity;
-import com.slauson.dasher.other.GameThreadCallback;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
 
 import android.content.Intent;
@@ -24,19 +22,7 @@ import android.widget.LinearLayout;
  * @author Josh Slauson
  *
  */
-public class GameActivity extends GameBaseActivity implements GameThreadCallback {
-
-	/** Game **/
-	private Game game;
-
-	/** Game view **/
-	private GameView gameView;
-
-	/** Game thread **/
-	private GameThread gameThread;
-	
-	/** Accelerometer **/
-	private Accelerometer accelerometer;
+public class GameActivity extends GameBaseActivity  {
 	
 	/** Pause menu **/
 	private LinearLayout pauseMenu;
@@ -52,15 +38,6 @@ public class GameActivity extends GameBaseActivity implements GameThreadCallback
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_menu);
 		
-		System.out.println("MyGameActivity onCreate()");
-		
-		game = new Game(this);
-		
-		gameView = (GameView)findViewById(R.id.gameView);
-		gameView.setGame(game);
-
-		accelerometer = new Accelerometer(this);
-
 		quitting = false;
 		paused = false;
 
@@ -123,60 +100,17 @@ public class GameActivity extends GameBaseActivity implements GameThreadCallback
 	@Override
 	protected void onResume() {
 		super.onResume();
-		gameView.MyGameSurfaceView_OnResume();
-		
-		System.out.println("MyGameActivity::onResume()");
-		
-		// Create and start background Thread
-		gameThread = new GameThread(this);
-		gameThread.setRunning(true);
-		gameThread.start();
 		
 		quitting = false;
-		
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
-			accelerometer.registerListener();
-		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		
-		System.out.println("MyGameActivity::onPause()");
-		
-		// Kill the background thread
-		boolean retry = true;
-		gameThread.setRunning(false);
-		
-		while (retry) {
-			try {
-				gameThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
 		if (!quitting) {
 			pauseGame();
 		}
-
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
-			accelerometer.unregisterListener();
-		}
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
-			return false;
-		}
-
-		game.keyDown(keyCode);
-		return true;
 	}
 
 	@Override
@@ -197,44 +131,18 @@ public class GameActivity extends GameBaseActivity implements GameThreadCallback
 			}
 			break;
 		}
-		
-		// only move player ship when its in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
-			return false;
-		}
-		
-		game.keyUp(keyCode);
-		
-		return true;
+
+		return super.onKeyUp(keyCode, event);
 	}
 	
 	/**
-	 * Updates game state and draws everything to surface view
-	 */
-	public void update() {
-		if (game.isInitialized()) {
-			game.updateStates();
-			gameView.draw();
-		}
-	}
-
-	/**
 	 * Transitions to game over menu
 	 */
+	@Override
 	public void gameOver() {
 		quitting = true;
 		Intent intent = new Intent(GameActivity.this, GameOverMenu.class);
 		startActivity(intent);
-	}
-
-	public void updateAccelerometer(float tx, float ty) {
-		
-		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER) {
-			return;
-		}
-		
-		game.updateAccelerometer(tx, ty);
 	}
 
 	/**
