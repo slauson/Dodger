@@ -1,6 +1,6 @@
 package com.slauson.dasher.game;
 
-import com.slauson.dasher.other.GameThreadCallback;
+import com.slauson.dasher.other.GameBaseActivity;
 
 /**
  * Game thread
@@ -13,11 +13,11 @@ public class GameThread extends Thread {
 	private volatile boolean running = false;
 	
 	/** Game view **/
-	private GameThreadCallback gameThreadCallback;
+	private GameBaseActivity gameActivity;
 	
-	public GameThread(GameThreadCallback gameThreadCallback) {
+	public GameThread(GameBaseActivity gameActivity) {
 		super();
-		this.gameThreadCallback = gameThreadCallback;
+		this.gameActivity = gameActivity;
 	}
 	
 	/**
@@ -38,7 +38,7 @@ public class GameThread extends Thread {
 			try {
 				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
-				gameThreadCallback.update();
+				gameActivity.update();
 				sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {

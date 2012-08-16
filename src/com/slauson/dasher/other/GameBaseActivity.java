@@ -1,6 +1,5 @@
 package com.slauson.dasher.other;
 
-import com.slauson.dasher.R;
 import com.slauson.dasher.game.Accelerometer;
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.game.GameThread;
@@ -19,7 +18,7 @@ import android.view.KeyEvent;
  * @author Josh Slauson
  *
  */
-public abstract class GameBaseActivity extends Activity implements GameThreadCallback {
+public abstract class GameBaseActivity extends Activity {
 
 	/** Game **/
 	protected Game game;
@@ -88,27 +87,25 @@ public abstract class GameBaseActivity extends Activity implements GameThreadCal
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
-			return false;
+		if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+			game.keyDown(keyCode);
 		}
 
-		game.keyDown(keyCode);
+		
 		return true;
 	}
 	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
-		// only move player ship when its in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_KEYBOARD) {
-			return false;
+		// only move player ship when keyboard controls are being used
+		if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+			game.keyUp(keyCode);
 		}
-		
-		game.keyUp(keyCode);
 		
 		return true;
 	}
-
+	
 	/**
 	 * Updates game state and draws everything to surface view
 	 */

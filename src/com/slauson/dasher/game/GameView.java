@@ -24,6 +24,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
+	private static float canvasHeightFactor = 1;
+	private static float canvasHeightOffset = 0;
 	
 	public GameView(Context context) {
 		super(context);
@@ -46,7 +48,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		
 		// initialize game
-		game.init(getWidth(), getHeight());
+		game.init(getWidth(), (int)(getHeight()*canvasHeightFactor));
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
@@ -85,7 +87,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			canvas = surfaceHolder.lockCanvas();
 			
 			synchronized (surfaceHolder) {
+				
+				// translate canvas if we have a height offset
+				if (canvasHeightOffset > 0) {
+					canvas.translate(0, getHeight()*canvasHeightOffset);
+				}
+				
 				game.draw(canvas);
+				
+				// restore canvas if we have a height offset
+				if (canvasHeightOffset > 0) {
+					canvas.restore();
+				}
 			}
 		} finally {
 			if (canvas != null) {
@@ -100,5 +113,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	public void setGame(Game game) {
 		this.game = game;
+	}
+
+	/**
+	 * Sets canvas height characteristics
+	 * @param canvasHeightFactor height factor
+	 * @param canvasHeightOffset height top offset
+	 */
+	public void setHeight(float canvasHeightFactor, float canvasHeightOffset) {
+		GameView.canvasHeightFactor = canvasHeightFactor;
+		GameView.canvasHeightOffset = canvasHeightOffset;
 	}
 }
