@@ -424,7 +424,7 @@ public class Game {
 	 * Handles touch event
 	 * @param event touch event
 	 */
-	public void touchEvent(MotionEvent event) {
+	public void touchEvent(MotionEvent event, float offsetY) {
 		
 		if (player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) {
 			return;
@@ -432,7 +432,7 @@ public class Game {
 		
 		// get event position
 		float x = event.getX();
-		float y = event.getY();
+		float y = event.getY() + offsetY;
 		
 		int action = event.getAction();
 		

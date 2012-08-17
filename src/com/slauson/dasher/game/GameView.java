@@ -24,8 +24,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
-	private static float canvasHeightFactor = 1;
-	private static float canvasHeightOffset = 0;
+	private float canvasHeightFactor = 1;
+	private float canvasHeightOffset = 0;
 	
 	public GameView(Context context) {
 		super(context);
@@ -72,7 +72,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			return false;
 		}
 		
-		game.touchEvent(event);
+		game.touchEvent(event, -getHeight()*canvasHeightOffset);
 		return true;
 	}
 
@@ -121,7 +121,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	 * @param canvasHeightOffset height top offset
 	 */
 	public void setHeight(float canvasHeightFactor, float canvasHeightOffset) {
-		GameView.canvasHeightFactor = canvasHeightFactor;
-		GameView.canvasHeightOffset = canvasHeightOffset;
+		this.canvasHeightFactor = canvasHeightFactor;
+		this.canvasHeightOffset = canvasHeightOffset;
 	}
 }
