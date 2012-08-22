@@ -38,7 +38,6 @@ public abstract class GameBaseActivity extends Activity {
 		
 		System.out.println("GameBaseActivity::onCreate()");
 		
-		game = new Game(this);
 		accelerometer = new Accelerometer(this);
 	}
 	

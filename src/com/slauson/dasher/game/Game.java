@@ -51,6 +51,9 @@ public class Game {
 	
 	/** Used to determine if game is initialized from surface view **/
 	private boolean initialized;
+	
+	/** Used to differentiate instructions and actual game **/
+	private boolean instructionMode;
 
 	/** Paint for drawing on canvas **/
 	private Paint paint;
@@ -104,6 +107,12 @@ public class Game {
 	
 	/** Maximum value for quasar counter **/
 	private int quasarFrames;
+
+	/** Enables player movement **/
+	private boolean enableMove;
+
+	/** Enables player dash ability **/
+	private boolean enableDash;
 	
 	/** Runtime for updates **/
 	private static long runtimeAnalysisUpdateTime = 0;
@@ -217,9 +226,10 @@ public class Game {
 	/** Maximum sleep duration **/
 	public static int maxSleepTime = 1000/30;
 	
-	public Game(GameBaseActivity gameActivity) {
+	public Game(GameBaseActivity gameActivity, boolean instructionMode) {
 		
 		this.gameActivity = gameActivity;
+		this.instructionMode = instructionMode;
 		
 		initialized = false;
 	}
@@ -233,7 +243,11 @@ public class Game {
 		canvasWidth = width;
 		canvasHeight = height;
 		
-		level = new Level(Debugging.level, Debugging.levelProgression);
+		if (instructionMode) {
+			level = new Level(-1, false);
+		} else {
+			level = new Level(Debugging.level, Debugging.levelProgression);
+		}
 		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 		
@@ -262,7 +276,7 @@ public class Game {
 		
 		maxSleepTime = 1000/Configuration.frameRate;
 					
-		player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH);
+		player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH, !instructionMode);
 		
 		powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 		powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
@@ -273,7 +287,7 @@ public class Game {
 		
 		float radius, speed;
 		
-		for (int i = 0; i < level.getNumAsteroids(); i++) {
+		for (int i = 0; i < level.getNumAsteroids() && !instructionMode; i++) {
 			
 			radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 			speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
@@ -441,7 +455,7 @@ public class Game {
 			// check if pressed on player's position, then dash
 			if (x < player.getX() + player.getWidth()*DASH_TOUCH_FACTOR/2 && x > player.getX() - player.getWidth()*DASH_TOUCH_FACTOR/2 &&
 					y < player.getY() + player.getHeight()*DASH_TOUCH_FACTOR/2 && y > player.getY() - player.getHeight()*DASH_TOUCH_FACTOR/2 &&
-					player.canDash())
+					player.canDash() && enableDash)
 			{
 				player.dash();
 				break;
@@ -458,14 +472,14 @@ public class Game {
 			// don't break here so that player still moves
 		case MotionEvent.ACTION_MOVE:
 			// only move horizontally when player is in position
-			if (player.inPosition()) {
+			if (player.inPosition() && enableMove) {
 				player.setGoX(x);
 			}
 			
 			break;
 		case MotionEvent.ACTION_UP:
 			// dash based on double tap
-			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash()) {
+			if (player.getStatus() == Player.STATUS_NORMAL && player.canDash() && enableDash) {
 				if (lastTouchDownTime1 - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION && System.currentTimeMillis() - lastTouchDownTime2 < DASH_DOUBLE_TAP_MIN_DURATION) {
 					player.dash();
 				}
@@ -483,7 +497,7 @@ public class Game {
 	 */
 	public void keyDown(int keyCode) {
 		if ((player.getStatus() != Player.STATUS_NORMAL && player.getStatus() != Player.STATUS_INVULNERABILITY) ||
-				!player.inPosition())
+				!player.inPosition() || !enableMove)
 		{
 			return;
 		}
@@ -536,7 +550,7 @@ public class Game {
 		// dpad center
 		case KeyEvent.KEYCODE_DPAD_CENTER:
 		case KeyEvent.KEYCODE_SPACE:
-			if (player.canDash()) {
+			if (player.canDash() && enableDash) {
 				player.dash();
 			}
 			break;
@@ -559,13 +573,13 @@ public class Game {
 		// check for dash
 		if (((player.getDirection() == DIRECTION_NORMAL && ty > accelerometerDashThreshold) ||
 				(player.getDirection() == DIRECTION_REVERSE && ty < -accelerometerDashThreshold)) &&
-				player.canDash())
+				player.canDash() && enableDash)
 		{
 			player.dash();
 		}
 	
 		// check if tx is not passed deadzone
-		if (Math.abs(tx) < accelerometerDeadzone) {
+		if (Math.abs(tx) < accelerometerDeadzone || !enableMove) {
 			player.moveStop();
 			return;
 		}
@@ -663,6 +677,14 @@ public class Game {
 		return initialized;
 	}
 	
+	public void toggleMove(boolean enableMove) {
+		this.enableMove = enableMove;
+	}
+	
+	public void toggleDash(boolean enableDash) {
+		this.enableDash = enableDash;
+	}
+		
 	/**
 	 * Update asteroids
 	 */
@@ -1221,5 +1243,4 @@ public class Game {
 		
 		player.updateInvulnerabilityFrames();
 	}
-
 }

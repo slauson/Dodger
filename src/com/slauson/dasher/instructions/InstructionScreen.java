@@ -3,6 +3,8 @@ package com.slauson.dasher.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.slauson.dasher.objects.Player;
+
 /**
  * Individual instruction screen.
  * @author Josh Slauson
@@ -24,22 +26,35 @@ public class InstructionScreen {
 	/** List of automators **/
 	private List<Automator> automators;
 	/** Instruction description **/
-	private String description;
+	private int descriptionId;
 	
 	/** Required event type, if any **/
 	private REQUIRED_EVENT_TYPE eventType;
 	
-	public InstructionScreen(String description) {
-		this(description, false, true, false, REQUIRED_EVENT_TYPE.NONE);
+	/** Player's ability to move **/
+	private boolean playerCanMove;
+	
+	/** Player's ability to dash **/
+	private boolean playerCanDash;
+
+	/*
+	 * To add:
+	 * player starting position 
+	 */
+	
+	public InstructionScreen(int descriptionId) {
+		this(descriptionId, false, true, false, REQUIRED_EVENT_TYPE.NONE);
 	}
 	
-	public InstructionScreen(String description, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
-		this.description = description;
+	public InstructionScreen(int descriptionId, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
+		this.descriptionId = descriptionId;
 		this.userInteractionRequired = userInteractionRequired;
 		this.previousButtonEnabled = previousButtonEnabled;
 		this.finishButtonEnabled = finishButtonEnabled;
 		this.eventType = eventType;
 		
+		playerCanMove = true;
+		playerCanDash = true;
 		automators = new ArrayList<Automator>();
 	}
 	
@@ -93,11 +108,11 @@ public class InstructionScreen {
 	}
 	
 	/**
-	 * Returns instruction description.
-	 * @return instruction description
+	 * Returns instruction description id.
+	 * @return instruction description id
 	 */
-	public String getDescription() {
-		return description;
+	public int getDescriptionId() {
+		return descriptionId;
 	}
 	
 	/**
@@ -106,5 +121,31 @@ public class InstructionScreen {
 	 */
 	public REQUIRED_EVENT_TYPE getEventType() {
 		return eventType;
+	}
+
+	/**
+	 * Sets player status.
+	 * @param playerCanMove true if player can move
+	 * @param playerCanDash true if player can dash
+	 */
+	public void setPlayerStatus(boolean playerCanMove, boolean playerCanDash) {
+		this.playerCanMove = playerCanMove;
+		this.playerCanDash = playerCanDash;
+	}
+	
+	/**
+	 * Returns true if player can move
+	 * @return true if player can move
+	 */
+	public boolean getPlayerCanMove() {
+		return playerCanMove;
+	}
+	
+	/**
+	 * Returns true if player can dash
+	 * @return true if player can dash
+	 */
+	public boolean getPlayerCanDash() {
+		return playerCanDash;
 	}
 }

@@ -53,6 +53,8 @@ public class Player extends DrawObject {
 	private boolean moveByTouch;
 
 	private int invulnerabilityFrames;
+
+	private boolean movementDisabled;
 	
 	/**
 	 * Private constants
@@ -82,8 +84,16 @@ public class Player extends DrawObject {
 	private static final int BREAKING_UP_DURATION = 3000;
 	private static final float BREAKING_UP_MOVE = 20;
 
+	/**
+	 * Public constants
+	 */
 	
-	public Player(boolean moveByTouch) {
+	// player specific statuses
+	public static final int STATUS_NO_MOVE = -2;
+	public static final int STATUS_NO_DASH = -1;
+
+	
+	public Player(boolean moveByTouch, boolean startInvulnerable) {
 		// set y, width, height later 
 		super(Game.canvasWidth/2, 0, 0, 0);
 
@@ -110,6 +120,8 @@ public class Player extends DrawObject {
 		move = MOVE_NONE;
 		inPosition = true;
 		direction = Game.DIRECTION_NORMAL;
+		
+		movementDisabled = false;
 		
 		points = new float[] {
 				-width/2, height/2,
@@ -143,8 +155,14 @@ public class Player extends DrawObject {
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
-		status = STATUS_INVULNERABILITY;
-		timeCounter = INVULNERABILITY_DURATION;
+		
+		if (startInvulnerable) {
+			status = STATUS_INVULNERABILITY;
+			timeCounter = INVULNERABILITY_DURATION;
+		} else {
+			status = STATUS_NORMAL;
+			timeCounter = 0;
+		}
 		
 		updateInvulnerabilityFrames();
 		
@@ -283,7 +301,9 @@ public class Player extends DrawObject {
 				}
 			}
 			
-			x = x + (dirX*speedX*timeModifier);
+			if (!movementDisabled) {
+				x = x + (dirX*speedX*timeModifier);
+			}
 			
 			// autocorrect position if we overshoot
 			if (moveByTouch && ((dirX > 0 && x > goX) || (dirX < 0 && x < goX))) {
@@ -751,5 +771,19 @@ public class Player extends DrawObject {
 			invulnerabilityFrames = 4;
 			break;
 		}
-	}	
+	}
+	
+	/**
+	 * Disables use of dash.
+	 */
+	public void disableDash() {
+		dashTimeout = Integer.MAX_VALUE;
+	}
+	
+	/**
+	 * Disables horizontal movement.
+	 */
+	public void disableMove() {
+		movementDisabled = true;
+	}
 }

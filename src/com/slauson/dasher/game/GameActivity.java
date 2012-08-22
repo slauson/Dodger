@@ -39,6 +39,8 @@ public class GameActivity extends GameBaseActivity  {
 		
 		setContentView(R.layout.game_menu);
 		
+		game = new Game(this, false);
+		
 		gameView = (GameView)findViewById(R.id.gameView);
 		gameView.setGame(game);
 
