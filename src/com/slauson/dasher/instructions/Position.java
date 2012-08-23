@@ -1,9 +1,11 @@
 package com.slauson.dasher.instructions;
 
+import com.slauson.dasher.game.Game;
+
 public class Position {
 
 	public static enum POSITION_TYPE {
-		COORDINATE, DASH, RESET
+		COORDINATE, RESET, DELAY_ONCE, SKIP
 	}
 	
 	private POSITION_TYPE type;
@@ -16,6 +18,10 @@ public class Position {
 		this.y = y;
 	}
 	
+	public void skip() {
+		type = POSITION_TYPE.SKIP;
+	}
+	
 	public POSITION_TYPE getType() {
 		return type;
 	}
@@ -26,5 +32,13 @@ public class Position {
 	
 	public float getY() {
 		return y;
+	}
+
+	/**
+	 * Returns inverse y for when gravity is reversed
+	 * @return inverse y for when gravity is reversed
+	 */
+	public float getInverseY() {
+		return Game.canvasHeight - y;
 	}
 }

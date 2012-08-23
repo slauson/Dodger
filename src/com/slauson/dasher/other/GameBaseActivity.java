@@ -129,6 +129,13 @@ public abstract class GameBaseActivity extends Activity {
 		
 		game.updateAccelerometer(tx, ty);
 	}
+	
+	/**
+	 * Used to initialize any canvas related stuff
+	 */
+	public void init() {
+		// do nothing by default
+	}
 
 	/**
 	 * Used when game is over so we can quit properly

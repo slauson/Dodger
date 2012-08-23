@@ -608,15 +608,6 @@ public class Player extends DrawObject {
 			
 	}
 	
-	
-	/**
-	 * Set player's x value
-	 * @param x x value to set to
-	 */
-	public void setX(float x) {
-		this.x = x;
-	}
-	
 	public void moveLeft() {
 		
 		if (speedX == 0 || move != MOVE_LEFT) {
@@ -774,16 +765,15 @@ public class Player extends DrawObject {
 	}
 	
 	/**
-	 * Disables use of dash.
+	 * Toggles use of dash.
+	 * @param enableDash true if dash is to be allowed
 	 */
-	public void disableDash() {
-		dashTimeout = Integer.MAX_VALUE;
-	}
-	
-	/**
-	 * Disables horizontal movement.
-	 */
-	public void disableMove() {
-		movementDisabled = true;
+	public void toggleDash(boolean enableDash) {
+		
+		if (enableDash) {
+			dashTimeout = 0;
+		} else {
+			dashTimeout = Integer.MAX_VALUE;
+		}
 	}
 }

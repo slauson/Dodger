@@ -62,6 +62,22 @@ public abstract class Item {
 		
 		return true;
 	}
+	
+	/**
+	 * Set item's x value
+	 * @param x x value to set to
+	 */
+	public void setX(float x) {
+		this.x = x;
+	}
+	
+	/**
+	 * Set item's y value
+	 * @param y y value to set to
+	 */
+	public void setY(float y) {
+		this.y = y;
+	}
 
 	/**
 	 * Returns item's x position

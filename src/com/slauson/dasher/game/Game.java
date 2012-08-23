@@ -110,9 +110,12 @@ public class Game {
 
 	/** Enables player movement **/
 	private boolean enableMove;
-
 	/** Enables player dash ability **/
 	private boolean enableDash;
+	/** Enables drops **/
+	private boolean enableDrops;
+	/** Enables resetting of asteroids **/
+	private boolean enableAsteroidReset;
 	
 	/** Runtime for updates **/
 	private static long runtimeAnalysisUpdateTime = 0;
@@ -226,6 +229,9 @@ public class Game {
 	/** Maximum sleep duration **/
 	public static int maxSleepTime = 1000/30;
 	
+	/** Number of available drops **/
+	public static int numAvailableDrops = 0;
+	
 	public Game(GameBaseActivity gameActivity, boolean instructionMode) {
 		
 		this.gameActivity = gameActivity;
@@ -264,6 +270,7 @@ public class Game {
 		for (int i = 1; i <= NUM_POWERUPS; i++) {
 			if (Upgrades.getUpgrade(i).getLevel() >= Upgrades.POWERUP_UNLOCKED) {
 				availableDrops.add(i);
+				numAvailableDrops++;
 			}
 		}
 		
@@ -298,6 +305,9 @@ public class Game {
 		localStatistics = LocalStatistics.getInstance();
 		
 		initialized = true;
+		
+		// call up to activity
+		gameActivity.init();
 	}
 	
 	/**
@@ -677,14 +687,137 @@ public class Game {
 		return initialized;
 	}
 	
+	/**
+	 * Toggles player movement
+	 * @param enableMove true if player is allowed to move horizontally
+	 */
 	public void toggleMove(boolean enableMove) {
 		this.enableMove = enableMove;
 	}
 	
+	/**
+	 * Toggles dash ability
+	 * @param enableDash true if player can dash
+	 */
 	public void toggleDash(boolean enableDash) {
 		this.enableDash = enableDash;
-	}
 		
+		player.toggleDash(enableDash);
+	}
+	
+	/**
+	 * Toggles drops
+	 * @param enableDrops true if drops happen
+	 */
+	public void toggleDrops(boolean enableDrops) {
+		this.enableDrops = enableDrops;
+	}
+	
+	/**
+	 * Toggles asteroid resets
+	 * @param enableAsteroidReset true if asteroids should reset
+	 */
+	public void toggleAsteroidReset(boolean enableAsteroidReset) {
+		this.enableAsteroidReset = enableAsteroidReset;
+	}
+	
+	/**
+	 * Adds asteroid to list of asteroids
+	 * @param asteroid asteroid to add
+	 */
+	public void addAsteroid(Asteroid asteroid) {
+		asteroids.add(asteroid);
+	}
+	
+	/**
+	 * Adds drop to list of drops
+	 * @param drop drop to add
+	 */
+	public void addDrop(Drop drop) {
+		drops.add(drop);
+	}
+	
+	/**
+	 * Sets player starting x coordinate
+	 * @param playerStartX starting x coordinate
+	 */
+	public void setPlayerStartX(float playerStartX) {
+		player.setX(playerStartX);
+		player.setGoX(playerStartX);
+	}
+
+	/**
+	 * Clears all asteroids
+	 */
+	public void clearAsteroids() {
+		asteroids.clear();
+	}
+	
+	/**
+	 * Drops a powerup at the given position
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param type type of powerup, or -1 if random
+	 * @return powerup type
+	 */
+	public Drop dropPowerup(float x, float y, int type) {
+		
+		if (!enableDrops) {
+			return null;
+		}
+		
+		// create powerup
+		if (type < 0 || type >= availableDrops.size()) {
+			type = random.nextInt(availableDrops.size());
+		}
+		
+		int powerup = availableDrops.get(type);
+		
+		if (x == -1) {
+			x = random.nextInt(canvasWidth);
+		}
+		
+		// debug mode
+		if (Debugging.dropType != POWERUP_NONE) {
+			powerup = Debugging.dropType;
+		}
+		
+		int r_powerup = 0;
+		
+		switch(powerup) {
+		case POWERUP_SMALL:
+			r_powerup = R.drawable.icon_small;
+			break;
+		case POWERUP_SLOW:
+			r_powerup = R.drawable.icon_slow;
+			break;
+		case POWERUP_INVULNERABILITY:
+			r_powerup = R.drawable.icon_invulnerability;
+			break;
+		case POWERUP_DRILL:
+			r_powerup = R.drawable.icon_drill;
+			break;
+		case POWERUP_MAGNET:
+			r_powerup = R.drawable.icon_magnet;
+			break;
+		case POWERUP_BLACK_HOLE:
+			r_powerup = R.drawable.icon_black_hole;
+			break;
+		case POWERUP_BUMPER:
+			r_powerup = R.drawable.icon_bumper;
+			break;
+		case POWERUP_BOMB:
+			r_powerup = R.drawable.icon_bomb;
+			break;
+		}
+		
+		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup), x, y, powerup);
+		
+		drops.add(drop);
+		
+		return drop;
+	}
+	
 	/**
 	 * Update asteroids
 	 */
@@ -768,7 +901,7 @@ public class Game {
 							if (player.getDashNumAffectedAsteroids() == 0 ||
 									(player.getDashNumAffectedAsteroids() == 1 && player.getDashMultipleDrops()))
 							{
-								dropPowerup(temp.getX(), temp.getY());
+								dropPowerup(temp.getX(), temp.getY(), -1);
 							}
 
 							// we handle normal vs held in place asteroids in the method
@@ -1003,59 +1136,6 @@ public class Game {
 	}
 	
 	/**
-	 * May drop a random powerup at the given position
-	 * @param x x coordinate
-	 * @param y y coordinate
-	 * @return powerup type
-	 */
-	private int dropPowerup(float x, float y) {
-		// create powerup
-		int index = random.nextInt(availableDrops.size());
-		
-		int powerup = availableDrops.get(index);
-		
-		// debug mode
-		if (Debugging.dropType != POWERUP_NONE) {
-			powerup = Debugging.dropType;
-		}
-		
-		int r_powerup = 0;
-		
-		switch(powerup) {
-		case POWERUP_SMALL:
-			r_powerup = R.drawable.icon_small;
-			break;
-		case POWERUP_SLOW:
-			r_powerup = R.drawable.icon_slow;
-			break;
-		case POWERUP_INVULNERABILITY:
-			r_powerup = R.drawable.icon_invulnerability;
-			break;
-		case POWERUP_DRILL:
-			r_powerup = R.drawable.icon_drill;
-			break;
-		case POWERUP_MAGNET:
-			r_powerup = R.drawable.icon_magnet;
-			break;
-		case POWERUP_BLACK_HOLE:
-			r_powerup = R.drawable.icon_black_hole;
-			break;
-		case POWERUP_BUMPER:
-			r_powerup = R.drawable.icon_bumper;
-			break;
-		case POWERUP_BOMB:
-			r_powerup = R.drawable.icon_bomb;
-			break;
-		}
-		
-		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup), x, y, powerup);
-		
-		drops.add(drop);
-		
-		return powerup;
-	}
-	
-	/**
 	 * Activates bomb powerup, destroying everything on screen
 	 */
 	private void activateBomb() {
@@ -1073,12 +1153,15 @@ public class Game {
 				// cause drop if upgraded
 				if (Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROP) {
 					if (numDrops == 0 || (numDrops == 1 && Upgrades.bombUpgrade.getLevel() >= Upgrades.BOMB_UPGRADE_CAUSE_DROPS)) {
-						int powerupType = dropPowerup(asteroid.getX(), asteroid.getY());
-						numDrops++;
+						Drop drop = dropPowerup(asteroid.getX(), asteroid.getY(), -1);
 						
-						// check bomb drop bomb achievement
-						if (powerupType == POWERUP_BOMB) {
-							Achievements.unlockLocalAchievement(Achievements.localBombDropBomb);
+						if (drop != null) {
+							numDrops++;
+						
+							// check bomb drop bomb achievement
+							if (drop.getType() == POWERUP_BOMB) {
+								Achievements.unlockLocalAchievement(Achievements.localBombDropBomb);
+							}
 						}
 					}
 				}
@@ -1133,6 +1216,11 @@ public class Game {
 	 * @param asteroid asteroid to reset
 	 */
 	private void resetAsteroid(Asteroid asteroid) {
+		
+		if (!enableAsteroidReset) {
+			return;
+		}
+		
 		float radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 		float speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
 		

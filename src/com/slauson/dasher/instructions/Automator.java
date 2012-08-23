@@ -1,8 +1,10 @@
 package com.slauson.dasher.instructions;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.slauson.dasher.game.Game;
+import com.slauson.dasher.instructions.Position.POSITION_TYPE;
+import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Item;
 
 /**
@@ -11,14 +13,21 @@ import com.slauson.dasher.objects.Item;
  *
  */
 public class Automator {
+	
+	public static enum AUTOMATOR_TYPE {
+		ASTEROID, DROP
+	}
 
 	/** List of positions to move the item to **/
-	private List<Position> positions;
+	private ArrayList<Position> positions;
 	/** List of durations of how long to take to move to each position **/
-	private List<Integer> durations;
-
+	private ArrayList<Integer> durations;
+	
 	/** Item to automate movement for **/
 	private Item item;
+	
+	/** Type of item to automate movement for **/
+	private AUTOMATOR_TYPE type;
 	
 	/** Current index into list of positions/duration **/
 	private int index;
@@ -31,25 +40,38 @@ public class Automator {
 	/** True if automator is enabled **/
 	private boolean enabled;
 	
-	public Automator(List<Position> positions, List<Integer> durations, Item item) {
-		this.positions = positions;
-		this.durations = durations;
+	/** Type of drop **/
+	private int dropType;
+	
+	public Automator(Item item, AUTOMATOR_TYPE type) {
 		this.item = item;
+		this.type = type;
 		
-		index = 0;
-		remainingTime = durations.get(index);
+		positions = new ArrayList<Position>();
+		durations = new ArrayList<Integer>();
+		index = -1;
+		remainingTime = -1;
 		lastUpdateTime = System.currentTimeMillis();
 		enabled = true;
+		
+		if (type == AUTOMATOR_TYPE.DROP) {
+			dropType = 0;
+		} else {
+			dropType = -1;
+		}
 	}
 	
 	/**
 	 * Updates automator
+	 * @return true if update required on activity side
 	 */
-	public void update() {
+	public boolean update() {
 		
 		if (!enabled) {
-			return;
+			return false;
 		}
+		
+		boolean value = false;
 		
 		long timeElapsed = System.currentTimeMillis() - lastUpdateTime;
 		lastUpdateTime = System.currentTimeMillis();
@@ -61,15 +83,45 @@ public class Automator {
 		
 		remainingTime -= timeElapsed;
 		
-		if (remainingTime < 0) {
-			Position position = nextPosition(-remainingTime);
+		if (index >= 0 && remainingTime < 0) {
 			
-			if (position.getType() == Position.POSITION_TYPE.DASH) {
+			Position position = positions.get(index);
+			
+			// handle special cases
+			if (position.getType() == POSITION_TYPE.RESET) {
 				
-			} else if (position.getType() == Position.POSITION_TYPE.RESET) {
+				if (type == AUTOMATOR_TYPE.ASTEROID) {
+					((Asteroid)item).reset();
 				
+					// move to next position
+					item.setX(position.getX());
+					if (Game.direction == Game.DIRECTION_NORMAL) {
+						item.setY(position.getY());
+					} else {
+						item.setY(position.getInverseY());
+					}
+				} else if (type == AUTOMATOR_TYPE.DROP) {
+					dropType++;
+					
+					if (dropType >= Game.numAvailableDrops) {
+						dropType = 0;
+					}
+					
+					value = true;
+				}
+			} else if (position.getType() == POSITION_TYPE.DELAY_ONCE) {
+				position.skip();
+			}
+			
+			nextPosition(-remainingTime);
+			
+			if (positions.get(index).getType() == POSITION_TYPE.SKIP) {
+				// move to next position right away
+				remainingTime = -1;
 			}
 		}
+		
+		return value;
 	}
 	
 	/**
@@ -80,9 +132,52 @@ public class Automator {
 	}
 	
 	/**
+	 * Adds position to automate list
+	 * @param position position to add
+	 * @param duration duration to add
+	 * @return reference to same Automator for chaining calls
+	 */
+	public Automator addPosition(Position position, int duration) {
+		positions.add(position);
+		durations.add(duration);
+
+		// setup index and remaining time
+		if (index == -1) {
+			index = 0;
+			remainingTime = durations.get(index);
+		}
+
+		return this;
+	}
+	
+	/**
+	 * Returns item to automate
+	 * @return item to automate
+	 */
+	public Item getItem() {
+		return item;
+	}
+	
+	/**
+	 * Returns type of automator
+	 * @return type of automator
+	 */
+	public AUTOMATOR_TYPE getType() {
+		return type;
+	}
+	
+	/**
+	 * Returns drop type
+	 * @return
+	 */
+	public int getDropType() {
+		return dropType;
+	}
+	
+	/**
 	 * Moves item to next position, setting its direction and speed
 	 * @param time duration to decrement from next duration
-	 * @return true if next position is a special, non-coordinate position
+	 * @return next position
 	 */
 	private Position nextPosition(int time) {
 
@@ -100,7 +195,12 @@ public class Automator {
 		// set item move
 		Position positionNext = positions.get(index);
 		
+		if (item == null) {
+			return positionNext;
+		}
+		
 		if (positionNext.getType() == Position.POSITION_TYPE.COORDINATE) {
+			
 			float diffX = positionNext.getX() - positionCurrent.getX();
 			float diffY = positionNext.getY() - positionCurrent.getY();
 			
@@ -111,8 +211,12 @@ public class Automator {
 			item.setDirY(diffY/diffAbsTotal);
 			
 			// set speed
-			item.setSpeed(diffAbsTotal/remainingTime);
+			item.setSpeed(diffAbsTotal/(remainingTime/1000.f));
 			
+		} else {
+			item.setDirX(0);
+			item.setDirY(0);
+			item.setSpeed(0);
 		}
 		
 		return positionNext;

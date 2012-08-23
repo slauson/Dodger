@@ -3,8 +3,6 @@ package com.slauson.dasher.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.slauson.dasher.objects.Player;
-
 /**
  * Individual instruction screen.
  * @author Josh Slauson
@@ -26,28 +24,21 @@ public class InstructionScreen {
 	/** List of automators **/
 	private List<Automator> automators;
 	/** Instruction description **/
-	private int descriptionId;
+	private List<Integer> descriptionIds;
 	
 	/** Required event type, if any **/
 	private REQUIRED_EVENT_TYPE eventType;
 	
 	/** Player's ability to move **/
 	private boolean playerCanMove;
-	
 	/** Player's ability to dash **/
 	private boolean playerCanDash;
+	/** Drops enabled **/
+	private boolean dropsEnabled;
+	/** Player starting x coordinate **/
+	private float playerStartX;
 
-	/*
-	 * To add:
-	 * player starting position 
-	 */
-	
-	public InstructionScreen(int descriptionId) {
-		this(descriptionId, false, true, false, REQUIRED_EVENT_TYPE.NONE);
-	}
-	
-	public InstructionScreen(int descriptionId, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
-		this.descriptionId = descriptionId;
+	public InstructionScreen(boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
 		this.userInteractionRequired = userInteractionRequired;
 		this.previousButtonEnabled = previousButtonEnabled;
 		this.finishButtonEnabled = finishButtonEnabled;
@@ -55,16 +46,9 @@ public class InstructionScreen {
 		
 		playerCanMove = true;
 		playerCanDash = true;
+		dropsEnabled = true;
 		automators = new ArrayList<Automator>();
-	}
-	
-	/**
-	 * Updates all automators.
-	 */
-	public void update() {
-		for (Automator automator : automators) {
-			automator.update();
-		}
+		descriptionIds = new ArrayList<Integer>();
 	}
 	
 	/**
@@ -73,6 +57,27 @@ public class InstructionScreen {
 	 */
 	public void addAutomator(Automator automator) {
 		automators.add(automator);
+	}
+	
+	/**
+	 * Adds description id to list of description ids
+	 * @param descriptionId description id to add
+	 */
+	public void addDescriptionId(int descriptionId) {
+		descriptionIds.add(descriptionId);
+	}
+	
+	/**
+	 * Returns descriptionId at given index
+	 * @param index index
+	 * @return descriptionId at given index
+	 */
+	public int getDescriptionId(int index) {
+		if (index < 0 || index >= descriptionIds.size()) {
+			return -1;
+		}
+		
+		return descriptionIds.get(index);
 	}
 	
 	/**
@@ -108,14 +113,6 @@ public class InstructionScreen {
 	}
 	
 	/**
-	 * Returns instruction description id.
-	 * @return instruction description id
-	 */
-	public int getDescriptionId() {
-		return descriptionId;
-	}
-	
-	/**
 	 * Returns required event type 
 	 * @return required event type
 	 */
@@ -147,5 +144,38 @@ public class InstructionScreen {
 	 */
 	public boolean getPlayerCanDash() {
 		return playerCanDash;
+	}
+
+	/**
+	 * Sets drop status
+	 * @param dropsEnabled true if drops are enabled
+	 */
+	public void setDropStatus(boolean dropsEnabled) {
+		this.dropsEnabled = dropsEnabled;
+	}
+	
+	/**
+	 * Returns true if drops are enabled
+	 * @return true if drops are enabled
+	 */
+	public boolean getDropsEnabled() {
+		return dropsEnabled;
+	}
+
+	/**
+	 * Sets player starting x coordinate
+	 * @param playerStartX starting x coordinate for player
+	 */
+	public void setPlayerStartX(float playerStartX) {
+		this.playerStartX = playerStartX;
+		
+	}
+	
+	/**
+	 * Returns starting x coordinate for player
+	 * @return starting x coordinate for player
+	 */
+	public float getPlayerStartX() {
+		return playerStartX;
 	}
 }
