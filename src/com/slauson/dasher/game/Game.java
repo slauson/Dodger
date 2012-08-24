@@ -232,6 +232,22 @@ public class Game {
 	/** Number of available drops **/
 	public static int numAvailableDrops = 0;
 	
+	/**
+	 * Resets all static state to default values
+	 */
+	public static void reset() {
+		canvasWidth = 0;
+		canvasHeight = 0;
+		
+		gameMode = MODE_RUNNING;
+		direction = DIRECTION_NORMAL;
+		gravity = 1f;
+		
+		maxSleepTime = 1000/30;
+		
+		numAvailableDrops = 0;
+	}
+	
 	public Game(GameBaseActivity gameActivity, boolean instructionMode) {
 		
 		this.gameActivity = gameActivity;
@@ -264,6 +280,11 @@ public class Game {
 		activePowerups = new LinkedList<ActivePowerup>();	
 		bombCounter = 0;
 		quasarCounter = 0;
+		
+		enableMove = true;
+		enableDash = true;
+		enableDrops = true;
+		enableAsteroidReset = true;
 		
 		// populate available drops
 		availableDrops = new ArrayList<Integer>();
@@ -816,6 +837,14 @@ public class Game {
 		drops.add(drop);
 		
 		return drop;
+	}
+	
+	/**
+	 * Returns player's x coordinate
+	 * @return player's x coordinate
+	 */
+	public float getPlayerX() {
+		return player.getX();
 	}
 	
 	/**

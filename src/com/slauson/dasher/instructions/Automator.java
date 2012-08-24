@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.instructions.Position.POSITION_TYPE;
+import com.slauson.dasher.menu.InstructionsMenu;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Item;
 
@@ -91,7 +92,8 @@ public class Automator {
 			if (position.getType() == POSITION_TYPE.RESET) {
 				
 				if (type == AUTOMATOR_TYPE.ASTEROID) {
-					((Asteroid)item).reset();
+					((Asteroid)item).reset(InstructionsMenu.ASTEROID_RADIUS_FACTOR, 0, 0);
+						
 				
 					// move to next position
 					item.setX(position.getX());
@@ -105,6 +107,20 @@ public class Automator {
 					
 					if (dropType >= Game.numAvailableDrops) {
 						dropType = 0;
+					}
+					
+					value = true;
+				}
+			} else if (position.getType() == POSITION_TYPE.RESET_PLAYER_X) {
+				// only applicable to asteroids
+				if (type == AUTOMATOR_TYPE.ASTEROID) {
+					((Asteroid)item).reset();
+				
+					// we set the y coordinate here, and make the activity set the x position 
+					if (Game.direction == Game.DIRECTION_NORMAL) {
+						item.setY(position.getY());
+					} else {
+						item.setY(position.getInverseY());
 					}
 					
 					value = true;
@@ -203,6 +219,14 @@ public class Automator {
 			
 			float diffX = positionNext.getX() - positionCurrent.getX();
 			float diffY = positionNext.getY() - positionCurrent.getY();
+
+			// coordinate of -1 means use last coordinate
+			if (positionNext.getX() == -1) {
+				diffX = 0;
+			}
+			if (positionNext.getY() == -1) {
+				diffY = 0;
+			}
 			
 			float diffAbsTotal = Math.abs(diffX) + Math.abs(diffY);
 			
@@ -221,4 +245,5 @@ public class Automator {
 		
 		return positionNext;
 	}
+
 }

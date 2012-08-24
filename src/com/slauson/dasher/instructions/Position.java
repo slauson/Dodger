@@ -5,7 +5,7 @@ import com.slauson.dasher.game.Game;
 public class Position {
 
 	public static enum POSITION_TYPE {
-		COORDINATE, RESET, DELAY_ONCE, SKIP
+		COORDINATE, RESET, RESET_PLAYER_X, DELAY_ONCE, SKIP
 	}
 	
 	private POSITION_TYPE type;

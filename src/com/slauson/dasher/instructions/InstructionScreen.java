@@ -11,7 +11,7 @@ import java.util.List;
 public class InstructionScreen {
 
 	public static enum REQUIRED_EVENT_TYPE {
-		NONE, AVOID_ASTEROIDS, DASH_ASTEROIDS, ACTIVATE_POWERUPS, AVOID_AND_DASH_POWERUPS
+		NONE, AVOID_ASTEROIDS, DASH_ASTEROIDS, ACTIVATE_POWERUPS, SURVIVE, PURCHASE_UPGRADE
 	}
 	
 	/** True if user interaction is required **/
@@ -25,6 +25,17 @@ public class InstructionScreen {
 	private List<Automator> automators;
 	/** Instruction description **/
 	private List<Integer> descriptionIds;
+	/** Default instruction descriptions common to all **/
+	private int descriptionDefaultId;
+	/** Requirement description **/
+	private int descriptionRequirementId;
+	
+	/** Requirement number of events **/
+	private int requirementNum;
+	/** Number of completed requirements **/
+	private int completionNum;
+	/** Flag for when completion percentage has been updated **/
+	private boolean completionUpdate;
 	
 	/** Required event type, if any **/
 	private REQUIRED_EVENT_TYPE eventType;
@@ -37,12 +48,31 @@ public class InstructionScreen {
 	private boolean dropsEnabled;
 	/** Player starting x coordinate **/
 	private float playerStartX;
-
-	public InstructionScreen(boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
+	
+	/** Last reset time for player **/
+	private long lastResetTime;
+	/** Flag **/
+	private boolean flag;
+	
+	/** Current index of description id **/
+	private int descriptionIdIndex;
+	
+	public InstructionScreen(int descriptionDefaultId, int descriptionRequirementId, int requirementNum, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
+		this.descriptionDefaultId = descriptionDefaultId;
+		this.descriptionRequirementId = descriptionRequirementId;
+		this.requirementNum = requirementNum;
 		this.userInteractionRequired = userInteractionRequired;
 		this.previousButtonEnabled = previousButtonEnabled;
 		this.finishButtonEnabled = finishButtonEnabled;
 		this.eventType = eventType;
+		
+		descriptionIdIndex = 0;
+		
+		completionNum = 0;
+		completionUpdate = false;
+		
+		lastResetTime = System.currentTimeMillis();
+		flag = false;
 		
 		playerCanMove = true;
 		playerCanDash = true;
@@ -69,15 +99,44 @@ public class InstructionScreen {
 	
 	/**
 	 * Returns descriptionId at given index
-	 * @param index index
 	 * @return descriptionId at given index
 	 */
-	public int getDescriptionId(int index) {
-		if (index < 0 || index >= descriptionIds.size()) {
-			return -1;
+	public int getDescriptionId() {
+		return descriptionIds.get(descriptionIdIndex);
+	}
+	
+	/**
+	 * Sets description id index
+	 * @param descriptionIdIndex index value
+	 */
+	public void setDescriptionIdIndex(int descriptionIdIndex) {
+		if (descriptionIdIndex >= 0 && descriptionIdIndex < descriptionIds.size()) {
+			this.descriptionIdIndex = descriptionIdIndex;
 		}
-		
-		return descriptionIds.get(index);
+	}
+	
+	/**
+	 * Returns description default id
+	 * @return description default id
+	 */
+	public int getDescriptionDefaultId() {
+		return descriptionDefaultId;
+	}
+	
+	/**
+	 * Returns descriptions requirement id
+	 * @return description requirement id
+	 */
+	public int getDescriptionRequirementId() {
+		return descriptionRequirementId;
+	}
+	
+	/**
+	 * Returns number for required events to complete
+	 * @return number for required events to complete
+	 */
+	public int getRequirementNum() {
+		return requirementNum;
 	}
 	
 	/**
@@ -177,5 +236,78 @@ public class InstructionScreen {
 	 */
 	public float getPlayerStartX() {
 		return playerStartX;
+	}
+
+	/**
+	 * Returns last reset time
+	 * @return last reset time
+	 */
+	public long getLastResetTime() {
+		return lastResetTime;
+	}
+	
+	/**
+	 * Resets last reset time
+	 */
+	public void resetLastResetTime() {
+		lastResetTime = System.currentTimeMillis();
+	}
+
+	/**
+	 * Returns flag
+	 * @return flag
+	 */
+	public boolean getFlag() {
+		return flag;
+	}
+	/**
+	 * Toggles flag
+	 * @param flag flag value
+	 */
+	public void toggleFlag(boolean flag) {
+		this.flag = flag;
+	}
+	
+	/**
+	 * Returns requirement completion status
+	 * @return requirement completion status
+	 */
+	public String getCompletionStatusString() {
+		return " (" + completionNum + "/" + requirementNum + ").";
+	}
+	
+	/**
+	 * Returns completion num
+	 * @return completion num
+	 */
+	public int getCompletionNum() {
+		return completionNum;
+	}
+	
+	/**
+	 * Increments progress towards requirement
+	 */
+	public void incrementCompletionNum() {
+		completionNum++;
+		
+		if (completionNum > requirementNum) {
+			completionNum = requirementNum;
+		} else {
+			completionUpdate = true;
+		}
+	}
+	
+	/**
+	 * Returns true if requirement completion has been updated.
+	 * Also resets the update flag.
+	 * @return true if completion updated
+	 */
+	public boolean getCompletionUpdate() {
+		
+		if (completionUpdate) {
+			completionUpdate = false;
+			return true;
+		}
+		return false;
 	}
 }
