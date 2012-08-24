@@ -2,7 +2,6 @@ package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
 import com.slauson.dasher.menu.GameOverMenu;
-import com.slauson.dasher.menu.InstructionsMenu;
 import com.slauson.dasher.menu.MainMenu;
 import com.slauson.dasher.menu.OptionsMenu;
 import com.slauson.dasher.other.GameBaseActivity;
@@ -69,16 +68,6 @@ public class GameActivity extends GameBaseActivity  {
 			}
 		});
 		
-		// instructions button
-		Button pauseMenuInstructionsButton = (Button)findViewById(R.id.gamePauseMenuInstructionsButton);
-		pauseMenuInstructionsButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-				Intent intent = new Intent(GameActivity.this, InstructionsMenu.class);
-				startActivity(intent);
-			}
-		});
-
 		// options button
 		Button pauseMenuOptionsButton = (Button)findViewById(R.id.gamePauseMenuOptionsButton);
 		pauseMenuOptionsButton.setOnClickListener(new OnClickListener() {
