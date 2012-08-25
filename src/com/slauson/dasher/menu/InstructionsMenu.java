@@ -1,6 +1,5 @@
 package com.slauson.dasher.menu;
 
-import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +61,6 @@ public class InstructionsMenu extends GameBaseActivity {
 	/*
 	 * Private constants
 	 */
-	private static final float ASTEROID_OFFSET = 100;
 	private static final int ASTEROID_DURATION = 5000;
 
 	private static final float DROP_OFFSET = 100;
@@ -74,12 +72,10 @@ public class InstructionsMenu extends GameBaseActivity {
 	private static final int REQUIREMENT_SURVIVE_NUM = 30;
 	private static final int REQUIREMENT_PURCHASE_UPGRADE_NUM = 1;
 	
-	private static final int NUM_INSTRUCTION_SCREENS = 5;
-
 	private static final int DIALOG_REQUIREMENT_NOT_COMPLETED = 0;
 
 	private static final String REQUIREMENT_NOT_COMPLETED_TITLE = "Goal Not Completed";
-	private static final String REQUIREMENT_NOT_COMPLETED_MESSAGE = "Hit Ok to keep trying or Skip to move on.";
+	private static final String REQUIREMENT_NOT_COMPLETED_MESSAGE = "Hit Ok to keep trying, Skip to move on, or Skip All to start the game.";
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,18 +87,19 @@ public class InstructionsMenu extends GameBaseActivity {
     	game = new Game(this, true);
     	
     	// get bundle info to determine if from instructions menu vs tutorial
-    	if (savedInstanceState != null) {
-    		tutorialMode = savedInstanceState.getBoolean(BUNDLE_FLAG_TUTORIAL);
+    	Bundle extras = getIntent().getExtras();
+    	if (extras != null) {
+    		tutorialMode = extras.getBoolean(BUNDLE_FLAG_TUTORIAL);
     	} else {
     		tutorialMode = false;
     	}
     	
-    	// TODO: remove this
-    	tutorialMode = true;
-    	
-    	initialized = false;
-    	
     	instructionScreens = new ArrayList<InstructionScreen>();
+
+    	// change title
+    	if (tutorialMode) {
+    		((TextView)findViewById(R.id.instructionsMenuTitle)).setText(R.string.instructions_tutorial);
+    	}
     	
     	// set to -1 so that we transition to 0
     	instructionScreenIndex = -1;
@@ -141,6 +138,8 @@ public class InstructionsMenu extends GameBaseActivity {
 				startActivity(intent);
 			}
 		});
+		
+		initialized = false;
 	}
 	
 	@Override
@@ -203,11 +202,25 @@ public class InstructionsMenu extends GameBaseActivity {
 						game.togglePause(false);
 					}
 				})
-				.setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+				.setNeutralButton("Skip", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
 						startNewScreen(true);
 						game.togglePause(false);
+					}
+				})
+				.setNegativeButton("Skip All", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
+						// go to game
+						if (tutorialMode) {
+							Intent intent = new Intent(InstructionsMenu.this, GameActivity.class);
+							startActivity(intent);
+						}
+						// go back
+						else {
+							finish();
+						}
 					}
 				});
 			dialog = alertDialogBuilder.create();
@@ -370,8 +383,8 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -ASTEROID_OFFSET), 0)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -2*automator.getItem().getHeight()), 0)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		instructionScreens.add(instructionScreen);
@@ -428,8 +441,8 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -ASTEROID_OFFSET), 7500)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -2*automator.getItem().getHeight()), 7500)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		instructionScreens.add(instructionScreen);
@@ -439,35 +452,35 @@ public class InstructionsMenu extends GameBaseActivity {
 		 */
 		instructionScreen = new InstructionScreen(R.string.instructions_objective_screen_description_more,
 				R.string.instructions_objective_screen_description_requirement, REQUIREMENT_SURVIVE_NUM,
-				true, true, false, RequiredEventType.SURVIVE);
+				true, true, !tutorialMode, RequiredEventType.SURVIVE);
 		instructionScreen.addDescriptionId(R.string.instructions_objective_screen_description);
 		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -ASTEROID_OFFSET), 0)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -2*automator.getItem().getHeight()), 0)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
 			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET, 2*Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.RESET, 2*Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
 			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET, 3*Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.RESET, 3*Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
 			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
-			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 	
 		instructionScreens.add(instructionScreen);
@@ -475,15 +488,18 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * upgrades screen
 		 */
-		instructionScreen = new InstructionScreen(R.string.instructions_upgrades_screen_description_more,
-				R.string.instructions_upgrades_screen_description_requirement, REQUIREMENT_PURCHASE_UPGRADE_NUM,
-				true, true, true, RequiredEventType.PURCHASE_UPGRADE);
-		instructionScreen.addDescriptionId(R.string.instructions_upgrades_screen_description);
-		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
-		instructionScreen.setPlayerStatus(false, false, true);
-		instructionScreen.setUpgradesButtonVisibility(View.VISIBLE);
-		
-		instructionScreens.add(instructionScreen);
+		// only add in tutorial mode
+		if (tutorialMode) {
+			instructionScreen = new InstructionScreen(R.string.instructions_upgrades_screen_description_more,
+					R.string.instructions_upgrades_screen_description_requirement, REQUIREMENT_PURCHASE_UPGRADE_NUM,
+					true, true, true, RequiredEventType.PURCHASE_UPGRADE);
+			instructionScreen.addDescriptionId(R.string.instructions_upgrades_screen_description);
+			instructionScreen.setPlayerStartX(Game.canvasWidth/2);
+			instructionScreen.setPlayerStatus(false, false, true);
+			instructionScreen.setUpgradesButtonVisibility(View.VISIBLE);
+			
+			instructionScreens.add(instructionScreen);
+		}
 		
 		initialized = true;
 		startNewScreen(true);
@@ -534,7 +550,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		setDetailsText();
 
 		// set instruction screen status
-		screenStatusTextView.setText((instructionScreenIndex + 1) + "/" + NUM_INSTRUCTION_SCREENS);
+		screenStatusTextView.setText((instructionScreenIndex + 1) + "/" + instructionScreens.size());
 		
 		// set previous button text
 		if (instructionScreens.get(instructionScreenIndex).getPreviousButtonEnabled()) {

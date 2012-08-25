@@ -76,8 +76,15 @@ public class MainMenu extends Activity {
 			
 			public void onClick(View v) {
 				if (!showingMore) {
-					Intent intent = new Intent(MainMenu.this, GameActivity.class);
-					startActivity(intent);
+					// if first time playing, show tutorial
+					if (GlobalStatistics.getInstance().timesPlayed == 0) {
+						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
+						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
+						startActivity(intent);
+					} else {
+						Intent intent = new Intent(MainMenu.this, GameActivity.class);
+						startActivity(intent);
+					}
 				} else {
 					Intent intent = new Intent(MainMenu.this, HighScoresMenu.class);
 					startActivity(intent);
