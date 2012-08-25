@@ -3,7 +3,6 @@ package com.slauson.dasher.game;
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.Game.GameMode;
 import com.slauson.dasher.menu.GameOverMenu;
-import com.slauson.dasher.menu.MainMenu;
 import com.slauson.dasher.menu.OptionsMenu;
 import com.slauson.dasher.other.GameBaseActivity;
 import com.slauson.dasher.status.Achievements;
@@ -116,11 +115,8 @@ public class GameActivity extends GameBaseActivity  {
 		pauseMenuQuitButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				quitting = true;
-				game.togglePause(false);
-				Intent intent = new Intent(GameActivity.this, MainMenu.class);
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				game.resetPlayer();
+				gameOver();
 			}
 		});
 	}

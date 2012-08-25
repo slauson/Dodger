@@ -873,7 +873,14 @@ public class Game {
 	public float getPlayerX() {
 		return player.getX();
 	}
-	
+
+	/**
+	 * Resets player
+	 */
+	public void resetPlayer() {
+		player.reset();
+	}
+
 	/**
 	 * Update asteroids
 	 */
@@ -1395,6 +1402,5 @@ public class Game {
 		}, (gameMode == GameMode.INSTRUCTIONS) ? 0 : player.getBreakupDuration()-500);
 
 	}
-
 
 }
