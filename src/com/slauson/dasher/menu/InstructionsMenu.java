@@ -463,14 +463,12 @@ public class InstructionsMenu extends GameBaseActivity {
 				R.string.instructions_dash_screen_description_requirement, REQUIREMENT_DASH_ASTEROIDS_NUM,
 				true, true, false, RequiredEventType.DASH_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
-		instructionScreen.setPlayerStatus(true, false, true);
 		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
-		instructionScreen.setDropStatus(false);
 		
-		// add single asteroid that comes just often enough for dash to recharge
+		// add single asteroid in middle
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -2*automator.getItem().getHeight()), 7500)
+			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -2*automator.getItem().getHeight()), 0)
 			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
@@ -496,7 +494,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
 			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
-			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/2)
 			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 
@@ -504,7 +502,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
 			.addPosition(new Position(PositionType.RESET, 2*Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
-			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/2)
 			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
@@ -512,7 +510,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
 			.addPosition(new Position(PositionType.RESET, 3*Game.canvasWidth/4, -2*automator.getItem().getHeight()), 0)
-			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/2)
 			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + 2*automator.getItem().getHeight()), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 	

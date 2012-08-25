@@ -68,7 +68,7 @@ public class Player extends DrawObject {
 	private static final float BUTTON_SPEED_INCREASE_FACTOR = 0.05f;
 	private static final float BUTTON_MIN_SPEED_FACTOR = 0.25f;
 	private static final float MAX_SPEED_FACTOR = 0.5f;
-	private static final int OFFSET = 100;
+	private static final int Y_OFFSET = 50;
 	
 	// size stuff
 	private static final float SIZE_FACTOR = 0.067f;
@@ -94,15 +94,11 @@ public class Player extends DrawObject {
 	public static final int STATUS_NO_DASH = -1;
 
 	
-	public Player(boolean moveByTouch, boolean startInvulnerable) {
+	public Player(boolean moveByTouch, boolean instructionMode) {
 		// set y, width, height later 
 		super(Game.canvasWidth/2, 0, 0, 0);
 
 		this.moveByTouch = moveByTouch;
-		
-		// set y offset
-		yBottom = Game.canvasHeight - OFFSET;
-		y = yBottom;
 		
 		// set height/width
 		size = getRelativeWidthSize(SIZE_FACTOR);
@@ -110,6 +106,10 @@ public class Player extends DrawObject {
 		height = size;
 		yTop = size;
 		
+		// set y offset
+		yBottom = instructionMode ? Game.canvasHeight - size : Game.canvasHeight - height/2 - Y_OFFSET;
+		y = yBottom;
+				
 		// set speed
 		maxSpeed = getRelativeWidthSize(MAX_SPEED_FACTOR);
 		
@@ -157,7 +157,7 @@ public class Player extends DrawObject {
 		
 		invulnerabilityCounter = 0;
 		
-		if (startInvulnerable) {
+		if (!instructionMode) {
 			status = STATUS_INVULNERABILITY;
 			timeCounter = INVULNERABILITY_DURATION;
 		} else {

@@ -276,7 +276,7 @@ public class Game {
 		canvasWidth = width;
 		canvasHeight = height;
 		
-		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode != GameMode.INSTRUCTIONS);
+		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode == GameMode.INSTRUCTIONS);
 		
 		// setup different game modes
 		if (gameMode == GameMode.INSTRUCTIONS) {
