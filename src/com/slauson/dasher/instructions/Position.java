@@ -4,25 +4,25 @@ import com.slauson.dasher.game.Game;
 
 public class Position {
 
-	public static enum POSITION_TYPE {
-		COORDINATE, RESET, RESET_PLAYER_X, DELAY_ONCE, SKIP
+	public static enum PositionType {
+		COORDINATE, RESET, RESET_PLAYER_X, DELAY_ONCE, SKIP, DELAY_RANDOM
 	}
 	
-	private POSITION_TYPE type;
+	private PositionType type;
 	private float x;
 	private float y;
 	
-	public Position(POSITION_TYPE type, float x, float y) {
+	public Position(PositionType type, float x, float y) {
 		this.type = type;
 		this.x = x;
 		this.y = y;
 	}
 	
 	public void skip() {
-		type = POSITION_TYPE.SKIP;
+		type = PositionType.SKIP;
 	}
 	
-	public POSITION_TYPE getType() {
+	public PositionType getType() {
 		return type;
 	}
 	

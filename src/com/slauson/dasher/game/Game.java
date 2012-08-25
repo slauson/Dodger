@@ -108,15 +108,15 @@ public class Game {
 	/** Maximum value for quasar counter **/
 	private int quasarFrames;
 
+	/** Show player **/
+	private boolean playerVisible;
 	/** Enables player movement **/
 	private boolean enableMove;
 	/** Enables player dash ability **/
 	private boolean enableDash;
 	/** Enables drops **/
 	private boolean enableDrops;
-	/** Enables resetting of asteroids **/
-	private boolean enableAsteroidReset;
-	
+
 	/** Runtime for updates **/
 	private static long runtimeAnalysisUpdateTime = 0;
 	/** Runtime for drawing **/
@@ -281,10 +281,10 @@ public class Game {
 		bombCounter = 0;
 		quasarCounter = 0;
 		
+		playerVisible = true;
 		enableMove = true;
 		enableDash = true;
 		enableDrops = true;
-		enableAsteroidReset = true;
 		
 		// populate available drops
 		availableDrops = new ArrayList<Integer>();
@@ -368,9 +368,11 @@ public class Game {
 		}
 		
 		// draw player
-		paint.setStrokeWidth(PLAYER_PAINT_STROKE_WIDTH);
-		paint.setColor(PLAYER_PAINT_COLOR);
-		player.draw(canvas, paint);
+		if (playerVisible) {
+			paint.setStrokeWidth(PLAYER_PAINT_STROKE_WIDTH);
+			paint.setColor(PLAYER_PAINT_COLOR);
+			player.draw(canvas, paint);
+		}
 		
 		// draw drops
 		synchronized (drops) {
@@ -727,19 +729,19 @@ public class Game {
 	}
 	
 	/**
+	 * Toggles player visibility
+	 * @param playerVisible true if player is visible
+	 */
+	public void togglePlayerVisible(boolean playerVisible) {
+		this.playerVisible = playerVisible;
+	}
+	
+	/**
 	 * Toggles drops
 	 * @param enableDrops true if drops happen
 	 */
 	public void toggleDrops(boolean enableDrops) {
 		this.enableDrops = enableDrops;
-	}
-	
-	/**
-	 * Toggles asteroid resets
-	 * @param enableAsteroidReset true if asteroids should reset
-	 */
-	public void toggleAsteroidReset(boolean enableAsteroidReset) {
-		this.enableAsteroidReset = enableAsteroidReset;
 	}
 	
 	/**
@@ -917,7 +919,7 @@ public class Game {
 										    }
 										});
 									}
-								}, player.getBreakupDuration()-500);
+								}, instructionMode ? 0 : player.getBreakupDuration()-500);
 							} else {
 								// increment pass through counter
 								powerupInvulnerability.passThrough();
@@ -1246,7 +1248,7 @@ public class Game {
 	 */
 	private void resetAsteroid(Asteroid asteroid) {
 		
-		if (!enableAsteroidReset) {
+		if (instructionMode) {
 			return;
 		}
 		

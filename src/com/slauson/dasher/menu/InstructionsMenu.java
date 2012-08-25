@@ -1,5 +1,6 @@
 package com.slauson.dasher.menu;
 
+import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,18 +9,22 @@ import com.slauson.dasher.game.Game;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.game.GameView;
 import com.slauson.dasher.instructions.Automator;
-import com.slauson.dasher.instructions.Automator.AUTOMATOR_TYPE;
+import com.slauson.dasher.instructions.Automator.AutomatorType;
 import com.slauson.dasher.instructions.InstructionScreen;
-import com.slauson.dasher.instructions.InstructionScreen.REQUIRED_EVENT_TYPE;
+import com.slauson.dasher.instructions.InstructionScreen.RequiredEventType;
 import com.slauson.dasher.instructions.Position;
-import com.slauson.dasher.instructions.Position.POSITION_TYPE;
+import com.slauson.dasher.instructions.Position.PositionType;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.other.GameBaseActivity;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Upgrades;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -32,16 +37,22 @@ public class InstructionsMenu extends GameBaseActivity {
 	// bundle flags
 	public static final String BUNDLE_FLAG_TUTORIAL = "tutorial";
 	
+	/** True if in tutorial mode **/
 	private boolean tutorialMode;
 	
+	/** List of instruction screens **/
 	private ArrayList<InstructionScreen> instructionScreens;
-	
+	/** Current instruction screen index **/
 	private int instructionScreenIndex;
+	
+	/** True if menu has been initialized **/
+	private boolean initialized;
 	
 	private TextView detailsTextView;
 	private TextView screenStatusTextView;
 	private TextView previousButton;
 	private TextView nextButton;
+	private TextView upgradesButton;
 	
 	/*
 	 * Public constants
@@ -64,6 +75,11 @@ public class InstructionsMenu extends GameBaseActivity {
 	private static final int REQUIREMENT_PURCHASE_UPGRADE_NUM = 1;
 	
 	private static final int NUM_INSTRUCTION_SCREENS = 5;
+
+	private static final int DIALOG_REQUIREMENT_NOT_COMPLETED = 0;
+
+	private static final String REQUIREMENT_NOT_COMPLETED_TITLE = "Goal Not Completed";
+	private static final String REQUIREMENT_NOT_COMPLETED_MESSAGE = "Hit Ok to keep trying or Skip to move on.";
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +88,7 @@ public class InstructionsMenu extends GameBaseActivity {
     	setContentView(R.layout.instructions_menu);
     	
     	game = new Game(this, true);
-    	
+
     	// get bundle info to determine if from instructions menu vs tutorial
     	if (savedInstanceState != null) {
     		tutorialMode = savedInstanceState.getBoolean(BUNDLE_FLAG_TUTORIAL);
@@ -82,6 +98,8 @@ public class InstructionsMenu extends GameBaseActivity {
     	
     	// TODO: remove this
     	tutorialMode = true;
+    	
+    	initialized = false;
     	
     	instructionScreens = new ArrayList<InstructionScreen>();
     	
@@ -96,6 +114,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		screenStatusTextView = (TextView)findViewById(R.id.instructionsMenuScreenStatus);
 		previousButton = (TextView)findViewById(R.id.instructionsMenuPreviousButton);
 		nextButton = (TextView)findViewById(R.id.instructionsMenuNextButton);
+		upgradesButton = (TextView)findViewById(R.id.instructionsMenuUpgradesButton);
 
 
 		previousButton.setOnClickListener(new OnClickListener() {
@@ -106,9 +125,33 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		nextButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				startNewScreen(true);
+				if (tutorialMode && !instructionScreens.get(instructionScreenIndex).getRequirementCompleted()) {
+					game.togglePause(true);
+					showDialog(DIALOG_REQUIREMENT_NOT_COMPLETED, null);
+				} else {
+					startNewScreen(true);
+				}
 			}
 		});
+		
+		upgradesButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(InstructionsMenu.this, UpgradesMenu.class);
+				startActivity(intent);
+			}
+		});
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		// update completion number if we are checking for upgrades
+		if (instructionScreenIndex >= 0 && instructionScreens.get(instructionScreenIndex).getEventType() == RequiredEventType.PURCHASE_UPGRADE &&
+				Upgrades.getNumUpgradesPurchased() > 0)
+		{
+			instructionScreens.get(instructionScreenIndex).incrementCompletionNum();
+		}
 	}
 	
 	@Override
@@ -137,6 +180,40 @@ public class InstructionsMenu extends GameBaseActivity {
 	}
 	
 	@Override
+	public Dialog onCreateDialog(int id, Bundle args) {
+
+		Dialog dialog = null;
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+		switch(id) {
+		case DIALOG_REQUIREMENT_NOT_COMPLETED:
+			alertDialogBuilder
+				.setTitle(REQUIREMENT_NOT_COMPLETED_TITLE)
+				.setMessage(getRequirementText() + "\n" + REQUIREMENT_NOT_COMPLETED_MESSAGE)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
+						game.togglePause(false);
+					}
+				})
+				.setNegativeButton("Skip", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
+						startNewScreen(true);
+						game.togglePause(false);
+					}
+				});
+			dialog = alertDialogBuilder.create();
+			break;
+		default:
+			break;
+		}
+			
+		return dialog;
+	}
+
+	
+	@Override
 	public void update() {
 		super.update();
 		
@@ -148,7 +225,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		for (Automator automator : instructionScreens.get(instructionScreenIndex).getAutomators()) {
 			if (automator.update()) {
 				// create drop
-				if (automator.getType() == AUTOMATOR_TYPE.DROP) {
+				if (automator.getType() == AutomatorType.DROP) {
 					final Drop drop = game.dropPowerup(-1, -DROP_OFFSET, automator.getDropType());
 					runOnUiThread(new Runnable() {
 						public void run() {
@@ -159,7 +236,7 @@ public class InstructionsMenu extends GameBaseActivity {
 					});
 				} 
 				// move asteroid to player's x coordinate
-				else if (automator.getType() == AUTOMATOR_TYPE.ASTEROID) {
+				else if (automator.getType() == AutomatorType.ASTEROID) {
 					automator.getItem().setX(game.getPlayerX());
 				}
 			}
@@ -167,12 +244,12 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		if (tutorialMode) {
 			// check requirements
-			REQUIRED_EVENT_TYPE requirement = instructionScreens.get(instructionScreenIndex).getEventType();
+			RequiredEventType requirement = instructionScreens.get(instructionScreenIndex).getEventType();
 			
 			// avoiding asteroids requirement
-			if (requirement == REQUIRED_EVENT_TYPE.AVOID_ASTEROIDS) {
+			if (requirement == RequiredEventType.AVOID_ASTEROIDS) {
 				for (Automator automator : instructionScreens.get(instructionScreenIndex).getAutomators()) {
-					if (automator.getType() == AUTOMATOR_TYPE.ASTEROID) {
+					if (automator.getType() == AutomatorType.ASTEROID) {
 						if (Game.direction == Game.DIRECTION_NORMAL) {
 							// toggle flag when asteroid is reset
 							if (automator.getItem().getY() < 0) {
@@ -204,19 +281,24 @@ public class InstructionsMenu extends GameBaseActivity {
 				}
 			}
 			// dash through asteroids requirement
-			else if (requirement == REQUIRED_EVENT_TYPE.DASH_ASTEROIDS) {
+			else if (requirement == RequiredEventType.DASH_ASTEROIDS) {
 				if (LocalStatistics.getInstance().asteroidsDestroyedByDash > instructionScreens.get(instructionScreenIndex).getCompletionNum()) {
 					instructionScreens.get(instructionScreenIndex).incrementCompletionNum();
 				}
 			}
 			// activating powerups requirement
-			else if (requirement == REQUIRED_EVENT_TYPE.ACTIVATE_POWERUPS) {
+			else if (requirement == RequiredEventType.ACTIVATE_POWERUPS) {
 				if (LocalStatistics.getInstance().getTotalUses() > instructionScreens.get(instructionScreenIndex).getCompletionNum()) {
 					instructionScreens.get(instructionScreenIndex).incrementCompletionNum();
 				}
-			} else if (requirement == REQUIRED_EVENT_TYPE.SURVIVE) {
+			} else if (requirement == RequiredEventType.SURVIVE) {
+				long duration = System.currentTimeMillis() - instructionScreens.get(instructionScreenIndex).getLastResetTime();
 				
-			} else if (requirement == REQUIRED_EVENT_TYPE.PURCHASE_UPGRADE) {
+				if (((int)(duration/1000)) > instructionScreens.get(instructionScreenIndex).getCompletionNum()) {
+					instructionScreens.get(instructionScreenIndex).incrementCompletionNum();
+				}
+				
+			} else if (requirement == RequiredEventType.PURCHASE_UPGRADE) {
 				
 			}
 			
@@ -236,10 +318,20 @@ public class InstructionsMenu extends GameBaseActivity {
 	public void gameOver() {
 		// reset last reset time
 		instructionScreens.get(instructionScreenIndex).resetLastResetTime();
+		
+		// reset completion number in survive mode
+		if (instructionScreens.get(instructionScreenIndex).getEventType() == RequiredEventType.SURVIVE) {
+			instructionScreens.get(instructionScreenIndex).resetCompletionNum();
+		}
 	}
 	
 	@Override
 	public void init() {
+	
+		// only initialize once, since this gets called from Game.java on surface view creation
+		if (initialized) {
+			return;
+		}
 		
 		int descriptionId;
 		InstructionScreen instructionScreen;
@@ -263,16 +355,16 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		instructionScreen = new InstructionScreen(R.string.instructions_move_screen_description_default,
 				R.string.instructions_move_screen_description_requirement, REQUIREMENT_AVOID_ASTEROIDS_NUM,
-				true, false, false, REQUIRED_EVENT_TYPE.AVOID_ASTEROIDS);
+				true, false, false, RequiredEventType.AVOID_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
-		instructionScreen.setPlayerStatus(true, false);
+		instructionScreen.setPlayerStatus(true, true, false);
 		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		instructionScreen.setDropStatus(false);
 		
-		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AUTOMATOR_TYPE.ASTEROID);
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(POSITION_TYPE.RESET_PLAYER_X, Game.canvasWidth/2, -ASTEROID_OFFSET), 0)
-			.addPosition(new Position(POSITION_TYPE.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		instructionScreens.add(instructionScreen);
@@ -280,11 +372,9 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * how to get powerups screen
 		 */
-		descriptionId = R.string.instructions_powerup_screen_description_slow;
-		
 		instructionScreen = new InstructionScreen(R.string.instructions_powerup_screen_description_default,
 				R.string.instructions_powerup_screen_description_requirement, REQUIREMENT_ACTIVATE_POWERUPS_NUM,
-				true, true, false, REQUIRED_EVENT_TYPE.ACTIVATE_POWERUPS);
+				true, true, false, RequiredEventType.ACTIVATE_POWERUPS);
 		
 		// these must match the constants in Game.java
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_small); // since powerup ids start at 1
@@ -296,11 +386,11 @@ public class InstructionsMenu extends GameBaseActivity {
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_black_hole);
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_bumper);
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_bomb);
-		instructionScreen.setPlayerStatus(true, false);
+		instructionScreen.setPlayerStatus(true, true, false);
 		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
-		automator = new Automator(null, AUTOMATOR_TYPE.DROP);
-		automator.addPosition(new Position(POSITION_TYPE.RESET, Game.canvasWidth/2, -DROP_OFFSET), DROP_DURATION);
+		automator = new Automator(null, AutomatorType.DROP);
+		automator.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -DROP_OFFSET), DROP_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		instructionScreens.add(instructionScreen);
@@ -323,26 +413,72 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		instructionScreen = new InstructionScreen(R.string.instructions_dash_screen_description_default,
 				R.string.instructions_dash_screen_description_requirement, REQUIREMENT_DASH_ASTEROIDS_NUM,
-				true, true, true, REQUIRED_EVENT_TYPE.DASH_ASTEROIDS);
+				true, true, false, RequiredEventType.DASH_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
-		instructionScreen.setPlayerStatus(false, true);
+		instructionScreen.setPlayerStatus(true, false, true);
 		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		instructionScreen.setDropStatus(false);
 		
-		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AUTOMATOR_TYPE.ASTEROID);
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
 		automator
-			.addPosition(new Position(POSITION_TYPE.RESET, Game.canvasWidth/2, -ASTEROID_OFFSET), 7500)
-			.addPosition(new Position(POSITION_TYPE.COORDINATE, Game.canvasWidth/2, Game.canvasHeight + ASTEROID_OFFSET), 5000);
+			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/2, -ASTEROID_OFFSET), 7500)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
 		instructionScreen.addAutomator(automator);
 		
 		instructionScreens.add(instructionScreen);
 		
-		// game objective screen
+		/*
+		 * game objective screen
+		 */
+		instructionScreen = new InstructionScreen(R.string.instructions_objective_screen_description_default,
+				R.string.instructions_objective_screen_description_requirement, REQUIREMENT_SURVIVE_NUM,
+				true, true, false, RequiredEventType.SURVIVE);
+		instructionScreen.addDescriptionId(R.string.instructions_objective_screen_description);
+		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
-		// upgrades screen
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
+		automator
+			.addPosition(new Position(PositionType.RESET_PLAYER_X, Game.canvasWidth/2, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+		instructionScreen.addAutomator(automator);
 		
-		// achievements screen
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
+		automator
+			.addPosition(new Position(PositionType.RESET, Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+		instructionScreen.addAutomator(automator);
 		
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
+		automator
+			.addPosition(new Position(PositionType.RESET, 2*Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+		instructionScreen.addAutomator(automator);
+		
+		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
+		automator
+			.addPosition(new Position(PositionType.RESET, 3*Game.canvasWidth/4, -ASTEROID_OFFSET), 0)
+			.addPosition(new Position(PositionType.DELAY_RANDOM, -1, -1), ASTEROID_DURATION/4)
+			.addPosition(new Position(PositionType.COORDINATE, -1, Game.canvasHeight + ASTEROID_OFFSET), ASTEROID_DURATION);
+		instructionScreen.addAutomator(automator);
+	
+		instructionScreens.add(instructionScreen);
+		
+		/*
+		 * upgrades screen
+		 */
+		instructionScreen = new InstructionScreen(R.string.instructions_upgrades_screen_description_default,
+				R.string.instructions_upgrades_screen_description_requirement, REQUIREMENT_PURCHASE_UPGRADE_NUM,
+				true, true, true, RequiredEventType.PURCHASE_UPGRADE);
+		instructionScreen.addDescriptionId(R.string.instructions_upgrades_screen_description);
+		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
+		instructionScreen.setPlayerStatus(false, false, true);
+		instructionScreen.setUpgradesButtonVisibility(View.VISIBLE);
+		
+		instructionScreens.add(instructionScreen);
+		
+		initialized = true;
 		startNewScreen(true);
 	}
 	
@@ -382,6 +518,9 @@ public class InstructionsMenu extends GameBaseActivity {
 	    	LocalStatistics.getInstance().reset();
 		}
 		
+		// reset last reset time
+		instructionScreens.get(instructionScreenIndex).resetLastResetTime();
+		
 		// set description
 		setDetailsText();
 
@@ -402,16 +541,17 @@ public class InstructionsMenu extends GameBaseActivity {
 			nextButton.setText(R.string.instructions_next);
 		}
 		
+		// toggle upgrades button
+		upgradesButton.setVisibility(instructionScreens.get(instructionScreenIndex).getUpgradesButtonVisibility());
+		
 		// setup player status
+		game.togglePlayerVisible(instructionScreens.get(instructionScreenIndex).getPlayerVisible());
 		game.toggleMove(instructionScreens.get(instructionScreenIndex).getPlayerCanMove());
 		game.toggleDash(instructionScreens.get(instructionScreenIndex).getPlayerCanDash());
 		game.setPlayerStartX(instructionScreens.get(instructionScreenIndex).getPlayerStartX());
 		
 		// setup drops
 		game.toggleDrops(instructionScreens.get(instructionScreenIndex).getDropsEnabled());
-		
-		// disable asteroid reset
-		game.toggleAsteroidReset(false);
 		
 		// clear any asteroids
 		game.clearAsteroids();
@@ -420,9 +560,9 @@ public class InstructionsMenu extends GameBaseActivity {
 		List<Automator> automators = instructionScreens.get(instructionScreenIndex).getAutomators();
 		
 		for (Automator automator : automators) {
-			if (automator.getType() == AUTOMATOR_TYPE.ASTEROID) {
+			if (automator.getType() == AutomatorType.ASTEROID) {
 				game.addAsteroid(((Asteroid)automator.getItem()));
-			} else if (automator.getType() == AUTOMATOR_TYPE.DROP) {
+			} else if (automator.getType() == AutomatorType.DROP) {
 				game.dropPowerup(-1, -DROP_OFFSET, automator.getDropType());
 			}
 		}
@@ -440,5 +580,11 @@ public class InstructionsMenu extends GameBaseActivity {
 			details += "\n" + getString(instructionScreens.get(instructionScreenIndex).getDescriptionDefaultId());
 		}
 		detailsTextView.setText(details);
+	}
+	
+	private String getRequirementText() {
+		return String.format(getString(instructionScreens.get(instructionScreenIndex).getDescriptionRequirementId(),
+				instructionScreens.get(instructionScreenIndex).getRequirementNum())) +
+				instructionScreens.get(instructionScreenIndex).getCompletionStatusString();
 	}
 }

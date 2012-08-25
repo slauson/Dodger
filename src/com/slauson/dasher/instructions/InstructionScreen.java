@@ -3,6 +3,8 @@ package com.slauson.dasher.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.view.View;
+
 /**
  * Individual instruction screen.
  * @author Josh Slauson
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public class InstructionScreen {
 
-	public static enum REQUIRED_EVENT_TYPE {
+	public static enum RequiredEventType {
 		NONE, AVOID_ASTEROIDS, DASH_ASTEROIDS, ACTIVATE_POWERUPS, SURVIVE, PURCHASE_UPGRADE
 	}
 	
@@ -38,8 +40,10 @@ public class InstructionScreen {
 	private boolean completionUpdate;
 	
 	/** Required event type, if any **/
-	private REQUIRED_EVENT_TYPE eventType;
+	private RequiredEventType eventType;
 	
+	/** Player's visibility **/
+	private boolean playerVisible;
 	/** Player's ability to move **/
 	private boolean playerCanMove;
 	/** Player's ability to dash **/
@@ -57,7 +61,10 @@ public class InstructionScreen {
 	/** Current index of description id **/
 	private int descriptionIdIndex;
 	
-	public InstructionScreen(int descriptionDefaultId, int descriptionRequirementId, int requirementNum, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, REQUIRED_EVENT_TYPE eventType) {
+	/** Upgrades button visibility **/
+	private int upgradesButtonVisibility;
+	
+	public InstructionScreen(int descriptionDefaultId, int descriptionRequirementId, int requirementNum, boolean userInteractionRequired, boolean previousButtonEnabled, boolean finishButtonEnabled, RequiredEventType eventType) {
 		this.descriptionDefaultId = descriptionDefaultId;
 		this.descriptionRequirementId = descriptionRequirementId;
 		this.requirementNum = requirementNum;
@@ -68,12 +75,15 @@ public class InstructionScreen {
 		
 		descriptionIdIndex = 0;
 		
+		upgradesButtonVisibility = View.GONE;
+		
 		completionNum = 0;
 		completionUpdate = false;
 		
 		lastResetTime = System.currentTimeMillis();
 		flag = false;
 		
+		playerVisible = true;
 		playerCanMove = true;
 		playerCanDash = true;
 		dropsEnabled = true;
@@ -175,7 +185,7 @@ public class InstructionScreen {
 	 * Returns required event type 
 	 * @return required event type
 	 */
-	public REQUIRED_EVENT_TYPE getEventType() {
+	public RequiredEventType getEventType() {
 		return eventType;
 	}
 
@@ -184,9 +194,18 @@ public class InstructionScreen {
 	 * @param playerCanMove true if player can move
 	 * @param playerCanDash true if player can dash
 	 */
-	public void setPlayerStatus(boolean playerCanMove, boolean playerCanDash) {
+	public void setPlayerStatus(boolean playerVisible, boolean playerCanMove, boolean playerCanDash) {
+		this.playerVisible = playerVisible;
 		this.playerCanMove = playerCanMove;
 		this.playerCanDash = playerCanDash;
+	}
+	
+	/**
+	 * Returns true if player is visible
+	 * @return true if player is visible
+	 */
+	public boolean getPlayerVisible() {
+		return playerVisible;
 	}
 	
 	/**
@@ -285,6 +304,17 @@ public class InstructionScreen {
 	}
 	
 	/**
+	 * Resets progress towards requirement
+	 */
+	public void resetCompletionNum() {
+		
+		if (completionNum != requirementNum) {
+			completionNum = 0;
+			completionUpdate = true;
+		}
+	}
+	
+	/**
 	 * Increments progress towards requirement
 	 */
 	public void incrementCompletionNum() {
@@ -310,4 +340,29 @@ public class InstructionScreen {
 		}
 		return false;
 	}
+	
+	/**
+	 * Returns true if requirement is completed
+	 * @return true if requirement is completed
+	 */
+	public boolean getRequirementCompleted() {
+		return completionNum == requirementNum;
+	}
+
+	/**
+	 * Sets upgrades button visibility
+	 * @param visibility visibility of upgrades button
+	 */
+	public void setUpgradesButtonVisibility(int upgradesButtonVisibility) {
+		this.upgradesButtonVisibility = upgradesButtonVisibility;
+	}
+	
+	/**
+	 * Returns upgrades button visibility
+	 * @return upgrades button visibility
+	 */
+	public int getUpgradesButtonVisibility() {
+		return upgradesButtonVisibility;
+	}
+
 }

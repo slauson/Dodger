@@ -220,14 +220,22 @@ public class Upgrades {
 	 * @return completion percentage of upgrades unlocked
 	 */
 	public static float completionPercentage() {
-		int maxSum = NUM_UPGRADES * upgrades.size();
-		
+		return 1.f * getNumUpgradesPurchased() / (NUM_UPGRADES * upgrades.size());
+	}
+	
+	/**
+	 * Returns number of upgrades purchased
+	 * @return number of upgrades purchased
+	 */
+	public static int getNumUpgradesPurchased() {
 		int sum = 0;
 		for (Upgrade upgrade : upgrades) {
-			sum += upgrade.getLevel();
+			if (upgrade.getLevel() > 0) {
+				sum += upgrade.getLevel();
+			}
 		}
-		
-		return 1.f*sum/maxSum;
+
+		return sum;
 	}
 	
 	/**

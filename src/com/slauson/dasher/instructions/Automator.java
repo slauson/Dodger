@@ -3,7 +3,7 @@ package com.slauson.dasher.instructions;
 import java.util.ArrayList;
 
 import com.slauson.dasher.game.Game;
-import com.slauson.dasher.instructions.Position.POSITION_TYPE;
+import com.slauson.dasher.instructions.Position.PositionType;
 import com.slauson.dasher.menu.InstructionsMenu;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Item;
@@ -15,7 +15,7 @@ import com.slauson.dasher.objects.Item;
  */
 public class Automator {
 	
-	public static enum AUTOMATOR_TYPE {
+	public static enum AutomatorType {
 		ASTEROID, DROP
 	}
 
@@ -28,7 +28,7 @@ public class Automator {
 	private Item item;
 	
 	/** Type of item to automate movement for **/
-	private AUTOMATOR_TYPE type;
+	private AutomatorType type;
 	
 	/** Current index into list of positions/duration **/
 	private int index;
@@ -44,7 +44,7 @@ public class Automator {
 	/** Type of drop **/
 	private int dropType;
 	
-	public Automator(Item item, AUTOMATOR_TYPE type) {
+	public Automator(Item item, AutomatorType type) {
 		this.item = item;
 		this.type = type;
 		
@@ -55,7 +55,7 @@ public class Automator {
 		lastUpdateTime = System.currentTimeMillis();
 		enabled = true;
 		
-		if (type == AUTOMATOR_TYPE.DROP) {
+		if (type == AutomatorType.DROP) {
 			dropType = 0;
 		} else {
 			dropType = -1;
@@ -89,9 +89,9 @@ public class Automator {
 			Position position = positions.get(index);
 			
 			// handle special cases
-			if (position.getType() == POSITION_TYPE.RESET) {
+			if (position.getType() == PositionType.RESET) {
 				
-				if (type == AUTOMATOR_TYPE.ASTEROID) {
+				if (type == AutomatorType.ASTEROID) {
 					((Asteroid)item).reset(InstructionsMenu.ASTEROID_RADIUS_FACTOR, 0, 0);
 						
 				
@@ -102,7 +102,7 @@ public class Automator {
 					} else {
 						item.setY(position.getInverseY());
 					}
-				} else if (type == AUTOMATOR_TYPE.DROP) {
+				} else if (type == AutomatorType.DROP) {
 					dropType++;
 					
 					if (dropType >= Game.numAvailableDrops) {
@@ -111,9 +111,9 @@ public class Automator {
 					
 					value = true;
 				}
-			} else if (position.getType() == POSITION_TYPE.RESET_PLAYER_X) {
+			} else if (position.getType() == PositionType.RESET_PLAYER_X) {
 				// only applicable to asteroids
-				if (type == AUTOMATOR_TYPE.ASTEROID) {
+				if (type == AutomatorType.ASTEROID) {
 					((Asteroid)item).reset();
 				
 					// we set the y coordinate here, and make the activity set the x position 
@@ -125,13 +125,15 @@ public class Automator {
 					
 					value = true;
 				}
-			} else if (position.getType() == POSITION_TYPE.DELAY_ONCE) {
+			} else if (position.getType() == PositionType.DELAY_ONCE) {
 				position.skip();
 			}
 			
 			nextPosition(-remainingTime);
 			
-			if (positions.get(index).getType() == POSITION_TYPE.SKIP) {
+			if (positions.get(index).getType() == PositionType.SKIP ||
+					(positions.get(index).getType() == PositionType.DELAY_RANDOM && Game.random.nextBoolean()))
+			{
 				// move to next position right away
 				remainingTime = -1;
 			}
@@ -178,7 +180,7 @@ public class Automator {
 	 * Returns type of automator
 	 * @return type of automator
 	 */
-	public AUTOMATOR_TYPE getType() {
+	public AutomatorType getType() {
 		return type;
 	}
 	
@@ -215,7 +217,7 @@ public class Automator {
 			return positionNext;
 		}
 		
-		if (positionNext.getType() == Position.POSITION_TYPE.COORDINATE) {
+		if (positionNext.getType() == Position.PositionType.COORDINATE) {
 			
 			float diffX = positionNext.getX() - positionCurrent.getX();
 			float diffY = positionNext.getY() - positionCurrent.getY();
