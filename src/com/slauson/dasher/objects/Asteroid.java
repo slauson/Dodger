@@ -103,7 +103,7 @@ public class Asteroid extends DrawObject {
 		
 		// draw points to bitmap
 		createRandomPoints();
-		drawPointsToBitmap();
+		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
 		
 		// horizontal movement
 		if (horizontalMovementMax > 0.01) {

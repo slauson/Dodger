@@ -50,7 +50,7 @@ public abstract class DrawObject extends Item {
 	protected static final float DISAPPEARING_FACTOR = 0.125f;
 	protected static final int FADING_OUT_DURATION = 1000;
 	protected static final int SPLITTING_UP_DURATION = 1000;
-	protected static final float SPLITTING_UP_OFFSET = 50;
+	protected static final float SPLITTING_UP_OFFSET = 20;
 	
 	protected static final float STROKE_WIDTH = 2;
 
@@ -64,11 +64,17 @@ public abstract class DrawObject extends Item {
 	/**
 	 * Draws points to bitmap
 	 */
-	protected void drawPointsToBitmap() {
+	protected void drawPointsToBitmap(boolean highQuality) {
 		Canvas canvas = new Canvas(bitmap);
 		Paint paint = new Paint();
 		paint.setColor(Color.WHITE);
 		paint.setStrokeWidth(STROKE_WIDTH);
+		
+		// use anti-aliasing, dithering if high quality
+		if (highQuality) {
+			paint.setAntiAlias(true);
+			paint.setDither(true);
+		}
 		
 		// clear canvas
 		canvas.drawColor(Color.TRANSPARENT, Mode.CLEAR);

@@ -68,7 +68,7 @@ public class Player extends DrawObject {
 	private static final float BUTTON_SPEED_INCREASE_FACTOR = 0.05f;
 	private static final float BUTTON_MIN_SPEED_FACTOR = 0.25f;
 	private static final float MAX_SPEED_FACTOR = 0.5f;
-	private static final float OFFSET_FACTOR = 0.125f;
+	private static final int OFFSET = 100;
 	
 	// size stuff
 	private static final float SIZE_FACTOR = 0.067f;
@@ -101,7 +101,7 @@ public class Player extends DrawObject {
 		this.moveByTouch = moveByTouch;
 		
 		// set y offset
-		yBottom = Game.canvasHeight - Game.canvasHeight*OFFSET_FACTOR;
+		yBottom = Game.canvasHeight - OFFSET;
 		y = yBottom;
 		
 		// set height/width
@@ -188,7 +188,7 @@ public class Player extends DrawObject {
 		dashMultipleDrops = Upgrades.dashUpgrade.getLevel() >= Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS;
 		
 		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-		drawPointsToBitmap();
+		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
 	}
 	
 	public void setMoveByTouch(boolean moveByTouch) {
@@ -776,5 +776,12 @@ public class Player extends DrawObject {
 		} else {
 			dashTimeout = Integer.MAX_VALUE;
 		}
+	}
+
+	/**
+	 * Redraws player to canvas
+	 */
+	public void redraw() {
+		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
 	}
 }

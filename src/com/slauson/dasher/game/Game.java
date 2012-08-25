@@ -291,7 +291,11 @@ public class Game {
 			level = new Level(HARD_MODE_START_LEVEL, Debugging.levelProgression);
 		}
 		
-		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		paint = new Paint();
+		if (Configuration.graphicsType == Configuration.GRAPHICS_NORMAL) {
+			paint.setAntiAlias(true);
+			paint.setDither(true);
+		}
 		
 		asteroids = new ArrayList<Asteroid>();
 		drops = new LinkedList<Drop>();
@@ -698,8 +702,18 @@ public class Game {
 			// reset max sleep time
 			maxSleepTime = 2*1000/Configuration.frameRate;
 			
+			// reset paint flags
+			paint.reset();
+			if (Configuration.graphicsType == Configuration.GRAPHICS_NORMAL) {
+				paint.setAntiAlias(true);
+				paint.setDither(true);
+			}
+			
 			// reset player control type
 			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
+			
+			// redraw player to canvas
+			player.redraw();
 			
 			// update all frame based animations
 			updateFrameCounters();
