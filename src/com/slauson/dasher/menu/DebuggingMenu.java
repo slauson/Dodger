@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.Achievements;
+import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
@@ -194,7 +195,7 @@ public class DebuggingMenu extends Activity {
 			}
     	});
     	
-    	// god mode
+    	// runtime analysis
     	CheckBox runtimeAnalysis = (CheckBox)findViewById(R.id.debuggingMenuRuntimeAnalysis);
     	runtimeAnalysis.setText("Runtime Analysis");
     	
@@ -209,6 +210,23 @@ public class DebuggingMenu extends Activity {
 				Toast.makeText(button.getContext(), "Runtime analysis set to " + Debugging.runtimeAnalysis, Toast.LENGTH_SHORT).show();
 			}
     	});
+    	
+    	// free version
+    	CheckBox freeVersion = (CheckBox)findViewById(R.id.debuggingMenuFreeVersion);
+    	freeVersion.setText("Free Version");
+    	
+    	// set previous selection
+    	freeVersion.setChecked(Configuration.freeVersion);
+    	
+    	freeVersion.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			public void onCheckedChanged(CompoundButton button, boolean value) {
+				Configuration.freeVersion = value;
+				
+				Toast.makeText(button.getContext(), "Free version set to " + Configuration.freeVersion, Toast.LENGTH_SHORT).show();
+			}
+    	});
+
     	
     	// points
     	points = (EditText)findViewById(R.id.debuggingMenuPoints);

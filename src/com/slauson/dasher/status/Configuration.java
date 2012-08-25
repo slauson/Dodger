@@ -45,30 +45,26 @@ public class Configuration {
 	public static final int FRAME_RATE_NORMAL = 30;
 	public static final int FRAME_RATE_HIGH = 60;
 	
-	// offset height default setting
-	private static final float OFFSET_HEIGHT_DEFAULT = 0.125f;
-	
 	// these correspond to the configuration.xml file used in the OptionsMenu
 	private static final String FRAME_RATE_STRING = "configuration_frame_rate";
 	private static final String FRAME_RATE_LOW_STRING = "Low";
 	private static final String FRAME_RATE_NORMAL_STRING = "Normal";
 	//private static final String FRAME_RATE_HIGH_STRING = "High";
 
-
-	// controls
+	/** Game control type **/
 	public static int controlType = CONTROL_TOUCH;
 	
-	// accelerometer sensitivity
+	/** Accelerometer sensitivity **/
 	public static int accelerometerSensitivity = ACCELEROMETER_SENSITIVITY_MEDIUM;
 	
-	// graphics
+	/** Game graphics **/
 	public static int graphicsType = GRAPHICS_NORMAL;
 	
-	// frame rate
+	/** Game frame rate **/
 	public static int frameRate = FRAME_RATE_NORMAL;
 	
-	// offset height
-	public static float offsetHeight = OFFSET_HEIGHT_DEFAULT;
+	/** True if this is free version **/
+	public static boolean freeVersion = true;
 	
 	/**
 	 * Loads configuration from the given preferences

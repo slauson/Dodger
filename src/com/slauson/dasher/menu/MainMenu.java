@@ -10,7 +10,6 @@ import com.slauson.dasher.status.HighScores;
 import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrades;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -34,7 +33,7 @@ import android.widget.Toast;
  * @author Josh Slauson
  *
  */
-public class MainMenu extends Activity {
+public class MainMenu extends PaidDialogBaseMenu {
 	
 	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
@@ -58,6 +57,7 @@ public class MainMenu extends Activity {
 	/** Time back button must be pressed again by to quit game **/
 	private long backButtonQuitEndTime;
 	
+	/** Game mode dialog **/
 	private static final int DIALOG_GAME_MODE = 0;
 	
 	@Override
@@ -119,8 +119,15 @@ public class MainMenu extends Activity {
 					Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 					startActivity(intent);
 				} else {
-					Intent intent = new Intent(MainMenu.this, AchievementsMenu.class);
-					startActivity(intent);
+					// check if free version
+					if (Configuration.freeVersion) {
+						Bundle bundle = new Bundle();
+						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
+						showDialog(DIALOG_PAID_VERSION, bundle);
+					} else {
+						Intent intent = new Intent(MainMenu.this, AchievementsMenu.class);
+						startActivity(intent);
+					}
 				}
 			}
 		});
@@ -148,8 +155,15 @@ public class MainMenu extends Activity {
 				if (!showingMore) {
 					toggleShowMore();
 				} else {
-					Intent intent = new Intent(MainMenu.this, UpgradesMenu.class);
-					startActivity(intent);
+					// check if free version
+					if (Configuration.freeVersion) {
+						Bundle bundle = new Bundle();
+						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
+						showDialog(DIALOG_PAID_VERSION, bundle);
+					} else {
+						Intent intent = new Intent(MainMenu.this, UpgradesMenu.class);
+						startActivity(intent);
+					}
 				}
 			}
 		});
@@ -220,7 +234,11 @@ public class MainMenu extends Activity {
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args) {
 
-		Dialog dialog = null;
+		Dialog dialog = super.onCreateDialog(id, args);
+		if (dialog != null) {
+			return dialog;
+		}
+		
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
 		switch(id) {
@@ -240,12 +258,24 @@ public class MainMenu extends Activity {
 							int gameMode = GameActivity.GAME_MODE_NORMAL;
 							switch(which) {
 							case 0:
+								if (Configuration.freeVersion) {
+									Bundle bundle = new Bundle();
+									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+									showDialog(DIALOG_PAID_VERSION, bundle);
+									return;
+								}
 								gameMode = GameActivity.GAME_MODE_BASIC;
 								break;
 							case 1:
 								gameMode = GameActivity.GAME_MODE_NORMAL;
 								break;
 							case 2:
+								if (Configuration.freeVersion) {
+									Bundle bundle = new Bundle();
+									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+									showDialog(DIALOG_PAID_VERSION, bundle);
+									return;
+								}
 								gameMode = GameActivity.GAME_MODE_HARD;
 								break;
 							}

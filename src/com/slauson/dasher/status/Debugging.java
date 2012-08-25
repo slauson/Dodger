@@ -24,6 +24,8 @@ public class Debugging {
 		levelProgression = sharedPreferences.getBoolean("debugging_level_progression", false);
 		godMode = sharedPreferences.getBoolean("debugging_god_mode", false);
 		runtimeAnalysis = sharedPreferences.getBoolean("debugging_runtime_analysis", false);
+		
+		Configuration.freeVersion = sharedPreferences.getBoolean("debugging_free_version", false);
 	}
 
 	public static void save(Editor sharedPreferencesEditor) {
@@ -33,6 +35,8 @@ public class Debugging {
 		sharedPreferencesEditor.putBoolean("debugging_level_progression", levelProgression);
 		sharedPreferencesEditor.putBoolean("debugging_god_mode", godMode);
 		sharedPreferencesEditor.putBoolean("debugging_runtime_analysis", runtimeAnalysis);
+		
+		sharedPreferencesEditor.putBoolean("debugging_free_version", Configuration.freeVersion);
 		
 		sharedPreferencesEditor.commit();
 	}

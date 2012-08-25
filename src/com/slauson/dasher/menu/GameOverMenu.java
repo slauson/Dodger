@@ -1,6 +1,5 @@
 package com.slauson.dasher.menu;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +15,7 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
+import com.slauson.dasher.status.Configuration;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
 import com.slauson.dasher.status.LocalStatistics;
@@ -23,7 +23,7 @@ import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Statistics;
 
 
-public class GameOverMenu extends Activity {
+public class GameOverMenu extends PaidDialogBaseMenu {
 	
 	/** Length of toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
@@ -100,8 +100,10 @@ public class GameOverMenu extends Activity {
 		// update high scores
 		updateHighScores(sharedPreferencesEditor);
 				
-		// check/update achievements
-		updateAchievements(sharedPreferencesEditor);
+		// check/update achievements if paid version
+		if (!Configuration.freeVersion) {
+			updateAchievements(sharedPreferencesEditor);
+		}
 				
 		// update points
 		updatePoints(sharedPreferencesEditor, points);
@@ -137,8 +139,15 @@ public class GameOverMenu extends Activity {
 		TextView gameOverSummaryAchievements = (TextView)findViewById(R.id.gameOverSummaryAchievements);
 		gameOverSummaryAchievements.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Intent intent = new Intent(GameOverMenu.this, LocalAchievementsMenu.class);
-				startActivity(intent);
+				// check if free version
+				if (Configuration.freeVersion) {
+					Bundle bundle = new Bundle();
+					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
+					showDialog(DIALOG_PAID_VERSION, bundle);
+				} else {
+					Intent intent = new Intent(GameOverMenu.this, LocalAchievementsMenu.class);
+					startActivity(intent);
+				}
 			}
 		});
 		
@@ -173,8 +182,15 @@ public class GameOverMenu extends Activity {
 		gameOverMenuUpgradesButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				Intent intent = new Intent(GameOverMenu.this, UpgradesMenu.class);
-				startActivity(intent);
+				// check if free version
+				if (Configuration.freeVersion) {
+					Bundle bundle = new Bundle();
+					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
+					showDialog(DIALOG_PAID_VERSION, bundle);
+				} else {
+					Intent intent = new Intent(GameOverMenu.this, UpgradesMenu.class);
+					startActivity(intent);
+				}
 			}
 		});
 
