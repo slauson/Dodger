@@ -163,7 +163,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		long remainingDuration = remainingDuration();
 		
 		// fade out
-		if (remainingDuration < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
+		if (remainingDuration < FADE_OUT_DURATION && Game.gameStatus == Game.STATUS_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -189,7 +189,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		canvas.restore();
 		
 		// restore alpha
-		if (remainingDuration < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
+		if (remainingDuration < FADE_OUT_DURATION && Game.gameStatus == Game.STATUS_RUNNING) {
 
 			if (twinkle != null) {
 				paint.setAlpha(255 - paint.getAlpha());

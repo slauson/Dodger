@@ -11,6 +11,9 @@ import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrades;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +39,8 @@ public class MainMenu extends Activity {
 	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
 	
+	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard"};
+	
 	/** Button for starting game or high scores **/
 	private Button startHighScoresButton;
 	/** Button for instructions or achievements **/
@@ -51,6 +57,8 @@ public class MainMenu extends Activity {
 	
 	/** Time back button must be pressed again by to quit game **/
 	private long backButtonQuitEndTime;
+	
+	private static final int DIALOG_GAME_MODE = 0;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +99,16 @@ public class MainMenu extends Activity {
 				}
 			}
 		});
+		startHighScoresButton.setOnLongClickListener(new OnLongClickListener() {
+			public boolean onLongClick(View arg0) {
+				if (!showingMore) {
+					// show dialog with different options
+					showDialog(DIALOG_GAME_MODE);
+				}
+				return true;
+			}
+		});
+		
 		
 		// instructions/achievements button
 		instructionsAchievementsButton = (Button)findViewById(R.id.mainMenuInstructionsAchievementsButton);
@@ -198,6 +216,55 @@ public class MainMenu extends Activity {
 		System.out.println("MainMenu::onResume()");
 		
 	}
+	
+	@Override
+	public Dialog onCreateDialog(int id, Bundle args) {
+
+		Dialog dialog = null;
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+		switch(id) {
+		case DIALOG_GAME_MODE:
+			alertDialogBuilder
+				.setTitle("Select Game Mode")
+				.setItems(GAME_MODES, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_GAME_MODE);
+						
+						// if first time playing, show tutorial
+						if (GlobalStatistics.getInstance().timesPlayed == 0) {
+							Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
+							intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
+							startActivity(intent);
+						} else {
+							int gameMode = GameActivity.GAME_MODE_NORMAL;
+							switch(which) {
+							case 0:
+								gameMode = GameActivity.GAME_MODE_BASIC;
+								break;
+							case 1:
+								gameMode = GameActivity.GAME_MODE_NORMAL;
+								break;
+							case 2:
+								gameMode = GameActivity.GAME_MODE_HARD;
+								break;
+							}
+							
+							Intent intent = new Intent(MainMenu.this, GameActivity.class);
+							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
+							startActivity(intent);
+						}
+					}
+				});
+			dialog = alertDialogBuilder.create();
+			break;
+		default:
+			break;
+		}
+			
+		return dialog;
+	}
+
 	
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event) {

@@ -52,8 +52,8 @@ public class Game {
 	/** Used to determine if game is initialized from surface view **/
 	private boolean initialized;
 	
-	/** Used to differentiate instructions and actual game **/
-	private boolean instructionMode;
+	/** Used to differentiate different game modes **/
+	private GameMode gameMode;
 
 	/** Paint for drawing on canvas **/
 	private Paint paint;
@@ -166,6 +166,9 @@ public class Game {
 	private static final float ACCELEROMETER_DASH_THRESHOLD_MEDIUM = 0.2f;
 	/** Threshold for activating dash with low sensitivity accelerometer **/
 	private static final float ACCELEROMETER_DASH_THRESHOLD_HIGH = 0.15f;
+	
+	/** Level to start on in hard mode **/
+	private static final int HARD_MODE_START_LEVEL = 10;
 
 	/**
 	 * Constants - public
@@ -193,10 +196,10 @@ public class Game {
 	/** Bomb powerup id **/
 	public static final int POWERUP_BOMB = 8;
 	
-	/** Game mode id for game being paused **/
-	public static final int MODE_PAUSED = 0;
-	/** Game mode id for game running **/
-	public static final int MODE_RUNNING = 1;
+	/** Game status id for game being paused **/
+	public static final int STATUS_PAUSED = 0;
+	/** Game status id for game running **/
+	public static final int STATUS_RUNNING = 1;
 
 	/** Asteroids are going in normal direction (down) **/
 	public static final int DIRECTION_NORMAL = 0;
@@ -219,8 +222,8 @@ public class Game {
 	/** Small powerup **/
 	public static PowerupSmall powerupSmall;
 	
-	/** Current game mode **/
-	public static int gameMode = MODE_RUNNING;
+	/** Current game status **/
+	public static int gameStatus = STATUS_RUNNING;
 	/** Current direction **/
 	public static int direction = DIRECTION_NORMAL;
 	/** Current gravity **/
@@ -235,6 +238,11 @@ public class Game {
 	/** Number of available drops **/
 	public static int numAvailableDrops = 0;
 	
+	/** Different game modes **/
+	public static enum GameMode {
+		INSTRUCTIONS, BASIC, NORMAL, HARD
+	}
+	
 	/**
 	 * Resets all static state to default values
 	 */
@@ -242,7 +250,7 @@ public class Game {
 		canvasWidth = 0;
 		canvasHeight = 0;
 		
-		gameMode = MODE_RUNNING;
+		gameStatus = STATUS_RUNNING;
 		direction = DIRECTION_NORMAL;
 		gravity = 1f;
 		
@@ -251,10 +259,10 @@ public class Game {
 		numAvailableDrops = 0;
 	}
 	
-	public Game(GameBaseActivity gameActivity, boolean instructionMode) {
+	public Game(GameBaseActivity gameActivity, GameMode gameMode) {
 		
 		this.gameActivity = gameActivity;
-		this.instructionMode = instructionMode;
+		this.gameMode = gameMode;
 		
 		initialized = false;
 	}
@@ -268,10 +276,19 @@ public class Game {
 		canvasWidth = width;
 		canvasHeight = height;
 		
-		if (instructionMode) {
+		player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH, gameMode != GameMode.INSTRUCTIONS);
+		
+		// setup different game modes
+		if (gameMode == GameMode.INSTRUCTIONS) {
 			level = new Level(-1, false);
-		} else {
+		} else if (gameMode == GameMode.BASIC) {
 			level = new Level(Debugging.level, Debugging.levelProgression);
+			toggleDash(false);
+			toggleDrops(false);
+		} else if (gameMode == GameMode.NORMAL) {
+			level = new Level(Debugging.level, Debugging.levelProgression);
+		} else if (gameMode == GameMode.HARD){
+			level = new Level(HARD_MODE_START_LEVEL, Debugging.levelProgression);
 		}
 		
 		paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -309,8 +326,6 @@ public class Game {
 		
 		maxSleepTime = 1000/Configuration.frameRate;
 					
-		player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH, !instructionMode);
-		
 		powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 		powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
 		powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
@@ -320,7 +335,7 @@ public class Game {
 		
 		float radius, speed;
 		
-		for (int i = 0; i < level.getNumAsteroids() && !instructionMode; i++) {
+		for (int i = 0; i < level.getNumAsteroids() && gameMode != GameMode.INSTRUCTIONS; i++) {
 			
 			radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 			speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
@@ -419,7 +434,7 @@ public class Game {
 	 */
 	public void updateStates() {
 		
-		if (gameMode == MODE_PAUSED) {
+		if (gameStatus == STATUS_PAUSED) {
 			return;
 		}
 		
@@ -654,7 +669,7 @@ public class Game {
 	 */
 	public boolean togglePause(boolean paused) {
 		if (paused) {
-			gameMode = MODE_PAUSED;
+			gameStatus = STATUS_PAUSED;
 			
 			// cancel game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP && gameOverTimer != null) {
@@ -673,7 +688,7 @@ public class Game {
 			
 			pauseTime = System.currentTimeMillis();
 		} else {
-			gameMode = MODE_RUNNING;
+			gameStatus = STATUS_RUNNING;
 			
 			// schedule game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP) {
@@ -1247,7 +1262,7 @@ public class Game {
 	 */
 	private void resetAsteroid(Asteroid asteroid) {
 		
-		if (instructionMode) {
+		if (gameMode == GameMode.INSTRUCTIONS) {
 			return;
 		}
 		
@@ -1377,7 +1392,7 @@ public class Game {
 				    }
 				});
 			}
-		}, instructionMode ? 0 : player.getBreakupDuration()-500);
+		}, (gameMode == GameMode.INSTRUCTIONS) ? 0 : player.getBreakupDuration()-500);
 
 	}
 

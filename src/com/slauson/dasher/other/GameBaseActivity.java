@@ -133,9 +133,7 @@ public abstract class GameBaseActivity extends Activity {
 	/**
 	 * Used to initialize any canvas related stuff
 	 */
-	public void init() {
-		// do nothing by default
-	}
+	public abstract void init();
 
 	/**
 	 * Used when game is over so we can quit properly

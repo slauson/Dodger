@@ -1,6 +1,7 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.game.Game.GameMode;
 import com.slauson.dasher.menu.GameOverMenu;
 import com.slauson.dasher.menu.MainMenu;
 import com.slauson.dasher.menu.OptionsMenu;
@@ -23,6 +24,16 @@ import android.widget.LinearLayout;
  */
 public class GameActivity extends GameBaseActivity  {
 	
+	// bundle flags
+	public static final String BUNDLE_FLAG_GAME_MODE = "game_mode";
+	
+	/** Basic game mode with no drops, dash **/
+	public static final int GAME_MODE_BASIC = 0;
+	/** Normal game mode **/
+	public static final int GAME_MODE_NORMAL = 1;
+	/** Hard game mode where player starts on level 10 **/
+	public static final int GAME_MODE_HARD = 2;
+
 	/** Pause menu **/
 	private LinearLayout pauseMenu;
 
@@ -38,9 +49,30 @@ public class GameActivity extends GameBaseActivity  {
 		
 		setContentView(R.layout.game_menu);
 		
-		Game.reset();
-    	game = new Game(this, false);
+		// get game mode
+		GameMode gameMode = GameMode.NORMAL;
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			int mode = extras.getInt(BUNDLE_FLAG_GAME_MODE);
+			
+			switch(mode) {
+			case GAME_MODE_BASIC:
+				gameMode = GameMode.BASIC;
+				break;
+			case GAME_MODE_NORMAL:
+			default:
+				gameMode = GameMode.NORMAL;
+				break;
+			case GAME_MODE_HARD:
+				gameMode = GameMode.HARD;
+				break;
+			}
+		}
 		
+
+		Game.reset();
+    	game = new Game(this, gameMode);
+    	
 		gameView = (GameView)findViewById(R.id.gameView);
 		gameView.setGame(game);
 
@@ -131,11 +163,14 @@ public class GameActivity extends GameBaseActivity  {
 		return super.onKeyUp(keyCode, event);
 	}
 	
-	/**
-	 * Transitions to game over menu
-	 */
+	@Override
+	public void init() {
+		// do nothing
+	}
+	
 	@Override
 	public void gameOver() {
+		// Transition to game over menu
 		quitting = true;
 		Intent intent = new Intent(GameActivity.this, GameOverMenu.class);
 		startActivity(intent);

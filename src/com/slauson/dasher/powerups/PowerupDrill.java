@@ -205,7 +205,7 @@ public class PowerupDrill extends ActivePowerup {
 	public void draw(Canvas canvas, Paint paint) {
 		
 		// fade out
-		if (remainingDuration() < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && Game.gameStatus == Game.STATUS_RUNNING) {
 			int alpha = (int)(255*(1.f*remainingDuration()/FADE_OUT_DURATION));
 			
 			if (alpha < 0) {
@@ -251,7 +251,7 @@ public class PowerupDrill extends ActivePowerup {
 		canvas.restore();
 		
 		// restore alpha
-		if (remainingDuration() < FADE_OUT_DURATION && Game.gameMode == Game.MODE_RUNNING) {
+		if (remainingDuration() < FADE_OUT_DURATION && Game.gameStatus == Game.STATUS_RUNNING) {
 			paint.setAlpha(255);
 		}
 	}
