@@ -47,6 +47,7 @@ public class PaidDialogBaseMenu extends Activity {
 				})
 				.setNegativeButton("Buy", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
+						removeDialog(DIALOG_PAID_VERSION);
 						try {
 						    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + PAID_PACKAGE_NAME)));
 						} catch (android.content.ActivityNotFoundException anfe) {

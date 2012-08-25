@@ -12,6 +12,7 @@ import android.view.View;
  */
 public class InstructionScreen {
 
+	/** Type of event required for this screen **/
 	public static enum RequiredEventType {
 		NONE, AVOID_ASTEROIDS, DASH_ASTEROIDS, ACTIVATE_POWERUPS, SURVIVE, PURCHASE_UPGRADE
 	}

@@ -68,26 +68,22 @@ public class GameActivity extends GameBaseActivity  {
 			}
 		}
 		
-
+		// setup game
 		Game.reset();
     	game = new Game(this, gameMode);
     	
+    	// setup game view
 		gameView = (GameView)findViewById(R.id.gameView);
 		gameView.setGame(game);
 
 		quitting = false;
 		paused = false;
 
-		/**
-		 * Reset state
-		 */
+		// reset state
 		LocalStatistics.getInstance().reset();
 		Achievements.resetLocalAchievements();
 		
-		/**
-		 * Setup pause menu
-		 */
-		
+		// setup pause menu
 		pauseMenu = (LinearLayout)findViewById(R.id.gamePauseMenu);
 		pauseMenu.setVisibility(View.GONE);
 		

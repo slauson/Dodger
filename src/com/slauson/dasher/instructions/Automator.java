@@ -15,6 +15,7 @@ import com.slauson.dasher.objects.Item;
  */
 public class Automator {
 	
+	// type of item to automate
 	public static enum AutomatorType {
 		ASTEROID, DROP
 	}
@@ -84,16 +85,17 @@ public class Automator {
 		
 		remainingTime -= timeElapsed;
 		
+		// go to next position
 		if (index >= 0 && remainingTime < 0) {
 			
 			Position position = positions.get(index);
 			
-			// handle special cases
+			// handle reset
 			if (position.getType() == PositionType.RESET) {
 				
+				// reset asteroids to next position
 				if (type == AutomatorType.ASTEROID) {
 					((Asteroid)item).reset(InstructionsMenu.ASTEROID_RADIUS_FACTOR, 0, 0);
-						
 				
 					// move to next position
 					item.setX(position.getX());
@@ -102,7 +104,9 @@ public class Automator {
 					} else {
 						item.setY(position.getInverseY());
 					}
-				} else if (type == AutomatorType.DROP) {
+				}
+				// return true for drops to signify a drop should be spawned
+				else if (type == AutomatorType.DROP) {
 					dropType++;
 					
 					if (dropType >= Game.numAvailableDrops) {
@@ -111,7 +115,9 @@ public class Automator {
 					
 					value = true;
 				}
-			} else if (position.getType() == PositionType.RESET_PLAYER_X) {
+			}
+			// handle resetting on player's position
+			else if (position.getType() == PositionType.RESET_PLAYER_X) {
 				// only applicable to asteroids
 				if (type == AutomatorType.ASTEROID) {
 					((Asteroid)item).reset();
@@ -123,9 +129,12 @@ public class Automator {
 						item.setY(position.getInverseY());
 					}
 					
+					// return true to signify asteroid should be positioned on top of player
 					value = true;
 				}
-			} else if (position.getType() == PositionType.DELAY_ONCE) {
+			}
+			// mark delay once positions as skip so we only delay once
+			else if (position.getType() == PositionType.DELAY_ONCE) {
 				position.skip();
 			}
 			
@@ -137,17 +146,16 @@ public class Automator {
 				} else if (Game.direction == Game.DIRECTION_REVERSE && item.getY() + item.getHeight()/2 < 0) {
 					nextPosition(-remainingTime);
 				}
-
 			}
 			// all other position types get reset based on time
 			else {
 				nextPosition(-remainingTime);
 			}
 			
+			// move to next position right away for skip or delay random position types
 			if (positions.get(index).getType() == PositionType.SKIP ||
 					(positions.get(index).getType() == PositionType.DELAY_RANDOM && Game.random.nextBoolean()))
 			{
-				// move to next position right away
 				remainingTime = -1;
 			}
 		}
