@@ -1,6 +1,6 @@
 package com.slauson.dasher.game;
 
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -68,7 +68,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public boolean onTouchEvent(MotionEvent event) {
 		
 		// only move when touch controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_TOUCH) {
+		if (Options.controlType != Options.CONTROL_TOUCH) {
 			return false;
 		}
 		

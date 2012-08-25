@@ -16,8 +16,7 @@ import com.slauson.dasher.instructions.Position.PositionType;
 import com.slauson.dasher.objects.Asteroid;
 import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.other.GameBaseActivity;
-import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Upgrades;
 
@@ -387,14 +386,14 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * how to move screen
 		 */
-		switch(Configuration.controlType) {
-		case Configuration.CONTROL_ACCELEROMETER:
+		switch(Options.controlType) {
+		case Options.CONTROL_ACCELEROMETER:
 			descriptionId = R.string.instructions_move_screen_description_accelerometer;
 			break;
-		case Configuration.CONTROL_KEYBOARD:
+		case Options.CONTROL_KEYBOARD:
 			descriptionId = R.string.instructions_move_screen_description_keyboard;
 			break;
-		case Configuration.CONTROL_TOUCH:
+		case Options.CONTROL_TOUCH:
 		default:
 			descriptionId = R.string.instructions_move_screen_description_touch;
 			break;
@@ -447,14 +446,14 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * how to dash screen
 		 */
-		switch(Configuration.controlType) {
-		case Configuration.CONTROL_ACCELEROMETER:
+		switch(Options.controlType) {
+		case Options.CONTROL_ACCELEROMETER:
 			descriptionId = R.string.instructions_dash_screen_description_accelerometer;
 			break;
-		case Configuration.CONTROL_KEYBOARD:
+		case Options.CONTROL_KEYBOARD:
 			descriptionId = R.string.instructions_dash_screen_description_keyboard;
 			break;
-		case Configuration.CONTROL_TOUCH:
+		case Options.CONTROL_TOUCH:
 		default:
 			descriptionId = R.string.instructions_dash_screen_description_touch;
 			break;

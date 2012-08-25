@@ -80,8 +80,6 @@ public class GlobalStatistics {
 	 */
 	public static void load(SharedPreferences sharedPreferences) {
 		
-		initialized = true;
-		
 		statistics.timePlayed = sharedPreferences.getInt(TIME_PLAYED, 0);
 		statistics.timesPlayed = sharedPreferences.getInt(TIMES_PLAYED, 0);
 		
@@ -104,6 +102,8 @@ public class GlobalStatistics {
 		
 		statistics.pointsEarned = sharedPreferences.getInt(POINTS_EARNED, 0);
 		statistics.pointsSpent = sharedPreferences.getInt(POINTS_SPENT, 0);
+	
+		initialized = true;
 	}
 	
 	/**

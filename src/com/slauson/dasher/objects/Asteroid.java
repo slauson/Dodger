@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.slauson.dasher.game.Game;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.LocalStatistics;
 
 import android.graphics.Bitmap;
@@ -103,7 +103,7 @@ public class Asteroid extends DrawObject {
 		
 		// draw points to bitmap
 		createRandomPoints();
-		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
+		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 		
 		// horizontal movement
 		if (horizontalMovementMax > 0.01) {
@@ -180,7 +180,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
 			
 			// if low graphics, use fade out instead
-			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -229,7 +229,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
 			// if low graphics, use fade out instead
-			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -264,7 +264,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 			
 			// if low graphics, use fade out instead
-			if (Configuration.graphicsType == Configuration.GRAPHICS_LOW) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}

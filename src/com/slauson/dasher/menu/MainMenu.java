@@ -3,7 +3,7 @@ package com.slauson.dasher.menu;
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
@@ -76,7 +76,6 @@ public class MainMenu extends PaidDialogBaseMenu {
 				startActivity(intent);
 			}
 		});
-		
 
 		// start/high scores button
 		startHighScoresButton = (Button)findViewById(R.id.mainMenuStartHighScoresButton);
@@ -120,7 +119,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					startActivity(intent);
 				} else {
 					// check if free version
-					if (Configuration.freeVersion) {
+					if (Options.freeVersion) {
 						Bundle bundle = new Bundle();
 						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
 						showDialog(DIALOG_PAID_VERSION, bundle);
@@ -156,7 +155,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					toggleShowMore();
 				} else {
 					// check if free version
-					if (Configuration.freeVersion) {
+					if (Options.freeVersion) {
 						Bundle bundle = new Bundle();
 						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
 						showDialog(DIALOG_PAID_VERSION, bundle);
@@ -188,8 +187,10 @@ public class MainMenu extends PaidDialogBaseMenu {
 		// load saved state
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		
-		// load configuration
-		loadConfiguration(sharedPreferences);
+		// load options
+		if (!Options.initialized()) {
+			Options.load(this, sharedPreferences);
+		}
 				
 		// load achievements
 		if (!Achievements.initialized()) {
@@ -258,7 +259,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 							int gameMode = GameActivity.GAME_MODE_NORMAL;
 							switch(which) {
 							case 0:
-								if (Configuration.freeVersion) {
+								if (Options.freeVersion) {
 									Bundle bundle = new Bundle();
 									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
 									showDialog(DIALOG_PAID_VERSION, bundle);
@@ -270,7 +271,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 								gameMode = GameActivity.GAME_MODE_NORMAL;
 								break;
 							case 2:
-								if (Configuration.freeVersion) {
+								if (Options.freeVersion) {
 									Bundle bundle = new Bundle();
 									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
 									showDialog(DIALOG_PAID_VERSION, bundle);
@@ -324,14 +325,6 @@ public class MainMenu extends PaidDialogBaseMenu {
 		return true;
 	}
 
-	/**
-	 * Loads configuration
-	 * @param sharedPreferences shared preferences to load from
-	 */
-	private void loadConfiguration(SharedPreferences sharedPreferences) {
-		Configuration.load(sharedPreferences);
-	}
-	
 	/**
 	 * Toggles more options
 	 */

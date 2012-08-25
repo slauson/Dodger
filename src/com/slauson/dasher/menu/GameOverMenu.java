@@ -15,7 +15,7 @@ import com.slauson.dasher.R;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
 import com.slauson.dasher.status.LocalStatistics;
@@ -101,7 +101,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		updateHighScores(sharedPreferencesEditor);
 				
 		// check/update achievements if paid version
-		if (!Configuration.freeVersion) {
+		if (!Options.freeVersion) {
 			updateAchievements(sharedPreferencesEditor);
 		}
 				
@@ -140,7 +140,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		gameOverSummaryAchievements.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				// check if free version
-				if (Configuration.freeVersion) {
+				if (Options.freeVersion) {
 					Bundle bundle = new Bundle();
 					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
 					showDialog(DIALOG_PAID_VERSION, bundle);
@@ -183,7 +183,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 
 			public void onClick(View v) {
 				// check if free version
-				if (Configuration.freeVersion) {
+				if (Options.freeVersion) {
 					Bundle bundle = new Bundle();
 					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
 					showDialog(DIALOG_PAID_VERSION, bundle);

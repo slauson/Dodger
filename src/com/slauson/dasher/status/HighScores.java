@@ -25,13 +25,13 @@ public class HighScores {
 	 */
 	public static void load(SharedPreferences sharedPreferences) {
 		
-		initialized = true;
-		
 		int num = 1;
 		for (HighScore highScore : highScores) {
 			highScore.load(sharedPreferences, num);
 			num++;
 		}
+		
+		initialized = true;
 	}
 	
 	/**

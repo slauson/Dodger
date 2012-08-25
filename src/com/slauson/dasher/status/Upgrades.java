@@ -123,6 +123,8 @@ public class Upgrades {
 		for (Upgrade upgrade : upgrades) {
 			upgrade.load(sharedPreferences);
 		}
+		
+		initialized = true;
 	}
 	
 	/**

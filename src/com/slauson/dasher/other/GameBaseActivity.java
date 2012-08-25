@@ -4,7 +4,7 @@ import com.slauson.dasher.game.Accelerometer;
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.game.GameThread;
 import com.slauson.dasher.game.GameView;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -53,7 +53,7 @@ public abstract class GameBaseActivity extends Activity {
 		gameThread.setRunning(true);
 		gameThread.start();
 		
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.registerListener();
 		}
 	}
@@ -77,7 +77,7 @@ public abstract class GameBaseActivity extends Activity {
 			}
 		}
 		
-		if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.unregisterListener();
 		}
 	}
@@ -86,7 +86,7 @@ public abstract class GameBaseActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+		if (Options.controlType == Options.CONTROL_KEYBOARD) {
 			game.keyDown(keyCode);
 		}
 
@@ -98,7 +98,7 @@ public abstract class GameBaseActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
 		// only move player ship when keyboard controls are being used
-		if (Configuration.controlType == Configuration.CONTROL_KEYBOARD) {
+		if (Options.controlType == Options.CONTROL_KEYBOARD) {
 			game.keyUp(keyCode);
 		}
 		
@@ -123,7 +123,7 @@ public abstract class GameBaseActivity extends Activity {
 	public void updateAccelerometer(float tx, float ty) {
 		
 		// only move when accelerometer controls are being used or when ship in normal or invulnerability status
-		if (Configuration.controlType != Configuration.CONTROL_ACCELEROMETER) {
+		if (Options.controlType != Options.CONTROL_ACCELEROMETER) {
 			return;
 		}
 		

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Upgrades;
 
@@ -188,7 +188,7 @@ public class Player extends DrawObject {
 		dashMultipleDrops = Upgrades.dashUpgrade.getLevel() >= Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS;
 		
 		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
+		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 	}
 	
 	public void setMoveByTouch(boolean moveByTouch) {
@@ -751,14 +751,14 @@ public class Player extends DrawObject {
 	 * Updates invulnerability frames
 	 */
 	public void updateInvulnerabilityFrames() {
-		switch(Configuration.frameRate) {
-		case Configuration.FRAME_RATE_LOW:
+		switch(Options.frameRate) {
+		case Options.FRAME_RATE_LOW:
 			invulnerabilityFrames = 1;
 			break;
-		case Configuration.FRAME_RATE_NORMAL:
+		case Options.FRAME_RATE_NORMAL:
 			invulnerabilityFrames = 2;
 			break;
-		case Configuration.FRAME_RATE_HIGH:
+		case Options.FRAME_RATE_HIGH:
 		default:
 			invulnerabilityFrames = 4;
 			break;
@@ -782,6 +782,6 @@ public class Player extends DrawObject {
 	 * Redraws player to canvas
 	 */
 	public void redraw() {
-		drawPointsToBitmap(Configuration.graphicsType == Configuration.GRAPHICS_NORMAL);
+		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 	}
 }

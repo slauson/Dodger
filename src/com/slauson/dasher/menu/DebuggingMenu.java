@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.slauson.dasher.R;
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.GlobalStatistics;
 import com.slauson.dasher.status.HighScores;
@@ -216,14 +216,14 @@ public class DebuggingMenu extends Activity {
     	freeVersion.setText("Free Version");
     	
     	// set previous selection
-    	freeVersion.setChecked(Configuration.freeVersion);
+    	freeVersion.setChecked(Options.freeVersion);
     	
     	freeVersion.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton button, boolean value) {
-				Configuration.freeVersion = value;
+				Options.freeVersion = value;
 				
-				Toast.makeText(button.getContext(), "Free version set to " + Configuration.freeVersion, Toast.LENGTH_SHORT).show();
+				Toast.makeText(button.getContext(), "Free version set to " + Options.freeVersion, Toast.LENGTH_SHORT).show();
 			}
     	});
 

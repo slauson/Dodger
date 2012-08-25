@@ -376,12 +376,11 @@ public class Achievements {
 	 * @param sharedPreferences preferences to load from
 	 */
 	public static void load(SharedPreferences sharedPreferences) {
-		
-		initialized = true;
-		
 		for (Achievement achievement : achievements) {
 			achievement.load(sharedPreferences);
 		}
+		
+		initialized = true;
 	}
 	
 	/**

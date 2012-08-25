@@ -20,6 +20,7 @@ public class Points {
 	 */
 	public static void load(SharedPreferences sharedPreferences) {
 		points = sharedPreferences.getInt(POINTS, 0);
+		initialized = true;
 	}
 	
 	/**

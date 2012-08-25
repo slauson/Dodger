@@ -29,7 +29,7 @@ import com.slauson.dasher.powerups.PowerupMagnet;
 import com.slauson.dasher.powerups.PowerupSlow;
 import com.slauson.dasher.powerups.PowerupSmall;
 import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.Configuration;
+import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.Debugging;
 import com.slauson.dasher.status.LocalStatistics;
 import com.slauson.dasher.status.Statistics;
@@ -276,7 +276,7 @@ public class Game {
 		canvasWidth = width;
 		canvasHeight = height;
 		
-		player = new Player(Configuration.controlType == Configuration.CONTROL_TOUCH, gameMode != GameMode.INSTRUCTIONS);
+		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode != GameMode.INSTRUCTIONS);
 		
 		// setup different game modes
 		if (gameMode == GameMode.INSTRUCTIONS) {
@@ -292,7 +292,7 @@ public class Game {
 		}
 		
 		paint = new Paint();
-		if (Configuration.graphicsType == Configuration.GRAPHICS_NORMAL) {
+		if (Options.graphicsType == Options.GRAPHICS_NORMAL) {
 			paint.setAntiAlias(true);
 			paint.setDither(true);
 		}
@@ -328,7 +328,7 @@ public class Game {
 		lastMoveTime = 0;
 		pauseTime = -1;
 		
-		maxSleepTime = 1000/Configuration.frameRate;
+		maxSleepTime = 1000/Options.frameRate;
 					
 		powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 		powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
@@ -700,17 +700,17 @@ public class Game {
 			}
 			
 			// reset max sleep time
-			maxSleepTime = 2*1000/Configuration.frameRate;
+			maxSleepTime = 2*1000/Options.frameRate;
 			
 			// reset paint flags
 			paint.reset();
-			if (Configuration.graphicsType == Configuration.GRAPHICS_NORMAL) {
+			if (Options.graphicsType == Options.GRAPHICS_NORMAL) {
 				paint.setAntiAlias(true);
 				paint.setDither(true);
 			}
 			
 			// reset player control type
-			player.setMoveByTouch(Configuration.controlType == Configuration.CONTROL_TOUCH);
+			player.setMoveByTouch(Options.controlType == Options.CONTROL_TOUCH);
 			
 			// redraw player to canvas
 			player.redraw();
@@ -719,7 +719,7 @@ public class Game {
 			updateFrameCounters();
 			
 			// update acceleromater values if using accelerometer controls
-			if (Configuration.controlType == Configuration.CONTROL_ACCELEROMETER) {
+			if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 				updateAccelerometerValues();
 			}
 			
@@ -1356,13 +1356,13 @@ public class Game {
 	 * Updates accelerometer values for accelerometer movement
 	 */
 	private void updateAccelerometerValues() {
-		switch (Configuration.accelerometerSensitivity) {
-		case Configuration.ACCELEROMETER_SENSITIVITY_LOW:
+		switch (Options.accelerometerSensitivity) {
+		case Options.ACCELEROMETER_SENSITIVITY_LOW:
 			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_LOW;
 			accelerometerDeadzone = ACCELEROMETER_DEADZONE_LOW;
 			accelerometerMax = ACCELEROMETER_MAX_LOW;
 			break;
-		case Configuration.ACCELEROMETER_SENSITIVITY_MEDIUM:
+		case Options.ACCELEROMETER_SENSITIVITY_MEDIUM:
 			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_MEDIUM;
 			accelerometerDeadzone = ACCELEROMETER_DEADZONE_MEDIUM;
 			accelerometerMax = ACCELEROMETER_MAX_MEDIUM;
@@ -1376,19 +1376,19 @@ public class Game {
 	}
 	
 	/**
-	 * Updates all frame-based counters based on frame rate configuration
+	 * Updates all frame-based counters based on frame rate Options
 	 */
 	private void updateFrameCounters() {
-		switch(Configuration.frameRate) {
-		case Configuration.FRAME_RATE_LOW:
+		switch(Options.frameRate) {
+		case Options.FRAME_RATE_LOW:
 			bombFrames = 4;
 			quasarFrames = 8;
 			break;
-		case Configuration.FRAME_RATE_NORMAL:
+		case Options.FRAME_RATE_NORMAL:
 			bombFrames = 8;
 			quasarFrames = 16;
 			break;
-		case Configuration.FRAME_RATE_HIGH:
+		case Options.FRAME_RATE_HIGH:
 		default:
 			bombFrames = 16;
 			quasarFrames = 32;

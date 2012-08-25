@@ -81,5 +81,5 @@ public class Accelerometer implements SensorEventListener {
 		float valuePitch = event.values[1];
 		
 		gameBaseActivity.updateAccelerometer(valueAzimuth/maximumRange, -valuePitch/maximumRange);
-	}
+	}	
 }
