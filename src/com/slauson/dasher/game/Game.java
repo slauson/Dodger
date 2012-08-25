@@ -73,6 +73,9 @@ public class Game {
 	/** List of available drops **/
 	private ArrayList<Integer> availableDrops;
 	
+	/** Timer for game over **/
+	private Timer gameOverTimer;
+	
 	/** Counter for bomb animation **/
 	private int bombCounter;
 	/** Counter for quasar animation **/
@@ -276,6 +279,8 @@ public class Game {
 		asteroids = new ArrayList<Asteroid>();
 		drops = new LinkedList<Drop>();
 
+		gameOverTimer = null;
+		
 		// powerups
 		activePowerups = new LinkedList<ActivePowerup>();	
 		bombCounter = 0;
@@ -648,13 +653,13 @@ public class Game {
 	 * @return true if pause succeeded
 	 */
 	public boolean togglePause(boolean paused) {
-		// no pausing when player ship is breaking up
-		if (player.getStatus() == Player.STATUS_BREAKING_UP) {
-			return false;
-		}
-		
 		if (paused) {
 			gameMode = MODE_PAUSED;
+			
+			// cancel game over timer if player ship is breaking up
+			if (player.getStatus() == Player.STATUS_BREAKING_UP && gameOverTimer != null) {
+				gameOverTimer.cancel();
+			}
 			
 			// output runtime analysis
 			if (Debugging.runtimeAnalysis) {
@@ -669,6 +674,11 @@ public class Game {
 			pauseTime = System.currentTimeMillis();
 		} else {
 			gameMode = MODE_RUNNING;
+			
+			// schedule game over timer if player ship is breaking up
+			if (player.getStatus() == Player.STATUS_BREAKING_UP) {
+				scheduleGameOver();
+			}
 			
 			// reset max sleep time
 			maxSleepTime = 2*1000/Configuration.frameRate;
@@ -908,18 +918,7 @@ public class Game {
 								temp.breakup();
 								
 								player.breakup();
-								Timer timer = new Timer();
-								timer.schedule(new TimerTask() {
-									@Override
-									public void run() {
-										// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
-										gameActivity.runOnUiThread(new Runnable() {
-										     public void run() {
-										    	 gameActivity.gameOver();
-										    }
-										});
-									}
-								}, instructionMode ? 0 : player.getBreakupDuration()-500);
+								scheduleGameOver();
 							} else {
 								// increment pass through counter
 								powerupInvulnerability.passThrough();
@@ -1362,4 +1361,25 @@ public class Game {
 		
 		player.updateInvulnerabilityFrames();
 	}
+	
+	/**
+	 * Schedules gameOver call when player gets destroyed.
+	 */
+	private void scheduleGameOver() {
+		gameOverTimer = new Timer();
+		gameOverTimer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				// found here: http://stackoverflow.com/questions/5161951/android-only-the-original-thread-that-created-a-view-hierarchy-can-touch-its-vi
+				gameActivity.runOnUiThread(new Runnable() {
+				     public void run() {
+				    	 gameActivity.gameOver();
+				    }
+				});
+			}
+		}, instructionMode ? 0 : player.getBreakupDuration()-500);
+
+	}
+
+
 }

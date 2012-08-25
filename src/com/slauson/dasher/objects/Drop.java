@@ -34,13 +34,15 @@ public class Drop extends Sprite {
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
 		
-		if (invisibleTime > 0) {
-			paint.setAlpha((int)(255f*(INVISIBLE_TIME - invisibleTime)/INVISIBLE_TIME));
-		}
-		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
-		
-		if (invisibleTime > 0) {
-			paint.setAlpha(255);
+		if (onScreen()) {
+			if (invisibleTime > 0) {
+				paint.setAlpha((int)(255f*(INVISIBLE_TIME - invisibleTime)/INVISIBLE_TIME));
+			}
+			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
+			
+			if (invisibleTime > 0) {
+				paint.setAlpha(255);
+			}
 		}
 	}
 

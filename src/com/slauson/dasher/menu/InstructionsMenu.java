@@ -87,8 +87,9 @@ public class InstructionsMenu extends GameBaseActivity {
     	
     	setContentView(R.layout.instructions_menu);
     	
+    	Game.reset();
     	game = new Game(this, true);
-
+    	
     	// get bundle info to determine if from instructions menu vs tutorial
     	if (savedInstanceState != null) {
     		tutorialMode = savedInstanceState.getBoolean(BUNDLE_FLAG_TUTORIAL);
@@ -146,6 +147,10 @@ public class InstructionsMenu extends GameBaseActivity {
 	public void onResume() {
 		super.onResume();
 		
+		if (game.isInitialized()) {
+			game.togglePause(false);
+		}
+		
 		// update completion number if we are checking for upgrades
 		if (instructionScreenIndex >= 0 && instructionScreens.get(instructionScreenIndex).getEventType() == RequiredEventType.PURCHASE_UPGRADE &&
 				Upgrades.getNumUpgradesPurchased() > 0)
@@ -158,9 +163,7 @@ public class InstructionsMenu extends GameBaseActivity {
 	public void onPause() {
 		super.onPause();
 		
-		// reset static state of game
-		// TODO: this might be causing issues
-		Game.reset();
+		game.togglePause(true);
 		
 		// reset achievements
 		Achievements.resetLocalAchievements();
@@ -172,7 +175,11 @@ public class InstructionsMenu extends GameBaseActivity {
 		switch(keyCode) {
 		// pause game when menu/back/search is pressed
 		case KeyEvent.KEYCODE_BACK:
-			finish();
+			if (instructionScreenIndex > 0) {
+				startNewScreen(false);
+			} else {
+				finish();
+			}
 			break;
 		}
 
@@ -353,7 +360,7 @@ public class InstructionsMenu extends GameBaseActivity {
 			break;
 		}
 		
-		instructionScreen = new InstructionScreen(R.string.instructions_move_screen_description_default,
+		instructionScreen = new InstructionScreen(R.string.instructions_move_screen_description_more,
 				R.string.instructions_move_screen_description_requirement, REQUIREMENT_AVOID_ASTEROIDS_NUM,
 				true, false, false, RequiredEventType.AVOID_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
@@ -372,7 +379,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * how to get powerups screen
 		 */
-		instructionScreen = new InstructionScreen(R.string.instructions_powerup_screen_description_default,
+		instructionScreen = new InstructionScreen(R.string.instructions_powerup_screen_description_more,
 				R.string.instructions_powerup_screen_description_requirement, REQUIREMENT_ACTIVATE_POWERUPS_NUM,
 				true, true, false, RequiredEventType.ACTIVATE_POWERUPS);
 		
@@ -411,7 +418,7 @@ public class InstructionsMenu extends GameBaseActivity {
 			break;
 		}
 		
-		instructionScreen = new InstructionScreen(R.string.instructions_dash_screen_description_default,
+		instructionScreen = new InstructionScreen(R.string.instructions_dash_screen_description_more,
 				R.string.instructions_dash_screen_description_requirement, REQUIREMENT_DASH_ASTEROIDS_NUM,
 				true, true, false, RequiredEventType.DASH_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
@@ -430,7 +437,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * game objective screen
 		 */
-		instructionScreen = new InstructionScreen(R.string.instructions_objective_screen_description_default,
+		instructionScreen = new InstructionScreen(R.string.instructions_objective_screen_description_more,
 				R.string.instructions_objective_screen_description_requirement, REQUIREMENT_SURVIVE_NUM,
 				true, true, false, RequiredEventType.SURVIVE);
 		instructionScreen.addDescriptionId(R.string.instructions_objective_screen_description);
@@ -468,7 +475,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		/*
 		 * upgrades screen
 		 */
-		instructionScreen = new InstructionScreen(R.string.instructions_upgrades_screen_description_default,
+		instructionScreen = new InstructionScreen(R.string.instructions_upgrades_screen_description_more,
 				R.string.instructions_upgrades_screen_description_requirement, REQUIREMENT_PURCHASE_UPGRADE_NUM,
 				true, true, true, RequiredEventType.PURCHASE_UPGRADE);
 		instructionScreen.addDescriptionId(R.string.instructions_upgrades_screen_description);
@@ -482,10 +489,12 @@ public class InstructionsMenu extends GameBaseActivity {
 		startNewScreen(true);
 	}
 	
+	/**
+	 * Goes to next instruction screen
+	 * @param next true if going to next screen, otherwise previous
+	 */
 	private void startNewScreen(boolean next) {
 
-		// TODO: reset previous screen?
-		
 		if (next) {
 			instructionScreenIndex++;
 		} else {
@@ -568,6 +577,9 @@ public class InstructionsMenu extends GameBaseActivity {
 		}
 	}
 	
+	/**
+	 * Sets details text of instruction screen
+	 */
 	private void setDetailsText() {
 		String details = getString(instructionScreens.get(instructionScreenIndex).getDescriptionId());
 		
@@ -582,6 +594,10 @@ public class InstructionsMenu extends GameBaseActivity {
 		detailsTextView.setText(details);
 	}
 	
+	/**
+	 * Returns requirement text for instruction screen
+	 * @return requirement text for instruction screen
+	 */
 	private String getRequirementText() {
 		return String.format(getString(instructionScreens.get(instructionScreenIndex).getDescriptionRequirementId(),
 				instructionScreens.get(instructionScreenIndex).getRequirementNum())) +

@@ -75,6 +75,7 @@ public class Statistics {
 	public int getTotalUses() {
 		return usesDash +
 				usesSmall +
+				usesSlow +
 				usesInvulnerability +
 				usesDrill +
 				usesMagnet +

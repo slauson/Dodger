@@ -129,7 +129,20 @@ public class Automator {
 				position.skip();
 			}
 			
-			nextPosition(-remainingTime);
+			// coordinate positions only get reset when off screen
+			if (position.getType() == PositionType.COORDINATE) {
+				// reset off screen item
+				if (Game.direction == Game.DIRECTION_NORMAL && item.getY() - item.getHeight()/2 > Game.canvasHeight) {
+					nextPosition(-remainingTime);
+				} else if (Game.direction == Game.DIRECTION_REVERSE && item.getY() + item.getHeight()/2 < 0) {
+					nextPosition(-remainingTime);
+				}
+
+			}
+			// all other position types get reset based on time
+			else {
+				nextPosition(-remainingTime);
+			}
 			
 			if (positions.get(index).getType() == PositionType.SKIP ||
 					(positions.get(index).getType() == PositionType.DELAY_RANDOM && Game.random.nextBoolean()))
