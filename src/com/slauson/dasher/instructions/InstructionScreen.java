@@ -51,8 +51,6 @@ public class InstructionScreen {
 	private boolean playerCanDash;
 	/** Drops enabled **/
 	private boolean dropsEnabled;
-	/** Player starting x coordinate **/
-	private float playerStartX;
 	
 	/** Last reset time for player **/
 	private long lastResetTime;
@@ -239,23 +237,6 @@ public class InstructionScreen {
 	 */
 	public boolean getDropsEnabled() {
 		return dropsEnabled;
-	}
-
-	/**
-	 * Sets player starting x coordinate
-	 * @param playerStartX starting x coordinate for player
-	 */
-	public void setPlayerStartX(float playerStartX) {
-		this.playerStartX = playerStartX;
-		
-	}
-	
-	/**
-	 * Returns starting x coordinate for player
-	 * @return starting x coordinate for player
-	 */
-	public float getPlayerStartX() {
-		return playerStartX;
 	}
 
 	/**

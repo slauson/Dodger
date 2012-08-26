@@ -272,7 +272,13 @@ public class InstructionsMenu extends GameBaseActivity {
 			if (automator.update()) {
 				// create drop
 				if (automator.getType() == AutomatorType.DROP) {
-					final Drop drop = game.dropPowerup(-1, -DROP_OFFSET, automator.getDropType());
+					float dropY = -DROP_OFFSET;
+					
+					if (Game.direction == Game.DIRECTION_REVERSE) {
+						dropY = Game.canvasHeight + DROP_OFFSET;
+					}
+					
+					final Drop drop = game.dropPowerup(-1, dropY, automator.getDropType());
 					runOnUiThread(new Runnable() {
 						public void run() {
 							// update details
@@ -404,7 +410,6 @@ public class InstructionsMenu extends GameBaseActivity {
 				true, false, false, RequiredEventType.AVOID_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
 		instructionScreen.setPlayerStatus(true, true, false);
-		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		instructionScreen.setDropStatus(false);
 		
 		// add single asteroid that spawns above player
@@ -434,7 +439,6 @@ public class InstructionsMenu extends GameBaseActivity {
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_bumper);
 		instructionScreen.addDescriptionId(R.string.instructions_powerup_screen_description_bomb);
 		instructionScreen.setPlayerStatus(true, true, false);
-		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
 		// add single drop that spawns randomly
 		automator = new Automator(null, AutomatorType.DROP);
@@ -463,7 +467,6 @@ public class InstructionsMenu extends GameBaseActivity {
 				R.string.instructions_dash_screen_description_requirement, REQUIREMENT_DASH_ASTEROIDS_NUM,
 				true, true, false, RequiredEventType.DASH_ASTEROIDS);
 		instructionScreen.addDescriptionId(descriptionId);
-		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
 		// add single asteroid in middle
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
@@ -481,7 +484,6 @@ public class InstructionsMenu extends GameBaseActivity {
 				R.string.instructions_objective_screen_description_requirement, REQUIREMENT_SURVIVE_NUM,
 				true, true, !tutorialMode, RequiredEventType.SURVIVE);
 		instructionScreen.addDescriptionId(R.string.instructions_objective_screen_description);
-		instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 		
 		// add asteroid that follows player
 		automator = new Automator(new Asteroid(ASTEROID_RADIUS_FACTOR, 0, ASTEROID_RADIUS_FACTOR, 0), AutomatorType.ASTEROID);
@@ -525,7 +527,6 @@ public class InstructionsMenu extends GameBaseActivity {
 					R.string.instructions_upgrades_screen_description_requirement, REQUIREMENT_PURCHASE_UPGRADE_NUM,
 					true, true, true, RequiredEventType.PURCHASE_UPGRADE);
 			instructionScreen.addDescriptionId(R.string.instructions_upgrades_screen_description);
-			instructionScreen.setPlayerStartX(Game.canvasWidth/2);
 			instructionScreen.setPlayerStatus(false, false, true);
 			instructionScreen.setUpgradesButtonVisibility(View.VISIBLE);
 			
@@ -542,6 +543,11 @@ public class InstructionsMenu extends GameBaseActivity {
 	 */
 	private void startNewScreen(boolean next) {
 
+		// do some initialization for first call)
+		if (instructionScreenIndex == -1) {
+			game.setPlayerStartX(Game.canvasWidth/2);
+		}
+		
 		// update index
 		if (next) {
 			instructionScreenIndex++;
@@ -608,7 +614,6 @@ public class InstructionsMenu extends GameBaseActivity {
 		game.togglePlayerVisible(currentInstructionScreen.getPlayerVisible());
 		game.toggleMove(currentInstructionScreen.getPlayerCanMove());
 		game.toggleDash(currentInstructionScreen.getPlayerCanDash());
-		game.setPlayerStartX(currentInstructionScreen.getPlayerStartX());
 		
 		// setup drops
 		game.toggleDrops(currentInstructionScreen.getDropsEnabled());
