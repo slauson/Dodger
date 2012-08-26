@@ -306,8 +306,7 @@ public class UpgradesSubMenu extends Activity {
 			}
 			
 			// check if player hasn't bought previous upgrade
-			// TODO: REMOVE ME
-			if (false && upgrade.getLevel() < level - 1) {
+			if (upgrade.getLevel() < level - 1) {
 				
 				// get required upgrade title
 				int requiredResourceID = upgrade.getTitleResourceId(upgrade.getLevel()+1);
@@ -327,8 +326,7 @@ public class UpgradesSubMenu extends Activity {
 			}
 			
 			// check if player has enough points
-			// TODO: REMOVE ME
-			if (false && Points.getNumPoints() < pointsRequired) {
+			if (Points.getNumPoints() < pointsRequired) {
 				showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
 				return;
 			}

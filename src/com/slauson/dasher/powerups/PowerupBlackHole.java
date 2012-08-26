@@ -20,12 +20,15 @@ public class PowerupBlackHole extends ActivePowerup {
 	private static final float RANGE_PULL_FACTOR = 0.25f;
 	private static final float RANGE_SUCK_FACTOR = 0.125f;
 	private static final int ROTATION_SPEED = 10;
-	private static final int ASTEROID_SPEED = 100;
+	private static final float ASTEROID_SPEED_FACTOR = 0.25f;
 	
 	private static final int DURATION_0 = 10000;
 	private static final int DURATION_1 = 15000;
 	private static final int DURATION_2 = 20000;
 	private static final int DURATION_3 = 30000;
+	
+	// semi-constant
+	private static float ASTEROID_SPEED = 100;
 	
 	// "constants" (want to make sure Game.canvasWidth is initialized)
 	private static float rangePull = -1;
@@ -40,6 +43,8 @@ public class PowerupBlackHole extends ActivePowerup {
 		super(bitmap, x, y);
 		
 		rotation = 0;
+		
+		ASTEROID_SPEED = Game.canvasWidth*ASTEROID_SPEED_FACTOR;
 		
 		// init ranges if not already initialized
 		if (rangePull < 0 || rangeSuck < 0) {

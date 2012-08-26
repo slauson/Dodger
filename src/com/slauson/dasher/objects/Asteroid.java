@@ -39,7 +39,6 @@ public class Asteroid extends DrawObject {
 	private static final int NUM_POINTS_MAX = 12;
 	
 	private static final float RADIUS_OFFSET = 0.25f;
-	private static final float SPEED_INVISIBLE = 100;
 	
 	// durations
 	private static final int HELD_IN_PLACE_DURATION = 10000;
@@ -465,7 +464,6 @@ public class Asteroid extends DrawObject {
 		status = STATUS_INVISIBLE;
 		timeCounter = INVISIBLE_DURATION;
 		
-		speed = SPEED_INVISIBLE;
 		dirX = 0;
 		dirY = 1;
 	}
