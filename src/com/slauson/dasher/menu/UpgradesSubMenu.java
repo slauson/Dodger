@@ -36,6 +36,8 @@ public class UpgradesSubMenu extends Activity {
 	private final static String DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE = "requiredTitle";
 	private final static String DIALOG_CONFIRM_UPGRADE_LEVEL = "level";
 	private final static String DIALOG_CONFIRM_UPGRADE_POINTS = "points";
+	
+	private static final float INVULNERABILITY_TEXT_SIZE_FACTOR = 0.5f;
 
 	private SharedPreferences.Editor sharedPreferencesEditor;
 	
@@ -62,6 +64,11 @@ public class UpgradesSubMenu extends Activity {
     	// set title
     	TextView title = (TextView)findViewById(R.id.upgradesSubMenuTitle);
     	title.setText("Upgrades -\n" + upgrade.getDescription());
+    	
+    	// set text size for invulnerability
+    	if (upgrade.equals(Upgrades.invulnerabilityUpgrade)) {
+    		title.setTextSize(title.getTextSize()*INVULNERABILITY_TEXT_SIZE_FACTOR);
+    	}
     	
     	// set points
     	pointsView = (TextView)findViewById(R.id.upgradesSubMenuPoints);
@@ -123,7 +130,7 @@ public class UpgradesSubMenu extends Activity {
 			
 			alertDialogBuilder
 			.setTitle("Unable to Purchase Upgrade")
-			.setMessage("You must first purchase the upgrade '" + requiredTitle + "' before purchasing the upgrade '" + title + "'")
+			.setMessage("You must first purchase the '" + requiredTitle + "' upgrade before purchasing the '" + title + "' upgrade.")
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					removeDialog(DIALOG_PURCHASE_PREVIOUS_UPGRADE);
@@ -134,7 +141,7 @@ public class UpgradesSubMenu extends Activity {
 		case DIALOG_NOT_ENOUGH_POINTS:
 			alertDialogBuilder
 				.setTitle("Not Enough Points")
-				.setMessage("You do not have enough points for the " + upgrade.getDescription().toLowerCase() + " upgrade '" + title + "'")
+				.setMessage("You do not have enough points for the " + upgrade.getDescription().toLowerCase() + " upgrade '" + title + "'.")
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_NOT_ENOUGH_POINTS);
@@ -152,7 +159,7 @@ public class UpgradesSubMenu extends Activity {
 			
 			alertDialogBuilder
 				.setTitle("Confirm Upgrade")
-				.setMessage("Are you sure you want to purchase the " + upgrade.getDescription().toLowerCase() + " upgrade '" + title + "'")
+				.setMessage("Are you sure you want to purchase the " + upgrade.getDescription().toLowerCase() + " upgrade '" + title + "'?")
 				
 				// do nothing when user selects no 
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
