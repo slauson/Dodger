@@ -76,9 +76,9 @@ public class Player extends DrawObject {
 	private static final int INVULNERABILITY_DURATION = 5000;
 	
 	// dash recharge
-	private static final int DASH_RECHARGE_DURATION_0 = 20000;
-	private static final int DASH_RECHARGE_DURATION_1 = 17500;
-	private static final int DASH_RECHARGE_DURATION_2 = 15000;
+	private static final int DASH_RECHARGE_DURATION_0 = 15000;
+	private static final int DASH_RECHARGE_DURATION_1 = 14000;
+	private static final int DASH_RECHARGE_DURATION_2 = 12500;
 	private static final int DASH_RECHARGE_DURATION_3 = 10000;
 	
 	// breakup duration
