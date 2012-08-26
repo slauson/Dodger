@@ -32,6 +32,8 @@ public class GameActivity extends GameBaseActivity  {
 	public static final int GAME_MODE_NORMAL = 1;
 	/** Hard game mode where player starts on level 10 **/
 	public static final int GAME_MODE_HARD = 2;
+	/** Snowflake game mode where asteroids are snowflakes **/
+	public static final int GAME_MODE_SNOWFLAKE = 3;
 
 	/** Pause menu **/
 	private LinearLayout pauseMenu;
@@ -65,12 +67,16 @@ public class GameActivity extends GameBaseActivity  {
 			case GAME_MODE_HARD:
 				gameMode = GameMode.HARD;
 				break;
+			case GAME_MODE_SNOWFLAKE:
+				gameMode = GameMode.SNOWFLAKE;
+				break;
 			}
 		}
 		
 		// setup game
 		Game.reset();
-    	game = new Game(this, gameMode);
+		Game.gameMode = gameMode;
+		game = new Game(this);
     	
     	// setup game view
 		gameView = (GameView)findViewById(R.id.gameView);

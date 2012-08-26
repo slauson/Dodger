@@ -38,7 +38,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
 	
-	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard"};
+	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard", "Snowflake"};
 	
 	/** Button for starting game or high scores **/
 	private Button startHighScoresButton;
@@ -278,6 +278,15 @@ public class MainMenu extends PaidDialogBaseMenu {
 									return;
 								}
 								gameMode = GameActivity.GAME_MODE_HARD;
+								break;
+							case 3:
+								if (Options.freeVersion) {
+									Bundle bundle = new Bundle();
+									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+									showDialog(DIALOG_PAID_VERSION, bundle);
+									return;
+								}
+								gameMode = GameActivity.GAME_MODE_SNOWFLAKE;
 								break;
 							}
 							

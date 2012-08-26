@@ -52,9 +52,6 @@ public class Game {
 	/** Used to determine if game is initialized from surface view **/
 	private boolean initialized;
 	
-	/** Used to differentiate different game modes **/
-	private GameMode gameMode;
-
 	/** Paint for drawing on canvas **/
 	private Paint paint;
 	
@@ -238,9 +235,12 @@ public class Game {
 	/** Number of available drops **/
 	public static int numAvailableDrops = 0;
 	
+	/** Used to differentiate different game modes **/
+	public static GameMode gameMode = GameMode.NORMAL;
+
 	/** Different game modes **/
 	public static enum GameMode {
-		INSTRUCTIONS, BASIC, NORMAL, HARD
+		INSTRUCTIONS, BASIC, NORMAL, HARD, SNOWFLAKE
 	}
 	
 	/**
@@ -250,6 +250,7 @@ public class Game {
 		canvasWidth = 0;
 		canvasHeight = 0;
 		
+		gameMode = GameMode.NORMAL;
 		gameStatus = STATUS_RUNNING;
 		direction = DIRECTION_NORMAL;
 		gravity = 1f;
@@ -259,10 +260,9 @@ public class Game {
 		numAvailableDrops = 0;
 	}
 	
-	public Game(GameBaseActivity gameActivity, GameMode gameMode) {
+	public Game(GameBaseActivity gameActivity) {
 		
 		this.gameActivity = gameActivity;
-		this.gameMode = gameMode;
 		
 		initialized = false;
 	}
@@ -285,7 +285,7 @@ public class Game {
 			level = new Level(Debugging.level, Debugging.levelProgression);
 			toggleDash(false);
 			toggleDrops(false);
-		} else if (gameMode == GameMode.NORMAL) {
+		} else if (gameMode == GameMode.NORMAL || gameMode == GameMode.SNOWFLAKE) {
 			level = new Level(Debugging.level, Debugging.levelProgression);
 		} else if (gameMode == GameMode.HARD){
 			level = new Level(HARD_MODE_START_LEVEL, Debugging.levelProgression);

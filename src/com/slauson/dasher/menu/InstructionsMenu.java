@@ -99,7 +99,8 @@ public class InstructionsMenu extends GameBaseActivity {
     	setContentView(R.layout.instructions_menu);
     	
     	Game.reset();
-    	game = new Game(this, Game.GameMode.INSTRUCTIONS);
+    	Game.gameMode = Game.GameMode.INSTRUCTIONS;
+    	game = new Game(this);
     	
     	// get bundle info to determine if from instructions menu vs tutorial
     	Bundle extras = getIntent().getExtras();
