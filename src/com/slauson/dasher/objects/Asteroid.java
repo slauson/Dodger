@@ -294,7 +294,7 @@ public class Asteroid extends DrawObject {
 	
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
-		if (status != STATUS_INVISIBLE && onScreen()) {
+		if (status != STATUS_INVISIBLE || ((status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) && onScreen())) {
 			
 			// intact asteroid
 			if (status == STATUS_NORMAL) {
