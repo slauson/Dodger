@@ -325,7 +325,7 @@ public class Game {
 		lastTouchDownTime1 = 0;
 		lastTouchDownTime2 = -2*DASH_DOUBLE_TAP_MIN_DURATION;
 		
-		lastMoveTime = 0;
+		lastMoveTime = System.currentTimeMillis();
 		pauseTime = -1;
 		
 		maxSleepTime = 1000/Options.frameRate;
@@ -522,7 +522,8 @@ public class Game {
 			lastTouchDownTime1 = System.currentTimeMillis();
 			
 			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			System.out.println("move '" + System.currentTimeMillis() + "' - '" + lastMoveTime + "'");
+			if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
 			
@@ -566,7 +567,7 @@ public class Game {
 			player.moveLeft();
 				
 			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
 			lastMoveTime = System.currentTimeMillis();
@@ -577,7 +578,7 @@ public class Game {
 			player.moveRight();
 				
 			// check stay in place achievement
-			if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
 			lastMoveTime = System.currentTimeMillis();
@@ -660,7 +661,7 @@ public class Game {
 		player.setSpeed(moveX);
 		
 		// check stay in place achievement
-		if (System.currentTimeMillis() - lastMoveTime > Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+		if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 			Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 		}
 		lastMoveTime = System.currentTimeMillis();
@@ -953,6 +954,8 @@ public class Game {
 							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
 								temp.breakup();
 								
+								checkAchievements();
+								
 								player.breakup();
 								scheduleGameOver();
 							} else {
@@ -974,11 +977,6 @@ public class Game {
 							player.dashAffectedAsteroid(temp);
 							
 							temp.breakup();
-
-							// check small dash destroy achievement
-							if (powerupSmall.isActive()) {
-								Achievements.unlockLocalAchievement(Achievements.localSmallDashDestroy);
-							}
 						}
 					}
 				}
@@ -1066,7 +1064,6 @@ public class Game {
 					// alter falling powerup for each active powerup
 					synchronized (activePowerups) {
 						for (ActivePowerup activePowerup : activePowerups) {
-							// TODO: use something better here
 							if (activePowerup instanceof PowerupBumper) {
 								((PowerupBumper)activePowerup).alterItem(temp);
 							}
@@ -1140,7 +1137,6 @@ public class Game {
 				
 					// alter drill active powerups for each bumper active powerup
 					for (ActivePowerup activePowerup : activePowerups) {
-						// TODO: use something better here
 						if (activePowerup instanceof PowerupBumper && activePowerups.get(i) instanceof PowerupDrill) {
 							((PowerupBumper)activePowerup).alterDrill((PowerupDrill)activePowerups.get(i));
 						}
@@ -1190,7 +1186,6 @@ public class Game {
 		if (player.getStatus() == Player.STATUS_NORMAL && !powerupInvulnerability.isActive()) {
 			synchronized (activePowerups) {
 				for (ActivePowerup activePowerup : activePowerups) {
-					// TODO: use something better here
 					if (activePowerup instanceof PowerupBumper) {
 						if (((PowerupBumper)activePowerup).alterPlayer(player)) {
 							updatesForGravityChange();
@@ -1235,24 +1230,23 @@ public class Game {
 		}
 		
 		// check for achievements
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithBomb1.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithBomb2.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithBomb3.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb3);
 		}
-
 		
 		// destroy all falling powerups
 		if (Upgrades.bombUpgrade.getLevel() < Upgrades.BOMB_UPGRADE_NO_EFFECT_DROPS) {
@@ -1415,6 +1409,22 @@ public class Game {
 			}
 		}, (gameMode == GameMode.INSTRUCTIONS) ? 0 : player.getBreakupDuration()-500);
 
+	}
+	
+	/**
+	 * Checks any achievements that could be obtained on game over
+	 */
+	private void checkAchievements() {
+
+		// check stay in place achievement
+		if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
+		}
+	
+		// check slow achievement
+		if (powerupSlow.isActive()) {
+			powerupSlow.checkAchievements();
+		}
 	}
 
 }

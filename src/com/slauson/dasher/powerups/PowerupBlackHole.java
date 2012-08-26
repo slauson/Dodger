@@ -132,6 +132,7 @@ public class PowerupBlackHole extends ActivePowerup {
 				// suck asteroid into black hole
 				if (asteroid.getStatus() != Asteroid.STATUS_DISAPPEARING) {
 					asteroid.disappear();
+					numAffectedAsteroids++;
 					
 					asteroid.setSpeed(ASTEROID_SPEED);
 				}
@@ -146,8 +147,6 @@ public class PowerupBlackHole extends ActivePowerup {
 			float asteroidDirX = normalFactor*asteroid.getDirX() + pullFactor*dirX + suckFactor*(0.25f*dirX + 0.75f*dirY);
 			float asteroidDirY = normalFactor*asteroid.getDirY() + pullFactor*dirY + suckFactor*(0.25f*dirY - 0.75f*dirX);
 				
-			numAffectedAsteroids++;
-			
 			asteroid.setDirX(asteroidDirX);
 			asteroid.setDirY(asteroidDirY);
 		}
@@ -206,15 +205,15 @@ public class PowerupBlackHole extends ActivePowerup {
 	}
 	
 	public void checkAchievements() {
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole3);
 		}
 	}

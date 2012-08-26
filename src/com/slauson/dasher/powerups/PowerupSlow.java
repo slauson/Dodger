@@ -63,7 +63,7 @@ public class PowerupSlow extends InactivePowerup {
 	 * Checks slow powerup related achievements
 	 */
 	public void checkAchievements() {
-		if (duration > Achievements.LOCAL_SLOW_LONG_TIME) {
+		if (duration >= 1000*Achievements.LOCAL_SLOW_LONG_TIME) {
 			Achievements.unlockLocalAchievement(Achievements.localSlowLongTime);
 		}
 	}

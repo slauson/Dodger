@@ -682,29 +682,34 @@ public class Player extends DrawObject {
 	public void dashAffectedAsteroid(Asteroid asteroid) {
 		if (asteroid.getStatus() == STATUS_HELD_IN_PLACE) {
 			dashNumAffectedAsteroidsHeldInPlace++;
-		} else {
-			dashNumAffectedAsteroids++;
 		}
+		dashNumAffectedAsteroids++;
 	}
 	
 	/**
 	 * Checks local dash achievements
 	 */
 	private void checkAchievements() {
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (dashNumAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_DASH_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash1);
 		}
 		
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (dashNumAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash2);
 		}
 		
-		if (dashNumAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (dashNumAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDash3);
 		}
 		
-		if (dashNumAffectedAsteroidsHeldInPlace > Achievements.LOCAL_MAGNET_HOLD_IN_PLACE_NUM) {
+		// check held in place dash achievement
+		if (dashNumAffectedAsteroidsHeldInPlace >= Achievements.LOCAL_MAGNET_HOLD_IN_PLACE_NUM) {
 			Achievements.unlockLocalAchievement(Achievements.localMagnetHoldInPlace);
+		}
+		
+		// check small dash achievement
+		if (Game.powerupSmall.isActive() && dashNumAffectedAsteroids >= Achievements.LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM) {
+			Achievements.unlockLocalAchievement(Achievements.localSmallDashDestroy);
 		}
 	}
 	

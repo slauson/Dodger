@@ -202,17 +202,22 @@ public class Upgrades {
 	 */
 	public static void checkAchievements() {
 		
-		// check if all powerups are unlocked
-		// TODO
+		int numPowerupsUnlocked = 0;
+		int numUpgradesPurchased = getNumUpgradesPurchased();
 		
-		// check if all upgrades are purchased
-		int i;
-		for (i = 0; i < upgrades.size(); i++) {
-			if (upgrades.get(i).getLevel() < 4) {
-				break;
+		for (Upgrade upgrade : upgrades) {
+			if (upgrade.getLevel() >= 0) {
+				numPowerupsUnlocked++;
 			}
 		}
-		if (i == upgrades.size()) {
+		
+		// check if all powerups are unlocked
+		if (numPowerupsUnlocked == upgrades.size()) {
+			Achievements.unlockLocalAchievement(Achievements.globalUnlockAllPowerups);
+		}
+		
+		// check if all upgrades are purchased
+		if (numUpgradesPurchased == (NUM_UPGRADES * upgrades.size())) {
 			Achievements.unlockLocalAchievement(Achievements.globalPurchaseAllUpgrades);
 		}
 	}

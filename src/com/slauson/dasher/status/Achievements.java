@@ -352,7 +352,7 @@ public class Achievements {
 		}
 		
 		// playcount
-		if (globalStatistics.timesPlayed > GLOBAL_PLAY_COUNT_NUM) {
+		if (globalStatistics.timesPlayed >= GLOBAL_PLAY_COUNT_NUM) {
 			unlockLocalAchievement(globalPlayCount);
 		}
 		

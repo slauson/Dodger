@@ -2,19 +2,18 @@ package com.slauson.dasher.powerups;
 
 import java.util.LinkedList;
 
-import com.slauson.dasher.game.Game;
-import com.slauson.dasher.objects.Asteroid;
-import com.slauson.dasher.objects.Item;
-import com.slauson.dasher.objects.Player;
-import com.slauson.dasher.powerups.PowerupDrill;
-import com.slauson.dasher.status.Achievements;
-import com.slauson.dasher.status.LocalStatistics;
-import com.slauson.dasher.status.Upgrades;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+
+import com.slauson.dasher.game.Game;
+import com.slauson.dasher.objects.Asteroid;
+import com.slauson.dasher.objects.Item;
+import com.slauson.dasher.objects.Player;
+import com.slauson.dasher.status.Achievements;
+import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Upgrades;
 
 /**
  * Bumper powerup which causes items to bounce in opposite direction
@@ -198,15 +197,15 @@ public class PowerupBumper extends ActivePowerup {
 	}
 	
 	public void checkAchievements() {
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBumper3);
 		}
 	}

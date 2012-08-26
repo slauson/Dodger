@@ -103,10 +103,7 @@ public class PowerupDrill extends ActivePowerup {
 		if (checkBoxCollision(asteroid)) {
 			asteroid.splitUp();
 			nextAsteroid = null;
-			
-			if (asteroid.getStatus() == Asteroid.STATUS_NORMAL) {
-				numAffectedAsteroids++;
-			}
+			numAffectedAsteroids++;
 		}
 		
 		// check if drill can seek
@@ -311,15 +308,15 @@ public class PowerupDrill extends ActivePowerup {
 	 */
 	@Override
 	public void checkAchievements() {
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill1);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill2);
 		}
 		
-		if (numAffectedAsteroids > Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithDrill3);
 		}
 	}
