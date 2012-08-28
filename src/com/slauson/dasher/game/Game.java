@@ -910,56 +910,56 @@ public class Game {
 		
 		synchronized (asteroids) {
 		
-			Asteroid temp;
+			Asteroid asteroid;
 			
 			// update asteroids
 			for(int i = 0; i < asteroids.size(); i++) {
-				temp = asteroids.get(i);
+				asteroid = asteroids.get(i);
 				
 				// move asteroids
 				if (powerupSlow.isActive()) {
-					temp.update(0.5f);
+					asteroid.update(0.5f);
 				} else {
-					temp.update();
+					asteroid.update();
 				}
 				
 				// reset asteroid off screen (include non-visible, non-intact asteroids here)
-				if (direction == DIRECTION_NORMAL && temp.getStatus() == Asteroid.STATUS_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) {
-					resetAsteroid(temp);
-				} else if (direction == DIRECTION_REVERSE && temp.getStatus() == Asteroid.STATUS_NORMAL && temp.getY() + temp.getHeight()/2 < 0) {
-					resetAsteroid(temp);
+				if ((direction == DIRECTION_NORMAL || asteroid.getDirY() < 0) && asteroid.getStatus() == Asteroid.STATUS_NORMAL && asteroid.getY() - asteroid.getHeight()/2 > canvasHeight) {
+					resetAsteroid(asteroid);
+				} else if ((direction == DIRECTION_REVERSE || asteroid.getDirY() < 0) && asteroid.getStatus() == Asteroid.STATUS_NORMAL && asteroid.getY() + asteroid.getHeight()/2 < 0) {
+					resetAsteroid(asteroid);
 				}
 				
 				// reset asteroid that needs reset
-				if (temp.getStatus() == Asteroid.STATUS_NEEDS_RESET) {
-					resetAsteroid(temp);
+				if (asteroid.getStatus() == Asteroid.STATUS_NEEDS_RESET) {
+					resetAsteroid(asteroid);
 					continue;
 				}
 				
 				// don't do anything for asteroids not on screen
-				if (!temp.onScreen()) {
+				if (!asteroid.onScreen()) {
 					continue;
 				}
 				
 				// alter asteroid for each active powerup
 				synchronized (activePowerups) {
 					for (ActivePowerup activePowerup : activePowerups) {
-						activePowerup.alterAsteroid(temp);
+						activePowerup.alterAsteroid(asteroid);
 					}
 				}
 				
 				// only check collision with player when asteroid is in normal or held in place status
-				if (temp.getStatus() == Asteroid.STATUS_NORMAL || temp.getStatus() == Asteroid.STATUS_HELD_IN_PLACE) {
+				if (asteroid.getStatus() == Asteroid.STATUS_NORMAL || asteroid.getStatus() == Asteroid.STATUS_HELD_IN_PLACE) {
 					
 					// check collision with player
-					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(temp)) {
+					if (player.getStatus() == Player.STATUS_NORMAL && player.checkAsteroidCollision(asteroid)) {
 						
 						// player is on top or bottom
 						if (player.inPosition()) {
 							
 							// game over if player isn't invulnerability
 							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
-								temp.breakup();
+								asteroid.breakup();
 								
 								checkAchievements();
 								
@@ -977,13 +977,13 @@ public class Game {
 							if (player.getDashNumAffectedAsteroids() == 0 ||
 									(player.getDashNumAffectedAsteroids() == 1 && player.getDashMultipleDrops()))
 							{
-								dropPowerup(temp.getX(), temp.getY(), -1);
+								dropPowerup(asteroid.getX(), asteroid.getY(), -1);
 							}
 
 							// we handle normal vs held in place asteroids in the method
-							player.dashAffectedAsteroid(temp);
+							player.dashAffectedAsteroid(asteroid);
 							
-							temp.breakup();
+							asteroid.breakup();
 						}
 					}
 				}
