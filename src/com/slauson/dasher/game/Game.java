@@ -928,6 +928,10 @@ public class Game {
 					resetAsteroid(asteroid);
 				} else if ((direction == DIRECTION_REVERSE || asteroid.getDirY() < 0) && asteroid.getStatus() == Asteroid.STATUS_NORMAL && asteroid.getY() + asteroid.getHeight()/2 < 0) {
 					resetAsteroid(asteroid);
+				} 
+				// sides of screen too (magnet, black hole may affect asteroids)
+				else if (asteroid.getX() + asteroid.getWidth()/2 < 0 || asteroid.getX() - asteroid.getWidth()/2 > canvasWidth) {
+					resetAsteroid(asteroid);
 				}
 				
 				// reset asteroid that needs reset
