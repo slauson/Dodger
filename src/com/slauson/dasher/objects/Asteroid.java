@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.slauson.dasher.game.Game;
+import com.slauson.dasher.game.Game.GameMode;
 import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.LocalStatistics;
 
@@ -177,8 +178,8 @@ public class Asteroid extends DrawObject {
 			
 			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
 			
-			// if low graphics, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW) {
+			// if low graphics or snowflake mode, use fade out instead
+			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == GameMode.SNOWFLAKE) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -227,7 +228,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
 			// if low graphics, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == GameMode.SNOWFLAKE) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -262,7 +263,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 			
 			// if low graphics, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == GameMode.SNOWFLAKE) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
