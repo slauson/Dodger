@@ -75,7 +75,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		game.touchEvent(event, -getHeight()*canvasHeightOffset);
 		return true;
 	}
-
+	
 	/**
 	 * Draw on surface view
 	 */
@@ -90,6 +90,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				
 				// translate canvas if we have a height offset
 				if (canvasHeightOffset > 0) {
+					canvas.save();
 					canvas.translate(0, getHeight()*canvasHeightOffset);
 				}
 				

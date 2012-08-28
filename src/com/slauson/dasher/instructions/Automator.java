@@ -141,15 +141,15 @@ public class Automator {
 			// coordinate positions only get reset when off screen
 			if (position.getType() == PositionType.COORDINATE) {
 				// reset off screen item
-				if (Game.direction == Game.DIRECTION_NORMAL && item.getY() - item.getHeight()/2 > Game.canvasHeight) {
-					nextPosition(-remainingTime);
-				} else if (Game.direction == Game.DIRECTION_REVERSE && item.getY() + item.getHeight()/2 < 0) {
-					nextPosition(-remainingTime);
+				if ((Game.direction == Game.DIRECTION_NORMAL || item.getDirY() < 0) && item.getY() - item.getHeight()/2 > Game.canvasHeight) {
+					nextPosition();
+				} else if ((Game.direction == Game.DIRECTION_REVERSE || item.getDirY() < 0) && item.getY() + item.getHeight()/2 < 0) {
+					nextPosition();
 				}
 			}
 			// all other position types get reset based on time
 			else {
-				nextPosition(-remainingTime);
+				nextPosition();
 			}
 			
 			// move to next position right away for skip or delay random position types
@@ -215,10 +215,9 @@ public class Automator {
 	
 	/**
 	 * Moves item to next position, setting its direction and speed
-	 * @param time duration to decrement from next duration
 	 * @return next position
 	 */
-	private Position nextPosition(int time) {
+	private Position nextPosition() {
 
 		Position positionCurrent = positions.get(index);
 		
@@ -229,7 +228,7 @@ public class Automator {
 		}
 		
 		// recalculate remaining time
-		remainingTime = durations.get(index) - time;
+		remainingTime = durations.get(index);
 		
 		// set item move
 		Position positionNext = positions.get(index);
