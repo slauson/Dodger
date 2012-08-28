@@ -293,76 +293,72 @@ public class Asteroid extends DrawObject {
 	
 	@Override
 	public void draw(Canvas canvas, Paint paint) {
-		if (status != STATUS_INVISIBLE || ((status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) && onScreen())) {
 			
-			// intact asteroid
-			if (status == STATUS_NORMAL) {
+		// normal or held in place asteroid
+		if (status == STATUS_NORMAL || status == STATUS_HELD_IN_PLACE) {
+			if (onScreen()) {
 				canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
 			}
-			// broken up asteroid
-			else if (status == STATUS_BREAKING_UP) {
-				
-				float factor = 1.f*timeCounter/BREAKING_UP_DURATION;
-				paint.setAlpha((int)(255 * factor));
-				
-				for (LineSegment lineSegment : lineSegments) {
-					lineSegment.draw(canvas, paint);
-				}
-				
-				paint.setAlpha(255);	
+		}
+		// broken up asteroid
+		else if (status == STATUS_BREAKING_UP) {
+			
+			float factor = 1.f*timeCounter/BREAKING_UP_DURATION;
+			paint.setAlpha((int)(255 * factor));
+			
+			for (LineSegment lineSegment : lineSegments) {
+				lineSegment.draw(canvas, paint);
 			}
-			// disappearing asteroid
-			else if (status == STATUS_DISAPPEARING) {
-				int alpha = (int)(4*255*(factor*(1-DISAPPEARING_FACTOR)));
-				
-				if (alpha > 255) {
-					alpha = 255;
-				}
-				paint.setAlpha(alpha);
-				
-				rectDest.set(x - factor*bitmap.getWidth()/2, y - factor*bitmap.getHeight()/2, x + factor*bitmap.getWidth()/2, y + factor*bitmap.getHeight()/2);
-				canvas.drawBitmap(bitmap, null, rectDest, paint);
-				
-				paint.setAlpha(255);
+			
+			paint.setAlpha(255);	
+		}
+		// disappearing asteroid
+		else if (status == STATUS_DISAPPEARING) {
+			int alpha = (int)(4*255*(factor*(1-DISAPPEARING_FACTOR)));
+			
+			if (alpha > 255) {
+				alpha = 255;
 			}
-			// fading out asteroid
-			else if (status == STATUS_FADING_OUT) {
-				paint.setAlpha((int)(255 * (1.0*timeCounter/FADING_OUT_DURATION)));
-				canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
-				paint.setAlpha(255);	
-			}
-			// splitting up
-			else if (status == STATUS_SPLITTING_UP) {
-				
-				float factor = 1.f*timeCounter/SPLITTING_UP_DURATION;
-				paint.setAlpha((int)(255*factor));
-				
-				factor = 1 - factor;
-				
-				float offset = factor*SPLITTING_UP_OFFSET;
-				
-				// draw left half
-				rectDest.set(x - offset - bitmap.getWidth()/2, y - bitmap.getHeight()/2, x - offset, y + bitmap.getHeight()/2);
-				rectSrc.set(0, 0, bitmap.getWidth()/2, bitmap.getHeight());
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
-				// draw left line
-				canvas.drawLine(x - offset, y + points[0], x - offset, y + points[1], paint);
-				
-				// draw right half
-				rectDest.set(x + offset, y - bitmap.getHeight()/2, x + offset + bitmap.getWidth()/2, y + bitmap.getHeight()/2);
-				rectSrc.set(bitmap.getWidth()/2, 0, bitmap.getWidth(), bitmap.getHeight());
-				canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
-				
-				// draw right line
-				canvas.drawLine(x + offset, y + points[0], x + offset, y + points[1], paint);
+			paint.setAlpha(alpha);
+			
+			rectDest.set(x - factor*bitmap.getWidth()/2, y - factor*bitmap.getHeight()/2, x + factor*bitmap.getWidth()/2, y + factor*bitmap.getHeight()/2);
+			canvas.drawBitmap(bitmap, null, rectDest, paint);
+			
+			paint.setAlpha(255);
+		}
+		// fading out asteroid
+		else if (status == STATUS_FADING_OUT) {
+			paint.setAlpha((int)(255 * (1.0*timeCounter/FADING_OUT_DURATION)));
+			canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
+			paint.setAlpha(255);	
+		}
+		// splitting up
+		else if (status == STATUS_SPLITTING_UP) {
+			
+			float factor = 1.f*timeCounter/SPLITTING_UP_DURATION;
+			paint.setAlpha((int)(255*factor));
+			
+			factor = 1 - factor;
+			
+			float offset = factor*SPLITTING_UP_OFFSET;
+			
+			// draw left half
+			rectDest.set(x - offset - bitmap.getWidth()/2, y - bitmap.getHeight()/2, x - offset, y + bitmap.getHeight()/2);
+			rectSrc.set(0, 0, bitmap.getWidth()/2, bitmap.getHeight());
+			canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+			
+			// draw left line
+			canvas.drawLine(x - offset, y + points[0], x - offset, y + points[1], paint);
+			
+			// draw right half
+			rectDest.set(x + offset, y - bitmap.getHeight()/2, x + offset + bitmap.getWidth()/2, y + bitmap.getHeight()/2);
+			rectSrc.set(bitmap.getWidth()/2, 0, bitmap.getWidth(), bitmap.getHeight());
+			canvas.drawBitmap(bitmap, rectSrc, rectDest, paint);
+			
+			// draw right line
+			canvas.drawLine(x + offset, y + points[0], x + offset, y + points[1], paint);
 
-				paint.setAlpha(255);
-			}
-			// held in place
-			else if (status == STATUS_HELD_IN_PLACE) {
-				canvas.drawBitmap(bitmap, x - bitmap.getWidth()/2, y - bitmap.getHeight()/2, paint);
-			}
+			paint.setAlpha(255);
 		}
 	}
 	
