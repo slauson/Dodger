@@ -38,6 +38,9 @@ public class InstructionsMenu extends GameBaseActivity {
 	/** True if in tutorial mode **/
 	private boolean tutorialMode;
 	
+	/** Game mode to bring up after tutorial ends **/
+	private int gameMode;
+	
 	/** List of instruction screens **/
 	private ArrayList<InstructionScreen> instructionScreens;
 	/** Current instruction screen index **/
@@ -105,8 +108,15 @@ public class InstructionsMenu extends GameBaseActivity {
     	// get bundle info to determine if from instructions menu vs tutorial
     	Bundle extras = getIntent().getExtras();
     	if (extras != null) {
+    		
+    		// get mode
     		tutorialMode = extras.getBoolean(BUNDLE_FLAG_TUTORIAL);
+    		
+    		// get game mode
+    		gameMode = extras.getInt(GameActivity.BUNDLE_FLAG_GAME_MODE);
+    		
     	} else {
+    		gameMode = GameActivity.GAME_MODE_NORMAL;
     		tutorialMode = false;
     	}
     	
@@ -241,6 +251,7 @@ public class InstructionsMenu extends GameBaseActivity {
 						// go to game
 						if (tutorialMode) {
 							Intent intent = new Intent(InstructionsMenu.this, GameActivity.class);
+							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 							startActivity(intent);
 						}
 						// go back
@@ -562,6 +573,7 @@ public class InstructionsMenu extends GameBaseActivity {
 			// go to game
 			if (tutorialMode) {
 				Intent intent = new Intent(this, GameActivity.class);
+				intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 				startActivity(intent);
 			}
 			// go back

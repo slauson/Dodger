@@ -87,9 +87,11 @@ public class MainMenu extends PaidDialogBaseMenu {
 					if (GlobalStatistics.getInstance().timesPlayed == 0) {
 						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, GameActivity.GAME_MODE_NORMAL);
 						startActivity(intent);
 					} else {
 						Intent intent = new Intent(MainMenu.this, GameActivity.class);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, GameActivity.GAME_MODE_NORMAL);
 						startActivity(intent);
 					}
 				} else {
@@ -250,46 +252,47 @@ public class MainMenu extends PaidDialogBaseMenu {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_GAME_MODE);
 						
+						int gameMode = GameActivity.GAME_MODE_NORMAL;
+						switch(which) {
+						case 0:
+							if (Options.freeVersion) {
+								Bundle bundle = new Bundle();
+								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+								showDialog(DIALOG_PAID_VERSION, bundle);
+								return;
+							}
+							gameMode = GameActivity.GAME_MODE_BASIC;
+							break;
+						case 1:
+							gameMode = GameActivity.GAME_MODE_NORMAL;
+							break;
+						case 2:
+							if (Options.freeVersion) {
+								Bundle bundle = new Bundle();
+								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+								showDialog(DIALOG_PAID_VERSION, bundle);
+								return;
+							}
+							gameMode = GameActivity.GAME_MODE_HARD;
+							break;
+						case 3:
+							if (Options.freeVersion) {
+								Bundle bundle = new Bundle();
+								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+								showDialog(DIALOG_PAID_VERSION, bundle);
+								return;
+							}
+							gameMode = GameActivity.GAME_MODE_SNOWFLAKE;
+							break;
+						}
+						
 						// if first time playing, show tutorial
 						if (GlobalStatistics.getInstance().timesPlayed == 0) {
 							Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 							intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
+							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 							startActivity(intent);
 						} else {
-							int gameMode = GameActivity.GAME_MODE_NORMAL;
-							switch(which) {
-							case 0:
-								if (Options.freeVersion) {
-									Bundle bundle = new Bundle();
-									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-									showDialog(DIALOG_PAID_VERSION, bundle);
-									return;
-								}
-								gameMode = GameActivity.GAME_MODE_BASIC;
-								break;
-							case 1:
-								gameMode = GameActivity.GAME_MODE_NORMAL;
-								break;
-							case 2:
-								if (Options.freeVersion) {
-									Bundle bundle = new Bundle();
-									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-									showDialog(DIALOG_PAID_VERSION, bundle);
-									return;
-								}
-								gameMode = GameActivity.GAME_MODE_HARD;
-								break;
-							case 3:
-								if (Options.freeVersion) {
-									Bundle bundle = new Bundle();
-									bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-									showDialog(DIALOG_PAID_VERSION, bundle);
-									return;
-								}
-								gameMode = GameActivity.GAME_MODE_SNOWFLAKE;
-								break;
-							}
-							
 							Intent intent = new Intent(MainMenu.this, GameActivity.class);
 							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 							startActivity(intent);

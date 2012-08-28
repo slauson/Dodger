@@ -5,8 +5,8 @@ import com.slauson.dasher.other.Util;
 public class Statistics {
 
 	// time played
-	public int timePlayed = 0;
-	public int timesPlayed = 0;
+	public int timePlayed;
+	public int timesPlayed;
 	
 	// asteroids destroyed
 	public int asteroidsDestroyedByDash;
