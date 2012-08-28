@@ -102,7 +102,7 @@ public class InstructionsMenu extends GameBaseActivity {
     	setContentView(R.layout.instructions_menu);
     	
     	Game.reset();
-    	Game.gameMode = Game.GameMode.INSTRUCTIONS;
+    	Game.gameMode = Game.GAME_MODE_INSTRUCTIONS;
     	game = new Game(this);
     	
     	// get bundle info to determine if from instructions menu vs tutorial
@@ -116,7 +116,7 @@ public class InstructionsMenu extends GameBaseActivity {
     		gameMode = extras.getInt(GameActivity.BUNDLE_FLAG_GAME_MODE);
     		
     	} else {
-    		gameMode = GameActivity.GAME_MODE_NORMAL;
+    		gameMode = Game.GAME_MODE_NORMAL;
     		tutorialMode = false;
     	}
     	

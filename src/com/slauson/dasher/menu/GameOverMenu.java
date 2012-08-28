@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.other.Util;
 import com.slauson.dasher.status.Achievements;
@@ -31,10 +32,21 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 	/** Time the back button has to be hit again by to quit **/
 	private long backButtonQuitEndTime;
 	
+	/** Game mode that we just ended **/
+	private int gameMode;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_over_menu);
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			gameMode = extras.getInt(GameActivity.BUNDLE_FLAG_GAME_MODE);
+			System.out.println("gameMode = " + gameMode);
+		} else {
+			gameMode = Game.GAME_MODE_NORMAL;
+		}
 
 		setup();
 	
@@ -163,6 +175,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 
 			public void onClick(View v) {
 				Intent intent = new Intent(GameOverMenu.this, GameActivity.class);
+				intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 				startActivity(intent);
 			}
 		});

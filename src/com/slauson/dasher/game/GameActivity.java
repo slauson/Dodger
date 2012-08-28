@@ -1,7 +1,6 @@
 package com.slauson.dasher.game;
 
 import com.slauson.dasher.R;
-import com.slauson.dasher.game.Game.GameMode;
 import com.slauson.dasher.menu.GameOverMenu;
 import com.slauson.dasher.menu.OptionsMenu;
 import com.slauson.dasher.other.GameBaseActivity;
@@ -26,15 +25,6 @@ public class GameActivity extends GameBaseActivity  {
 	// bundle flags
 	public static final String BUNDLE_FLAG_GAME_MODE = "game_mode";
 	
-	/** Basic game mode with no drops, dash **/
-	public static final int GAME_MODE_BASIC = 0;
-	/** Normal game mode **/
-	public static final int GAME_MODE_NORMAL = 1;
-	/** Hard game mode where player starts on level 10 **/
-	public static final int GAME_MODE_HARD = 2;
-	/** Snowflake game mode where asteroids are snowflakes **/
-	public static final int GAME_MODE_SNOWFLAKE = 3;
-
 	/** Pause menu **/
 	private LinearLayout pauseMenu;
 
@@ -51,26 +41,10 @@ public class GameActivity extends GameBaseActivity  {
 		setContentView(R.layout.game_menu);
 		
 		// get game mode
-		GameMode gameMode = GameMode.NORMAL;
+		int gameMode = Game.GAME_MODE_NORMAL;
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			int mode = extras.getInt(BUNDLE_FLAG_GAME_MODE);
-			
-			switch(mode) {
-			case GAME_MODE_BASIC:
-				gameMode = GameMode.BASIC;
-				break;
-			case GAME_MODE_NORMAL:
-			default:
-				gameMode = GameMode.NORMAL;
-				break;
-			case GAME_MODE_HARD:
-				gameMode = GameMode.HARD;
-				break;
-			case GAME_MODE_SNOWFLAKE:
-				gameMode = GameMode.SNOWFLAKE;
-				break;
-			}
+			gameMode = extras.getInt(BUNDLE_FLAG_GAME_MODE);
 		}
 		
 		// setup game
@@ -171,6 +145,7 @@ public class GameActivity extends GameBaseActivity  {
 		// Transition to game over menu
 		quitting = true;
 		Intent intent = new Intent(GameActivity.this, GameOverMenu.class);
+		intent.putExtra(BUNDLE_FLAG_GAME_MODE, Game.gameMode);
 		startActivity(intent);
 	}
 

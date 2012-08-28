@@ -1,6 +1,7 @@
 package com.slauson.dasher.menu;
 
 import com.slauson.dasher.R;
+import com.slauson.dasher.game.Game;
 import com.slauson.dasher.game.GameActivity;
 import com.slauson.dasher.status.Achievements;
 import com.slauson.dasher.status.Options;
@@ -87,11 +88,11 @@ public class MainMenu extends PaidDialogBaseMenu {
 					if (GlobalStatistics.getInstance().timesPlayed == 0) {
 						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
-						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, GameActivity.GAME_MODE_NORMAL);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
 						startActivity(intent);
 					} else {
 						Intent intent = new Intent(MainMenu.this, GameActivity.class);
-						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, GameActivity.GAME_MODE_NORMAL);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
 						startActivity(intent);
 					}
 				} else {
@@ -252,7 +253,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_GAME_MODE);
 						
-						int gameMode = GameActivity.GAME_MODE_NORMAL;
+						int gameMode = Game.GAME_MODE_NORMAL;
 						switch(which) {
 						case 0:
 							if (Options.freeVersion) {
@@ -261,10 +262,10 @@ public class MainMenu extends PaidDialogBaseMenu {
 								showDialog(DIALOG_PAID_VERSION, bundle);
 								return;
 							}
-							gameMode = GameActivity.GAME_MODE_BASIC;
+							gameMode = Game.GAME_MODE_BASIC;
 							break;
 						case 1:
-							gameMode = GameActivity.GAME_MODE_NORMAL;
+							gameMode = Game.GAME_MODE_NORMAL;
 							break;
 						case 2:
 							if (Options.freeVersion) {
@@ -273,7 +274,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 								showDialog(DIALOG_PAID_VERSION, bundle);
 								return;
 							}
-							gameMode = GameActivity.GAME_MODE_HARD;
+							gameMode = Game.GAME_MODE_HARD;
 							break;
 						case 3:
 							if (Options.freeVersion) {
@@ -282,7 +283,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 								showDialog(DIALOG_PAID_VERSION, bundle);
 								return;
 							}
-							gameMode = GameActivity.GAME_MODE_SNOWFLAKE;
+							gameMode = Game.GAME_MODE_SNOWFLAKE;
 							break;
 						}
 						

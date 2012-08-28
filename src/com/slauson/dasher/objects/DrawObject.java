@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.graphics.PorterDuff.Mode;
 
 import com.slauson.dasher.game.Game;
-import com.slauson.dasher.game.Game.GameMode;
 
 /**
  * Object to be drawn on the screen
@@ -72,7 +71,7 @@ public abstract class DrawObject extends Item {
 		paint.setStrokeWidth(STROKE_WIDTH);
 		
 		// snowflake mode
-		if (Game.gameMode == GameMode.SNOWFLAKE && this instanceof Asteroid) {
+		if (Game.gameMode == Game.GAME_MODE_SNOWFLAKE && this instanceof Asteroid) {
 			paint.setStrokeWidth(width/2);
 		}
 		

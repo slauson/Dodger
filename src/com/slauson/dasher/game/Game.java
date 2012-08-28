@@ -202,6 +202,18 @@ public class Game {
 	public static final int DIRECTION_NORMAL = 0;
 	/** Asteroids are going in reverse direction (up) **/
 	public static final int DIRECTION_REVERSE = 1;
+	
+	/** Basic game mode with no drops, dash **/
+	public static final int GAME_MODE_INSTRUCTIONS = 0;
+	/** Basic game mode with no drops, dash **/
+	public static final int GAME_MODE_BASIC = 1;
+	/** Normal game mode **/
+	public static final int GAME_MODE_NORMAL = 2;
+	/** Hard game mode where player starts on level 10 **/
+	public static final int GAME_MODE_HARD = 3;
+	/** Snowflake game mode where asteroids are snowflakes **/
+	public static final int GAME_MODE_SNOWFLAKE = 4;
+
 
 	/**
 	 * Shared stuff
@@ -236,13 +248,8 @@ public class Game {
 	public static int numAvailableDrops = 0;
 	
 	/** Used to differentiate different game modes **/
-	public static GameMode gameMode = GameMode.NORMAL;
+	public static int gameMode = GAME_MODE_NORMAL;
 
-	/** Different game modes **/
-	public static enum GameMode {
-		INSTRUCTIONS, BASIC, NORMAL, HARD, SNOWFLAKE
-	}
-	
 	/**
 	 * Resets all static state to default values
 	 */
@@ -250,7 +257,7 @@ public class Game {
 		canvasWidth = 0;
 		canvasHeight = 0;
 		
-		gameMode = GameMode.NORMAL;
+		gameMode = GAME_MODE_NORMAL;
 		gameStatus = STATUS_RUNNING;
 		direction = DIRECTION_NORMAL;
 		gravity = 1f;
@@ -276,18 +283,18 @@ public class Game {
 		canvasWidth = width;
 		canvasHeight = height;
 		
-		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode == GameMode.INSTRUCTIONS);
+		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode == GAME_MODE_INSTRUCTIONS);
 		
 		// setup different game modes
-		if (gameMode == GameMode.INSTRUCTIONS) {
+		if (gameMode == GAME_MODE_INSTRUCTIONS) {
 			level = new Level(-1, false);
-		} else if (gameMode == GameMode.BASIC) {
+		} else if (gameMode == GAME_MODE_BASIC) {
 			level = new Level(Debugging.level, Debugging.levelProgression);
 			toggleDash(false);
 			toggleDrops(false);
-		} else if (gameMode == GameMode.NORMAL || gameMode == GameMode.SNOWFLAKE) {
+		} else if (gameMode == GAME_MODE_NORMAL || gameMode == GAME_MODE_SNOWFLAKE) {
 			level = new Level(Debugging.level, Debugging.levelProgression);
-		} else if (gameMode == GameMode.HARD){
+		} else if (gameMode == GAME_MODE_HARD){
 			level = new Level(HARD_MODE_START_LEVEL, Debugging.levelProgression);
 		}
 		
@@ -339,7 +346,7 @@ public class Game {
 		
 		float radius, speed;
 		
-		for (int i = 0; i < level.getNumAsteroids() && gameMode != GameMode.INSTRUCTIONS; i++) {
+		for (int i = 0; i < level.getNumAsteroids() && gameMode != GAME_MODE_INSTRUCTIONS; i++) {
 			
 			radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 			speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
@@ -1277,7 +1284,7 @@ public class Game {
 	 */
 	private void resetAsteroid(Asteroid asteroid) {
 		
-		if (gameMode == GameMode.INSTRUCTIONS) {
+		if (gameMode == GAME_MODE_INSTRUCTIONS) {
 			return;
 		}
 		
@@ -1407,7 +1414,7 @@ public class Game {
 				    }
 				});
 			}
-		}, (gameMode == GameMode.INSTRUCTIONS) ? 0 : player.getBreakupDuration()-500);
+		}, (gameMode == GAME_MODE_INSTRUCTIONS) ? 0 : player.getBreakupDuration()-500);
 
 	}
 	
