@@ -205,15 +205,15 @@ public class PowerupBlackHole extends ActivePowerup {
 	}
 	
 	public void checkAchievements() {
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_1) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole1);
 		}
 		
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_2) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole2);
 		}
 		
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3) {
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_3) {
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBlackHole3);
 		}
 	}

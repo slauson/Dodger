@@ -21,10 +21,26 @@ public class Achievements {
 	public static final int LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2 = 5;
 	public static final int LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3 = 10;
 	
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_1 = 10;
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_2 = 20;
-	public static final int LOCAL_DESTROY_ASTEROIDS_NUM_3 = 30;
+	public static final int LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_1 = 5;
+	public static final int LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_2 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_3 = 15;
 	
+	public static final int LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_1 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_2 = 25;
+	public static final int LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_3 = 50;
+
+	public static final int LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_1 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_2 = 25;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_3 = 50;
+	
+	public static final int LOCAL_DESTROY_ASTEROIDS_BUMPER_NUM_1 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BUMPER_NUM_2 = 25;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BUMPER_NUM_3 = 50;
+	
+	public static final int LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_1 = 10;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_2 = 20;
+	public static final int LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_3 = 30;
+
 	public static final int LOCAL_DASH_ACTIVATE_DROPS_NUM = 1;
 	public static final int LOCAL_SMALL_DASH_DESTROY_ASTEROIDS_NUM = 2;
 	public static final int LOCAL_SLOW_LONG_TIME = 60;
@@ -64,25 +80,25 @@ public class Achievements {
 	public static Achievement localDestroyAsteroidsWithDash2 = new Achievement("achievement_local_destroy_asteroids_with_dash_2", R.drawable.icon_dash, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_2);
 	public static Achievement localDestroyAsteroidsWithDash3 = new Achievement("achievement_local_destroy_asteroids_with_dash_3", R.drawable.icon_dash, LOCAL_DESTROY_ASTEROIDS_DASH_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithDrill1 = new Achievement("achievement_local_destroy_asteroids_with_drill_1", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithDrill2 = new Achievement("achievement_local_destroy_asteroids_with_drill_2", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithDrill3 = new Achievement("achievement_local_destroy_asteroids_with_drill_3", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithDrill1 = new Achievement("achievement_local_destroy_asteroids_with_drill_1", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_1);
+	public static Achievement localDestroyAsteroidsWithDrill2 = new Achievement("achievement_local_destroy_asteroids_with_drill_2", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_2);
+	public static Achievement localDestroyAsteroidsWithDrill3 = new Achievement("achievement_local_destroy_asteroids_with_drill_3", R.drawable.icon_drill, LOCAL_DESTROY_ASTEROIDS_DRILL_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithMagnet1 = new Achievement("achievement_local_destroy_asteroids_with_magnet_1", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithMagnet2 = new Achievement("achievement_local_destroy_asteroids_with_magnet_2", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithMagnet3 = new Achievement("achievement_local_destroy_asteroids_with_magnet_3", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithMagnet1 = new Achievement("achievement_local_destroy_asteroids_with_magnet_1", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_1);
+	public static Achievement localDestroyAsteroidsWithMagnet2 = new Achievement("achievement_local_destroy_asteroids_with_magnet_2", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_2);
+	public static Achievement localDestroyAsteroidsWithMagnet3 = new Achievement("achievement_local_destroy_asteroids_with_magnet_3", R.drawable.icon_magnet, LOCAL_DESTROY_ASTEROIDS_MAGNET_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_1", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_2", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_3", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBlackHole1 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_1", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBlackHole2 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_2", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBlackHole3 = new Achievement("achievement_local_destroy_asteroids_with_black_hole_3", R.drawable.icon_black_hole, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBumper1 = new Achievement("achievement_local_destroy_asteroids_with_bumper_1", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBumper2 = new Achievement("achievement_local_destroy_asteroids_with_bumper_2", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBumper3 = new Achievement("achievement_local_destroy_asteroids_with_bumper_3", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBumper1 = new Achievement("achievement_local_destroy_asteroids_with_bumper_1", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBumper2 = new Achievement("achievement_local_destroy_asteroids_with_bumper_2", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBumper3 = new Achievement("achievement_local_destroy_asteroids_with_bumper_3", R.drawable.icon_bumper, LOCAL_DESTROY_ASTEROIDS_BLACK_HOLE_NUM_3);
 	
-	public static Achievement localDestroyAsteroidsWithBomb1 = new Achievement("achievement_local_destroy_asteroids_with_bomb_1", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_1);
-	public static Achievement localDestroyAsteroidsWithBomb2 = new Achievement("achievement_local_destroy_asteroids_with_bomb_2", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_2);
-	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("achievement_local_destroy_asteroids_with_bomb_3", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_NUM_3);
+	public static Achievement localDestroyAsteroidsWithBomb1 = new Achievement("achievement_local_destroy_asteroids_with_bomb_1", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_1);
+	public static Achievement localDestroyAsteroidsWithBomb2 = new Achievement("achievement_local_destroy_asteroids_with_bomb_2", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_2);
+	public static Achievement localDestroyAsteroidsWithBomb3 = new Achievement("achievement_local_destroy_asteroids_with_bomb_3", R.drawable.icon_bomb, LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_3);
 
 	// local achievements - powerups
 	public static Achievement localDashActivateDrops = new Achievement("achievement_local_dash_activate_drops", R.drawable.icon_dash, LOCAL_DASH_ACTIVATE_DROPS_NUM);

@@ -1241,19 +1241,19 @@ public class Game {
 		}
 		
 		// check for achievements
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_1 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_1 &&
 				!Achievements.localDestroyAsteroidsWithBomb1.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb1);
 		}
 		
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_2 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_2 &&
 				!Achievements.localDestroyAsteroidsWithBomb2.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb2);
 		}
 		
-		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_NUM_3 &&
+		if (numAffectedAsteroids >= Achievements.LOCAL_DESTROY_ASTEROIDS_BOMB_NUM_3 &&
 				!Achievements.localDestroyAsteroidsWithBomb3.getValue())
 		{
 			Achievements.unlockLocalAchievement(Achievements.localDestroyAsteroidsWithBomb3);
