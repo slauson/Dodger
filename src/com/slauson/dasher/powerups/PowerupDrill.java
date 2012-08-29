@@ -215,9 +215,8 @@ public class PowerupDrill extends ActivePowerup {
 		canvas.save();
 		canvas.translate(x, y);
 
-		// rotate if needed
+		// rotate if going opposite direction
 		if (direction == Game.DIRECTION_REVERSE) {
-			canvas.save();
 			canvas.rotate(180, 0, 0);
 		}
 		
@@ -238,11 +237,6 @@ public class PowerupDrill extends ActivePowerup {
 			canvas.drawBitmap(bitmap, null, rectDest, paint);
 		} else {
 			canvas.drawBitmap(bitmap, -width/2, - height/2, paint);
-		}
-		
-		// unrotate
-		if (direction == Game.DIRECTION_REVERSE) {
-			canvas.restore();
 		}
 		
 		canvas.restore();
