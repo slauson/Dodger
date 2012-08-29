@@ -68,7 +68,6 @@ public class Player extends DrawObject {
 	private static final float BUTTON_SPEED_INCREASE_FACTOR = 0.05f;
 	private static final float BUTTON_MIN_SPEED_FACTOR = 0.25f;
 	private static final float MAX_SPEED_FACTOR = 0.5f;
-	private static final int Y_OFFSET = 50;
 	
 	// size stuff
 	private static final float SIZE_FACTOR = 0.067f;
@@ -80,6 +79,12 @@ public class Player extends DrawObject {
 	private static final int DASH_RECHARGE_DURATION_1 = 14000;
 	private static final int DASH_RECHARGE_DURATION_2 = 12500;
 	private static final int DASH_RECHARGE_DURATION_3 = 10000;
+	
+	// ship offset
+	private static final int PLAYER_OFFSET_NONE = 0;
+	private static final int PLAYER_OFFSET_SMALL = 25;
+	private static final int PLAYER_OFFSET_NORMAL = 50;
+	private static final int PLAYER_OFFSET_LARGE = 100;
 	
 	// breakup duration
 	private static final int BREAKING_UP_DURATION = 3000;
@@ -104,11 +109,8 @@ public class Player extends DrawObject {
 		size = getRelativeWidthSize(SIZE_FACTOR);
 		width = size;
 		height = size;
-		yTop = size;
 		
-		// set y offset
-		yBottom = instructionMode ? Game.canvasHeight - size : Game.canvasHeight - height/2 - Y_OFFSET;
-		y = yBottom;
+		resetOffsets();
 				
 		// set speed
 		maxSpeed = getRelativeWidthSize(MAX_SPEED_FACTOR);
@@ -190,7 +192,7 @@ public class Player extends DrawObject {
 		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
 		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 	}
-	
+
 	public void setMoveByTouch(boolean moveByTouch) {
 		this.moveByTouch = moveByTouch;
 	}
@@ -789,4 +791,30 @@ public class Player extends DrawObject {
 	public void redraw() {
 		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 	}
+	
+	/**
+	 * Sets player offsets
+	 */
+	public void resetOffsets() {
+		int offset = PLAYER_OFFSET_NORMAL;
+		switch(Options.playerOffset) {
+		case Options.PLAYER_OFFSET_NONE:
+			offset = PLAYER_OFFSET_NONE;
+			break;
+		case Options.PLAYER_OFFSET_SMALL:
+			offset = PLAYER_OFFSET_SMALL;
+			break;
+		case Options.PLAYER_OFFSET_NORMAL:
+			offset = PLAYER_OFFSET_NORMAL;
+			break;
+		case Options.PLAYER_OFFSET_LARGE:
+			offset = PLAYER_OFFSET_LARGE;
+			break;
+		}
+		yBottom = Game.canvasHeight - height/2 - offset;
+		yTop = height/2 + offset;
+		
+		y = yBottom;
+	}
+
 }

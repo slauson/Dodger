@@ -27,7 +27,7 @@ public class OptionsMenu extends PreferenceActivity {
 	private static final CharSequence[] accelerometerSensitivityEntries =
 		{
 			Options.ACCELEROMETER_SENSITIVITY_LOW_STRING,
-			Options.ACCELEROMETER_SENSITIVITY_MEDIUM_STRING,
+			Options.ACCELEROMETER_SENSITIVITY_NORMAL_STRING,
 			Options.ACCELEROMETER_SENSITIVITY_HIGH_STRING,
 		};
 	
@@ -35,8 +35,26 @@ public class OptionsMenu extends PreferenceActivity {
 	private static final CharSequence[] accelerometerSensitivityValues=
 		{
 			"" + Options.ACCELEROMETER_SENSITIVITY_LOW,
-			"" + Options.ACCELEROMETER_SENSITIVITY_MEDIUM,
+			"" + Options.ACCELEROMETER_SENSITIVITY_NORMAL,
 			"" + Options.ACCELEROMETER_SENSITIVITY_HIGH,
+		};
+	
+	/** Player offset entries **/
+	private static final CharSequence[] playerOffsetEntries =
+		{
+			Options.PLAYER_OFFSET_NONE_STRING,
+			Options.PLAYER_OFFSET_SMALL_STRING,
+			Options.PLAYER_OFFSET_NORMAL_STRING,
+			Options.PLAYER_OFFSET_LARGE_STRING,
+		};
+	
+	/** Player offset values **/
+	private static final CharSequence[] playerOffsetValues=
+		{
+			"" + Options.PLAYER_OFFSET_NONE,
+			"" + Options.PLAYER_OFFSET_SMALL,
+			"" + Options.PLAYER_OFFSET_NORMAL,
+			"" + Options.PLAYER_OFFSET_LARGE,
 		};
 	
 	/** Graphics entries **/
@@ -112,7 +130,6 @@ public class OptionsMenu extends PreferenceActivity {
 		ListPreference controls = (ListPreference)findPreference(getString(R.string.configuration_key_controls));
 		controls.setEntries(controlEntries.toArray(new CharSequence[controlEntries.size()]));
 		controls.setEntryValues(controlValues.toArray(new CharSequence[controlValues.size()]));
-		controls.setDefaultValue("" + Options.CONTROL_DEFAULT);
 		
 		// accelerometer sensitivity
 		ListPreference accelerometerSensitivity = (ListPreference)findPreference(getString(R.string.configuration_key_accelerometer_sensitivity));
@@ -123,6 +140,11 @@ public class OptionsMenu extends PreferenceActivity {
 		} else {
 			accelerometerSensitivity.setEnabled(false);
 		}
+		
+		// player offset
+		ListPreference playerOffset = (ListPreference)findPreference(getString(R.string.configuration_key_player_offset));
+		playerOffset.setEntries(playerOffsetEntries);
+		playerOffset.setEntryValues(playerOffsetValues);
 		
 		// graphics settings
 		ListPreference graphics = (ListPreference)findPreference(getString(R.string.configuration_key_graphics));

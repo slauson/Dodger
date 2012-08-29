@@ -720,6 +720,9 @@ public class Game {
 			// reset player control type
 			player.setMoveByTouch(Options.controlType == Options.CONTROL_TOUCH);
 			
+			// reset player offset
+			player.resetOffsets();
+			
 			// redraw player to canvas
 			player.redraw();
 			
@@ -1367,7 +1370,7 @@ public class Game {
 			accelerometerDeadzone = ACCELEROMETER_DEADZONE_LOW;
 			accelerometerMax = ACCELEROMETER_MAX_LOW;
 			break;
-		case Options.ACCELEROMETER_SENSITIVITY_MEDIUM:
+		case Options.ACCELEROMETER_SENSITIVITY_NORMAL:
 			accelerometerDashThreshold = ACCELEROMETER_DASH_THRESHOLD_MEDIUM;
 			accelerometerDeadzone = ACCELEROMETER_DEADZONE_MEDIUM;
 			accelerometerMax = ACCELEROMETER_MAX_MEDIUM;
