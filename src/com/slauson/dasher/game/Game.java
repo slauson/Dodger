@@ -680,7 +680,9 @@ public class Game {
 	 * @return true if pause succeeded
 	 */
 	public boolean togglePause(boolean paused) {
-		if (paused) {
+		if (paused && gameStatus != STATUS_PAUSED) {
+			
+			
 			gameStatus = STATUS_PAUSED;
 			
 			// cancel game over timer if player ship is breaking up
@@ -699,7 +701,7 @@ public class Game {
 			}
 			
 			pauseTime = System.currentTimeMillis();
-		} else {
+		} else if (!paused && gameStatus != STATUS_RUNNING) {
 			gameStatus = STATUS_RUNNING;
 			
 			// schedule game over timer if player ship is breaking up
