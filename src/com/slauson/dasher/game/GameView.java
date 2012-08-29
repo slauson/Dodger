@@ -24,8 +24,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	/** Holder for surface **/
 	private SurfaceHolder surfaceHolder;
 	
+	/** Canvas height modification factor (used for instructions) **/
 	private float canvasHeightFactor = 1;
-	private float canvasHeightOffset = 0;
+	/** Canvas height offset factor (used for instructions) **/
+	private float canvasHeightOffsetFactor = 0;
 	
 	public GameView(Context context) {
 		super(context);
@@ -48,7 +50,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		
 		// initialize game
-		game.init(getWidth(), (int)(getHeight()*canvasHeightFactor));
+		if (!game.isInitialized()) {
+			game.init(getWidth(), (int)(getHeight()*canvasHeightFactor));
+		}
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
@@ -72,7 +76,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			return false;
 		}
 		
-		game.touchEvent(event, -getHeight()*canvasHeightOffset);
+		game.touchEvent(event, -getHeight()*canvasHeightOffsetFactor);
 		return true;
 	}
 	
@@ -89,15 +93,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 			synchronized (surfaceHolder) {
 				
 				// translate canvas if we have a height offset
-				if (canvasHeightOffset > 0) {
+				if (canvasHeightOffsetFactor > 0) {
 					canvas.save();
-					canvas.translate(0, getHeight()*canvasHeightOffset);
+					canvas.translate(0, getHeight()*canvasHeightOffsetFactor);
 				}
 				
 				game.draw(canvas);
 				
 				// restore canvas if we have a height offset
-				if (canvasHeightOffset > 0) {
+				if (canvasHeightOffsetFactor > 0) {
 					canvas.restore();
 				}
 			}
@@ -123,6 +127,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	 */
 	public void setHeight(float canvasHeightFactor, float canvasHeightOffset) {
 		this.canvasHeightFactor = canvasHeightFactor;
-		this.canvasHeightOffset = canvasHeightOffset;
+		this.canvasHeightOffsetFactor = canvasHeightOffset;
 	}
 }

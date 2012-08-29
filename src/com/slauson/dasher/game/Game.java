@@ -280,6 +280,7 @@ public class Game {
 	 * @param height canvas height
 	 */
 	public void init(int width, int height) {
+		
 		canvasWidth = width;
 		canvasHeight = height;
 		
@@ -529,7 +530,6 @@ public class Game {
 			lastTouchDownTime1 = System.currentTimeMillis();
 			
 			// check stay in place achievement
-			System.out.println("move '" + System.currentTimeMillis() + "' - '" + lastMoveTime + "'");
 			if (System.currentTimeMillis() - lastMoveTime > 1000*Achievements.LOCAL_OTHER_STAY_IN_PLACE_TIME) {
 				Achievements.unlockLocalAchievement(Achievements.localOtherStayInPlace);
 			}
@@ -1170,8 +1170,6 @@ public class Game {
 	 */
 	private void updatePlayer() {
 		player.update();
-		
-		//System.out.println("updatePlayer(): " + direction + " - " + player.getDirection() + ", " + gravity + " - " + player.getGravity());
 		
 		// check player bounds
 		if (player.getX() - player.getWidth()/2 < 0) {

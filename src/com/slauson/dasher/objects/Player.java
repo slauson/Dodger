@@ -110,8 +110,6 @@ public class Player extends DrawObject {
 		width = size;
 		height = size;
 		
-		resetOffsets();
-				
 		// set speed
 		maxSpeed = getRelativeWidthSize(MAX_SPEED_FACTOR);
 		
@@ -123,6 +121,9 @@ public class Player extends DrawObject {
 		move = MOVE_NONE;
 		inPosition = true;
 		direction = Game.DIRECTION_NORMAL;
+		
+		// NOTE: this has to go after inPosition, direction are initialized
+		resetOffsets();
 		
 		movementDisabled = false;
 		
@@ -212,7 +213,7 @@ public class Player extends DrawObject {
 			canvas.save();
 			
 			// check if we need to rotate
-			if (speedY > 1 || direction == Game.DIRECTION_REVERSE) {
+			if (!inPosition || direction == Game.DIRECTION_REVERSE) {
 				float degrees = rotationDegrees * (yBottom - y) / (yBottom - yTop);			
 				canvas.rotate(degrees, x, y);
 			}
@@ -814,7 +815,13 @@ public class Player extends DrawObject {
 		yBottom = Game.canvasHeight - height/2 - offset;
 		yTop = height/2 + offset;
 		
-		y = yBottom;
+		if (inPosition) {
+			if (direction == Game.DIRECTION_NORMAL) {
+				y = yBottom;
+			} else {
+				y = yTop;
+			}
+		}
 	}
 
 }
