@@ -190,6 +190,29 @@ public abstract class Item {
 		
 		return timeElapsed;
 	}
+	
+	/**
+	 * Returns next y position of asteroid
+	 * @param speedModifier
+	 * @param timeModifier
+	 * @return next y position
+	 */
+	public float getNextY(float speedModifier, float timeModifier) {
+
+		// only use gravity when direction is positive
+		if (dirY > 0) {
+			return y + (Game.gravity*dirY*speed*timeModifier*speedModifier);
+		} else {
+			// otherwise use direction
+			// NOTE: this allows items to stay moving in opposite direction during a dash
+			// after the dash is completed, their directions are set positive again
+			if (Game.direction == Game.DIRECTION_NORMAL) {
+				return y + (1*dirY*speed*timeModifier*speedModifier);
+			} else {
+				return y + (-1*dirY*speed*timeModifier*speedModifier);
+			}
+		}
+	}
 
 	/**
 	 * Abstract methods to be defined in subclasses 

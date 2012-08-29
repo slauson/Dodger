@@ -974,7 +974,7 @@ public class Game {
 								scheduleGameOver();
 							} else {
 								// increment pass through counter
-								powerupInvulnerability.passThrough();
+								powerupInvulnerability.passThrough(asteroid);
 							}
 						}
 						// player is dashing (only destroy asteroids when invulnerability has upgrade)
@@ -1348,12 +1348,6 @@ public class Game {
 		for (Drop drop : drops) {
 			if (drop.getDirY() < 0) {
 				drop.setDirY(-1*drop.getDirY());
-			}
-		}
-		
-		for (ActivePowerup activePowerup : activePowerups) {
-			if (activePowerup instanceof PowerupDrill && activePowerup.getDirY() < 0) {
-				((PowerupDrill)activePowerup).switchDirection();
 			}
 		}
 	}

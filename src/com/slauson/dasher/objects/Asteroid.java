@@ -32,6 +32,8 @@ public class Asteroid extends DrawObject {
 	
 	private int radius;
 	
+	private int id;
+
 	/**
 	 * Private constants
 	 */
@@ -46,7 +48,7 @@ public class Asteroid extends DrawObject {
 	private static final int INVISIBLE_DURATION = 2000;
 
 	private static final float SPEED_HELD_IN_PLACE_FACTOR = 0.5f;
-
+	
 	/**
 	 * Public constants
 	 */
@@ -55,12 +57,26 @@ public class Asteroid extends DrawObject {
 	public static final int FADE_OUT_FROM_QUASAR = 1;
 	public static final int FADE_OUT_FROM_MAGNET = 2;
 
+	/*
+	 * For asteroid ids 
+	 */
 	
+	/** current id **/
+	private static int currentID = 0;
+	
+	/**
+	 * Returns next asteroid id to use
+	 * @return next asteroid id to use
+	 */
+	private static int getNextID() {
+		return currentID++;
+	}
+
 	public Asteroid(float sizeFactor, float speedFactor, float sizeFactorMax, float horizontalMovementMax) {
 		// do width/height later
 		super(0, 0, 0, 0);
 		
-		this.random = new Random();
+		random = new Random();
 		
 		int numPoints = NUM_POINTS_MIN + random.nextInt(NUM_POINTS_MAX - NUM_POINTS_MIN - 1);
 		
@@ -127,6 +143,8 @@ public class Asteroid extends DrawObject {
 		dirY = 1 - dirX;
 		timeCounter = 0;
 		factor = 1;
+		
+		id = getNextID();
 		
 		status = STATUS_NORMAL;
 	}
@@ -433,27 +451,6 @@ public class Asteroid extends DrawObject {
 	}
 	
 	/**
-	 * Returns next y position of asteroid
-	 * @param speedModifier
-	 * @param timeModifier
-	 * @return next y position
-	 */
-	public float getNextY(float speedModifier, float timeModifier) {
-
-		// only use gravity when direction is positive
-		if (dirY > 0) {
-			return y + (Game.gravity*dirY*speed*timeModifier*speedModifier);
-		} else {
-			// otherwise use direction
-			if (Game.direction == Game.DIRECTION_NORMAL) {
-				return y + (1*dirY*speed*timeModifier*speedModifier);
-			} else {
-				return y + (-1*dirY*speed*timeModifier*speedModifier);
-			}
-		}
-	}
-	
-	/**
 	 * Makes asteroid invisible
 	 */
 	public void setInvisible() {
@@ -494,5 +491,13 @@ public class Asteroid extends DrawObject {
 		} else {
 			return 4*i-4;
 		}
+	}
+	
+	/**
+	 * Returns asteroid id
+	 * @return asteroid id
+	 */
+	public int getID() {
+		return id;
 	}
 }
