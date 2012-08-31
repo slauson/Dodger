@@ -238,6 +238,7 @@ public class Achievements {
 		achievements.add(localDestroyAsteroidsWithBomb1);
 		achievements.add(localDestroyAsteroidsWithBomb2);
 		achievements.add(localDestroyAsteroidsWithBomb3);
+		achievements.add(localBombDropBomb);
 		achievements.add(globalDestroyAsteroidsWithBomb1);
 		achievements.add(globalDestroyAsteroidsWithBomb2);
 		achievements.add(globalDestroyAsteroidsWithBomb3);
