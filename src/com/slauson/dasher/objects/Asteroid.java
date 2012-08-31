@@ -3,15 +3,15 @@ package com.slauson.dasher.objects;
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.slauson.dasher.game.Game;
-import com.slauson.dasher.status.Options;
-import com.slauson.dasher.status.LocalStatistics;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
+import com.slauson.dasher.game.Game;
+import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Options;
 
 /**
  * Asteroid that player ship has to avoid
@@ -196,7 +196,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByDash++;
 			
 			// if low graphics or snowflake mode, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == Game.GAME_MODE_SNOWFLAKE) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -245,7 +245,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByBlackHole++;
 			
 			// if low graphics, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == Game.GAME_MODE_SNOWFLAKE) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -280,7 +280,7 @@ public class Asteroid extends DrawObject {
 			LocalStatistics.getInstance().asteroidsDestroyedByDrill++;
 			
 			// if low graphics, use fade out instead
-			if (Options.graphicsType == Options.GRAPHICS_LOW || Game.gameMode == Game.GAME_MODE_SNOWFLAKE) {
+			if (Options.graphicsType == Options.GRAPHICS_LOW) {
 				fadeOut(FADE_OUT_GRAPHICS_LOW);
 				return;
 			}
@@ -324,10 +324,15 @@ public class Asteroid extends DrawObject {
 			float factor = 1.f*timeCounter/BREAKING_UP_DURATION;
 			paint.setAlpha((int)(255 * factor));
 			
+			if (Game.gameMode == Game.GAME_MODE_SNOWFLAKE) {
+				paint.setStrokeWidth(width/2);
+			}
+			
 			for (LineSegment lineSegment : lineSegments) {
 				lineSegment.draw(canvas, paint);
 			}
-			
+
+			paint.setStrokeWidth(STROKE_WIDTH);
 			paint.setAlpha(255);	
 		}
 		// disappearing asteroid
