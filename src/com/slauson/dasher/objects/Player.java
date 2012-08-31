@@ -123,7 +123,7 @@ public class Player extends DrawObject {
 		direction = Game.DIRECTION_NORMAL;
 		
 		// NOTE: this has to go after inPosition, direction are initialized
-		resetOffsets();
+		resetOffsets(instructionMode);
 		
 		movementDisabled = false;
 		
@@ -795,9 +795,11 @@ public class Player extends DrawObject {
 	
 	/**
 	 * Sets player offsets
+	 * @param forceNone force offsets to be none
 	 */
-	public void resetOffsets() {
+	public void resetOffsets(boolean forceNone) {
 		int offset = PLAYER_OFFSET_NORMAL;
+		
 		switch(Options.playerOffset) {
 		case Options.PLAYER_OFFSET_NONE:
 			offset = PLAYER_OFFSET_NONE;
@@ -812,6 +814,11 @@ public class Player extends DrawObject {
 			offset = PLAYER_OFFSET_LARGE;
 			break;
 		}
+		
+		if (forceNone) {
+			offset = PLAYER_OFFSET_NONE;
+		}
+		
 		yBottom = Game.canvasHeight - height/2 - offset;
 		yTop = height/2 + offset;
 		

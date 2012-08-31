@@ -682,8 +682,8 @@ public class Game {
 	public boolean togglePause(boolean paused) {
 		if (paused && gameStatus != STATUS_PAUSED) {
 			
-			
 			gameStatus = STATUS_PAUSED;
+			System.out.println("Game paused");
 			
 			// cancel game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP && gameOverTimer != null) {
@@ -703,6 +703,7 @@ public class Game {
 			pauseTime = System.currentTimeMillis();
 		} else if (!paused && gameStatus != STATUS_RUNNING) {
 			gameStatus = STATUS_RUNNING;
+			System.out.println("Game unpaused");
 			
 			// schedule game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP) {
@@ -723,7 +724,7 @@ public class Game {
 			player.setMoveByTouch(Options.controlType == Options.CONTROL_TOUCH);
 			
 			// reset player offset
-			player.resetOffsets();
+			player.resetOffsets(false);
 			
 			// redraw player to canvas
 			player.redraw();
