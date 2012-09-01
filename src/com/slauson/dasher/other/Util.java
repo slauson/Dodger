@@ -26,11 +26,13 @@ public class Util {
 			
 			if (h > 0) {
 				timeString += h + ":";
+				
+				// only add 0 if we have hours
+				if (m < 10) {
+					timeString += "0";
+				}
 			}
 			
-			if (m < 10) {
-				timeString += "0";
-			}
 			timeString += m + ":";
 			
 			if (s < 10) {
