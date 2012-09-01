@@ -1440,6 +1440,11 @@ public class Game {
 		if (powerupSlow.isActive()) {
 			powerupSlow.checkAchievements();
 		}
+		
+		// check achievements of any active powerups
+		for (ActivePowerup activePowerup : activePowerups) {
+			activePowerup.checkAchievements();
+		}
 	}
 
 }
