@@ -906,6 +906,12 @@ public class Game {
 	 * Resets player
 	 */
 	public void resetPlayer() {
+		
+		// add time to start time if paused
+		if (gameStatus == STATUS_PAUSED) {
+			player.addToStartTime(System.currentTimeMillis() - pauseTime);
+		}
+		
 		player.reset();
 	}
 
