@@ -641,6 +641,7 @@ public class Game {
 				player.canDash() && enableDash)
 		{
 			player.dash();
+			return;
 		}
 	
 		// check if tx is not passed deadzone
