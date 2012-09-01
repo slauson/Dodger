@@ -87,25 +87,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		int points = 0;
 		points += Points.POINTS_TIME_PLAYED*localStatistics.timePlayed;
 		points += Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed();
-		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
-
-		// points achievements
-		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
-			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints1)) {
-				points += Points.POINTS_ACHIEVEMENT;
-			}
-		}
-		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
-			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints2)) {
-				points += Points.POINTS_ACHIEVEMENT;
-			}
-		}
-		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
-			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints3)) {
-				points += Points.POINTS_ACHIEVEMENT;
-			}
-		}
-				
+		
 		// update statistics
 		updateStatistics(sharedPreferencesEditor, points);
 
@@ -115,6 +97,26 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		// check/update achievements if paid version
 		if (!Options.freeVersion) {
 			updateAchievements(sharedPreferencesEditor);
+			
+			// update points after checking achievements
+			points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
+			
+			// points achievements
+			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
+				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints1)) {
+					points += Points.POINTS_ACHIEVEMENT;
+				}
+			}
+			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
+				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints2)) {
+					points += Points.POINTS_ACHIEVEMENT;
+				}
+			}
+			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
+				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints3)) {
+					points += Points.POINTS_ACHIEVEMENT;
+				}
+			}
 		}
 				
 		// update points
