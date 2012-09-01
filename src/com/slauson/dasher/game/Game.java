@@ -724,7 +724,7 @@ public class Game {
 			player.setMoveByTouch(Options.controlType == Options.CONTROL_TOUCH);
 			
 			// reset player offset
-			player.resetOffsets(false);
+			player.resetOffsets(gameMode == GAME_MODE_INSTRUCTIONS);
 			
 			// redraw player to canvas
 			player.redraw();
