@@ -202,7 +202,7 @@ public class UpgradesSubMenu extends Activity {
 						GlobalStatistics.getInstance().pointsSpent += points;
 						
 						// update points textview
-				    	pointsView.setText("You have " + Points.getNumPoints() + " points");
+				    	pointsView.setText(Points.getNumPoints() + " points");
 				    
 				    	// save state
 				    	upgrade.save(sharedPreferencesEditor);
