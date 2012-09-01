@@ -634,6 +634,12 @@ public class InstructionsMenu extends GameBaseActivity {
 		// clear any asteroids
 		game.clearAsteroids();
 		
+		// if last screen, clear powerups/drops
+		if (instructionScreenIndex == instructionScreens.size()) {
+			game.clearPowerups();
+			game.clearDrops();
+		}
+		
 		// setup automators
 		List<Automator> automators = currentInstructionScreen.getAutomators();
 		

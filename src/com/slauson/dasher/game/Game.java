@@ -830,6 +830,20 @@ public class Game {
 	}
 	
 	/**
+	 * Clears all powerups
+	 */
+	public void clearPowerups() {
+		activePowerups.clear();
+	}
+	
+	/**
+	 * Clears all drops
+	 */
+	public void clearDrops() {
+		drops.clear();
+	}
+	
+	/**
 	 * Drops a powerup at the given position
 	 * @param x x coordinate
 	 * @param y y coordinate
