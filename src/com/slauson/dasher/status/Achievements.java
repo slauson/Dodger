@@ -48,9 +48,9 @@ public class Achievements {
 	public static final int LOCAL_BLACK_HOLE_TRIFECTA_NUM = 3;
 	public static final int LOCAL_MAGNET_HOLD_IN_PLACE_NUM = 10;
 	public static final int LOCAL_OTHER_STAY_IN_PLACE_TIME = 20;
-	public static final int LOCAL_OTHER_POINTS_NUM_1 = 10000;
-	public static final int LOCAL_OTHER_POINTS_NUM_2 = 25000;
-	public static final int LOCAL_OTHER_POINTS_NUM_3 = 50000;
+	public static final int LOCAL_OTHER_POINTS_NUM_1 = 5000;
+	public static final int LOCAL_OTHER_POINTS_NUM_2 = 10000;
+	public static final int LOCAL_OTHER_POINTS_NUM_3 = 20000;
 	
 	public static final int LOCAL_PLAYTIME_1 = 60;
 	public static final int LOCAL_PLAYTIME_2 = 300;

@@ -30,9 +30,9 @@ public class Upgrades {
 	
 	// constants for powerup purchases
 	public static final int POINTS_MAGNET_POWERUP = 10000;
-	public static final int POINTS_BLACK_HOLE_POWERUP = 15000;
-	public static final int POINTS_BUMPER_POWERUP = 20000;
-	public static final int POINTS_BOMB_POWERUP = 25000;
+	public static final int POINTS_BLACK_HOLE_POWERUP = 20000;
+	public static final int POINTS_BUMPER_POWERUP = 30000;
+	public static final int POINTS_BOMB_POWERUP = 40000;
 	
 	// constants for powerup unlocking
 	public static final int POWERUP_LOCKED = -1;
