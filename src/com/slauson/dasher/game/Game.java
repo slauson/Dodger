@@ -242,7 +242,7 @@ public class Game {
 	public static Random random = new Random();
 	
 	/** Maximum sleep duration **/
-	public static int maxSleepTime = 1000/30;
+	public static int maxSleepTime = 1000/Options.FRAME_RATE_DEFAULT;
 	
 	/** Number of available drops **/
 	public static int numAvailableDrops = 0;
@@ -262,7 +262,7 @@ public class Game {
 		direction = DIRECTION_NORMAL;
 		gravity = 1f;
 		
-		maxSleepTime = 1000/30;
+		maxSleepTime = 1000/Options.FRAME_RATE_DEFAULT;
 		
 		numAvailableDrops = 0;
 	}
@@ -337,7 +337,7 @@ public class Game {
 		pauseTime = -1;
 		
 		maxSleepTime = 1000/Options.frameRate;
-					
+		
 		powerupSlow = new PowerupSlow(Upgrades.slowUpgrade.getLevel());
 		powerupInvulnerability = new PowerupInvulnerability(Upgrades.invulnerabilityUpgrade.getLevel());
 		powerupSmall = new PowerupSmall(Upgrades.smallUpgrade.getLevel());
@@ -374,7 +374,7 @@ public class Game {
 		if (Debugging.runtimeAnalysis) {
 			startTime = System.currentTimeMillis();
 		}
-
+		
 		// clear screen
 		canvas.drawColor(Color.BLACK);
 		
@@ -712,7 +712,7 @@ public class Game {
 			}
 			
 			// reset max sleep time
-			maxSleepTime = 2*1000/Options.frameRate;
+			maxSleepTime = 1000/Options.frameRate;
 			
 			// reset paint flags
 			paint.reset();
