@@ -15,27 +15,25 @@ public class Level {
 	/** Starting number of asteroids **/
 	private static final int NUM_ASTEROIDS_BASE = 10;
 	/** Number of asteroids to add each level **/
-	private static final int NUM_ASTEROIDS_INCREMENT = 4;
+	private static final int NUM_ASTEROIDS_INCREMENT = 2;
 	/** Maximum number of asteroids **/
 	private static final int NUM_ASTEROIDS_MAX = 50;
 	
 	/** Starting radius of asteroids in comparison to canvas width **/
-	private static final float ASTEROID_RADIUS_FACTOR_MIN = 0.02f;
+	private static final float ASTEROID_RADIUS_FACTOR_MIN = 0.05f;
 	/** Asteroid radius increase each level **/
-	private static final float ASTEROID_RADIUS_FACTOR_INCREMENT = 0.004f;
+	private static final float ASTEROID_RADIUS_FACTOR_INCREMENT = 0.0025f;
 	/** Maximum radius of asteroids in comparison to canvas width **/
 	private static final float ASTEROID_RADIUS_FACTOR_MAX = 0.1f;
 	
 	/** Minimum possible speed of asteroids in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_MIN = 0.1f;
 	/** Minimum asteroid speed increase each level **/
-	private static final float ASTEROID_SPEED_FACTOR_MIN_INCREMENT = 0.005f;
-	/** Maximum possible speed of asteroids in comparison to canvas height **/
 	private static final float ASTEROID_SPEED_FACTOR_MAX = 0.1f;
 	/** Maximum asteroid speed increase each level **/
-	private static final float ASTEROID_SPEED_FACTOR_MAX_INCREMENT = 0.01f;
-	/** Limit for asteroid speed in comparison to canvas height **/
-	private static final float ASTEROID_SPEED_FACTOR_LIMIT = 0.3f;
+	private static final float ASTEROID_SPEED_FACTOR_MAX_INCREMENT = 0.005f;
+	/** Limit for maximum asteroid speed in comparison to canvas height **/
+	private static final float ASTEROID_SPEED_FACTOR_LIMIT = 0.25f;
 	
 	/** Minimum asteroid horizontal movement (0 - 1) **/
 	private static final float ASTEROID_HORIZONTAL_MOVEMENT_MIN = 0.0f;
@@ -45,7 +43,7 @@ public class Level {
 	private static final float ASTEROID_HORIZONTAL_MOVEMENT_MAX = 0.25f;
 	
 	/** Level in which asteroids begin having horizontal movement **/
-	private static final int ASTEROID_HORIZONTAL_MOVEMENT_LEVEL = 4;
+	private static final int ASTEROID_HORIZONTAL_MOVEMENT_LEVEL = 5;
 	
 	/** Duration of each level **/
 	private static final long LEVEL_TIME = 15000;
@@ -137,13 +135,7 @@ public class Level {
 	 * @return asteroid speed factor minimum
 	 */
 	public float getAsteroidSpeedFactorMin() {
-		float num = ASTEROID_SPEED_FACTOR_MIN + level*ASTEROID_SPEED_FACTOR_MIN_INCREMENT;
-		
-		if (num > ASTEROID_SPEED_FACTOR_LIMIT) {
-			return ASTEROID_SPEED_FACTOR_LIMIT;
-		}
-		
-		return num;
+		return ASTEROID_SPEED_FACTOR_MIN;
 	}
 	
 	/**
