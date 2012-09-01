@@ -60,7 +60,7 @@ public class Achievements {
 	public static final int GLOBAL_DESTROY_ASTEROIDS_NUM_2 = 500;
 	public static final int GLOBAL_DESTROY_ASTEROIDS_NUM_3 = 1000;
 	
-	public static final int GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1 = 100;
+	public static final int GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_1 = 500;
 	public static final int GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_2 = 2500;
 	public static final int GLOBAL_DESTROY_ASTEROIDS_TOTAL_NUM_3 = 5000;
 	
@@ -72,7 +72,7 @@ public class Achievements {
 	
 	public static final int GLOBAL_NUM_POWERUPS = 8;
 	public static final int GLOBAL_NUM_UPGRADES = 36;
-	public static final int GLOBAL_NUM_ACHIEVEMENTS = 58;
+	public static final int GLOBAL_NUM_ACHIEVEMENTS = 62;
 	
 	
 	// local achievments - destroy asteroids
