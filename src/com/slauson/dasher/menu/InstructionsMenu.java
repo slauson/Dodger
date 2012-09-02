@@ -18,13 +18,16 @@ import com.slauson.dasher.objects.Drop;
 import com.slauson.dasher.other.GameBaseActivity;
 import com.slauson.dasher.status.Options;
 import com.slauson.dasher.status.LocalStatistics;
+import com.slauson.dasher.status.Points;
 import com.slauson.dasher.status.Upgrades;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -543,6 +546,12 @@ public class InstructionsMenu extends GameBaseActivity {
 			instructionScreen.setUpgradesButtonVisibility(View.VISIBLE);
 			
 			instructionScreens.add(instructionScreen);
+			
+			// add points so that we can purchase an upgrade
+			Points.update(Upgrades.POINTS_UPGRADE_1);
+			SharedPreferences.Editor sharedPreferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+			Points.save(sharedPreferencesEditor);
+			sharedPreferencesEditor.commit();
 		}
 		
 		initialized = true;
