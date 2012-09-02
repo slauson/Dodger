@@ -51,6 +51,17 @@ public class PowerupSlow extends InactivePowerup {
 		super.activate(duration);
 	}
 	
+	@Override
+	public boolean isActive() {
+		boolean isActive = System.currentTimeMillis() < endingTime;
+		
+		if (duration > 0 && !isActive) {
+			duration = 0;
+		}
+		
+		return isActive;
+	}
+	
 	/**
 	 * Returns true if slowed time affects drops and powerups
 	 * @return true if slowed time affects drops and powerups
