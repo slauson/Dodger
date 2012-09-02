@@ -120,6 +120,9 @@ public class Asteroid extends DrawObject {
 		createRandomPoints();
 		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 		
+		// reset dirX just in case it was modified by a magnet or black hole
+		dirX = 0;
+		
 		// horizontal movement
 		if (horizontalMovementMax > 0.01) {
 			dirX = -horizontalMovementMax + (2*horizontalMovementMax*random.nextFloat());
