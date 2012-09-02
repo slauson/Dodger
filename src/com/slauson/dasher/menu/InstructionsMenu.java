@@ -644,7 +644,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		game.clearAsteroids();
 		
 		// if last screen, clear powerups/drops
-		if (instructionScreenIndex == instructionScreens.size()) {
+		if (instructionScreenIndex == instructionScreens.size() - 1) {
 			game.clearPowerups();
 			game.clearDrops();
 		}
