@@ -37,6 +37,7 @@ public abstract class GameBaseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		System.out.println("GameBaseActivity::onCreate()");
+		toggleGameThread(true);
 		
 		accelerometer = new Accelerometer(this);
 	}
@@ -47,8 +48,6 @@ public abstract class GameBaseActivity extends Activity {
 		gameView.onResume();
 		
 		System.out.println("GameBaseActivity::onResume()");
-		
-		toggleGameThread(true);
 		
 		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.registerListener();
@@ -72,7 +71,7 @@ public abstract class GameBaseActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
 		// only move when keyboard controls are being used and when ship in normal or invulnerability status
-		if (Options.controlType == Options.CONTROL_KEYBOARD) {
+		if (game != null && game.isInitialized() && Options.controlType == Options.CONTROL_KEYBOARD) {
 			game.keyDown(keyCode);
 		}
 
@@ -84,7 +83,7 @@ public abstract class GameBaseActivity extends Activity {
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		
 		// only move player ship when keyboard controls are being used
-		if (Options.controlType == Options.CONTROL_KEYBOARD) {
+		if (game != null && game.isInitialized() && Options.controlType == Options.CONTROL_KEYBOARD) {
 			game.keyUp(keyCode);
 		}
 		
@@ -95,7 +94,7 @@ public abstract class GameBaseActivity extends Activity {
 	 * Updates game state and draws everything to surface view
 	 */
 	public void update() {
-		if (game.isInitialized()) {
+		if (game != null && game.isInitialized()) {
 			game.updateStates();
 			gameView.draw();
 		}
@@ -113,7 +112,9 @@ public abstract class GameBaseActivity extends Activity {
 			return;
 		}
 		
-		game.updateAccelerometer(tx, ty);
+		if (game != null && game.isInitialized()) {
+			game.updateAccelerometer(tx, ty);
+		}
 	}
 	
 	/**

@@ -52,6 +52,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		// initialize game
 		if (!game.isInitialized()) {
 			game.init(getWidth(), (int)(getHeight()*canvasHeightFactor));
+		} else {
+			// draw once if game is paused
+			if (Game.gameStatus == Game.STATUS_PAUSED) {
+				draw();
+			}
 		}
 	}
 
@@ -66,6 +71,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 		
 		surfaceHolder = getHolder();
 		getHolder().addCallback(this);
+		
 	}
 	
 	@Override

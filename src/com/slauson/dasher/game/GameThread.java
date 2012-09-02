@@ -31,12 +31,10 @@ public class GameThread extends Thread {
 	@Override
 	public void run() {
 		
-		long lastUpdateTime = System.currentTimeMillis();
-		long sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
+		long lastUpdateTime, sleepTime;
 		
-		while (running) {
+		do {
 			try {
-				sleep(sleepTime);
 				lastUpdateTime = System.currentTimeMillis();
 				gameActivity.update();
 				sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
@@ -45,10 +43,11 @@ public class GameThread extends Thread {
 					System.out.println("Slowdown: " + sleepTime);
 					sleepTime = 0;
 				}
+				
+				sleep(sleepTime);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+		} while (running);
 	}
 }
