@@ -446,10 +446,6 @@ public class Game {
 	 */
 	public void updateStates() {
 		
-		if (gameStatus == STATUS_PAUSED) {
-			return;
-		}
-		
 		long startTime = 0;
 		
 		if (Debugging.runtimeAnalysis) {
@@ -678,9 +674,8 @@ public class Game {
 	/**
 	 * Toggles pausing of game
 	 * @param paused true if the game should be paused
-	 * @return true if pause succeeded
 	 */
-	public boolean togglePause(boolean paused) {
+	public void togglePause(boolean paused) {
 		if (paused && gameStatus != STATUS_PAUSED) {
 			
 			gameStatus = STATUS_PAUSED;
@@ -752,8 +747,6 @@ public class Game {
 			
 			pauseTime = -1;
 		}
-		
-		return true;
 	}
 	
 	/**
@@ -1357,6 +1350,9 @@ public class Game {
 		for (ActivePowerup activePowerup : activePowerups) {
 			activePowerup.addTime(timeDifference);
 		}
+		powerupSlow.addTime(timeDifference);
+		powerupSmall.addTime(timeDifference);
+		powerupInvulnerability.addTime(timeDifference);
 		
 		// update level start time
 		level.addToStartTime(timeDifference);

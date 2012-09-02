@@ -48,10 +48,7 @@ public abstract class GameBaseActivity extends Activity {
 		
 		System.out.println("GameBaseActivity::onResume()");
 		
-		// Create and start background Thread
-		gameThread = new GameThread(this);
-		gameThread.setRunning(true);
-		gameThread.start();
+		toggleGameThread(true);
 		
 		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.registerListener();
@@ -64,18 +61,7 @@ public abstract class GameBaseActivity extends Activity {
 		
 		System.out.println("GameBaseActivity::onPause()");
 		
-		// Kill the background thread
-		boolean retry = true;
-		gameThread.setRunning(false);
-		
-		while (retry) {
-			try {
-				gameThread.join();
-				retry = false;
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		toggleGameThread(false);
 		
 		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.unregisterListener();
@@ -128,6 +114,34 @@ public abstract class GameBaseActivity extends Activity {
 		}
 		
 		game.updateAccelerometer(tx, ty);
+	}
+	
+	/**
+	 * Toggles running of game thread
+	 * @param running true if game thread should be running
+	 */
+	protected void toggleGameThread(boolean running) {
+
+		// Create and start new background thread
+		if (running) {
+			gameThread = new GameThread(this);
+			gameThread.setRunning(true);
+			gameThread.start();
+		}
+		// otherwise kill the background thread
+		else {
+			boolean retry = true;
+			gameThread.setRunning(false);
+			
+			while (retry) {
+				try {
+					gameThread.join();
+					retry = false;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	/**

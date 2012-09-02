@@ -156,6 +156,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		nextButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (tutorialMode && currentInstructionScreen != null && !currentInstructionScreen.getRequirementCompleted()) {
+					toggleGameThread(false);
 					game.togglePause(true);
 					showDialog(DIALOG_REQUIREMENT_NOT_COMPLETED, null);
 				} else {
@@ -180,6 +181,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		
 		// unpause game
 		if (game.isInitialized()) {
+			toggleGameThread(true);
 			game.togglePause(false);
 		}
 		
@@ -196,6 +198,7 @@ public class InstructionsMenu extends GameBaseActivity {
 		super.onPause();
 		
 		// pause game
+		toggleGameThread(false);
 		game.togglePause(true);
 	}
 	
@@ -234,6 +237,7 @@ public class InstructionsMenu extends GameBaseActivity {
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
+						toggleGameThread(true);
 						game.togglePause(false);
 					}
 				})
@@ -243,6 +247,7 @@ public class InstructionsMenu extends GameBaseActivity {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_REQUIREMENT_NOT_COMPLETED);
 						startNewScreen(true);
+						toggleGameThread(true);
 						game.togglePause(false);
 					}
 				})

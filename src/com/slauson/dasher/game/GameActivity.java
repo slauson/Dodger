@@ -160,10 +160,11 @@ public class GameActivity extends GameBaseActivity  {
 	 */
 	private void pauseGame() {
 		
-		if (game.togglePause(true)) {
-			pauseMenu.setVisibility(View.VISIBLE);
-			paused = true;
-		}
+		toggleGameThread(false);
+
+		game.togglePause(true);
+		pauseMenu.setVisibility(View.VISIBLE);
+		paused = true;
 	}
 
 	/**
@@ -171,9 +172,10 @@ public class GameActivity extends GameBaseActivity  {
 	 */
 	private void unpauseGame() {
 		
-		if (game.togglePause(false)) {
-			pauseMenu.setVisibility(View.GONE);
-			paused = false;
-		}
+		toggleGameThread(true);
+
+		game.togglePause(false);
+		pauseMenu.setVisibility(View.GONE);
+		paused = false;
 	}
 }

@@ -38,6 +38,14 @@ public abstract class InactivePowerup {
 		this.level = level;
 	}
 	
+	/**
+	 * Adds the given amount of time to the ending time for the powerup
+	 * @param timeDifference amount of time to add
+	 */
+	public void addTime(long timeDifference) {
+		endingTime += timeDifference;
+	}
+	
 	// abstract methods
 	public abstract void activate();
 }
