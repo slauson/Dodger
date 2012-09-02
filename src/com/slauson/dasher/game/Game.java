@@ -942,6 +942,7 @@ public class Game {
 		
 		// cleanup player
 		player.cleanup();
+		playerVisible = false;
 		
 		// clear asteroids, drops, powerups
 		asteroids.clear();
@@ -1453,7 +1454,6 @@ public class Game {
 				gameActivity.runOnUiThread(new Runnable() {
 				     public void run() {
 				    	 gameActivity.gameOver();
-				    	 cleanup();
 				    }
 				});
 			}

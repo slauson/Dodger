@@ -143,6 +143,11 @@ public class GameActivity extends GameBaseActivity  {
 	
 	@Override
 	public void gameOver() {
+		
+		// cleanup game
+		game.cleanup();
+
+		
 		// Transition to game over menu
 		quitting = true;
 		Intent intent = new Intent(GameActivity.this, GameOverMenu.class);
