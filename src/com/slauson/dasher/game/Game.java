@@ -740,7 +740,7 @@ public class Game {
 			
 			if (pauseTime > 0) {
 				// reset all update times
-				resetUpdateTimes();
+				resetTimes();
 			}
 			
 			// reset runtime analysis
@@ -1346,7 +1346,7 @@ public class Game {
 	/**
 	 * Resets update times for player, asteroids, drops, and powerup
 	 */
-	private void resetUpdateTimes() {
+	private void resetTimes() {
 		
 		long timeDifference = System.currentTimeMillis() - pauseTime;
 
@@ -1363,6 +1363,9 @@ public class Game {
 		
 		// reset update times
 		player.resetUpdateTime();
+		
+		// update last move time (for stay in place achievement)
+		lastMoveTime += timeDifference;
 		
 		for (Asteroid asteroid : asteroids) {
 			asteroid.resetUpdateTime();
