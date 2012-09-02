@@ -190,7 +190,7 @@ public class Player extends DrawObject {
 		// determine if multiple drops are enabled for dash
 		dashMultipleDrops = Upgrades.dashUpgrade.getLevel() >= Upgrades.DASH_UPGRADE_MULTIPLE_POWERUPS;
 		
-		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_4444);
 		drawPointsToBitmap(Options.graphicsType == Options.GRAPHICS_NORMAL);
 	}
 

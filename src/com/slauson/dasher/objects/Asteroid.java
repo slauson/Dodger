@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.FloatMath;
 
 import com.slauson.dasher.game.Game;
 import com.slauson.dasher.status.LocalStatistics;
@@ -90,7 +91,7 @@ public class Asteroid extends DrawObject {
 		int bitmapRadius = getRelativeWidthSize(sizeFactorMax);
 		int bitmapSize = (int)(2.5 * bitmapRadius);
 		
-		bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888);
+		bitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_4444);
 		
 		for (int i = 0; i < numPoints; i++) {
 			lineSegments.add(new LineSegment(0, 0, 0, 0));
@@ -289,8 +290,8 @@ public class Asteroid extends DrawObject {
 			int indexTop = getClosestPointsIndex(Math.PI/2);
 			int indexBottom = getClosestPointsIndex(3*Math.PI/2);
 			
-			points[0] = points[indexTop+1];
-			points[1] = points[indexBottom+1];
+			points[0] = FloatMath.sqrt((float)(Math.pow(points[indexTop], 2) + Math.pow(points[indexTop+1], 2)));
+			points[1] = -FloatMath.sqrt((float)(Math.pow(points[indexBottom], 2) + Math.pow(points[indexBottom+1], 2)));
 
 			// NOTE: don't reset speed here so that the split up animation looks smoother
 			status = STATUS_SPLITTING_UP;

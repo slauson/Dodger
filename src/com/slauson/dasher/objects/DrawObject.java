@@ -117,4 +117,10 @@ public abstract class DrawObject extends Item {
 	public int getRelativeHeightSize(float factor) {
 		return (int)(Game.canvasHeight*factor);
 	}
+	
+	public void cleanup() {
+		if (bitmap != null) {
+			bitmap.recycle();
+		}
+	}
 }

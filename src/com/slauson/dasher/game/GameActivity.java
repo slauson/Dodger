@@ -92,6 +92,7 @@ public class GameActivity extends GameBaseActivity  {
 
 			public void onClick(View v) {
 				game.resetPlayer();
+				game.cleanup();
 				gameOver();
 			}
 		});

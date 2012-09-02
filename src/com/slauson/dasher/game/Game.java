@@ -929,6 +929,25 @@ public class Game {
 		
 		player.reset();
 	}
+	
+	/**
+	 * Performs cleanup to help with memory management.
+	 */
+	public void cleanup() {
+		
+		// cleanup asteroids
+		for (Asteroid asteroid : asteroids) {
+			asteroid.cleanup();
+		}
+		
+		// cleanup player
+		player.cleanup();
+		
+		// clear asteroids, drops, powerups
+		asteroids.clear();
+		drops.clear();
+		activePowerups.clear();
+	}
 
 	/**
 	 * Update asteroids
@@ -1434,6 +1453,7 @@ public class Game {
 				gameActivity.runOnUiThread(new Runnable() {
 				     public void run() {
 				    	 gameActivity.gameOver();
+				    	 cleanup();
 				    }
 				});
 			}
@@ -1461,5 +1481,5 @@ public class Game {
 			activePowerup.checkAchievements();
 		}
 	}
-
+	
 }
