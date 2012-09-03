@@ -537,6 +537,8 @@ public class Game {
 				player.setGoX(x);
 			}
 			
+			lastMoveTime = System.currentTimeMillis();
+			
 			break;
 		case MotionEvent.ACTION_UP:
 			// dash based on double tap
