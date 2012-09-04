@@ -89,8 +89,10 @@ public abstract class GameBaseActivity extends Activity {
 	 */
 	public void update() {
 		if (game != null && game.isInitialized()) {
-			game.updateStates();
-			gameView.draw();
+			// only update states if canvas is ready
+			if (gameView.draw()) {
+				game.updateStates();
+			}
 		}
 	}
 	

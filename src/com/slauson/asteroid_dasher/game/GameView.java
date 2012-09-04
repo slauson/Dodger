@@ -89,12 +89,18 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 	/**
 	 * Draw on surface view
 	 */
-	public void draw() {
+	public boolean draw() {
 		
 		Canvas canvas = null;
 
 		try {
 			canvas = surfaceHolder.lockCanvas();
+			
+			// wait till canvas is non null
+			// not the best solution, but sometimes the canvas isn't ready yet
+			if (canvas == null) {
+				return false;
+			}
 			
 			synchronized (surfaceHolder) {
 				
@@ -116,6 +122,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 				surfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		}
+		
+		return true;
 	}
 	
 	/**
