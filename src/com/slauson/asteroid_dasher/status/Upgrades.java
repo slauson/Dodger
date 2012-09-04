@@ -92,10 +92,10 @@ public class Upgrades {
 	public static Upgrade slowUpgrade = new Upgrade("upgrade_slow", "Slow");
 	public static Upgrade invulnerabilityUpgrade = new Upgrade("upgrade_invulnerability", "Invulnerability");
 	public static Upgrade drillUpgrade = new Upgrade("upgrade_drill", "Drill");
-	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet", 0, "Magnet");
-	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", 0, "Black Hole");
-	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", 0, "Bumper");
-	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", 0, "Bomb");
+	public static Upgrade magnetUpgrade = new Upgrade("upgrade_magnet", -1, "Magnet");
+	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", -1, "Black Hole");
+	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", -1, "Bumper");
+	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", -1, "Bomb");
 	
 	private static boolean initialized = false;
 	

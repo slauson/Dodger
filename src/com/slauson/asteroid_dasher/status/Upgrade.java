@@ -54,7 +54,7 @@ public class Upgrade {
 	 * @param preferences preferences to load from
 	 */
 	public void load(SharedPreferences preferences) {
-		level = preferences.getInt(key, 0);
+		level = preferences.getInt(key, level);
 	}
 	
 	/**
