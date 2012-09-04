@@ -367,7 +367,6 @@ public class Player extends DrawObject {
 			
 			// make ship invulnerability for short period
 			if (timeCounter <= 0) {
-				//System.out.println("INVULNERABILITY");
 				status = STATUS_INVULNERABILITY;
 				timeCounter = INVULNERABILITY_DURATION;
 			}
@@ -509,12 +508,6 @@ public class Player extends DrawObject {
 			float xDiff = x - asteroid.x;
 			float yDiff = y - asteroid.y;
 			
-			//System.out.println("Player: " + x + ", " + y);
-			//System.out.println("Asteroid: " + asteroid.x + ", " + asteroid.y);
-			
-			//System.out.println("Diff: " + xDiff + ", " + yDiff);
-			
-
 			// angle with respect to the asteroid
 			double angle = Math.atan(yDiff/xDiff);
 			
@@ -527,8 +520,6 @@ public class Player extends DrawObject {
 				angle += 2*Math.PI;
 			}
 			
-			//System.out.println("Asteroid Angle: " + angle);
-
 			// get two closest asteroid points to angle
 			int asteroidPointsIndex = asteroid.getClosestPointsIndex(angle);
 			

@@ -36,9 +36,7 @@ public abstract class GameBaseActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		System.out.println("GameBaseActivity::onCreate()");
 		toggleGameThread(true);
-		
 		accelerometer = new Accelerometer(this);
 	}
 	
@@ -46,8 +44,6 @@ public abstract class GameBaseActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		gameView.onResume();
-		
-		System.out.println("GameBaseActivity::onResume()");
 		
 		if (Options.controlType == Options.CONTROL_ACCELEROMETER) {
 			accelerometer.registerListener();
@@ -57,8 +53,6 @@ public abstract class GameBaseActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
-		System.out.println("GameBaseActivity::onPause()");
 		
 		toggleGameThread(false);
 		

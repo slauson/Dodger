@@ -681,7 +681,6 @@ public class Game {
 		if (paused && gameStatus != STATUS_PAUSED) {
 			
 			gameStatus = STATUS_PAUSED;
-			System.out.println("Game paused");
 			
 			// cancel game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP && gameOverTimer != null) {
@@ -695,13 +694,11 @@ public class Game {
 				float averageDrawTime = (1.f*runtimeAnalysisDrawTime/runtimeAnalysisNumUpdates);
 				
 				Toast.makeText(gameActivity.getApplicationContext(), String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw", Toast.LENGTH_LONG).show();
-				System.out.println(String.format("%.2f", averageUpdateTime) + "ms update, " + String.format("%.2f", averageDrawTime) + "ms draw");
 			}
 			
 			pauseTime = System.currentTimeMillis();
 		} else if (!paused && gameStatus != STATUS_RUNNING) {
 			gameStatus = STATUS_RUNNING;
-			System.out.println("Game unpaused");
 			
 			// schedule game over timer if player ship is breaking up
 			if (player.getStatus() == Player.STATUS_BREAKING_UP) {

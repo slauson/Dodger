@@ -66,8 +66,6 @@ public class AchievementsMenu extends Activity {
 	 */
 	protected void addAchievement(Achievement achievement) {
 		
-		System.out.println("adding achievement " + achievement + " to row " + row);
-		
 		// get first row
 		TableRow tableRow1 = (TableRow)table.getChildAt(row);
 		tableRow1.setVisibility(View.VISIBLE);

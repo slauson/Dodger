@@ -3,6 +3,7 @@ package com.slauson.asteroid_dasher.status;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import com.slauson.asteroid_dasher.R;
 import com.slauson.asteroid_dasher.other.Util;
 
 /**
@@ -164,11 +165,11 @@ public class Achievement {
 		idDescription = resources.getIdentifier(key + "_description", "string", packageName);
 
 		if (idTitle == 0) {
-			System.out.println("loadResources error: " + key + "_title");
+			idTitle = R.string.placeholder_null;
 		}
 		
 		if (idDescription == 0) {
-			System.out.println("loadResources error: " + key + "_description");
+			idDescription = R.string.placeholder_null;
 		}
 		
 		// load description, substitution text where necessary

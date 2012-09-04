@@ -43,7 +43,6 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			gameMode = extras.getInt(GameActivity.BUNDLE_FLAG_GAME_MODE);
-			System.out.println("gameMode = " + gameMode);
 		} else {
 			gameMode = Game.GAME_MODE_NORMAL;
 		}

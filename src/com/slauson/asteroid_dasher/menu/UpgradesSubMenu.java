@@ -80,8 +80,6 @@ public class UpgradesSubMenu extends Activity {
     	upgradeButton3 = (Button)findViewById(R.id.upgradesSubMenuUpgrade3Button);
     	upgradeButton4 = (Button)findViewById(R.id.upgradesSubMenuUpgrade4Button);
     	
-    	System.out.println("UPGRADE 1: " + getResources().getString(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)));
-    	
     	// set button text
     	upgradeButton1.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1));
     	upgradeButton2.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2));

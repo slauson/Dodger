@@ -89,8 +89,6 @@ public class Options {
 	 */
 	public static void load(Activity activity, SharedPreferences preferences) {
 		
-		System.out.println("Options::load()");
-		
 		// NOTE: have to store stuff as Strings since we're using a PreferenceActivity
 		controlType = Integer.valueOf(preferences.getString(activity.getString(R.string.configuration_key_controls), "" + CONTROL_DEFAULT));
 		accelerometerSensitivity = Integer.valueOf(preferences.getString(activity.getString(R.string.configuration_key_accelerometer_sensitivity), "" + ACCELEROMETER_SENSITIVITY_DEFAULT));
@@ -107,8 +105,6 @@ public class Options {
 	 * @param preferencesEditor preferences editor to save to
 	 */
 	public static void save(Activity activity, SharedPreferences.Editor preferencesEditor) {
-		
-		System.out.println("Options::save()");
 		
 		// NOTE: have to store stuff as Strings since we're using a PreferenceActivity
 		preferencesEditor.putString(activity.getString(R.string.configuration_key_controls), "" + controlType);

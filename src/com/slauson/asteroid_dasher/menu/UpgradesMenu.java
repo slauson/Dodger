@@ -341,7 +341,6 @@ public class UpgradesMenu extends Activity {
 						
 						// this should never happen...
 						if (upgrade == null) {
-							System.out.println("Null upgrade for id " + powerupUnlockUpgradeID);
 							return;
 						}
 

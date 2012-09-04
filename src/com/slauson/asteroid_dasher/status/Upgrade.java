@@ -1,5 +1,7 @@
 package com.slauson.asteroid_dasher.status;
 
+import com.slauson.asteroid_dasher.R;
+
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
@@ -89,7 +91,7 @@ public class Upgrade {
 			titles[i] = resources.getIdentifier(key + "_" + i, "string", packageName);
 			
 			if (titles[i] == 0) {
-				System.out.println("loadResources error: " + key + "_title_" + i);
+				titles[i] = R.string.placeholder_null;
 			}
 		}
 	}

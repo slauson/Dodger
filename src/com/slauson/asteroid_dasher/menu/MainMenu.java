@@ -185,8 +185,6 @@ public class MainMenu extends PaidDialogBaseMenu {
 			}
 		});
 		
-		System.out.println("MainMenu::onCreate()");
-		
 		// load saved state
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		
@@ -230,8 +228,6 @@ public class MainMenu extends PaidDialogBaseMenu {
 	public void onResume() {
 		
 		super.onResume();
-		
-		System.out.println("MainMenu::onResume()");
 		
 	}
 	
