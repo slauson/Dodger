@@ -78,7 +78,7 @@ public class Options {
 	public static int frameRate = FRAME_RATE_DEFAULT;
 	
 	/** True if this is free version **/
-	public static boolean freeVersion = true;
+	public static boolean freeVersion = false;
 	
 	private static boolean initialized = false;
 	

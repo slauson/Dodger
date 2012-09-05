@@ -9,7 +9,7 @@ public class Debugging {
 
 	public static int dropType = Game.POWERUP_NONE;
 	public static int level = 0;
-	public static boolean levelProgression = false;
+	public static boolean levelProgression = true;
 	public static boolean godMode = false;
 	public static boolean runtimeAnalysis = false;
 	
@@ -17,13 +17,13 @@ public class Debugging {
 	
 	public static void load(SharedPreferences sharedPreferences) {
 		
-		dropType = sharedPreferences.getInt("debugging_drop_type", Game.POWERUP_NONE);
-		level = sharedPreferences.getInt("debugging_level", 0);
-		levelProgression = sharedPreferences.getBoolean("debugging_level_progression", false);
-		godMode = sharedPreferences.getBoolean("debugging_god_mode", false);
-		runtimeAnalysis = sharedPreferences.getBoolean("debugging_runtime_analysis", false);
+		dropType = sharedPreferences.getInt("debugging_drop_type", dropType);
+		level = sharedPreferences.getInt("debugging_level", level);
+		levelProgression = sharedPreferences.getBoolean("debugging_level_progression", levelProgression);
+		godMode = sharedPreferences.getBoolean("debugging_god_mode", godMode);
+		runtimeAnalysis = sharedPreferences.getBoolean("debugging_runtime_analysis", runtimeAnalysis);
 		
-		Options.freeVersion = sharedPreferences.getBoolean("debugging_free_version", false);
+		Options.freeVersion = sharedPreferences.getBoolean("debugging_free_version", Options.freeVersion);
 		
 		initialized = true;
 	}
