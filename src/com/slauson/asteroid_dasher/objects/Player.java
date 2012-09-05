@@ -48,7 +48,6 @@ public class Player extends DrawObject {
 	
 	private float yBottom, yTop;
 	private int size;
-	private int rotationDegrees;
 	
 	private boolean moveByTouch;
 
@@ -89,6 +88,8 @@ public class Player extends DrawObject {
 	// breakup duration
 	private static final int BREAKING_UP_DURATION = 3000;
 	private static final float BREAKING_UP_MOVE = 20;
+	
+	private static final int ROTATION_DEGREES = 900;
 
 	/**
 	 * Public constants
@@ -153,9 +154,6 @@ public class Player extends DrawObject {
 			lineSegments.add(new LineSegment(0, 0, 0, 0));
 		}
 		
-		// calculate rotation degrees (use 180 +- 360 of twice the canvas height) 
-		rotationDegrees = Game.canvasHeight*2 - ((Game.canvasHeight*2-180)%360);
-		
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
@@ -214,7 +212,7 @@ public class Player extends DrawObject {
 			
 			// check if we need to rotate
 			if (!inPosition || direction == Game.DIRECTION_REVERSE) {
-				float degrees = rotationDegrees * (yBottom - y) / (yBottom - yTop);			
+				float degrees = ROTATION_DEGREES * (yBottom - y) / (yBottom - yTop);			
 				canvas.rotate(degrees, x, y);
 			}
 
