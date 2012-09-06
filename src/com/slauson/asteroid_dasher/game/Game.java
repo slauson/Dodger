@@ -116,6 +116,9 @@ public class Game {
 	private boolean enableDash;
 	/** Enables drops **/
 	private boolean enableDrops;
+	
+	/** Bitmap options **/
+	private BitmapFactory.Options bitmapOptions;
 
 	/** Runtime for updates **/
 	private static long runtimeAnalysisUpdateTime = 0;
@@ -166,6 +169,23 @@ public class Game {
 	
 	/** Level to start on in hard mode **/
 	private static final int HARD_MODE_START_LEVEL = 10;
+	
+
+	/** Maximum width of small canvas size **/
+	private static final int CANVAS_WIDTH_SMALL = 300;
+	/** Maximum width of normal canvas size **/
+	private static final int CANVAS_WIDTH_NORMAL = 600;
+	/** Maximum width of large canvas size **/
+	private static final int CANVAS_WIDTH_LARGE = 900;
+
+	/** Bitmap sample size for small canvas **/
+	private static final int BITMAP_SAMPLE_SIZE_SMALL = 8;
+	/** Bitmap sample size for normal canvas **/
+	private static final int BITMAP_SAMPLE_SIZE_NORMAL = 4;
+	/** Bitmap sample size for large canvas **/
+	private static final int BITMAP_SAMPLE_SIZE_LARGE = 2;
+
+
 
 	/**
 	 * Constants - public
@@ -214,7 +234,6 @@ public class Game {
 	/** Snowflake game mode where asteroids are snowflakes **/
 	public static final int GAME_MODE_SNOWFLAKE = 4;
 
-
 	/**
 	 * Shared stuff
 	 */
@@ -249,7 +268,7 @@ public class Game {
 	
 	/** Used to differentiate different game modes **/
 	public static int gameMode = GAME_MODE_NORMAL;
-
+	
 	/**
 	 * Resets all static state to default values
 	 */
@@ -283,6 +302,23 @@ public class Game {
 		
 		canvasWidth = width;
 		canvasHeight = height;
+		
+		// set bitmap options
+		bitmapOptions = new BitmapFactory.Options();
+		bitmapOptions.inDither = Options.graphicsType == Options.GRAPHICS_NORMAL;
+		bitmapOptions.inPurgeable = true;
+		bitmapOptions.inInputShareable = true;
+		
+		// set bitmap sample size
+		if (canvasWidth <= CANVAS_WIDTH_SMALL) {
+			bitmapOptions.inSampleSize = BITMAP_SAMPLE_SIZE_SMALL;	
+		} else if (canvasWidth <= CANVAS_WIDTH_NORMAL) {
+			bitmapOptions.inSampleSize = BITMAP_SAMPLE_SIZE_NORMAL;	
+		} else if (canvasWidth <= CANVAS_WIDTH_LARGE) {
+			bitmapOptions.inSampleSize = BITMAP_SAMPLE_SIZE_LARGE;	
+		} else {
+			bitmapOptions.inSampleSize = 1;	
+		}
 		
 		player = new Player(Options.controlType == Options.CONTROL_TOUCH, gameMode == GAME_MODE_INSTRUCTIONS);
 		
@@ -893,8 +929,8 @@ public class Game {
 			r_powerup = R.drawable.icon_bomb;
 			break;
 		}
-		
-		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup), x, y, powerup);
+
+		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup, bitmapOptions), x, y, powerup);
 		
 		drops.add(drop);
 		
@@ -1065,22 +1101,22 @@ public class Game {
 					
 					switch(temp.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.magnet), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.magnet, bitmapOptions), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_BLACK_HOLE:
-						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.black_hole), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.black_hole, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
 						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.drill), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.drill, bitmapOptions), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						localStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
 						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large_alt, bitmapOptions), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						} else {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_alt), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_alt, bitmapOptions), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
 						}
 						localStatistics.usesBumper++;
 						break;
