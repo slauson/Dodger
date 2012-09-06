@@ -855,7 +855,9 @@ public class Game {
 	 * Clears all asteroids
 	 */
 	public void clearAsteroids() {
-		asteroids.clear();
+		synchronized (asteroids) {
+			asteroids.clear();
+		}
 	}
 	
 	/**
@@ -964,8 +966,11 @@ public class Game {
 	public void cleanup() {
 		
 		// cleanup asteroids
-		for (Asteroid asteroid : asteroids) {
-			asteroid.cleanup();
+		synchronized (asteroids) {
+			for (Asteroid asteroid : asteroids) {
+				asteroid.cleanup();
+			}
+			asteroids.clear();
 		}
 		
 		// cleanup player
@@ -973,7 +978,6 @@ public class Game {
 		playerVisible = false;
 		
 		// clear asteroids, drops, powerups
-		asteroids.clear();
 		drops.clear();
 		activePowerups.clear();
 	}
