@@ -281,9 +281,6 @@ public class UpgradesSubMenu extends Activity {
 			
 			if (resourceID != -1) {
 				title = getResources().getString(resourceID);
-				
-				// remove '- cost' from title
-				title = title.substring(0, title.indexOf('\n')).trim();
 			}
 
 			// create bundle for dialog box
