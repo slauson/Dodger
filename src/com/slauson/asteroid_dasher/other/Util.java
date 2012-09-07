@@ -83,14 +83,17 @@ public class Util {
 		if (points > 999) {
 			
 			int tempPoints = points%1000;
-			String pointsString = "" + ((points - tempPoints)/1000) + "," + tempPoints;
+			String pointsString = "" + ((points - tempPoints)/1000) + ",";
 			
+			// add 0s if needed
 			if (tempPoints < 100) {
 				pointsString += "0";
 			}
 			if (tempPoints < 10) {
 				pointsString += "0";
 			}
+			
+			pointsString += tempPoints;
 			
 			return pointsString;
 		}
