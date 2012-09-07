@@ -118,6 +118,9 @@ public abstract class DrawObject extends Item {
 		return (int)(Game.canvasHeight*factor);
 	}
 	
+	/**
+	 * Cleans up bitmap.
+	 */
 	public void cleanup() {
 		if (bitmap != null) {
 			bitmap.recycle();

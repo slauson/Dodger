@@ -1081,46 +1081,47 @@ public class Game {
 		
 		synchronized (drops) {
 			
-			Drop temp;
+			Drop drop;
 			
 			// update falling powerups
 			for (int i = 0; i < drops.size(); i++) {
 				
-				temp = drops.get(i);
+				drop = drops.get(i);
 				
 				if (powerupSlow.isActive() && !powerupSlow.isAffectingDropsAndPowerups()) {
-					temp.update(0.5f);
+					drop.update(0.5f);
 				} else {
-					temp.update();
+					drop.update();
 				}
 				
 				// reset drop off screen
-				if ((direction == DIRECTION_NORMAL && temp.getY() - temp.getHeight()/2 > canvasHeight) || (direction == DIRECTION_REVERSE && temp.getY() + temp.getHeight()/2 < 0)) {
-					drops.remove(temp);
+				if ((direction == DIRECTION_NORMAL && drop.getY() - drop.getHeight()/2 > canvasHeight) || (direction == DIRECTION_REVERSE && drop.getY() + drop.getHeight()/2 < 0)) {
+					drop.cleanup();
+					drops.remove(drop);
 					i--;
 				}
 				
 				// check collision with player
-				if (player.getStatus() == Player.STATUS_NORMAL && temp.isVisible() && temp.checkBoxCollision(player)) {
+				if (player.getStatus() == Player.STATUS_NORMAL && drop.isVisible() && drop.checkBoxCollision(player)) {
 					
-					switch(temp.getType()) {
+					switch(drop.getType()) {
 					case POWERUP_MAGNET:
-						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.magnet, bitmapOptions), temp.getX(), temp.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
+						activePowerups.add(new PowerupMagnet(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.magnet, bitmapOptions), drop.getX(), drop.getY(), player.getDirection(), Upgrades.magnetUpgrade.getLevel()));
 						localStatistics.usesMagnet++;
 						break;
 					case POWERUP_BLACK_HOLE:
-						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.black_hole, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.twinkle_large), temp.getX(), temp.getY(), Upgrades.blackHoleUpgrade.getLevel()));
+						activePowerups.add(new PowerupBlackHole(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.black_hole, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.twinkle_large), drop.getX(), drop.getY(), Upgrades.blackHoleUpgrade.getLevel()));
 						localStatistics.usesBlackHole++;
 						break;
 					case POWERUP_DRILL:
-						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.drill, bitmapOptions), temp.getX(), temp.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
+						activePowerups.add(new PowerupDrill(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.drill, bitmapOptions), drop.getX(), drop.getY(), player.getDirection(), Upgrades.drillUpgrade.getLevel()));
 						localStatistics.usesDrill++;
 						break;
 					case POWERUP_BUMPER:
 						if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.BUMPER_UPGRADE_INCREASED_SIZE) {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large_alt, bitmapOptions), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_large_alt, bitmapOptions), drop.getX(), drop.getY(), Upgrades.bumperUpgrade.getLevel()));
 						} else {
-							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_alt, bitmapOptions), temp.getX(), temp.getY(), Upgrades.bumperUpgrade.getLevel()));
+							activePowerups.add(new PowerupBumper(BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper, bitmapOptions), BitmapFactory.decodeResource(gameActivity.getResources(), R.drawable.bumper_alt, bitmapOptions), drop.getX(), drop.getY(), Upgrades.bumperUpgrade.getLevel()));
 						}
 						localStatistics.usesBumper++;
 						break;
@@ -1142,7 +1143,8 @@ public class Game {
 						break;
 					}
 					
-					drops.remove(temp);
+					drop.cleanup();
+					drops.remove(drop);
 					i--;
 					
 					// check dash activate drop achievement
@@ -1155,7 +1157,7 @@ public class Game {
 					synchronized (activePowerups) {
 						for (ActivePowerup activePowerup : activePowerups) {
 							if (activePowerup instanceof PowerupBumper) {
-								((PowerupBumper)activePowerup).alterItem(temp);
+								((PowerupBumper)activePowerup).alterItem(drop);
 							}
 						}
 					}
@@ -1213,13 +1215,14 @@ public class Game {
 				}
 				
 				// check if any active powerups should be removed
-				if (!activePowerups.get(i).isActive()) {
+				if (!powerup.isActive()) {
 										
 					// reset teleporting drill
 					if (powerup instanceof PowerupDrill && ((PowerupDrill)powerup).hasTeleport()) {
 						((PowerupDrill)powerup).teleport();
 					} else {
 						powerup.checkAchievements();
+						powerup.cleanup();
 						activePowerups.remove(i);
 						i--;
 					}
@@ -1228,7 +1231,7 @@ public class Game {
 					// alter drill active powerups for each bumper active powerup
 					for (ActivePowerup activePowerup : activePowerups) {
 						if (activePowerup instanceof PowerupBumper && activePowerups.get(i) instanceof PowerupDrill) {
-							((PowerupBumper)activePowerup).alterDrill((PowerupDrill)activePowerups.get(i));
+							((PowerupBumper)activePowerup).alterDrill((PowerupDrill)powerup);
 						}
 					}
 				}

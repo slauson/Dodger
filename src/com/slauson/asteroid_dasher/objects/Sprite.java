@@ -36,5 +36,13 @@ public abstract class Sprite extends Item {
 		x = x + (dirX*speed*timeModifier*speedModifier);
 		y = y + (Game.gravity*dirY*speed*timeModifier*speedModifier);
 	}
-
+	
+	/**
+	 * Cleans up bitmap
+	 */
+	public void cleanup() {
+		if (bitmap != null) {
+			bitmap.recycle();
+		}
+	}
 }
