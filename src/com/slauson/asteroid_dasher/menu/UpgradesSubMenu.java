@@ -81,11 +81,11 @@ public class UpgradesSubMenu extends Activity {
     	upgradeButton4 = (Button)findViewById(R.id.upgradesSubMenuUpgrade4Button);
     	
     	// set button text
-    	upgradeButton1.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1));
-    	upgradeButton2.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2));
-    	upgradeButton3.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3));
-    	upgradeButton4.setText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4));
-
+    	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Upgrades.POINTS_UPGRADE_1 + " points");
+    	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Upgrades.POINTS_UPGRADE_2 + " points");
+    	upgradeButton3.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3)) + "\n" + Upgrades.POINTS_UPGRADE_3 + " points");
+    	upgradeButton4.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4)) + "\n" + Upgrades.POINTS_UPGRADE_4 + " points");
+    
 		// check for purchased upgrades
 		switch(upgrade.getLevel()) {
 		case Upgrades.UPGRADE_4:
