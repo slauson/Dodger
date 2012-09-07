@@ -36,11 +36,6 @@ import android.widget.Toast;
  */
 public class MainMenu extends PaidDialogBaseMenu {
 	
-	/** Duration of short toast notification **/
-	private static final int TOAST_LENGTH_SHORT = 2000;
-	
-	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard", "Snowflake"};
-	
 	/** Button for starting game or high scores **/
 	private Button startHighScoresButton;
 	/** Button for instructions or achievements **/
@@ -61,6 +56,15 @@ public class MainMenu extends PaidDialogBaseMenu {
 	/** Game mode dialog **/
 	private static final int DIALOG_GAME_MODE = 0;
 	
+	/** Duration of short toast notification **/
+	private static final int TOAST_LENGTH_SHORT = 2000;
+	
+	/** Game mode titles **/
+	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard", "Snowflake"};
+	
+	/** Debug menu **/
+	private static boolean DEBUG_MENU_ENABLED = false;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,13 +74,15 @@ public class MainMenu extends PaidDialogBaseMenu {
 		backButtonQuitEndTime = 0;
 		
 		// debugging menu
-		TextView title = (TextView)findViewById(R.id.mainMenuTitle);
-		title.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(MainMenu.this, DebuggingMenu.class);
-				startActivity(intent);
-			}
-		});
+		if (DEBUG_MENU_ENABLED) {
+			TextView title = (TextView)findViewById(R.id.mainMenuTitle);
+			title.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(MainMenu.this, DebuggingMenu.class);
+					startActivity(intent);
+				}
+			});
+		}
 
 		// start/high scores button
 		startHighScoresButton = (Button)findViewById(R.id.mainMenuStartHighScoresButton);
