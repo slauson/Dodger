@@ -1,5 +1,6 @@
 package com.slauson.asteroid_dasher.menu;
 
+import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.GlobalStatistics;
 import com.slauson.asteroid_dasher.status.Points;
 import com.slauson.asteroid_dasher.status.Upgrade;
@@ -81,10 +82,10 @@ public class UpgradesSubMenu extends Activity {
     	upgradeButton4 = (Button)findViewById(R.id.upgradesSubMenuUpgrade4Button);
     	
     	// set button text
-    	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Upgrades.POINTS_UPGRADE_1 + " points");
-    	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Upgrades.POINTS_UPGRADE_2 + " points");
-    	upgradeButton3.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3)) + "\n" + Upgrades.POINTS_UPGRADE_3 + " points");
-    	upgradeButton4.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4)) + "\n" + Upgrades.POINTS_UPGRADE_4 + " points");
+    	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_1) + " points");
+    	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_2) + " points");
+    	upgradeButton3.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_3) + " points");
+    	upgradeButton4.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_4) + " points");
     
 		// check for purchased upgrades
 		switch(upgrade.getLevel()) {
@@ -316,9 +317,6 @@ public class UpgradesSubMenu extends Activity {
 				
 				if (requiredResourceID != -1) {
 					requiredTitle = getResources().getString(requiredResourceID);
-					
-					// remove '- cost' from title
-					requiredTitle = requiredTitle.substring(0, requiredTitle.indexOf('\n')).trim();
 				}
 				bundle.putString(DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE, requiredTitle);
 				

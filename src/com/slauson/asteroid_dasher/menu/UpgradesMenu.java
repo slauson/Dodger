@@ -1,5 +1,6 @@
 package com.slauson.asteroid_dasher.menu;
 
+import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.GlobalStatistics;
 import com.slauson.asteroid_dasher.status.Points;
 import com.slauson.asteroid_dasher.status.Upgrade;
@@ -137,7 +138,7 @@ public class UpgradesMenu extends Activity {
     	if (Upgrades.magnetUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
     		toggleButtonColor(magnetButton);
     	} else {
-    		magnetButton.setText(magnetButton.getText() + "\n" + Upgrades.POINTS_MAGNET_POWERUP + " points");
+    		magnetButton.setText(magnetButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_MAGNET_POWERUP) + " points");
     	}
     	
     	magnetButton.setOnClickListener(new OnClickListener() {
@@ -175,7 +176,7 @@ public class UpgradesMenu extends Activity {
     	if (Upgrades.blackHoleUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
     		toggleButtonColor(blackHoleButton);
     	} else {
-    		blackHoleButton.setText(blackHoleButton.getText() + "\n" + Upgrades.POINTS_BLACK_HOLE_POWERUP + " points");
+    		blackHoleButton.setText(blackHoleButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BLACK_HOLE_POWERUP) + " points");
     	}
     	
     	blackHoleButton.setOnClickListener(new OnClickListener() {
@@ -213,7 +214,7 @@ public class UpgradesMenu extends Activity {
     	if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
     		toggleButtonColor(bumperButton);
     	} else {
-    		bumperButton.setText(bumperButton.getText() + "\n" + Upgrades.POINTS_BUMPER_POWERUP + " points");
+    		bumperButton.setText(bumperButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BUMPER_POWERUP) + " points");
     	}
     	
     	bumperButton.setOnClickListener(new OnClickListener() {
@@ -251,7 +252,7 @@ public class UpgradesMenu extends Activity {
     	if (Upgrades.bombUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED) {
     		toggleButtonColor(bombButton);
     	} else {
-    		bombButton.setText(bombButton.getText() + "\n" + Upgrades.POINTS_BOMB_POWERUP + " points");
+    		bombButton.setText(bombButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BOMB_POWERUP) + " points");
     	}
     	
     	bombButton.setOnClickListener(new OnClickListener() {
@@ -307,7 +308,7 @@ public class UpgradesMenu extends Activity {
 		case DIALOG_NOT_ENOUGH_POINTS:
 			alertDialogBuilder
 				.setTitle("Not Enough Points")
-				.setMessage("You need at least " + points + " to unlock the " + title + " powerup.")
+				.setMessage("You do not have enough points to unlock the " + title + " powerup.")
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_NOT_ENOUGH_POINTS);
@@ -325,7 +326,7 @@ public class UpgradesMenu extends Activity {
 			
 			alertDialogBuilder
 				.setTitle("Confirm Powerup")
-				.setMessage("Are you sure you want to unlock the " + title + " powerup for " + points + " points?")
+				.setMessage("Are you sure you want to unlock the " + title + " powerup for " + Util.getPointsString(points) + " points?")
 				
 				// do nothing when user selects no 
 				.setNegativeButton("No", new DialogInterface.OnClickListener() {
