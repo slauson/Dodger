@@ -88,7 +88,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		points += Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed();
 		
 		// update statistics
-		updateStatistics(sharedPreferencesEditor, points);
+		GlobalStatistics.update();
 
 		// update high scores
 		updateHighScores(sharedPreferencesEditor);
@@ -121,6 +121,10 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		// update points
 		updatePoints(sharedPreferencesEditor, points);
 		
+		// update points in statistics and save result
+		GlobalStatistics.getInstance().pointsEarned += points;
+		GlobalStatistics.save(sharedPreferencesEditor);
+
 		// commit everything
 		sharedPreferencesEditor.commit();
 
@@ -219,16 +223,6 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 			}
 		});
 	}
-	
-	/**
-	 * Updates statistics
-	 */
-	private void updateStatistics(SharedPreferences.Editor sharedPreferencesEditor, int points) {
-		GlobalStatistics.getInstance().pointsEarned += points;
-		GlobalStatistics.update();
-		GlobalStatistics.save(sharedPreferencesEditor);
-	}
-
 	/**
 	 * Updates achievements
 	 */

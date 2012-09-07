@@ -36,7 +36,11 @@ public class PointDetailsMenu extends Activity {
     	TextView pointsAddedAsteroidsDestroyedDescription = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsAsteroidsDestroyedDescription);
     	TextView pointsAddedAchievementsDescription = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsAchievementsDescription);
     	
-    	pointsAddedTimeDescription.setText("(" + localStatistics.timePlayed + " seconds survived)");
+    	if (localStatistics.timePlayed == 1) {
+    		pointsAddedTimeDescription.setText("(" + localStatistics.timePlayed + " second survived)");
+    	} else {
+    		pointsAddedTimeDescription.setText("(" + localStatistics.timePlayed + " seconds survived)");
+    	}
     	
     	if (localStatistics.getTotalNumAsteroidsDestroyed() == 1) {
     		pointsAddedAsteroidsDestroyedDescription.setText("(" + localStatistics.getTotalNumAsteroidsDestroyed() + " asteroid destroyed)");
