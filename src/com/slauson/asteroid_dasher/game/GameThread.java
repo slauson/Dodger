@@ -40,7 +40,6 @@ public class GameThread extends Thread {
 				sleepTime = Game.maxSleepTime - (System.currentTimeMillis() - lastUpdateTime);
 				
 				if (sleepTime < 0) {
-					//System.out.println("Slowdown: " + sleepTime);
 					sleepTime = 0;
 				}
 				
