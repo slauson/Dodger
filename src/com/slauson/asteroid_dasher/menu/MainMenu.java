@@ -128,7 +128,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					startActivity(intent);
 				} else {
 					// check if free version
-					if (Options.freeVersion) {
+					if (Options.demoVersion) {
 						Bundle bundle = new Bundle();
 						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
 						showDialog(DIALOG_PAID_VERSION, bundle);
@@ -164,7 +164,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					toggleShowMore();
 				} else {
 					// check if free version
-					if (Options.freeVersion) {
+					if (Options.demoVersion) {
 						Bundle bundle = new Bundle();
 						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
 						showDialog(DIALOG_PAID_VERSION, bundle);
@@ -258,7 +258,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 						int gameMode = Game.GAME_MODE_NORMAL;
 						switch(which) {
 						case 0:
-							if (Options.freeVersion) {
+							if (Options.demoVersion) {
 								Bundle bundle = new Bundle();
 								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
 								showDialog(DIALOG_PAID_VERSION, bundle);
@@ -270,7 +270,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 							gameMode = Game.GAME_MODE_NORMAL;
 							break;
 						case 2:
-							if (Options.freeVersion) {
+							if (Options.demoVersion) {
 								Bundle bundle = new Bundle();
 								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
 								showDialog(DIALOG_PAID_VERSION, bundle);
@@ -279,7 +279,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 							gameMode = Game.GAME_MODE_HARD;
 							break;
 						case 3:
-							if (Options.freeVersion) {
+							if (Options.demoVersion) {
 								Bundle bundle = new Bundle();
 								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
 								showDialog(DIALOG_PAID_VERSION, bundle);

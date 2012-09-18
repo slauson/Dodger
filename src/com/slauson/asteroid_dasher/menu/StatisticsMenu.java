@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.Achievements;
 import com.slauson.asteroid_dasher.status.GlobalStatistics;
+import com.slauson.asteroid_dasher.status.Options;
 import com.slauson.asteroid_dasher.status.Statistics;
 import com.slauson.asteroid_dasher.status.Upgrades;
 import com.slauson.asteroid_dasher.R;
@@ -93,9 +94,11 @@ public class StatisticsMenu extends Activity {
     	pointsSpent.setText("" + Util.getPointsString(globalStatistics.pointsSpent));
 
     	// completion percentage
-    	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
-    	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);
-    	completionPercentage.setText("" + ((int)(completion*100)) + " %");
+    	if (!Options.demoVersion) {
+        	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
+        	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);
+        	completionPercentage.setText("" + ((int)(completion*100)) + " %");
+    	}
     	
 	}
 	

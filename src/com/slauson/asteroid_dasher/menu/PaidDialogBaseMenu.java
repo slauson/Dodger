@@ -18,9 +18,6 @@ public class PaidDialogBaseMenu extends Activity {
 	/** Paid feature for dialog **/
 	protected static final String DIALOG_EXTRA_PAID_FEATURE = "paid_feature";
 	
-	/** Name of package **/
-	private static final String PAID_PACKAGE_NAME = "com.slauson.dasher";
-	
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args) {
 
@@ -49,9 +46,9 @@ public class PaidDialogBaseMenu extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_PAID_VERSION);
 						try {
-						    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + PAID_PACKAGE_NAME)));
+						    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + getString(R.string.menu_paid_package_name))));
 						} catch (android.content.ActivityNotFoundException anfe) {
-						    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + PAID_PACKAGE_NAME)));
+						    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + getString(R.string.menu_paid_package_name))));
 						}
 					}
 				});

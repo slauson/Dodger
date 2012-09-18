@@ -77,8 +77,8 @@ public class Options {
 	/** Game frame rate **/
 	public static int frameRate = FRAME_RATE_DEFAULT;
 	
-	/** True if this is free version **/
-	public static boolean freeVersion = false;
+	/** True if this is the demo version **/
+	public static boolean demoVersion = false;
 	
 	private static boolean initialized = false;
 	

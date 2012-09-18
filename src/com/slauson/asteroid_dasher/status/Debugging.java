@@ -23,7 +23,7 @@ public class Debugging {
 		godMode = sharedPreferences.getBoolean("debugging_god_mode", godMode);
 		runtimeAnalysis = sharedPreferences.getBoolean("debugging_runtime_analysis", runtimeAnalysis);
 		
-		Options.freeVersion = sharedPreferences.getBoolean("debugging_free_version", Options.freeVersion);
+		Options.demoVersion = sharedPreferences.getBoolean("debugging_free_version", Options.demoVersion);
 		
 		initialized = true;
 	}
@@ -36,7 +36,7 @@ public class Debugging {
 		sharedPreferencesEditor.putBoolean("debugging_god_mode", godMode);
 		sharedPreferencesEditor.putBoolean("debugging_runtime_analysis", runtimeAnalysis);
 		
-		sharedPreferencesEditor.putBoolean("debugging_free_version", Options.freeVersion);
+		sharedPreferencesEditor.putBoolean("debugging_free_version", Options.demoVersion);
 		
 		sharedPreferencesEditor.commit();
 	}

@@ -216,14 +216,14 @@ public class DebuggingMenu extends Activity {
     	freeVersion.setText("Free Version");
     	
     	// set previous selection
-    	freeVersion.setChecked(Options.freeVersion);
+    	freeVersion.setChecked(Options.demoVersion);
     	
     	freeVersion.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton button, boolean value) {
-				Options.freeVersion = value;
+				Options.demoVersion = value;
 				
-				Toast.makeText(button.getContext(), "Free version set to " + Options.freeVersion, Toast.LENGTH_SHORT).show();
+				Toast.makeText(button.getContext(), "Demo version set to " + Options.demoVersion, Toast.LENGTH_SHORT).show();
 			}
     	});
 

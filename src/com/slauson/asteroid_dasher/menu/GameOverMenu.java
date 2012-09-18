@@ -94,7 +94,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		updateHighScores(sharedPreferencesEditor);
 				
 		// check/update achievements if paid version
-		if (!Options.freeVersion) {
+		if (!Options.demoVersion) {
 			updateAchievements(sharedPreferencesEditor);
 			
 			// update points after checking achievements
@@ -157,7 +157,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		gameOverSummaryAchievements.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				// check if free version
-				if (Options.freeVersion) {
+				if (Options.demoVersion) {
 					Bundle bundle = new Bundle();
 					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
 					showDialog(DIALOG_PAID_VERSION, bundle);
@@ -201,7 +201,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 
 			public void onClick(View v) {
 				// check if free version
-				if (Options.freeVersion) {
+				if (Options.demoVersion) {
 					Bundle bundle = new Bundle();
 					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
 					showDialog(DIALOG_PAID_VERSION, bundle);
