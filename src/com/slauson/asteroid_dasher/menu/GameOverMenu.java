@@ -140,7 +140,15 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 				startActivity(intent);
 			}
 		});
-		gameOverSummaryTime.setText(localStatistics.timePlayed + "");
+		
+		// check if time played is over 10 minutes
+		if (localStatistics.timePlayed >= 10*60) {
+			gameOverSummaryTime.setText(localStatistics.timePlayed/60 + "");
+			TextView gameOverSummarySeconds = (TextView)findViewById(R.id.gameOverSummarySeconds);
+			gameOverSummarySeconds.setText(R.string.game_over_minutes);
+		} else {
+			gameOverSummaryTime.setText(localStatistics.timePlayed + "");
+		}
 		
 		// points earned
 		TextView gameOverSummaryPoints = (TextView)findViewById(R.id.gameOverSummaryPoints);
