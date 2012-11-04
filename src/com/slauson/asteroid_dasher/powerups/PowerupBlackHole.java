@@ -104,11 +104,6 @@ public class PowerupBlackHole extends ActivePowerup {
 			float dirX = 1.0f*distanceX/(absDistanceX + absDistanceY);
 			float dirY = 1.0f*distanceY/(absDistanceX + absDistanceY);
 			
-			if (Game.direction == Game.DIRECTION_REVERSE) {
-				dirY *= -1;
-			}
-			
-			
 			/**
 			 * We want to blend the normal, pull, and suck movement here
 			 * 0: 0 pull, 0 normal, 1 suck
@@ -118,7 +113,6 @@ public class PowerupBlackHole extends ActivePowerup {
 			float normalFactor, pullFactor, suckFactor;
 			
 			suckFactor = (rangePull-distance)/rangePull;
-			
 			
 			// in suck range
 			if (distance < rangeSuck) {
@@ -143,9 +137,17 @@ public class PowerupBlackHole extends ActivePowerup {
 				normalFactor = 1.0f*factor;
 				pullFactor = 0.5f - 0.5f*factor;
 			}
+			
+			float asteroidDirX, asteroidDirY;
 
-			float asteroidDirX = normalFactor*asteroid.getDirX() + pullFactor*dirX + suckFactor*(0.25f*dirX + 0.75f*dirY);
-			float asteroidDirY = normalFactor*asteroid.getDirY() + pullFactor*dirY + suckFactor*(0.25f*dirY - 0.75f*dirX);
+			if (Game.direction == Game.DIRECTION_REVERSE) {
+				dirY *= -1;
+				asteroidDirX = normalFactor*asteroid.getDirX() + pullFactor*dirX + suckFactor*(0.25f*dirX - 0.75f*dirY);
+				asteroidDirY = normalFactor*asteroid.getDirY() + pullFactor*dirY + suckFactor*(0.25f*dirY + 0.75f*dirX);
+			} else {
+				asteroidDirX = normalFactor*asteroid.getDirX() + pullFactor*dirX + suckFactor*(0.25f*dirX + 0.75f*dirY);
+				asteroidDirY = normalFactor*asteroid.getDirY() + pullFactor*dirY + suckFactor*(0.25f*dirY - 0.75f*dirX);
+			}
 				
 			asteroid.setDirX(asteroidDirX);
 			asteroid.setDirY(asteroidDirY);
@@ -154,11 +156,7 @@ public class PowerupBlackHole extends ActivePowerup {
 	
 	@Override
 	public void update(float speedModifier) {
-		if (Game.direction == Game.DIRECTION_NORMAL) {
-			rotation += ROTATION_SPEED*speedModifier;
-		} else {
-			rotation -= ROTATION_SPEED*speedModifier;
-		}
+		rotation += ROTATION_SPEED*speedModifier;
 	}
 	
 	@Override
@@ -181,13 +179,7 @@ public class PowerupBlackHole extends ActivePowerup {
 		canvas.save();
 		canvas.rotate(rotation, x, y);
 		
-		if (Game.direction == Game.DIRECTION_NORMAL) {
-			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
-		} else {
-			// flip vertically
-			canvas.scale(1, -1, x, y);
-			canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
-		}
+		canvas.drawBitmap(bitmap, x - width/2, y - height/2, paint);
 		
 		// unrotate
 		canvas.restore();
