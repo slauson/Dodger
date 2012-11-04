@@ -62,6 +62,8 @@ public class UpgradesMenu extends Activity {
 	private Button bumperButton;
 	/** Bomb upgrade button **/
 	private Button bombButton;
+	/** Other upgrade button **/
+	private Button otherButton;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class UpgradesMenu extends Activity {
     	pointsView = (TextView)findViewById(R.id.upgradesMenuPoints);
     	pointsView.setText(Points.getNumPoints() + " points");
     	
+    	// dash upgrades
     	dashButton = (Button)findViewById(R.id.upgradesMenuDashButton);
     	toggleButtonColor(dashButton);
 		dashButton.setOnClickListener(new OnClickListener() {
@@ -88,6 +91,18 @@ public class UpgradesMenu extends Activity {
 			}
 		});
 		
+		// other upgrades
+    	otherButton = (Button)findViewById(R.id.upgradesMenuOtherButton);
+   		toggleButtonColor(otherButton);
+   		otherButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
+				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.otherUpgrade));
+				startActivity(intent);
+			}
+		});
+		
+		// small powerup
     	smallButton = (Button)findViewById(R.id.upgradesMenuSmallButton);
     	toggleButtonColor(smallButton);
 		smallButton.setOnClickListener(new OnClickListener() {

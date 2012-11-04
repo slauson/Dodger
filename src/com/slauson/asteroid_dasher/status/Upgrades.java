@@ -83,6 +83,15 @@ public class Upgrades {
 	public static final int BOMB_UPGRADE_NO_EFFECT_POWERUPS = 2;
 	public static final int BOMB_UPGRADE_CAUSE_DROP = 3;
 	public static final int BOMB_UPGRADE_CAUSE_DROPS = 4;
+	
+	public static final int OTHER_REANIMATION_1 = 1;
+	public static final int OTHER_REANIMATION_2 = 2;
+	public static final int OTHER_REANIMATION_3 = 3;
+	public static final int OTHER_POWERUP_PICKER = 4;
+	
+	public static final float REANIMATION_FACTOR_1 = 0.1f;
+	public static final float REANIMATION_FACTOR_2 = 0.25f;
+	public static final float REANIMATION_FACTOR_3 = 0.5f;
 
 	public static final int NUM_UPGRADES = 4;
 	
@@ -96,6 +105,7 @@ public class Upgrades {
 	public static Upgrade blackHoleUpgrade = new Upgrade("upgrade_black_hole", -1, "Black Hole");
 	public static Upgrade bumperUpgrade = new Upgrade("upgrade_bumper", -1, "Bumper");
 	public static Upgrade bombUpgrade = new Upgrade("upgrade_bomb", -1, "Bomb");
+	public static Upgrade otherUpgrade = new Upgrade("upgrade_other", 0, "Other", 20);
 	
 	private static boolean initialized = false;
 	
@@ -113,6 +123,7 @@ public class Upgrades {
 		upgrades.add(blackHoleUpgrade);
 		upgrades.add(bumperUpgrade);
 		upgrades.add(bombUpgrade);
+		upgrades.add(otherUpgrade);
 	}
 	
 	/**

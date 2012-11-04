@@ -51,6 +51,7 @@ public class Achievements {
 	public static final int LOCAL_OTHER_POINTS_NUM_1 = 5000;
 	public static final int LOCAL_OTHER_POINTS_NUM_2 = 10000;
 	public static final int LOCAL_OTHER_POINTS_NUM_3 = 20000;
+	public static final int LOCAL_OTHER_REANIMATION_NUM = 3;
 	
 	public static final int LOCAL_PLAYTIME_1 = 60;
 	public static final int LOCAL_PLAYTIME_2 = 300;
@@ -66,7 +67,7 @@ public class Achievements {
 	
 	public static final int GLOBAL_PLAYTIME_1 = 600;
 	public static final int GLOBAL_PLAYTIME_2 = 3600;
-	public static final int GLOBAL_PLAYTIME_3 = 36000;
+	public static final int GLOBAL_PLAYTIME_3 = 18000;
 	
 	public static final int GLOBAL_PLAY_COUNT_NUM = 100;
 	
@@ -116,6 +117,7 @@ public class Achievements {
 	public static Achievement localOtherPoints1 = new Achievement("achievement_local_other_points_1", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_1);
 	public static Achievement localOtherPoints2 = new Achievement("achievement_local_other_points_2", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_2);
 	public static Achievement localOtherPoints3 = new Achievement("achievement_local_other_points_3", R.drawable.icon_general, LOCAL_OTHER_POINTS_NUM_3);
+	public static Achievement localOtherReanimation = new Achievement("achievement_local_other_reanimation", R.drawable.icon_general, LOCAL_OTHER_REANIMATION_NUM);
 	
 	// local achievements - playtime
 	public static Achievement localPlaytime1 = new Achievement("achievement_local_playtime_1", R.drawable.icon_slow, LOCAL_PLAYTIME_1/60);
@@ -179,6 +181,7 @@ public class Achievements {
 		achievements.add(localOtherPoints1);
 		achievements.add(localOtherPoints2);
 		achievements.add(localOtherPoints3);
+		achievements.add(localOtherReanimation);
 		
 		// dash
 		achievements.add(localDestroyAsteroidsWithDash1);

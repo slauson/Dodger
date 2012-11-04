@@ -41,6 +41,7 @@ public class Player extends DrawObject {
 	private int dashNumAffectedAsteroidsHeldInPlace;
 	
 	private int invulnerabilityCounter;
+	private int numReanimations;
 
 	// dash upgrades
 	private int dashRechargeDuration;
@@ -90,12 +91,15 @@ public class Player extends DrawObject {
 	private static final float BREAKING_UP_MOVE = 20;
 	
 	private static final int ROTATION_DEGREES = 900;
+	
+	private static final int REANIMATION_DURATION = 4000;
 
 	/**
 	 * Public constants
 	 */
 	
 	// player specific statuses
+	public static final int STATUS_REANIMATION = -3;
 	public static final int STATUS_NO_MOVE = -2;
 	public static final int STATUS_NO_DASH = -1;
 
@@ -157,6 +161,7 @@ public class Player extends DrawObject {
 		startTime = System.currentTimeMillis();
 		
 		invulnerabilityCounter = 0;
+		numReanimations = 0;
 		
 		if (!instructionMode) {
 			status = STATUS_INVULNERABILITY;
@@ -245,8 +250,14 @@ public class Player extends DrawObject {
 				}
 			}
 			// breaking up
-			else if (status == STATUS_BREAKING_UP) {
-				paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
+			else if (status == STATUS_BREAKING_UP || status == STATUS_REANIMATION) {
+				
+				if (status == STATUS_REANIMATION) {
+					paint.setAlpha((int)(255 * (2.0*Math.abs(REANIMATION_DURATION/2 - timeCounter)/REANIMATION_DURATION)));
+				} else {
+					paint.setAlpha((int)(255 * (1.0*timeCounter/BREAKING_UP_DURATION)));
+				}
+				
 				canvas.translate(x, y);
 				
 				for (LineSegment lineSegment : lineSegments) {
@@ -368,7 +379,24 @@ public class Player extends DrawObject {
 				status = STATUS_INVULNERABILITY;
 				timeCounter = INVULNERABILITY_DURATION;
 			}
-		} 
+		} else if (status == STATUS_REANIMATION) {
+			
+			for (LineSegment lineSegment : lineSegments) {
+				lineSegment.update(timeModifier);
+			}
+			
+			// make ship invulnerability for short period
+			if (timeCounter <= REANIMATION_DURATION/2 && movementDisabled) {
+				for (LineSegment lineSegment : lineSegments) {
+					lineSegment.dirX *= -1;
+					lineSegment.dirY *= -1;
+				}
+				movementDisabled = false;
+			} else if (timeCounter <= 0) {
+				status = STATUS_INVULNERABILITY;
+				timeCounter = INVULNERABILITY_DURATION;
+			}
+		}
 	}
 	
 	/**
@@ -376,6 +404,34 @@ public class Player extends DrawObject {
 	 */
 	public void breakup() {
 		
+		breakupHelper();
+		
+		status = STATUS_BREAKING_UP;
+		timeCounter = BREAKING_UP_DURATION;
+		
+		// don't count this as a dash kill
+		LocalStatistics.getInstance().asteroidsDestroyedByDash--;
+		
+		reset();
+	}
+	
+	/**
+	 * Breaks up ship into line segments, then reanimates back together
+	 */
+	public void reanimate() {
+		breakupHelper();
+		
+		status = STATUS_REANIMATION;
+		timeCounter = REANIMATION_DURATION;
+		
+		movementDisabled = true;
+		numReanimations++;
+	}
+	
+	/**
+	 * Populates line segments with parts of ship
+	 */
+	private void breakupHelper() {
 		float modifier = 1f;
 		
 		if (Game.powerupSmall.isActive()) {
@@ -417,16 +473,8 @@ public class Player extends DrawObject {
 				lineSegment.dirY *= -1;
 			}
 		}
-		
-		status = STATUS_BREAKING_UP;
-		timeCounter = BREAKING_UP_DURATION;
-		
-		// don't count this as a dash kill
-		LocalStatistics.getInstance().asteroidsDestroyedByDash--;
-		
-		reset();
 	}
-
+	
 	/**
 	 * Returns start time of player
 	 * @return start time of player
@@ -818,6 +866,14 @@ public class Player extends DrawObject {
 				y = yTop;
 			}
 		}
+	}
+	
+	/**
+	 * Returns number of reanimations
+	 * @return number of reanimations
+	 */
+	public int getNumReanimations() {
+		return numReanimations;
 	}
 
 }

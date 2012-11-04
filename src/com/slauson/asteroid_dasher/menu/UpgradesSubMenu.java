@@ -80,12 +80,17 @@ public class UpgradesSubMenu extends Activity {
     	upgradeButton2 = (Button)findViewById(R.id.upgradesSubMenuUpgrade2Button);
     	upgradeButton3 = (Button)findViewById(R.id.upgradesSubMenuUpgrade3Button);
     	upgradeButton4 = (Button)findViewById(R.id.upgradesSubMenuUpgrade4Button);
+
+    	// remove fourth upgrade for other upgrade
+    	if (upgrade.equals(Upgrades.otherUpgrade)) {
+    		upgradeButton4.setVisibility(View.INVISIBLE);
+    	}
     	
     	// set button text
-    	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_1) + " points");
-    	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_2) + " points");
-    	upgradeButton3.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_3) + " points");
-    	upgradeButton4.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_4) + " points");
+    	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_1*upgrade.getPointFactor()) + " points");
+    	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_2*upgrade.getPointFactor()) + " points");
+    	upgradeButton3.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_3)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_3*upgrade.getPointFactor()) + " points");
+    	upgradeButton4.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_4)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_4*upgrade.getPointFactor()) + " points");
     
 		// check for purchased upgrades
 		switch(upgrade.getLevel()) {
@@ -308,6 +313,8 @@ public class UpgradesSubMenu extends Activity {
 				break;
 			}
 			
+			pointsRequired *= upgrade.getPointFactor();
+			
 			// check if player hasn't bought previous upgrade
 			if (upgrade.getLevel() < level - 1) {
 				
@@ -316,6 +323,7 @@ public class UpgradesSubMenu extends Activity {
 				String requiredTitle = "Title";
 				
 				if (requiredResourceID != -1) {
+					System.out.println("requiredResourceID: " + requiredResourceID);
 					requiredTitle = getResources().getString(requiredResourceID);
 				}
 				bundle.putString(DIALOG_PURCHASE_PREVIOUS_UPGRADE_REQUIRED_TITLE, requiredTitle);

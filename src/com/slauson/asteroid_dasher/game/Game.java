@@ -1043,11 +1043,27 @@ public class Game {
 							// game over if player isn't invulnerability
 							if (!powerupInvulnerability.isActive() && !Debugging.godMode) {
 								asteroid.breakup();
-								
-								checkAchievements();
-								
-								player.breakup();
-								scheduleGameOver();
+
+								// reanimation
+								if (Upgrades.otherUpgrade.getLevel() >= Upgrades.UPGRADE_1) {
+									int level = Upgrades.otherUpgrade.getLevel();
+									float rand = random.nextFloat();
+									
+									if ((level == Upgrades.UPGRADE_1 && rand < Upgrades.REANIMATION_FACTOR_1) ||
+											(level == Upgrades.UPGRADE_2 && rand < Upgrades.REANIMATION_FACTOR_2) ||
+											(level == Upgrades.UPGRADE_3 && rand < Upgrades.REANIMATION_FACTOR_3))
+									{
+										player.reanimate();
+									} else {
+										checkAchievements();
+										player.breakup();
+										scheduleGameOver();
+									}
+								} else {
+									checkAchievements();
+									player.breakup();
+									scheduleGameOver();
+								}
 							} else {
 								// increment pass through counter
 								powerupInvulnerability.passThrough(asteroid);
@@ -1515,6 +1531,11 @@ public class Game {
 		// check slow achievement
 		if (powerupSlow.isActive()) {
 			powerupSlow.checkAchievements();
+		}
+		
+		// check reanimation achievement
+		if (player.getNumReanimations() >= Achievements.LOCAL_OTHER_REANIMATION_NUM) {
+			Achievements.unlockLocalAchievement(Achievements.localOtherReanimation);
 		}
 		
 		// check achievements of any active powerups

@@ -32,14 +32,21 @@ public class Upgrade {
 	
 	private int[] titles;
 	
+	private int pointFactor;
+	
 	public Upgrade(String key, String description) {
 		this(key, 0, description);
 	}
 	
 	public Upgrade(String key, int level, String description) {
+		this(key, level, description, 1);
+	}
+	
+	public Upgrade(String key, int level, String description, int pointFactor) {
 		this.key = key;
 		this.level = level;
 		this.description = description;
+		this.pointFactor = pointFactor;
 		
 		// setup title resource ids
 		titles = new int[NUM_LEVELS];
@@ -128,5 +135,13 @@ public class Upgrade {
 	 */
 	public String getDescription() {
 		return description;
+	}
+	
+	/**
+	 * Returns point factor for upgrade
+	 * @return point factor for upgrade
+	 */
+	public int getPointFactor() {
+		return pointFactor;
 	}
 }
