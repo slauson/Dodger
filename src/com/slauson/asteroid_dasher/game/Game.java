@@ -1298,7 +1298,7 @@ public class Game {
 		// destroy all on-screen asteroids
 		for (Asteroid asteroid : asteroids) {
 			
-			if (asteroid.onScreen()) {
+			if (asteroid.onScreen() && asteroid.getStatus() == Asteroid.STATUS_NORMAL) {
 				asteroid.fadeOut(Asteroid.FADE_OUT_FROM_BOMB);
 				numAffectedAsteroids++;
 				
