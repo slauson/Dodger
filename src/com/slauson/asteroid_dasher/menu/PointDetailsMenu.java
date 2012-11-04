@@ -3,6 +3,7 @@ package com.slauson.asteroid_dasher.menu;
 import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.Achievements;
 import com.slauson.asteroid_dasher.status.LocalStatistics;
+import com.slauson.asteroid_dasher.status.Options;
 import com.slauson.asteroid_dasher.status.Points;
 import com.slauson.asteroid_dasher.status.Statistics;
 import com.slauson.asteroid_dasher.R;
@@ -20,6 +21,13 @@ public class PointDetailsMenu extends Activity {
     	
     	Statistics localStatistics = LocalStatistics.getInstance();
     	
+    	// calculate number of achievements
+    	int numAchievements = Achievements.localAchievements.size();
+    	
+    	if (Options.demoVersion) {
+    		numAchievements = 0;
+    	}
+    	
     	// add points added
     	TextView pointsAddedTime = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsTime);
     	TextView pointsAddedAsteroidsDestroyed = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsAsteroidsDestroyed);
@@ -28,8 +36,8 @@ public class PointDetailsMenu extends Activity {
     	
     	pointsAddedTime.setText("+" + Util.getPointsString(Points.POINTS_TIME_PLAYED*localStatistics.timePlayed));
     	pointsAddedAsteroidsDestroyed.setText("+" + Util.getPointsString(Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed()));
-    	pointsAddedAchievements.setText("+" + Util.getPointsString(Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size()));
-    	pointsAddedTotal.setText("+" + Util.getPointsString(Points.POINTS_TIME_PLAYED*localStatistics.timePlayed + Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed() + Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size()));
+    	pointsAddedAchievements.setText("+" + Util.getPointsString(Points.POINTS_ACHIEVEMENT*numAchievements));
+    	pointsAddedTotal.setText("+" + Util.getPointsString(Points.POINTS_TIME_PLAYED*localStatistics.timePlayed + Points.POINTS_ASTEROIDS_DESTROYED*localStatistics.getTotalNumAsteroidsDestroyed() + Points.POINTS_ACHIEVEMENT*numAchievements));
     	
     	// add details
     	TextView pointsAddedTimeDescription = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsTimeDescription);
@@ -48,10 +56,10 @@ public class PointDetailsMenu extends Activity {
     		pointsAddedAsteroidsDestroyedDescription.setText("(" + localStatistics.getTotalNumAsteroidsDestroyed() + " asteroids destroyed)");
     	}
     	
-    	if (Achievements.localAchievements.size() == 1) {
-        	pointsAddedAchievementsDescription.setText("(" + Achievements.localAchievements.size() + " achievement unlocked)");
+    	if (numAchievements == 1) {
+        	pointsAddedAchievementsDescription.setText("(" + numAchievements + " achievement unlocked)");
 		} else {
-	    	pointsAddedAchievementsDescription.setText("(" + Achievements.localAchievements.size() + " achievements unlocked)");
+	    	pointsAddedAchievementsDescription.setText("(" + numAchievements + " achievements unlocked)");
 		}
 	}
 	
