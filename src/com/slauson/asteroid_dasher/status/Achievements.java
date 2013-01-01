@@ -73,7 +73,7 @@ public class Achievements {
 	
 	public static final int GLOBAL_NUM_POWERUPS = 8;
 	public static final int GLOBAL_NUM_UPGRADES = 36;
-	public static final int GLOBAL_NUM_ACHIEVEMENTS = 62;
+	public static final int GLOBAL_NUM_ACHIEVEMENTS = 64;
 	
 	
 	// local achievments - destroy asteroids
@@ -176,14 +176,14 @@ public class Achievements {
 	// populate list of all achievements
 	static {
 		
-		// other
+		// other (0)
 		achievements.add(localOtherStayInPlace);
 		achievements.add(localOtherPoints1);
 		achievements.add(localOtherPoints2);
 		achievements.add(localOtherPoints3);
 		achievements.add(localOtherReanimation);
 		
-		// dash
+		// dash (5)
 		achievements.add(localDestroyAsteroidsWithDash1);
 		achievements.add(localDestroyAsteroidsWithDash2);
 		achievements.add(localDestroyAsteroidsWithDash3);
@@ -192,16 +192,16 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithDash2);
 		achievements.add(globalDestroyAsteroidsWithDash3);
 
-		// small
+		// small (12)
 		achievements.add(localSmallDashDestroy);
 		
-		// slow
+		// slow (13)
 		achievements.add(localSlowLongTime);
 		
-		// invulnerability
+		// invulnerability (15)
 		achievements.add(localInvulnerabilityPassThrough);
 		
-		// drill
+		// drill (16)
 		achievements.add(localDestroyAsteroidsWithDrill1);
 		achievements.add(localDestroyAsteroidsWithDrill2);
 		achievements.add(localDestroyAsteroidsWithDrill3);
@@ -210,7 +210,7 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithDrill2);
 		achievements.add(globalDestroyAsteroidsWithDrill3);
 		
-		// magnet
+		// magnet (23)
 		achievements.add(localDestroyAsteroidsWithMagnet1);
 		achievements.add(localDestroyAsteroidsWithMagnet2);
 		achievements.add(localDestroyAsteroidsWithMagnet3);
@@ -219,7 +219,7 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithMagnet2);
 		achievements.add(globalDestroyAsteroidsWithMagnet3);
 
-		// black hole
+		// black hole (30)
 		achievements.add(localDestroyAsteroidsWithBlackHole1);
 		achievements.add(localDestroyAsteroidsWithBlackHole2);
 		achievements.add(localDestroyAsteroidsWithBlackHole3);
@@ -228,7 +228,7 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithBlackHole2);
 		achievements.add(globalDestroyAsteroidsWithBlackHole3);
 
-		// bumper
+		// bumper (37)
 		achievements.add(localDestroyAsteroidsWithBumper1);
 		achievements.add(localDestroyAsteroidsWithBumper2);
 		achievements.add(localDestroyAsteroidsWithBumper3);
@@ -237,7 +237,7 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithBumper2);
 		achievements.add(globalDestroyAsteroidsWithBumper3);
 
-		// bomb
+		// bomb (44)
 		achievements.add(localDestroyAsteroidsWithBomb1);
 		achievements.add(localDestroyAsteroidsWithBomb2);
 		achievements.add(localDestroyAsteroidsWithBomb3);
@@ -246,12 +246,12 @@ public class Achievements {
 		achievements.add(globalDestroyAsteroidsWithBomb2);
 		achievements.add(globalDestroyAsteroidsWithBomb3);
 		
-		// total
+		// total (51)
 		achievements.add(globalDestroyAsteroidsTotal1);
 		achievements.add(globalDestroyAsteroidsTotal2);
 		achievements.add(globalDestroyAsteroidsTotal3);
 
-		// playtime
+		// playtime (54)
 		achievements.add(localPlaytime1);
 		achievements.add(localPlaytime2);
 		achievements.add(localPlaytime3);
@@ -259,14 +259,14 @@ public class Achievements {
 		achievements.add(globalPlaytime2);
 		achievements.add(globalPlaytime3);
 		
-		// play count
+		// play count (60)
 		achievements.add(globalPlayCount);
 		
-		// unlocking/purchasing stuff
+		// unlocking/purchasing stuff (61)
 		achievements.add(globalUnlockAllPowerups);
 		achievements.add(globalPurchaseAllUpgrades);
 		
-		// make sure this is added last
+		// make sure this is added last (63)
 		achievements.add(globalUnlockAllAchievements);
 	}
 	
