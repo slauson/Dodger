@@ -107,6 +107,9 @@ public class Game {
 	
 	/** Maximum value for quasar counter **/
 	private int quasarFrames;
+	
+	/** Frame number of drawing drops in current order **/ 
+	private int dropReorderFrame;
 
 	/** Show player **/
 	private boolean playerVisible;
@@ -169,7 +172,6 @@ public class Game {
 	
 	/** Level to start on in hard mode **/
 	private static final int HARD_MODE_START_LEVEL = 10;
-	
 
 	/** Maximum width of small canvas size **/
 	private static final int CANVAS_WIDTH_SMALL = 300;
@@ -185,6 +187,8 @@ public class Game {
 	/** Bitmap sample size for large canvas **/
 	private static final int BITMAP_SAMPLE_SIZE_LARGE = 2;
 
+	/** How often to reorder drops so that they all show up **/
+	private static final int DROP_REORDER_FREQUENCY = 20;
 
 
 	/**
@@ -356,6 +360,8 @@ public class Game {
 		enableDash = true;
 		enableDrops = true;
 		
+		dropReorderFrame = 0;
+		
 		// populate available drops
 		availableDrops = new ArrayList<Integer>();
 		for (int i = 1; i <= NUM_POWERUPS; i++) {
@@ -444,6 +450,20 @@ public class Game {
 		
 		// draw drops
 		synchronized (drops) {
+
+			// reorder if we have multiple drops
+			if (drops.size() > 1) {
+				dropReorderFrame++;
+				
+				if (dropReorderFrame > DROP_REORDER_FREQUENCY) {
+					
+					Drop drop = drops.removeFirst();
+					drops.add(drop);
+					
+					dropReorderFrame = 0;
+				}
+			}
+			
 			for (Drop drop : drops) {
 				drop.draw(canvas, paint);
 			}
@@ -933,8 +953,11 @@ public class Game {
 		}
 		
 		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup, bitmapOptions), x, y, powerup);
-		
 		drops.add(drop);
+		
+		if (drops.size() == 1) {
+			dropReorderFrame = 0;
+		}
 		
 		return drop;
 	}
