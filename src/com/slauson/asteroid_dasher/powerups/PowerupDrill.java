@@ -291,10 +291,16 @@ public class PowerupDrill extends ActivePowerup {
 	 */
 	public void teleport() {
 		
-		nextAsteroid = null;
-		nextDistance = 0;
+		// fix for when drill runs out of time
+		if (!super.isActive()) {
+			hasTeleport = false;
+		} else {
+		
+			nextAsteroid = null;
+			nextDistance = 0;
 
-		teleportDuration = TELEPORT_DURATION;
+			teleportDuration = TELEPORT_DURATION;
+		}
 	}
 	
 	/**
