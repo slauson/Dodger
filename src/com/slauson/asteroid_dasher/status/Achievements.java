@@ -265,6 +265,8 @@ public class Achievements {
 		// unlocking/purchasing stuff
 		achievements.add(globalUnlockAllPowerups);
 		achievements.add(globalPurchaseAllUpgrades);
+		
+		// make sure this is added last
 		achievements.add(globalUnlockAllAchievements);
 	}
 	
@@ -381,12 +383,12 @@ public class Achievements {
 		
 		// unlock all achievements
 		int i;
-		for (i = 0; i < achievements.size(); i++) {
+		for (i = 0; i < achievements.size() - 1; i++) {
 			if (!achievements.get(i).getValue()) {
 				break;
 			}
 		}
-		if (i == achievements.size()) {
+		if (i == achievements.size() - 1) {
 			unlockLocalAchievement(globalUnlockAllAchievements);
 		}
 	}
