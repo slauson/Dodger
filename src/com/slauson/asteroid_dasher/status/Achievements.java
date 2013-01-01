@@ -158,7 +158,7 @@ public class Achievements {
 	public static Achievement globalPlaytime2 = new Achievement("achievement_global_playtime_2", R.drawable.icon_slow, GLOBAL_PLAYTIME_2/60, GlobalStatistics.ID_TIME_PLAYED);
 	public static Achievement globalPlaytime3 = new Achievement("achievement_global_playtime_3", R.drawable.icon_slow, GLOBAL_PLAYTIME_3/60, GlobalStatistics.ID_TIME_PLAYED);
 	
-	public static Achievement globalPlayCount = new Achievement("achievement_global_play_count", R.drawable.icon_general, GLOBAL_PLAY_COUNT_NUM);
+	public static Achievement globalPlayCount = new Achievement("achievement_global_play_count", R.drawable.icon_general, GLOBAL_PLAY_COUNT_NUM, GlobalStatistics.ID_TIMES_PLAYED);
 	
 	// global achievements - unlocking/purchasing
 	public static Achievement globalUnlockAllPowerups = new Achievement("achievement_global_unlock_all_powerups", R.drawable.icon_general, GLOBAL_NUM_POWERUPS);
