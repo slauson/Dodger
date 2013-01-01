@@ -106,7 +106,12 @@ public class PowerupMagnet extends ActivePowerup {
 			
 			// direction directly to asteroid
 			float dirX = distanceX/(absDistanceX + absDistanceY);
-			float dirY = Math.abs(distanceY/(absDistanceX + absDistanceY));
+			float dirY = distanceY/(absDistanceX + absDistanceY);
+			
+			// take into account opposite direction
+			if (Game.direction == Game.DIRECTION_REVERSE) {
+				dirY *= -1;
+			}
 			
 			// hold in place
 			if (distance < holdRange && asteroid.getStatus() != Asteroid.STATUS_HELD_IN_PLACE) {
@@ -121,7 +126,7 @@ public class PowerupMagnet extends ActivePowerup {
 				
 				float asteroidDirX = (1 - pullFactor)*asteroid.getDirX() + (pullFactor)*dirX;
 				float asteroidDirY = (1 - pullFactor)*asteroid.getDirY() + (pullFactor)*dirY;
-							
+				
 				asteroid.setDirX(asteroidDirX);
 				asteroid.setDirY(asteroidDirY);
 			}
