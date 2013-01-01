@@ -260,7 +260,7 @@ public class Upgrades {
 	 * Returns the number of powerups available
 	 * @return the number of powerups available
 	 */
-	public static int numPowerupsAvailable() {
+	public static int getNumPowerupsAvailable() {
 		
 		// start at 1 so that we skip the dash upgrades
 		for(int i = 1; i < upgrades.size(); i++) {

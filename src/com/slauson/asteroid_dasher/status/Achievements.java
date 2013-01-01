@@ -382,13 +382,7 @@ public class Achievements {
 		Upgrades.checkAchievements();
 		
 		// unlock all achievements
-		int i;
-		for (i = 0; i < achievements.size() - 1; i++) {
-			if (!achievements.get(i).getValue()) {
-				break;
-			}
-		}
-		if (i == achievements.size() - 1) {
+		if (getNumAchievementsUnlocked() == achievements.size() - 1) {
 			unlockLocalAchievement(globalUnlockAllAchievements);
 		}
 	}
@@ -507,6 +501,23 @@ public class Achievements {
 		}
 		
 		save(sharedPreferencesEditor);
+	}
+	
+	/**
+	 * Returns number of unlocked achievements
+	 * @return number of unlocked achievements
+	 */
+	public static int getNumAchievementsUnlocked() {
+		
+		int num = 0;
+		
+		for (Achievement achievement : achievements) {
+			if (achievement.getValue()) {
+				num++;
+			}
+		}
+		
+		return num;
 	}
 	
 	/**

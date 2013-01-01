@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.slauson.asteroid_dasher.status.Achievement;
 import com.slauson.asteroid_dasher.status.Achievements;
+import com.slauson.asteroid_dasher.status.Upgrades;
 import com.slauson.asteroid_dasher.R;
 
 public class AchievementsMenu extends Activity {
@@ -90,6 +91,16 @@ public class AchievementsMenu extends Activity {
 		if (achievement.getProgress() > 0) {
 			progressBar.setProgress((int)(achievement.getProgress()*100));
 		}
+		// progress for num powerups/upgrades/achievements achievements
+		else {
+			if (achievement.equals(Achievements.globalUnlockAllAchievements)) {
+				progressBar.setProgress((int)(100.0*Achievements.getNumAchievementsUnlocked()/Achievements.GLOBAL_NUM_ACHIEVEMENTS));
+			} else if (achievement.equals(Achievements.globalUnlockAllPowerups)) {
+				progressBar.setProgress((int)(100.0*Upgrades.getNumPowerupsAvailable()/Achievements.GLOBAL_NUM_POWERUPS));
+			} else if (achievement.equals(Achievements.globalPurchaseAllUpgrades)) {
+				progressBar.setProgress((int)(100.0*Upgrades.getNumUpgradesPurchased()/Achievements.GLOBAL_NUM_UPGRADES));
+			}
+		}
 
 		row++;
 		
@@ -114,7 +125,7 @@ public class AchievementsMenu extends Activity {
 			progressBar.setProgress(0);
 			
 			// add time unlocked
-			if (!achievement.getTimeString().isEmpty()) {
+			if (achievement.getTimeString().length() != 0) {
 				textView2.setText(textView2.getText() + "\n" + achievement.getTimeString());
 			}
 		}		
