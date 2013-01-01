@@ -902,7 +902,7 @@ public class Game {
 		if (Debugging.dropType != POWERUP_NONE) {
 			powerup = Debugging.dropType;
 		}
-		
+
 		int r_powerup = 0;
 		
 		switch(powerup) {
@@ -931,7 +931,7 @@ public class Game {
 			r_powerup = R.drawable.icon_bomb;
 			break;
 		}
-
+		
 		Drop drop= new Drop(BitmapFactory.decodeResource(gameActivity.getResources(), r_powerup, bitmapOptions), x, y, powerup);
 		
 		drops.add(drop);
@@ -1111,7 +1111,7 @@ public class Game {
 				}
 				
 				// reset drop off screen
-				if ((direction == DIRECTION_NORMAL && drop.getY() - drop.getHeight()/2 > canvasHeight) || (direction == DIRECTION_REVERSE && drop.getY() + drop.getHeight()/2 < 0)) {
+				if (player.inPosition() && ((direction == DIRECTION_NORMAL && drop.getY() - drop.getHeight()/2 > canvasHeight) || (direction == DIRECTION_REVERSE && drop.getY() + drop.getHeight()/2 < 0))) {
 					drop.cleanup();
 					drops.remove(drop);
 					i--;
