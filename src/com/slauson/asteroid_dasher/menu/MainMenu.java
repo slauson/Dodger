@@ -56,12 +56,14 @@ public class MainMenu extends PaidDialogBaseMenu {
 	/** Game mode dialog **/
 	private static final int DIALOG_GAME_MODE = 0;
 	private static final int DIALOG_TUTORIAL_PROMPT = 1;
-	
+
+	private static final String DIALOG_GAME_MODE_CHOICE = "game_mode";
+
 	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
 	
 	/** Game mode titles **/
-	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard", "Snowflake"};
+	private static final CharSequence[] GAME_MODES = {"Basic", "Normal", "Hard", "Snowflake", "Big Asteroid"};
 	
 	/** Debug menu **/
 	private static boolean DEBUG_MENU_ENABLED = false;
@@ -91,9 +93,11 @@ public class MainMenu extends PaidDialogBaseMenu {
 			
 			public void onClick(View v) {
 				if (!showingMore) {
-					// if first time playing, promt for tutorial
+					// if first time playing, prompt for tutorial
 					if (GlobalStatistics.getInstance().timesPlayed == 0) {
-						showDialog(DIALOG_TUTORIAL_PROMPT);
+						Bundle bundle = new Bundle();
+						bundle.putInt(DIALOG_GAME_MODE_CHOICE, Game.GAME_MODE_NORMAL);
+						showDialog(DIALOG_TUTORIAL_PROMPT, bundle);
 					} else {
 						Intent intent = new Intent(MainMenu.this, GameActivity.class);
 						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
@@ -252,47 +256,39 @@ public class MainMenu extends PaidDialogBaseMenu {
 				.setItems(GAME_MODES, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_GAME_MODE);
-						
+
+						// check if demo version
+						if (Options.demoVersion) {
+							Bundle bundle = new Bundle();
+							bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
+							showDialog(DIALOG_PAID_VERSION, bundle);
+							return;
+						}
+
 						int gameMode = Game.GAME_MODE_NORMAL;
 						switch(which) {
 						case 0:
-							if (Options.demoVersion) {
-								Bundle bundle = new Bundle();
-								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-								showDialog(DIALOG_PAID_VERSION, bundle);
-								return;
-							}
 							gameMode = Game.GAME_MODE_BASIC;
 							break;
 						case 1:
 							gameMode = Game.GAME_MODE_NORMAL;
 							break;
 						case 2:
-							if (Options.demoVersion) {
-								Bundle bundle = new Bundle();
-								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-								showDialog(DIALOG_PAID_VERSION, bundle);
-								return;
-							}
 							gameMode = Game.GAME_MODE_HARD;
 							break;
 						case 3:
-							if (Options.demoVersion) {
-								Bundle bundle = new Bundle();
-								bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-								showDialog(DIALOG_PAID_VERSION, bundle);
-								return;
-							}
 							gameMode = Game.GAME_MODE_SNOWFLAKE;
+							break;
+						case 4:
+							gameMode = Game.GAME_MODE_BIG_ASTEROID;
 							break;
 						}
 						
-						// if first time playing, show tutorial
+						// if first time playing, prompt for tutorial
 						if (GlobalStatistics.getInstance().timesPlayed == 0) {
-							Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
-							intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
-							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
-							startActivity(intent);
+							Bundle bundle = new Bundle();
+							bundle.putInt(DIALOG_GAME_MODE_CHOICE, gameMode);
+							showDialog(DIALOG_TUTORIAL_PROMPT, bundle);
 						} else {
 							Intent intent = new Intent(MainMenu.this, GameActivity.class);
 							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
@@ -303,6 +299,8 @@ public class MainMenu extends PaidDialogBaseMenu {
 			dialog = alertDialogBuilder.create();
 			break;
 		case DIALOG_TUTORIAL_PROMPT:
+			final int gameMode = args.getInt(DIALOG_GAME_MODE_CHOICE);
+			
 			alertDialogBuilder
 				.setTitle("Tutorial")
 				.setMessage("Would you like to go through the in-game tutorial?")
@@ -310,7 +308,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 					public void onClick(DialogInterface dialog, int which) {
 						// start playing now
 						Intent intent = new Intent(MainMenu.this, GameActivity.class);
-						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 						startActivity(intent);
 					}
 				})
@@ -320,7 +318,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 						// go through tutorial
 						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
-						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 						startActivity(intent);
 					}
 				});
