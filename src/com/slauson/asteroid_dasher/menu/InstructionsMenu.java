@@ -92,12 +92,9 @@ public class InstructionsMenu extends GameBaseActivity {
 	
 	/** Dialog id for an uncompleted objective **/
 	private static final int DIALOG_REQUIREMENT_NOT_COMPLETED = 0;
+	/** Dialog id for intro **/
+	private static final int DIALOG_INTRO = 1;
 
-	/** Title for uncompleted objective dialog **/ 
-	private static final String REQUIREMENT_NOT_COMPLETED_TITLE = "Goal Not Completed";
-	/** Message for uncompleted objective dialog **/
-	private static final String REQUIREMENT_NOT_COMPLETED_MESSAGE = "Hit Ok to keep trying, Skip to move on, or Skip All to start the game.";
-	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
@@ -229,9 +226,12 @@ public class InstructionsMenu extends GameBaseActivity {
 
 		switch(id) {
 		case DIALOG_REQUIREMENT_NOT_COMPLETED:
+			
+			String message = getString(R.string.instructions_requirement_not_completed_message);
+			
 			alertDialogBuilder
-				.setTitle(REQUIREMENT_NOT_COMPLETED_TITLE)
-				.setMessage(getRequirementText() + "\n" + REQUIREMENT_NOT_COMPLETED_MESSAGE)
+				.setTitle(R.string.instructions_requirement_not_completed_title)
+				.setMessage(getRequirementText() + "\n" + message)
 
 				// Ok button clears dialog
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -266,6 +266,18 @@ public class InstructionsMenu extends GameBaseActivity {
 						else {
 							finish();
 						}
+					}
+				});
+			dialog = alertDialogBuilder.create();
+			break;
+		case DIALOG_INTRO:
+			alertDialogBuilder
+				.setTitle(R.string.instructions_intro_title)
+				.setMessage(R.string.instructions_intro_message)
+				
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						startNewScreen(true);
 					}
 				});
 			dialog = alertDialogBuilder.create();
@@ -560,7 +572,9 @@ public class InstructionsMenu extends GameBaseActivity {
 		}
 		
 		initialized = true;
-		startNewScreen(true);
+		
+		// show prompt explaining tutorial
+		showDialog(DIALOG_INTRO);
 	}
 	
 	/**
