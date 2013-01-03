@@ -55,6 +55,7 @@ public class MainMenu extends PaidDialogBaseMenu {
 	
 	/** Game mode dialog **/
 	private static final int DIALOG_GAME_MODE = 0;
+	private static final int DIALOG_TUTORIAL_PROMPT = 1;
 	
 	/** Duration of short toast notification **/
 	private static final int TOAST_LENGTH_SHORT = 2000;
@@ -90,12 +91,9 @@ public class MainMenu extends PaidDialogBaseMenu {
 			
 			public void onClick(View v) {
 				if (!showingMore) {
-					// if first time playing, show tutorial
+					// if first time playing, promt for tutorial
 					if (GlobalStatistics.getInstance().timesPlayed == 0) {
-						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
-						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
-						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
-						startActivity(intent);
+						showDialog(DIALOG_TUTORIAL_PROMPT);
 					} else {
 						Intent intent = new Intent(MainMenu.this, GameActivity.class);
 						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
@@ -300,6 +298,30 @@ public class MainMenu extends PaidDialogBaseMenu {
 							intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, gameMode);
 							startActivity(intent);
 						}
+					}
+				});
+			dialog = alertDialogBuilder.create();
+			break;
+		case DIALOG_TUTORIAL_PROMPT:
+			alertDialogBuilder
+				.setTitle("Tutorial")
+				.setMessage("Would you like to go through the in-game tutorial?")
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						// start playing now
+						Intent intent = new Intent(MainMenu.this, GameActivity.class);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
+						startActivity(intent);
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					
+					public void onClick(DialogInterface dialog, int which) {
+						// go through tutorial
+						Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
+						intent.putExtra(InstructionsMenu.BUNDLE_FLAG_TUTORIAL, true);
+						intent.putExtra(GameActivity.BUNDLE_FLAG_GAME_MODE, Game.GAME_MODE_NORMAL);
+						startActivity(intent);
 					}
 				});
 			dialog = alertDialogBuilder.create();
