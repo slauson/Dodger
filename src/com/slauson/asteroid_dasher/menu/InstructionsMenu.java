@@ -574,7 +574,11 @@ public class InstructionsMenu extends GameBaseActivity {
 		initialized = true;
 		
 		// show prompt explaining tutorial
-		showDialog(DIALOG_INTRO);
+		if (tutorialMode) {
+			showDialog(DIALOG_INTRO);
+		} else {
+			startNewScreen(true);
+		}
 	}
 	
 	/**
