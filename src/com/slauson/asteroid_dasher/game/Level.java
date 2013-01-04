@@ -7,10 +7,16 @@ package com.slauson.asteroid_dasher.game;
  */
 public class Level {
 	
+	/** Current level **/
 	private int level;
+	/** Time the current level started **/
 	private long levelStartTime;
 	
+	/** True if levels progress one to the next **/
 	private boolean progression;
+	
+	/** Modifier of asteroid size **/
+	private int radiusModifier;
 	
 	/** Starting number of asteroids **/
 	private static final int NUM_ASTEROIDS_BASE = 10;
@@ -52,6 +58,7 @@ public class Level {
 		this.level = level;
 		this.progression = progression;
 		levelStartTime = System.currentTimeMillis();
+		radiusModifier = 1;
 	}
 	
 	/**
@@ -105,7 +112,7 @@ public class Level {
 	 * @return asteroid radius factor minimum
 	 */
 	public float getAsteroidRadiusFactorMin() {
-		return ASTEROID_RADIUS_FACTOR_MIN;
+		return radiusModifier*ASTEROID_RADIUS_FACTOR_MIN;
 	}
 	
 	/**
@@ -113,10 +120,10 @@ public class Level {
 	 * @return asteroid radius factor offset
 	 */
 	public float getAsteroidRadiusFactorOffset() {
-		float num = level*ASTEROID_RADIUS_FACTOR_INCREMENT;
+		float num = radiusModifier*level*ASTEROID_RADIUS_FACTOR_INCREMENT;
 		
-		if (ASTEROID_RADIUS_FACTOR_MIN + num > ASTEROID_RADIUS_FACTOR_MAX) {
-			return ASTEROID_RADIUS_FACTOR_MAX - ASTEROID_RADIUS_FACTOR_MIN;
+		if (getAsteroidRadiusFactorMin() + num > getAsteroidRadiusFactorMax()) {
+			return getAsteroidRadiusFactorMax() - getAsteroidRadiusFactorMin();
 		}
 		
 		return num;
@@ -127,7 +134,7 @@ public class Level {
 	 * @return asteroid radius factor maximum
 	 */
 	public float getAsteroidRadiusFactorMax() {
-		return ASTEROID_RADIUS_FACTOR_MAX;
+		return radiusModifier*ASTEROID_RADIUS_FACTOR_MAX;
 	}
 	
 	/**
@@ -180,5 +187,13 @@ public class Level {
 	 */
 	public void addToStartTime(long milliseconds) {
 		this.levelStartTime += milliseconds;
+	}
+	
+	/**
+	 * Sets asteroid radius modifier
+	 * @param radiusModifier radius modifier
+	 */
+	public void setRadiusModifier(int radiusModifier) {
+		this.radiusModifier = radiusModifier;
 	}
 }

@@ -337,6 +337,11 @@ public class Game {
 			toggleDrops(false);
 		} else if (gameMode == GAME_MODE_NORMAL || gameMode == GAME_MODE_SNOWFLAKE || gameMode == GAME_MODE_BIG_ASTEROID) {
 			level = new Level(Debugging.level, Debugging.levelProgression);
+
+			// big asteroid mode
+			if (gameMode == GAME_MODE_BIG_ASTEROID) {
+				level.setRadiusModifier(2);
+			}
 		} else if (gameMode == GAME_MODE_HARD){
 			level = new Level(HARD_MODE_START_LEVEL, Debugging.levelProgression);
 		}
@@ -395,11 +400,6 @@ public class Game {
 			
 			radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 			speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
-			
-			// big asteroids
-			if (gameMode == GAME_MODE_BIG_ASTEROID) {
-				radius *= 2;
-			}
 			
 			asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
 		}
@@ -540,11 +540,6 @@ public class Game {
 				
 				radius = level.getAsteroidRadiusFactorMin() + random.nextFloat()*level.getAsteroidRadiusFactorOffset();
 				speed = level.getAsteroidSpeedFactorMin() + random.nextFloat()*level.getAsteroidSpeedFactorOffset();
-				
-				// big asteroids
-				if (gameMode == GAME_MODE_BIG_ASTEROID) {
-					radius *= 2;
-				}
 				
 				asteroids.add(new Asteroid(radius, speed, level.getAsteroidRadiusFactorMax(), level.getAsteroidHorizontalMovementOffset()));
 			}
