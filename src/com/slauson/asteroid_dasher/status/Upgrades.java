@@ -143,8 +143,10 @@ public class Upgrades {
 	 * @param sharedPreferencesEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
-		for (Upgrade upgrade : upgrades) {
-			upgrade.save(sharedPreferencesEditor);
+		if (initialized) {
+			for (Upgrade upgrade : upgrades) {
+				upgrade.save(sharedPreferencesEditor);
+			}
 		}
 	}
 	

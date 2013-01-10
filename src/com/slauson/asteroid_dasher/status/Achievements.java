@@ -404,8 +404,10 @@ public class Achievements {
 	 * @param sharedPreferencesEditor preferencesEditor to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
-		for (Achievement achievement : achievements) {
-			achievement.save(sharedPreferencesEditor);
+		if (initialized) {
+			for (Achievement achievement : achievements) {
+				achievement.save(sharedPreferencesEditor);
+			}
 		}
 	}
 	

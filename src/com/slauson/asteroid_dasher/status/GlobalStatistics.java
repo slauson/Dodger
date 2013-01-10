@@ -111,28 +111,31 @@ public class GlobalStatistics {
 	 * @param sharedPreferencesEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
-		sharedPreferencesEditor.putInt(TIME_PLAYED, statistics.timePlayed);
-		sharedPreferencesEditor.putInt(TIMES_PLAYED, statistics.timesPlayed);
 		
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, statistics.asteroidsDestroyedByDash);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, statistics.asteroidsDestroyedByDrill);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, statistics.asteroidsDestroyedByMagnet);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BLACK_HOLE, statistics.asteroidsDestroyedByBlackHole);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, statistics.asteroidsDestroyedByBumper);
-		sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, statistics.asteroidsDestroyedByBomb);
-		
-		sharedPreferencesEditor.putInt(USES_DASH, statistics.usesDash);
-		sharedPreferencesEditor.putInt(USES_SMALL, statistics.usesSmall);
-		sharedPreferencesEditor.putInt(USES_SLOW, statistics.usesSlow);
-		sharedPreferencesEditor.putInt(USES_INVULNERABILITY, statistics.usesInvulnerability);
-		sharedPreferencesEditor.putInt(USES_DRILL, statistics.usesDrill);
-		sharedPreferencesEditor.putInt(USES_MAGNET, statistics.usesMagnet);
-		sharedPreferencesEditor.putInt(USES_BLACK_HOLE, statistics.usesBlackHole);
-		sharedPreferencesEditor.putInt(USES_BUMPER, statistics.usesBumper);
-		sharedPreferencesEditor.putInt(USES_BOMB, statistics.usesBomb);
-		
-		sharedPreferencesEditor.putInt(POINTS_EARNED, statistics.pointsEarned);
-		sharedPreferencesEditor.putInt(POINTS_SPENT, statistics.pointsSpent);
+		if (initialized) {
+			sharedPreferencesEditor.putInt(TIME_PLAYED, statistics.timePlayed);
+			sharedPreferencesEditor.putInt(TIMES_PLAYED, statistics.timesPlayed);
+			
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DASH, statistics.asteroidsDestroyedByDash);
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_DRILL, statistics.asteroidsDestroyedByDrill);
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_MAGNET, statistics.asteroidsDestroyedByMagnet);
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BLACK_HOLE, statistics.asteroidsDestroyedByBlackHole);
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BUMPER, statistics.asteroidsDestroyedByBumper);
+			sharedPreferencesEditor.putInt(ASTEROIDS_DESTROYED_BY_BOMB, statistics.asteroidsDestroyedByBomb);
+			
+			sharedPreferencesEditor.putInt(USES_DASH, statistics.usesDash);
+			sharedPreferencesEditor.putInt(USES_SMALL, statistics.usesSmall);
+			sharedPreferencesEditor.putInt(USES_SLOW, statistics.usesSlow);
+			sharedPreferencesEditor.putInt(USES_INVULNERABILITY, statistics.usesInvulnerability);
+			sharedPreferencesEditor.putInt(USES_DRILL, statistics.usesDrill);
+			sharedPreferencesEditor.putInt(USES_MAGNET, statistics.usesMagnet);
+			sharedPreferencesEditor.putInt(USES_BLACK_HOLE, statistics.usesBlackHole);
+			sharedPreferencesEditor.putInt(USES_BUMPER, statistics.usesBumper);
+			sharedPreferencesEditor.putInt(USES_BOMB, statistics.usesBomb);
+			
+			sharedPreferencesEditor.putInt(POINTS_EARNED, statistics.pointsEarned);
+			sharedPreferencesEditor.putInt(POINTS_SPENT, statistics.pointsSpent);
+		}
 	}
 	
 	/**

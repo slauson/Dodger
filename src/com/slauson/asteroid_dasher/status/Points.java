@@ -28,7 +28,9 @@ public class Points {
 	 * @param sharedPreferencesEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
-		sharedPreferencesEditor.putInt(POINTS, points);
+		if (initialized) {
+			sharedPreferencesEditor.putInt(POINTS, points);
+		}
 	}
 	
 	/**

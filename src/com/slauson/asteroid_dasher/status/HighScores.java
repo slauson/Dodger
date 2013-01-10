@@ -39,11 +39,13 @@ public class HighScores {
 	 * @param sharedPreferenceEditor preferences to save to
 	 */
 	public static void save(SharedPreferences.Editor sharedPreferencesEditor) {
+		if (initialized) {
 		
-		int num = 1;
-		for (HighScore highScore : highScores) {
-			highScore.save(sharedPreferencesEditor, num);
-			num++;
+			int num = 1;
+			for (HighScore highScore : highScores) {
+				highScore.save(sharedPreferencesEditor, num);
+				num++;
+			}
 		}
 	}
 
