@@ -16,6 +16,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -53,6 +55,9 @@ public class MainMenu extends PaidDialogBaseMenu {
 	/** Time back button must be pressed again by to quit game **/
 	private long backButtonQuitEndTime;
 	
+	/** True if this is the free version of the game **/
+	private boolean freeVersion;
+	
 	/** Game mode dialog **/
 	private static final int DIALOG_GAME_MODE = 0;
 	private static final int DIALOG_TUTORIAL_PROMPT = 1;
@@ -75,6 +80,12 @@ public class MainMenu extends PaidDialogBaseMenu {
 		
 		showingMore = false;
 		backButtonQuitEndTime = 0;
+		
+		try {
+			freeVersion = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version));
+		} catch (NameNotFoundException e) {
+			freeVersion = false;
+		}
 		
 		// debugging menu
 		if (DEBUG_MENU_ENABLED) {
@@ -129,15 +140,8 @@ public class MainMenu extends PaidDialogBaseMenu {
 					Intent intent = new Intent(MainMenu.this, InstructionsMenu.class);
 					startActivity(intent);
 				} else {
-					// check if free version
-					if (Options.demoVersion) {
-						Bundle bundle = new Bundle();
-						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
-						showDialog(DIALOG_PAID_VERSION, bundle);
-					} else {
-						Intent intent = new Intent(MainMenu.this, AchievementsMenu.class);
-						startActivity(intent);
-					}
+					Intent intent = new Intent(MainMenu.this, AchievementsMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -165,15 +169,8 @@ public class MainMenu extends PaidDialogBaseMenu {
 				if (!showingMore) {
 					toggleShowMore();
 				} else {
-					// check if free version
-					if (Options.demoVersion) {
-						Bundle bundle = new Bundle();
-						bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
-						showDialog(DIALOG_PAID_VERSION, bundle);
-					} else {
-						Intent intent = new Intent(MainMenu.this, UpgradesMenu.class);
-						startActivity(intent);
-					}
+					Intent intent = new Intent(MainMenu.this, UpgradesMenu.class);
+					startActivity(intent);
 				}
 			}
 		});
@@ -258,10 +255,8 @@ public class MainMenu extends PaidDialogBaseMenu {
 						removeDialog(DIALOG_GAME_MODE);
 
 						// check if demo version
-						if (Options.demoVersion) {
-							Bundle bundle = new Bundle();
-							bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_game_modes);
-							showDialog(DIALOG_PAID_VERSION, bundle);
+						if (freeVersion) {
+							showDialog(DIALOG_PAID_VERSION);
 							return;
 						}
 

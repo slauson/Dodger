@@ -2,6 +2,8 @@ package com.slauson.asteroid_dasher.menu;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 import com.slauson.asteroid_dasher.game.Game;
 import com.slauson.asteroid_dasher.game.GameActivity;
 import com.slauson.asteroid_dasher.other.Util;
@@ -46,7 +50,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		} else {
 			gameMode = Game.GAME_MODE_NORMAL;
 		}
-
+		
 		setup();
 	
 		backButtonQuitEndTime = 0;
@@ -77,6 +81,16 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 	 * Sets up game over menu
 	 */
 	private void setup() {
+		
+		// load ad if free version
+		try {
+			if (getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version))) {
+				AdView adView = (AdView)this.findViewById(R.id.gameOverAdView);
+				adView.loadAd(new AdRequest());
+			}
+		} catch (NameNotFoundException e) {
+			;
+		}
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
@@ -93,28 +107,26 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		// update high scores
 		updateHighScores(sharedPreferencesEditor);
 				
-		// check/update achievements if paid version
-		if (!Options.demoVersion) {
-			updateAchievements(sharedPreferencesEditor);
-			
-			// update points after checking achievements
-			points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
-			
-			// points achievements
-			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
-				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints1)) {
-					points += Points.POINTS_ACHIEVEMENT;
-				}
+		// check/update achievements
+		updateAchievements(sharedPreferencesEditor);
+		
+		// update points after checking achievements
+		points += Points.POINTS_ACHIEVEMENT*Achievements.localAchievements.size();
+		
+		// points achievements
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_1) {
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints1)) {
+				points += Points.POINTS_ACHIEVEMENT;
 			}
-			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
-				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints2)) {
-					points += Points.POINTS_ACHIEVEMENT;
-				}
+		}
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_2) {
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints2)) {
+				points += Points.POINTS_ACHIEVEMENT;
 			}
-			if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
-				if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints3)) {
-					points += Points.POINTS_ACHIEVEMENT;
-				}
+		}
+		if (points > Achievements.LOCAL_OTHER_POINTS_NUM_3) {
+			if (Achievements.unlockLocalAchievement(Achievements.localOtherPoints3)) {
+				points += Points.POINTS_ACHIEVEMENT;
 			}
 		}
 				
@@ -164,15 +176,8 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		TextView gameOverSummaryAchievements = (TextView)findViewById(R.id.gameOverSummaryAchievements);
 		gameOverSummaryAchievements.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// check if free version
-				if (Options.demoVersion) {
-					Bundle bundle = new Bundle();
-					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_achievements);
-					showDialog(DIALOG_PAID_VERSION, bundle);
-				} else {
-					Intent intent = new Intent(GameOverMenu.this, LocalAchievementsMenu.class);
-					startActivity(intent);
-				}
+				Intent intent = new Intent(GameOverMenu.this, LocalAchievementsMenu.class);
+				startActivity(intent);
 			}
 		});
 		
@@ -208,15 +213,8 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		gameOverMenuUpgradesButton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				// check if free version
-				if (Options.demoVersion) {
-					Bundle bundle = new Bundle();
-					bundle.putInt(DIALOG_EXTRA_PAID_FEATURE, R.string.menu_upgrades);
-					showDialog(DIALOG_PAID_VERSION, bundle);
-				} else {
-					Intent intent = new Intent(GameOverMenu.this, UpgradesMenu.class);
-					startActivity(intent);
-				}
+				Intent intent = new Intent(GameOverMenu.this, UpgradesMenu.class);
+				startActivity(intent);
 			}
 		});
 

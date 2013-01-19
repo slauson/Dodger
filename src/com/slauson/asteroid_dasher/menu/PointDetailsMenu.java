@@ -24,10 +24,6 @@ public class PointDetailsMenu extends Activity {
     	// calculate number of achievements
     	int numAchievements = Achievements.localAchievements.size();
     	
-    	if (Options.demoVersion) {
-    		numAchievements = 0;
-    	}
-    	
     	// add points added
     	TextView pointsAddedTime = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsTime);
     	TextView pointsAddedAsteroidsDestroyed = (TextView)findViewById(R.id.pointDetailsMenuAddedPointsAsteroidsDestroyed);

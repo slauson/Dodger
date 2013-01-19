@@ -211,23 +211,6 @@ public class DebuggingMenu extends Activity {
 			}
     	});
     	
-    	// free version
-    	CheckBox freeVersion = (CheckBox)findViewById(R.id.debuggingMenuFreeVersion);
-    	freeVersion.setText("Free Version");
-    	
-    	// set previous selection
-    	freeVersion.setChecked(Options.demoVersion);
-    	
-    	freeVersion.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			public void onCheckedChanged(CompoundButton button, boolean value) {
-				Options.demoVersion = value;
-				
-				Toast.makeText(button.getContext(), "Demo version set to " + Options.demoVersion, Toast.LENGTH_SHORT).show();
-			}
-    	});
-
-    	
     	// points
     	points = (EditText)findViewById(R.id.debuggingMenuPoints);
 

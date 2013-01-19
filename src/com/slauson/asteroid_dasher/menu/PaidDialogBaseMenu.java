@@ -15,9 +15,6 @@ public class PaidDialogBaseMenu extends Activity {
 	/** Paid version dialog **/
 	protected static final int DIALOG_PAID_VERSION = -1;
 
-	/** Paid feature for dialog **/
-	protected static final String DIALOG_EXTRA_PAID_FEATURE = "paid_feature";
-	
 	@Override
 	public Dialog onCreateDialog(int id, Bundle args) {
 
@@ -27,16 +24,9 @@ public class PaidDialogBaseMenu extends Activity {
 		switch(id) {
 		case DIALOG_PAID_VERSION:
 			
-			// get args
-			int feature = args.getInt(DIALOG_EXTRA_PAID_FEATURE);
-			
-			if (feature == 0) {
-				feature = R.string.menu_paid_default_feature;
-			}
-			
 			alertDialogBuilder
 				.setTitle(R.string.menu_paid_title)
-				.setMessage(String.format(getString(R.string.menu_paid_message), getString(feature)))
+				.setMessage(getString(R.string.menu_paid_message))
 				.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						removeDialog(DIALOG_PAID_VERSION);

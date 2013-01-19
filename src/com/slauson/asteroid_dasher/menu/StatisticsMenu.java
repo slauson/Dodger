@@ -94,11 +94,9 @@ public class StatisticsMenu extends Activity {
     	pointsSpent.setText("" + Util.getPointsString(globalStatistics.pointsSpent));
 
     	// completion percentage
-    	if (!Options.demoVersion) {
-        	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
-        	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);
-        	completionPercentage.setText("" + ((int)(completion*100)) + " %");
-    	}
+       	float completion = 0.5f*Upgrades.completionPercentage() + 0.5f*Achievements.completionPercentage();
+       	TextView completionPercentage = (TextView)findViewById(R.id.statisticsMenuCompletionPercentage);
+       	completionPercentage.setText("" + ((int)(completion*100)) + " %");
     	
 	}
 	
