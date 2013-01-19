@@ -7,7 +7,6 @@ import android.widget.TextView;
 import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.Achievements;
 import com.slauson.asteroid_dasher.status.GlobalStatistics;
-import com.slauson.asteroid_dasher.status.Options;
 import com.slauson.asteroid_dasher.status.Statistics;
 import com.slauson.asteroid_dasher.status.Upgrades;
 import com.slauson.asteroid_dasher.R;

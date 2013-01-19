@@ -3,7 +3,6 @@ package com.slauson.asteroid_dasher.menu;
 import com.slauson.asteroid_dasher.other.Util;
 import com.slauson.asteroid_dasher.status.Achievements;
 import com.slauson.asteroid_dasher.status.LocalStatistics;
-import com.slauson.asteroid_dasher.status.Options;
 import com.slauson.asteroid_dasher.status.Points;
 import com.slauson.asteroid_dasher.status.Statistics;
 import com.slauson.asteroid_dasher.R;
