@@ -34,6 +34,8 @@ public class Upgrade {
 	
 	private int pointFactor;
 	
+	boolean enabled;
+	
 	public Upgrade(String key, String description) {
 		this(key, 0, description);
 	}
@@ -54,6 +56,8 @@ public class Upgrade {
 		for (int i = 0; i < NUM_LEVELS; i++) {
 			titles[i] = 0;
 		}
+		
+		enabled = true;
 	}
 	
 	/**
@@ -62,6 +66,7 @@ public class Upgrade {
 	 */
 	public void load(SharedPreferences preferences) {
 		level = preferences.getInt(key, level);
+		enabled = preferences.getBoolean(key + "_enabled", true);
 	}
 	
 	/**
@@ -70,6 +75,7 @@ public class Upgrade {
 	 */
 	public void save(SharedPreferences.Editor preferencesEditor) {
 		preferencesEditor.putInt(key, level);
+		preferencesEditor.putBoolean(key + "_enabled", enabled);
 	}
 	
 	/**
@@ -143,5 +149,21 @@ public class Upgrade {
 	 */
 	public int getPointFactor() {
 		return pointFactor;
+	}
+	
+	/**
+	 * Returns true if upgrade is enabled
+	 * @return true if upgrade is enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	/**
+	 * Toggles whether or not upgrade is enabled
+	 */
+	public boolean toggleEnabled() {
+		enabled = !enabled;
+		return enabled;
 	}
 }

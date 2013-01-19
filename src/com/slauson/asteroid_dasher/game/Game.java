@@ -372,7 +372,7 @@ public class Game {
 		// populate available drops
 		availableDrops = new ArrayList<Integer>();
 		for (int i = 1; i <= NUM_POWERUPS; i++) {
-			if (Upgrades.getUpgrade(i).getLevel() >= Upgrades.POWERUP_UNLOCKED) {
+			if (Upgrades.getUpgrade(i).getLevel() >= Upgrades.POWERUP_UNLOCKED && Upgrades.getUpgrade(i).isEnabled()) {
 				availableDrops.add(i);
 				numAvailableDrops++;
 			}

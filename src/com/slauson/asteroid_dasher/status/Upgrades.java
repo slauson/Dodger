@@ -92,6 +92,8 @@ public class Upgrades {
 	public static final float REANIMATION_FACTOR_1 = 0.1f;
 	public static final float REANIMATION_FACTOR_2 = 0.25f;
 	public static final float REANIMATION_FACTOR_3 = 0.5f;
+	
+	public static final int POWERUP_PICKER_MIN_POWERUPS = 4;
 
 	public static final int NUM_UPGRADES = 4;
 	
@@ -266,10 +268,29 @@ public class Upgrades {
 		
 		// start at 1 so that we skip the dash upgrades
 		for(int i = 1; i < upgrades.size(); i++) {
-			if (upgrades.get(i).getLevel() < 0) {
+			if (upgrades.get(i).getLevel() == POWERUP_LOCKED) {
 				return i-1;
 			}
 		}
 		return 0;
+	}
+	
+	/**
+	 * Returns the number of powerups enabled
+	 * @return the number of powerups enabled
+	 */
+	public static int getNumPowerupsEnabled() {
+
+		int num = 0;
+		
+		// start at 1 so that we skip the dash upgrades
+		// end at size-1 so that we skip the other upgrades
+		for(int i = 1; i < upgrades.size()-1; i++) {
+			if (upgrades.get(i).getLevel() >= POWERUP_UNLOCKED && upgrades.get(i).isEnabled()) {
+				num++;
+			}
+		}
+		
+		return num;
 	}
 }

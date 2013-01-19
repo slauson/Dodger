@@ -81,11 +81,6 @@ public class UpgradesSubMenu extends Activity {
     	upgradeButton3 = (Button)findViewById(R.id.upgradesSubMenuUpgrade3Button);
     	upgradeButton4 = (Button)findViewById(R.id.upgradesSubMenuUpgrade4Button);
 
-    	// remove fourth upgrade for other upgrade
-    	if (upgrade.equals(Upgrades.otherUpgrade)) {
-    		upgradeButton4.setVisibility(View.INVISIBLE);
-    	}
-    	
     	// set button text
     	upgradeButton1.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_1)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_1*upgrade.getPointFactor()) + " points");
     	upgradeButton2.setText(getText(upgrade.getTitleResourceId(Upgrades.UPGRADE_2)) + "\n" + Util.getPointsString(Upgrades.POINTS_UPGRADE_2*upgrade.getPointFactor()) + " points");
