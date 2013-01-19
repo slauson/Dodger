@@ -109,186 +109,42 @@ public class UpgradesMenu extends Activity {
 		// small powerup
 		smallButton = (Button)findViewById(R.id.upgradesMenuSmallButton);
 		toggleButtonColor(smallButton, Upgrades.smallUpgrade.isEnabled());
-		smallButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.smallUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		smallButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.smallUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(smallButton, Upgrades.smallUpgrade.toggleEnabled());
-						Upgrades.smallUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		smallButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.smallUpgrade), 0, R.id.upgradesMenuSmallButton));
+		smallButton.setOnLongClickListener(new PowerupSelection(Upgrades.smallUpgrade, smallButton));
 
 		ImageView smallIcon = (ImageView)findViewById(R.id.upgradesMenuSmallIcon);
 		smallIcon.setClickable(true);
-		smallIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.smallUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(smallButton, Upgrades.smallUpgrade.toggleEnabled());
-						Upgrades.smallUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		smallIcon.setOnClickListener(new PowerupSelection(Upgrades.smallUpgrade, smallButton));
 
 		// slow powerup
 		slowButton = (Button)findViewById(R.id.upgradesMenuSlowButton);
 		toggleButtonColor(slowButton, Upgrades.slowUpgrade.isEnabled());
-		slowButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.slowUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		slowButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.slowUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(slowButton, Upgrades.slowUpgrade.toggleEnabled());
-						Upgrades.slowUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		slowButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.slowUpgrade), 0, R.id.upgradesMenuSlowButton));
+		slowButton.setOnLongClickListener(new PowerupSelection(Upgrades.slowUpgrade, slowButton));
 
 		ImageView slowIcon = (ImageView)findViewById(R.id.upgradesMenuSlowIcon);
 		slowIcon.setClickable(true);
-		slowIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.slowUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(slowButton, Upgrades.slowUpgrade.toggleEnabled());
-						Upgrades.slowUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		slowIcon.setOnClickListener(new PowerupSelection(Upgrades.slowUpgrade, slowButton));
 
 		// invulnerability powerup
 		invulnerabilityButton = (Button)findViewById(R.id.upgradesMenuInvulnerabilityButton);
 		toggleButtonColor(invulnerabilityButton, Upgrades.invulnerabilityUpgrade.isEnabled());
-		invulnerabilityButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.invulnerabilityUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		invulnerabilityButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.invulnerabilityUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(invulnerabilityButton, Upgrades.invulnerabilityUpgrade.toggleEnabled());
-						Upgrades.invulnerabilityUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		invulnerabilityButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.invulnerabilityUpgrade), 0, R.id.upgradesMenuInvulnerabilityButton));
+		invulnerabilityButton.setOnLongClickListener(new PowerupSelection(Upgrades.invulnerabilityUpgrade, invulnerabilityButton));
 
 		ImageView invulnerabilityIcon = (ImageView)findViewById(R.id.upgradesMenuInvulnerabilityIcon);
 		invulnerabilityIcon.setClickable(true);
-		invulnerabilityIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.invulnerabilityUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(invulnerabilityButton, Upgrades.invulnerabilityUpgrade.toggleEnabled());
-						Upgrades.invulnerabilityUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		invulnerabilityIcon.setOnClickListener(new PowerupSelection(Upgrades.invulnerabilityUpgrade, invulnerabilityButton));
 
 		// drill powerup
 		drillButton = (Button)findViewById(R.id.upgradesMenuDrillButton);
 		toggleButtonColor(drillButton, Upgrades.drillUpgrade.isEnabled());
-		drillButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.drillUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		drillButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.drillUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(drillButton, Upgrades.drillUpgrade.toggleEnabled());
-						Upgrades.drillUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		drillButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.drillUpgrade), 0, R.id.upgradesMenuDrillButton));
+		drillButton.setOnLongClickListener(new PowerupSelection(Upgrades.drillUpgrade, drillButton));
 
 		ImageView drillIcon = (ImageView)findViewById(R.id.upgradesMenuDrillIcon);
 		drillIcon.setClickable(true);
-		drillIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER) {
-					if (Upgrades.drillUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(drillButton, Upgrades.drillUpgrade.toggleEnabled());
-						Upgrades.drillUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		drillIcon.setOnClickListener(new PowerupSelection(Upgrades.drillUpgrade, drillButton));
 
 		// magnet powerup
 		magnetButton = (Button)findViewById(R.id.upgradesMenuMagnetButton);
@@ -299,73 +155,12 @@ public class UpgradesMenu extends Activity {
 			magnetButton.setText(magnetButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_MAGNET_POWERUP) + " points");
 		}
 
-		magnetButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-
-				// check if not unlocked
-				if (Upgrades.magnetUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
-
-					Bundle bundle = new Bundle();
-					bundle.putString(DIALOG_TITLE, Upgrades.magnetUpgrade.getDescription());
-					bundle.putInt(DIALOG_POINTS, Upgrades.POINTS_MAGNET_POWERUP);
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.magnetUpgrade));
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuMagnetButton);
-
-					// check if we have enough points
-					if (Points.getNumPoints() < Upgrades.POINTS_MAGNET_POWERUP) {
-						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
-					} else {
-						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
-					}
-					return;
-				}
-
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.magnetUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		magnetButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.magnetUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.magnetUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(magnetButton, Upgrades.magnetUpgrade.toggleEnabled());
-						Upgrades.magnetUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		magnetButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.magnetUpgrade), Upgrades.POINTS_MAGNET_POWERUP, R.id.upgradesMenuMagnetButton));
+		magnetButton.setOnLongClickListener(new PowerupSelection(Upgrades.magnetUpgrade, magnetButton));
 
 		ImageView magnetIcon = (ImageView)findViewById(R.id.upgradesMenuMagnetIcon);
 		magnetIcon.setClickable(true);
-		magnetIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.magnetUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.magnetUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(magnetButton, Upgrades.magnetUpgrade.toggleEnabled());
-						Upgrades.magnetUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
-
+		magnetIcon.setOnClickListener(new PowerupSelection(Upgrades.magnetUpgrade, magnetButton));
 
 		// black hole powerup
 		blackHoleButton = (Button)findViewById(R.id.upgradesMenuBlackHoleButton);
@@ -376,74 +171,12 @@ public class UpgradesMenu extends Activity {
 			blackHoleButton.setText(blackHoleButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BLACK_HOLE_POWERUP) + " points");
 		}
 
-		blackHoleButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-
-				// check if not unlocked
-				if (Upgrades.blackHoleUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
-
-					Bundle bundle = new Bundle();
-					bundle.putString(DIALOG_TITLE, Upgrades.blackHoleUpgrade.getDescription());
-					bundle.putInt(DIALOG_POINTS, Upgrades.POINTS_BLACK_HOLE_POWERUP);
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.blackHoleUpgrade));
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBlackHoleButton);
-
-					// check if we have enough points
-					if (Points.getNumPoints() < Upgrades.POINTS_BLACK_HOLE_POWERUP) {
-						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
-					} else {
-						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
-					}
-					return;
-				}
-
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.blackHoleUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		blackHoleButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.blackHoleUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.blackHoleUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(blackHoleButton, Upgrades.blackHoleUpgrade.toggleEnabled());
-						Upgrades.blackHoleUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		blackHoleButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.blackHoleUpgrade), Upgrades.POINTS_BLACK_HOLE_POWERUP, R.id.upgradesMenuBlackHoleButton));
+		blackHoleButton.setOnLongClickListener(new PowerupSelection(Upgrades.blackHoleUpgrade, blackHoleButton));
 
 		ImageView blackHoleIcon = (ImageView)findViewById(R.id.upgradesMenuBlackHoleIcon);
 		blackHoleIcon.setClickable(true);
-		blackHoleIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.blackHoleUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.blackHoleUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(blackHoleButton, Upgrades.blackHoleUpgrade.toggleEnabled());
-						Upgrades.blackHoleUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
-
-
+		blackHoleIcon.setOnClickListener(new PowerupSelection(Upgrades.blackHoleUpgrade, blackHoleButton));
 
 		// bumper powerup
 		bumperButton = (Button)findViewById(R.id.upgradesMenuBumperButton);
@@ -454,72 +187,12 @@ public class UpgradesMenu extends Activity {
 			bumperButton.setText(bumperButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BUMPER_POWERUP) + " points");
 		}
 
-		bumperButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-
-				// check if not unlocked
-				if (Upgrades.bumperUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
-
-					Bundle bundle = new Bundle();
-					bundle.putString(DIALOG_TITLE, Upgrades.bumperUpgrade.getDescription());
-					bundle.putInt(DIALOG_POINTS, Upgrades.POINTS_BUMPER_POWERUP);
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.bumperUpgrade));
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBumperButton);
-
-					// check if we have enough points
-					if (Points.getNumPoints() < Upgrades.POINTS_BUMPER_POWERUP) {
-						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
-					} else {
-						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
-					}
-					return;
-				}
-
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.bumperUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		bumperButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.bumperUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(bumperButton, Upgrades.bumperUpgrade.toggleEnabled());
-						Upgrades.bumperUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		bumperButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.bumperUpgrade), Upgrades.POINTS_BUMPER_POWERUP, R.id.upgradesMenuBumperButton));
+		bumperButton.setOnLongClickListener(new PowerupSelection(Upgrades.bumperUpgrade, bumperButton));
 
 		ImageView bumperIcon = (ImageView)findViewById(R.id.upgradesMenuBumperIcon);
 		bumperIcon.setClickable(true);
-		bumperIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.bumperUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.bumperUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(bumperButton, Upgrades.bumperUpgrade.toggleEnabled());
-						Upgrades.bumperUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		bumperIcon.setOnClickListener(new PowerupSelection(Upgrades.bumperUpgrade, bumperButton));
 
 		// bomb powerup
 		bombButton = (Button)findViewById(R.id.upgradesMenuBombButton);
@@ -530,72 +203,12 @@ public class UpgradesMenu extends Activity {
 			bombButton.setText(bombButton.getText() + "\n" + Util.getPointsString(Upgrades.POINTS_BOMB_POWERUP) + " points");
 		}
 
-		bombButton.setOnClickListener(new OnClickListener() {
-
-			public void onClick(View v) {
-
-				// check if not unlocked
-				if (Upgrades.bombUpgrade.getLevel() == Upgrades.POWERUP_LOCKED) {
-
-					Bundle bundle = new Bundle();
-					bundle.putString(DIALOG_TITLE, Upgrades.bombUpgrade.getDescription());
-					bundle.putInt(DIALOG_POINTS, Upgrades.POINTS_BOMB_POWERUP);
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, Upgrades.getUpgradeID(Upgrades.bombUpgrade));
-					bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, R.id.upgradesMenuBombButton);
-
-					// check if we have enough points
-					if (Points.getNumPoints() < Upgrades.POINTS_BOMB_POWERUP) {
-						showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
-					} else {
-						showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
-					}
-					return;
-				}
-
-				Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
-				intent.putExtra(Upgrades.UPGRADE_KEY, Upgrades.getUpgradeID(Upgrades.bombUpgrade));
-				startActivity(intent);
-			}
-		});
-
-		bombButton.setOnLongClickListener(new OnLongClickListener() {
-			public boolean onLongClick(View v) {
-				if (Upgrades.bombUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.bombUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(bombButton, Upgrades.bombUpgrade.toggleEnabled());
-						Upgrades.bombUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-				return true;
-			}
-		});
+		bombButton.setOnClickListener(new UpgradeSelection(Upgrades.getUpgradeID(Upgrades.bombUpgrade), Upgrades.POINTS_BOMB_POWERUP, R.id.upgradesMenuBombButton));
+		bombButton.setOnLongClickListener(new PowerupSelection(Upgrades.bombUpgrade, bombButton));
 
 		ImageView bombIcon = (ImageView)findViewById(R.id.upgradesMenuBombIcon);
 		bombIcon.setClickable(true);
-		bombIcon.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (Upgrades.bombUpgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
-						Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
-				{
-					if (Upgrades.bombUpgrade.isEnabled() &&
-							Upgrades.getNumPowerupsEnabled() == Upgrades.POWERUP_PICKER_MIN_POWERUPS)
-					{
-						showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
-					} else {
-						toggleButtonColor(bombButton, Upgrades.bombUpgrade.toggleEnabled());
-						Upgrades.bombUpgrade.save(sharedPreferencesEditor);
-						sharedPreferencesEditor.commit();
-					}
-				}
-			}
-		});
+		bombIcon.setOnClickListener(new PowerupSelection(Upgrades.bombUpgrade, bombButton));
 
 	}
 
@@ -737,5 +350,85 @@ public class UpgradesMenu extends Activity {
 
 		text = text.replaceAll("\n.*", "");
 		button.setText(text);
+	}
+	
+	/**
+	 * For handling upgrade selection
+	 * @author josh
+	 *
+	 */
+	public class UpgradeSelection implements OnClickListener {
+
+		private int upgradeId;
+		private int points;
+		private int buttonId;
+		
+		public UpgradeSelection(int upgradeId, int points, int buttonId) {
+			this.upgradeId = upgradeId;
+			this.points = points;
+			this.buttonId = buttonId;
+		}
+		
+		public void onClick(View v) {
+			// check if not unlocked
+			if (Upgrades.getUpgrade(upgradeId).getLevel() == Upgrades.POWERUP_LOCKED) {
+
+				Bundle bundle = new Bundle();
+				bundle.putString(DIALOG_TITLE, Upgrades.getUpgrade(upgradeId).getDescription());
+				bundle.putInt(DIALOG_POINTS, points);
+				bundle.putInt(DIALOG_CONFIRM_POWERUP_UNLOCK_UPGRADE_ID, upgradeId);
+				bundle.putInt(DIALOG_CONFIRM_POWERUP_BUTTON_ID, buttonId);
+
+				// check if we have enough points
+				if (Points.getNumPoints() < points) {
+					showDialog(DIALOG_NOT_ENOUGH_POINTS, bundle);
+				} else {
+					showDialog(DIALOG_CONFIRM_POWERUP_UNLOCK, bundle);
+				}
+				return;
+			}
+
+			Intent intent = new Intent(UpgradesMenu.this, UpgradesSubMenu.class);
+			intent.putExtra(Upgrades.UPGRADE_KEY, upgradeId);
+			startActivity(intent);
+		}
+	}
+	
+	/**
+	 * For handling powerup selection.
+	 * @author josh
+	 *
+	 */
+	public class PowerupSelection implements OnClickListener, OnLongClickListener {
+
+		private Upgrade upgrade;
+		private Button button;
+		
+		public PowerupSelection(Upgrade upgrade, Button button) {
+			this.upgrade = upgrade;
+			this.button = button;
+		}
+		public boolean onLongClick(View v) {
+			togglePowerup();
+			return false;
+		}
+
+		public void onClick(View v) {
+			togglePowerup();
+		}
+		
+		private void togglePowerup() {
+			if (upgrade.getLevel() >= Upgrades.POWERUP_UNLOCKED &&
+					Upgrades.otherUpgrade.getLevel() >= Upgrades.OTHER_POWERUP_PICKER)
+			{
+				if (upgrade.isEnabled() && Upgrades.getNumPowerupsEnabled() <= Upgrades.POWERUP_PICKER_MIN_POWERUPS) {
+					showDialog(DIALOG_MINIMUM_POWERUPS_SELECTED);
+				} else {
+					toggleButtonColor(button, upgrade.toggleEnabled());
+					upgrade.save(sharedPreferencesEditor);
+					sharedPreferencesEditor.commit();
+				}
+			}
+		}
 	}
 }
