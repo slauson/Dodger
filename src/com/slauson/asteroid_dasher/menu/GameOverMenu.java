@@ -22,7 +22,6 @@ import com.slauson.asteroid_dasher.status.Achievements;
 import com.slauson.asteroid_dasher.status.GlobalStatistics;
 import com.slauson.asteroid_dasher.status.HighScores;
 import com.slauson.asteroid_dasher.status.LocalStatistics;
-import com.slauson.asteroid_dasher.status.Options;
 import com.slauson.asteroid_dasher.status.Points;
 import com.slauson.asteroid_dasher.status.Statistics;
 import com.slauson.asteroid_dasher.R;
@@ -42,7 +41,22 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.game_over_menu);
+		
+		// determine if free version
+		boolean freeVersion = false;
+		
+		try {
+			freeVersion = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version));
+		} catch (NameNotFoundException e) {
+			;
+		}
+		
+		// load ad view if free version
+		if (freeVersion) {
+			setContentView(R.layout.game_over_menu_ad);
+		} else {
+			setContentView(R.layout.game_over_menu);
+		}
 		
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
@@ -84,6 +98,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 		
 		// load ad if free version
 		try {
+			
 			if (getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version))) {
 				AdView adView = (AdView)this.findViewById(R.id.gameOverAdView);
 				adView.loadAd(new AdRequest());
