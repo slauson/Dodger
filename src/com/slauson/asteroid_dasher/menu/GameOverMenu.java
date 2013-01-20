@@ -38,12 +38,15 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 	/** Game mode that we just ended **/
 	private int gameMode;
 	
+	/** True if this is the free version of the game **/
+	private boolean freeVersion;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		// determine if free version
-		boolean freeVersion = false;
+		freeVersion = false;
 		
 		try {
 			freeVersion = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version));
@@ -80,7 +83,7 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 			} else {
-				Toast.makeText(this, "Press again to quit", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "Press again to return to main menu", Toast.LENGTH_SHORT).show();
 				backButtonQuitEndTime = System.currentTimeMillis() + TOAST_LENGTH_SHORT;
 			}
 			return true;
@@ -97,14 +100,9 @@ public class GameOverMenu extends PaidDialogBaseMenu {
 	private void setup() {
 		
 		// load ad if free version
-		try {
-			
-			if (getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version))) {
-				AdView adView = (AdView)this.findViewById(R.id.gameOverAdView);
-				adView.loadAd(new AdRequest());
-			}
-		} catch (NameNotFoundException e) {
-			;
+		if (freeVersion) {
+			AdView adView = (AdView)this.findViewById(R.id.gameOverAdView);
+			adView.loadAd(new AdRequest());
 		}
 
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

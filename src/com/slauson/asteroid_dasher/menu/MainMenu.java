@@ -1,5 +1,7 @@
 package com.slauson.asteroid_dasher.menu;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdView;
 import com.slauson.asteroid_dasher.game.Game;
 import com.slauson.asteroid_dasher.game.GameActivity;
 import com.slauson.asteroid_dasher.status.Achievements;
@@ -76,16 +78,27 @@ public class MainMenu extends PaidDialogBaseMenu {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main_menu);
 		
-		showingMore = false;
-		backButtonQuitEndTime = 0;
+		freeVersion = false;
 		
 		try {
 			freeVersion = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA).metaData.getBoolean(getString(R.string.meta_data_free_version));
 		} catch (NameNotFoundException e) {
-			freeVersion = false;
+			;
 		}
+		
+		// load ad view if free version
+		if (freeVersion) {
+			setContentView(R.layout.main_menu_ad);
+			
+			AdView adView = (AdView)this.findViewById(R.id.mainMenuAdView);
+			adView.loadAd(new AdRequest());
+		} else {
+			setContentView(R.layout.main_menu);
+		}
+		
+		showingMore = false;
+		backButtonQuitEndTime = 0;
 		
 		// debugging menu
 		if (DEBUG_MENU_ENABLED) {
@@ -96,6 +109,12 @@ public class MainMenu extends PaidDialogBaseMenu {
 					startActivity(intent);
 				}
 			});
+		}
+		
+		// title
+		if (!freeVersion) {
+			TextView mainMenuTitle = (TextView)findViewById(R.id.mainMenuTitle);
+			mainMenuTitle.setText(mainMenuTitle.getText() + "+");
 		}
 
 		// start/high scores button
